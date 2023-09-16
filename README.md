@@ -20,6 +20,6 @@ If not, you should specify it as TCP.
 Now we haven't implemented any authentication or other business logic on the proxy server side. specify the target server you want to connect with `-p` 
 
 ```shell
-./sectran ssh -p="tcp" --username"foo" --password="bar" "-t=192.168.31.100:22
+./sectran ssh -p="websocket" --username"foo" --password="bar" "-t=192.168.31.100:22
 ```
 
