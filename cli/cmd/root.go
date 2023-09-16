@@ -48,6 +48,7 @@ func init() {
 	// 0 PanicLevel 1 FatalLevel 2 ErrorLevel 3 WarnLevel
 	// 4 InfoLevel 5 DebugLevel 6 TraceLevel
 	logrus.SetLevel(logrus.Level(globalFlags.logLevel))
+	logrus.SetReportCaller(true)
 	logrus.SetFormatter(&nested.Formatter{
 		HideKeys:    true,
 		FieldsOrder: []string{"component", "category"},

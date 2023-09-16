@@ -35,9 +35,10 @@ sectran ssh -p 10022 -t
 func init() {
 	sshCmd.PersistentFlags().StringVar(&sc.UserName, "username", "", "username of sectran sshd service")
 	sshCmd.PersistentFlags().StringVar(&sc.Password, "password", "", "password of sectran sshd  service")
-	sshCmd.PersistentFlags().BoolVar(&sc.PasswordAuth, "password-auth", true, "sectran sshd service authentication method")
+	sshCmd.PersistentFlags().BoolVar(&sc.PasswordAuth, "password-auth", false, "sectran sshd service authentication method")
 	sshCmd.PersistentFlags().BoolVar(&sc.PublicKeyAuth, "publickey-auth", false, "sectran sshd service authentication method")
 	sshCmd.PersistentFlags().BoolVar(&sc.InteractiveAuth, "interactive-auth", false, "user manually login in using the keyboard")
+	sshCmd.PersistentFlags().BoolVar(&sc.NoAuth, "no-auth", true, "no client auth")
 	sshCmd.PersistentFlags().StringVar(&sc.PrivateKey, "privatekey", "", " path in proxy mode,if you want to use public key auth in proxy,you must offer private key")
 	rootCmd.AddCommand(sshCmd)
 }
@@ -98,13 +99,30 @@ func sshdStartup(conf GlobalFlags) error {
 func handlePeerConnection(conn net.Conn) {
 	defer conn.Close()
 
+	var (
+		serverRwc io.ReadWriteCloser
+		err       error
+	)
+
 	//copy config from server config
 	userConf := *sc
+	if GConfig.protocol == "websocket" {
 
-	rwcs, err := ssh.NewSSHServer(conn, &userConf)
-	if err != nil {
-		logrus.Errorf("error to build SSH server")
-		return
+		userConf.ModeList = append(userConf.ModeList, config.Mode{Key: 53, Val: 1})
+		userConf.ModeList = append(userConf.ModeList, config.Mode{Key: 128, Val: 14400})
+		userConf.ModeList = append(userConf.ModeList, config.Mode{Key: 129, Val: 14400})
+
+		userConf.PtyRequestMsg.Term = "xterm-256"
+		userConf.PtyRequestMsg.Rows = 180
+		userConf.PtyRequestMsg.Rows = 90
+
+		serverRwc = conn
+	} else {
+		// serverRwc, err = ssh.NewSSHServer(conn, &userConf)
+		// if err != nil {
+		// 	logrus.Errorf("error to build SSH server")
+		// 	return
+		// }
 	}
 
 	// Split the address into its components (host and port)
@@ -123,7 +141,7 @@ func handlePeerConnection(conn net.Conn) {
 	userConf.Host = hostStr
 	userConf.Port = int32(port)
 
-	rwcc, err := ssh.NewSSHClient(&userConf)
+	ClientRwc, err := ssh.NewSSHClient(&userConf)
 	if err != nil {
 		logrus.Errorf("error to get SSH client instance:%s", err)
 		return
@@ -150,8 +168,8 @@ func handlePeerConnection(conn net.Conn) {
 		}
 	}
 
-	go reversedFunc(rwcs, rwcc, cf)
-	go reversedFunc(rwcc, rwcs, cf)
+	go reversedFunc(serverRwc, ClientRwc, cf)
+	go reversedFunc(ClientRwc, serverRwc, cf)
 
 	<-ctx.Done()
 	logrus.Info("a connection is stoped")

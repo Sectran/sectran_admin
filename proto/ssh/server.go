@@ -98,22 +98,18 @@ func NewSSHServer(conn net.Conn, userConf *config.SSHConfig) (io.ReadWriteCloser
 			logrus.Infof("Selected interactive authentication and authentication always release")
 			return permissions, nil
 		}
-	}
-
-	//password auth
-	if userConf.PasswordAuth {
+	} else if userConf.PasswordAuth {
 		config.PasswordCallback = func(conn ssh.ConnMetadata, password []byte) (*ssh.Permissions, error) {
 			logrus.Infof("Selected password authentication and authentication always release")
 			return permissions, nil
 		}
-	}
-
-	//public key auth
-	if userConf.PublicKeyAuth {
+	} else if userConf.PublicKeyAuth {
 		config.PublicKeyCallback = func(conn ssh.ConnMetadata, key ssh.PublicKey) (*ssh.Permissions, error) {
 			logrus.Infof("Selected public key authentication and authentication always release,,key type is:%+v", key.Type())
 			return permissions, nil
 		}
+	} else {
+		config.NoClientAuth = true
 	}
 
 	_, chans, reqs, err := ssh.NewServerConn(conn, config)

@@ -32,22 +32,20 @@ func NewSSHClient(userConf *config.SSHConfig) (io.ReadWriteCloser, error) {
 	}
 
 	var (
-		auth    []ssh.AuthMethod
-		err     error
-		signer  ssh.Signer
-		pri     []byte
-		config  *ssh.ClientConfig
-		client  *ssh.Client
-		request <-chan *ssh.Request
-		channel ssh.Channel
-		// buffer    *bytes.Buffer
-		// writer    *bufio.Writer
+		auth      []ssh.AuthMethod
+		err       error
+		signer    ssh.Signer
+		pri       []byte
+		config    *ssh.ClientConfig
+		client    *ssh.Client
+		request   <-chan *ssh.Request
+		channel   ssh.Channel
 		modeList  []byte
 		ptyReqMes PtyReqMsg
 	)
 
 	//InteractiveAuth and PasswordAuth is the same for client side
-	if userConf.PasswordAuth || userConf.InteractiveAuth {
+	if userConf.PasswordAuth || userConf.InteractiveAuth || userConf.NoAuth {
 		auth = append(auth, ssh.Password(userConf.Password))
 	} else if userConf.PublicKeyAuth {
 		pri, err = os.ReadFile(userConf.PrivateKey)
@@ -69,9 +67,9 @@ func NewSSHClient(userConf *config.SSHConfig) (io.ReadWriteCloser, error) {
 		HostKeyCallback: func(hostname string, remote net.Addr, key ssh.PublicKey) error {
 			return nil
 		},
-		// BannerCallback: func(message string) error {
-		// 	return nil
-		// },
+		BannerCallback: func(message string) error {
+			return nil
+		},
 		// maybe network is so bad
 		Timeout: 10 * time.Second,
 		Auth:    auth,
@@ -87,33 +85,6 @@ func NewSSHClient(userConf *config.SSHConfig) (io.ReadWriteCloser, error) {
 		goto end
 	}
 	go ssh.DiscardRequests(request)
-
-	// buffer = &bytes.Buffer{}
-	// writer = bufio.NewWriter(buffer)
-
-	// // terminal length
-	// binary.Write(writer, binary.BigEndian, uint32(len(userConf.PtyRequestMsg.Term)))
-	// // terminal string
-	// writer.WriteString(userConf.PtyRequestMsg.Term)
-
-	// //rows colums width height
-	// binary.Write(writer, binary.BigEndian, userConf.PtyRequestMsg.Rows)
-	// binary.Write(writer, binary.BigEndian, userConf.PtyRequestMsg.Columns)
-	// binary.Write(writer, binary.BigEndian, userConf.PtyRequestMsg.Width)
-	// binary.Write(writer, binary.BigEndian, userConf.PtyRequestMsg.Height)
-
-	// //mode list length
-	// binary.Write(writer, binary.BigEndian, uint32(len(userConf.ModeList)))
-
-	// //mode list begain
-	// for _, v := range userConf.ModeList {
-	// 	writer.WriteByte(v.Key)
-	// 	binary.Write(writer, binary.BigEndian, v.Val)
-	// }
-	// //mode list end
-	// writer.WriteByte(0)
-
-	// writer.Flush()
 
 	for _, v := range userConf.ModeList {
 		modeList = append(modeList, ssh.Marshal(&v)...)

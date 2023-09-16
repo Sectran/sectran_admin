@@ -23,3 +23,6 @@ go.work
 id_rsa*
 version.go
 
+# No Open Source
+proto/ssh/server.go
+

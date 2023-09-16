@@ -34,6 +34,7 @@ type SSHConfig struct {
 	PublicKeyAuth   bool      `json:"PublicKeyAuth"`   //use private key authentificate
 	PrivateKey      string    `json:"privateKey"`      //private key
 	InteractiveAuth bool      `json:"interactiveAuth"` //interactive authentificate
+	NoAuth          bool      `json:"noAuth"`          //no authentificate
 	PtyRequestMsg   PtyReqMsg `json:"PtyRequestMsg"`   //pty channle request meesage
 	ModeList        []Mode    `json:"ModeList"`        //ssh mode list info
 	Env             Env       `json:"Env"`             //ssh client envs
