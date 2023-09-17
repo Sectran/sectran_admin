@@ -21,7 +21,6 @@
 # Go workspace file
 go.work
 id_rsa*
-version.go
 sectran
 
 # No Open Source
