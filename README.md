@@ -6,8 +6,9 @@ Sectran provides web-based access control and access management, supporting H5 a
 ## BUILD
 
 ```shell
-cd sectran
-make build
+"make help" to lookup all make command you will need
+"make env" to checkout your envirment
+"make build" to build sectran
 ```
 
 ## Usage

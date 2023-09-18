@@ -112,7 +112,7 @@ func handlePeerConnection(conn net.Conn) {
 		userConf.ModeList = append(userConf.ModeList, config.Mode{Key: 128, Val: 14400})
 		userConf.ModeList = append(userConf.ModeList, config.Mode{Key: 129, Val: 14400})
 
-		userConf.PtyRequestMsg.Term = "xterm-256"
+		userConf.PtyRequestMsg.Term = "xterm256"
 		userConf.PtyRequestMsg.Rows = 180
 		userConf.PtyRequestMsg.Rows = 90
 

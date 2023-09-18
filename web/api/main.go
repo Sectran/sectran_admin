@@ -4,10 +4,11 @@ import (
 	"api/global"
 	routers "api/router"
 	"fmt"
+	"net/http"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/labstack/echo"
-	"net/http"
 )
 
 // User 定义
@@ -18,7 +19,7 @@ type User struct {
 
 var totalRequests = 1
 
-//中间件函数
+// 中间件函数
 func Count(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		//在这里处理拦截请求的逻辑
