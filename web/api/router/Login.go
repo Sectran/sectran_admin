@@ -69,7 +69,7 @@ func register(c echo.Context) error {
 }
 
 func Login(e *echo.Echo) {
-	Store := e.Group("store")
+	Store := e.Group("Login")
 	//注册接口
 	{
 		Store.POST("/register", register)

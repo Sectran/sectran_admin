@@ -57,12 +57,11 @@ func main() {
 
 func init() {
 	var err error
-	global.DB, err = gorm.Open("mysql", "root:123456@/db_test?charset=utf8&parseTime=True&loc=Local")
+	global.DB, err = gorm.Open("mysql", "root:123456@/db_Sectran?charset=utf8&parseTime=True&loc=Local")
 	if err != nil {
 		fmt.Println(err)
 		//panic(err)
 	}
-	fmt.Println(1321)
 	//打印查询的sql语句
 	global.DB.LogMode(true)
 }
