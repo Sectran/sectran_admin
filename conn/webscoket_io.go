@@ -1,7 +1,6 @@
 package conn
 
 import (
-	"net"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -9,12 +8,12 @@ import (
 )
 
 type WebsocketIO struct {
-	Conn      *websocket.Conn
+	*websocket.Conn
 	remaining []byte
 }
 
 func (ws *WebsocketIO) Write(p []byte) (int, error) {
-	err := ws.Conn.WriteMessage(websocket.BinaryMessage, p)
+	err := ws.WriteMessage(websocket.BinaryMessage, p)
 	if err != nil {
 		return 0, trace.Wrap(err)
 	}
@@ -24,7 +23,7 @@ func (ws *WebsocketIO) Write(p []byte) (int, error) {
 
 func (ws *WebsocketIO) Read(p []byte) (int, error) {
 	if len(ws.remaining) == 0 {
-		ty, data, err := ws.Conn.ReadMessage()
+		ty, data, err := ws.ReadMessage()
 		if err != nil {
 			return 0, trace.Wrap(err)
 		}
@@ -39,26 +38,6 @@ func (ws *WebsocketIO) Read(p []byte) (int, error) {
 	return copied, nil
 }
 
-func (ws *WebsocketIO) Close() error {
-	return trace.Wrap(ws.Conn.Close())
-}
-
-func (ws *WebsocketIO) LocalAddr() net.Addr {
-	return ws.Conn.LocalAddr()
-}
-
-func (ws *WebsocketIO) RemoteAddr() net.Addr {
-	return ws.Conn.RemoteAddr()
-}
-
 func (ws *WebsocketIO) SetDeadline(t time.Time) error {
 	return ws.Conn.SetReadDeadline(t)
-}
-
-func (ws *WebsocketIO) SetReadDeadline(t time.Time) error {
-	return ws.Conn.SetReadDeadline(t)
-}
-
-func (ws *WebsocketIO) SetWriteDeadline(t time.Time) error {
-	return ws.Conn.SetWriteDeadline(t)
 }

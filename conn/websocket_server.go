@@ -27,7 +27,9 @@ func (ws *WebScoketServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		logrus.Errorf("websocket error:%s", err)
 		return
 	}
-	ws.Chan <- &WebsocketIO{
-		Conn: conn,
-	}
+
+	webConn := &WebsocketIO{}
+	webConn.Conn = conn
+
+	ws.Chan <- webConn
 }

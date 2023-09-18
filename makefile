@@ -10,7 +10,6 @@ MAKE = make
 #
 # version
 #
-# tags date info
 OS ?=$(shell go env GOOS)
 ARCH ?=$(shell go env GOARCH)
 COMMIT := $(shell git rev-parse --short HEAD)
