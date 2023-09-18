@@ -1,7 +1,7 @@
 package version
 
 var (
-    Commit string = "4ebe8a8"
+    Commit string = "e37e583"
     Branch string = "master"
-    BuildTime string = "2023-09-16T18:33:00+0800"
+    BuildTime string = "20230918"
 )
