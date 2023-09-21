@@ -85,13 +85,13 @@ func NewSSHServer(conn net.Conn, userConf *SSHConfig) (io.ReadWriteCloser, error
 	//manual auth
 	if userConf.InteractiveAuth {
 		config.KeyboardInteractiveCallback = func(conn ssh.ConnMetadata, client ssh.KeyboardInteractiveChallenge) (*ssh.Permissions, error) {
-			// questions := []string{"Please enter the temporary sequence of the destination host:"}
-			// answers, err := client("", SectranWelcome, questions, []bool{true})
-			// if err != nil {
-			// 	return nil, err
-			// }
+			questions := []string{"Please enter the temporary sequence of the destination host:"}
+			answers, err := client("", SectranWelcome, questions, []bool{true})
+			if err != nil {
+				return nil, err
+			}
 
-			// userConf.Password = answers[0]
+			userConf.Password = answers[0]
 			logrus.Infof("Selected interactive authentication and authentication always release")
 			return permissions, nil
 		}

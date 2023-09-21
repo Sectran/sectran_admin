@@ -1,6 +1,9 @@
 package ssh
 
 import (
+	"os"
+	"os/signal"
+	"syscall"
 	"testing"
 
 	"github.com/sirupsen/logrus"
@@ -26,10 +29,23 @@ func TestSSHProxy(t *testing.T) {
 		logrus.Infof("%+v\n", err)
 	}
 
-	res := <-sm.ResponseChan
-	if res.err != nil {
-		logrus.Infof("%+v\n", res.err)
+	signalChan := make(chan os.Signal, 1)
+
+	signal.Notify(signalChan,
+		syscall.SIGINT,
+		syscall.SIGTERM,
+		syscall.SIGQUIT,
+	)
+
+	for {
+		select {
+		case res := <-sm.ResponseChan:
+			if res.err != nil {
+				logrus.Infof("recieve error info: %+v\n", res.err)
+			}
+		case <-signalChan:
+			os.Exit(0)
+		}
 	}
 
-	select {}
 }
