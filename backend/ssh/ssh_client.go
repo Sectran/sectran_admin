@@ -21,15 +21,14 @@ func NewSSHClient(userConf *SSHConfig) (io.ReadWriteCloser, error) {
 	}
 
 	var (
-		auth      []ssh.AuthMethod
-		err       error
-		signer    ssh.Signer
-		pri       []byte
-		config    *ssh.ClientConfig
-		client    *ssh.Client
-		request   <-chan *ssh.Request
-		channel   ssh.Channel
-		ptyReqMes PtyReqMsg
+		auth    []ssh.AuthMethod
+		err     error
+		signer  ssh.Signer
+		pri     []byte
+		config  *ssh.ClientConfig
+		client  *ssh.Client
+		request <-chan *ssh.Request
+		channel ssh.Channel
 	)
 
 	//InteractiveAuth and PasswordAuth is the same for client side
@@ -74,7 +73,7 @@ func NewSSHClient(userConf *SSHConfig) (io.ReadWriteCloser, error) {
 	}
 	go ssh.DiscardRequests(request)
 
-	_, err = channel.SendRequest("pty-req", true, ssh.Marshal(&ptyReqMes))
+	_, err = channel.SendRequest("pty-req", true, ssh.Marshal(&userConf.PtyRequestMsg))
 	if err != nil {
 		logrus.Errorf("internal error, error to send message to pty request channel")
 		goto end

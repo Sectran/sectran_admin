@@ -66,29 +66,31 @@ func handleConnection(ctx context.Context, message *SSHModuleMessage) {
 		rwcs io.ReadWriteCloser
 	)
 
-	select {
-	case req = <-message.RequestChan:
-		rwcs = req.Conn
-		rwcc, err = NewSSHClient(req.Config)
-		if err != nil {
-			message.ResponseChan <- &SSHConnResponse{
-				err: err,
+	for {
+		select {
+		case req = <-message.RequestChan:
+			rwcs = req.Conn
+			rwcc, err = NewSSHClient(req.Config)
+			if err != nil {
+				message.ResponseChan <- &SSHConnResponse{
+					err: err,
+				}
+				break
 			}
-			break
+
+			go handleReveredClientConnection(rwcc, rwcs)
+			go handleReveredServerConnection(rwcs, rwcc)
+
+		case <-ctx.Done():
+			logrus.Infof("a connection is done")
+			//clean
 		}
-
-		go handleReveredClientConnection(rwcc, rwcs)
-		go handleReveredServerConnection(rwcs, rwcc)
-
-	case <-ctx.Done():
-		logrus.Infof("a connection is done")
-		//clean
 	}
 
 }
 
 func handleReveredClientConnection(r io.ReadWriteCloser, w io.ReadWriteCloser) {
-	// one func call this
+	// Just have a method to trigger it
 	defer r.Close()
 	defer w.Close()
 
