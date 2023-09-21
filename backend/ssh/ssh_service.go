@@ -153,11 +153,11 @@ func startSSHTcpService(config *SSHConfig, netChan chan *SSHConnRequest, addr st
 		logrus.Infof("destnation number is:%s", clientConfig.Password)
 
 		//todo:change client config to what you want here
-		clientConfig.Host = "192.168.31.100"
+		clientConfig.Host = "192.168.1.102"
 		clientConfig.Port = 22
 		clientConfig.PasswordAuth = true
 		clientConfig.UserName = "root"
-		clientConfig.Password = "Ryan@1218pass"
+		clientConfig.Password = "Openeulerpass!"
 
 		netChan <- &SSHConnRequest{
 			Conn:            rwc,

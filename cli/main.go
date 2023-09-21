@@ -1,8 +1,22 @@
-package cli
+package main
 
-import "sectran/cli/cmd"
+import (
+	"sectran/cli/cmd"
+)
 
-func Start() {
+func main() {
 	cmd.Execute()
 
 }
+
+//package cli
+//
+//import (
+//"sectran/cli/cmd"
+//)
+//
+//func Start() {
+//	cmd.Execute()
+//
+//}
+//

@@ -1,22 +1,31 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"log"
+	"os"
 )
 
 func init() {
-	rootCmd.AddCommand(apiCmd)
+
 }
 
 var apiCmd = &cobra.Command{
 	Use:   "api",
 	Short: "open api",
 	Long:  ``,
-	PreRun: func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, args []string) {
 		initRoute()
 	},
+}
+
+func Execute() {
+	if err := apiCmd.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(-1)
+	}
 }
 
 func initRoute() {

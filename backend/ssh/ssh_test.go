@@ -17,6 +17,7 @@ func TestSSHServer(t *testing.T) {
 
 }
 
+// 启动测试（proxy）程序
 func TestSSHProxy(t *testing.T) {
 	config := SSHConfig{
 		Port:            19527,
