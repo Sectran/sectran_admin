@@ -6,8 +6,9 @@ import (
 	"io"
 	"net"
 	"os"
-	"sectran/user/config"
-	"sectran/utils"
+	"sectran/common/utils/cert"
+	"sectran/common/utils/reflect"
+	"sectran/common/utils/rw"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -18,7 +19,8 @@ const (
 	SectranSSHDVeriosn    string = "SSH-2.0-Sectran"
 	SectranSSHDPrivateKey string = "id_rsa"
 	SectranSSHDPublicKey  string = "id_rsa.pub"
-	SectranWelcome        string = "Welcome to SectranV1.0.\nAny question plz contact ryanwymail@163.com.\n"
+	SectranWelcome        string = "Welcome to SectranV1.0."
+	// \r\nAny question plz contact ryanwymail@163.com.
 )
 
 func getSSHSigner() (ssh.Signer, error) {
@@ -35,15 +37,15 @@ func getSSHSigner() (ssh.Signer, error) {
 		}
 	} else if os.IsNotExist(err) {
 
-		priKey, err = utils.GeneratePrivateKey(1024)
+		priKey, err = cert.GeneratePrivateKey(1024)
 		if err != nil {
 			return nil, err
 		}
-		publicKeyBytes, err := utils.GeneratePublicKey(&priKey.PublicKey)
+		publicKeyBytes, err := cert.GeneratePublicKey(&priKey.PublicKey)
 		if err != nil {
 			return nil, err
 		}
-		privateKeyBytes = utils.EncodePrivateKeyToPEM(priKey)
+		privateKeyBytes = cert.EncodePrivateKeyToPEM(priKey)
 
 		err = os.WriteFile(SectranSSHDPublicKey, publicKeyBytes, 0600)
 		if err != nil {
@@ -65,7 +67,7 @@ func getSSHSigner() (ssh.Signer, error) {
 	return signer, nil
 }
 
-func NewSSHServer(conn net.Conn, userConf *config.SSHConfig) (io.ReadWriteCloser, error) {
+func NewSSHServer(conn net.Conn, userConf *SSHConfig) (io.ReadWriteCloser, error) {
 	//always auth
 	config := &ssh.ServerConfig{
 		ServerVersion: SectranSSHDVeriosn,
@@ -83,18 +85,13 @@ func NewSSHServer(conn net.Conn, userConf *config.SSHConfig) (io.ReadWriteCloser
 	//manual auth
 	if userConf.InteractiveAuth {
 		config.KeyboardInteractiveCallback = func(conn ssh.ConnMetadata, client ssh.KeyboardInteractiveChallenge) (*ssh.Permissions, error) {
-			questions := []string{"account:", "password:"}
-			answers, err := client("", SectranWelcome, questions, []bool{true, true})
-			if err != nil {
-				return nil, err
-			}
+			// questions := []string{"Please enter the temporary sequence of the destination host:"}
+			// answers, err := client("", SectranWelcome, questions, []bool{true})
+			// if err != nil {
+			// 	return nil, err
+			// }
 
-			if len(answers) != len(questions) {
-				return nil, fmt.Errorf("authentication failed")
-			}
-
-			userConf.UserName = answers[0]
-			userConf.Password = answers[1]
+			// userConf.Password = answers[0]
 			logrus.Infof("Selected interactive authentication and authentication always release")
 			return permissions, nil
 		}
@@ -141,7 +138,7 @@ func NewSSHServer(conn net.Conn, userConf *config.SSHConfig) (io.ReadWriteCloser
 	}
 }
 
-func newChannelHandler(pty chan ssh.Channel, errc chan error, userConf *config.SSHConfig, chans <-chan ssh.NewChannel) {
+func newChannelHandler(pty chan ssh.Channel, errc chan error, userConf *SSHConfig, chans <-chan ssh.NewChannel) {
 	for newChannel := range chans {
 		channelType := newChannel.ChannelType()
 		if channelType != "session" {
@@ -158,15 +155,14 @@ func newChannelHandler(pty chan ssh.Channel, errc chan error, userConf *config.S
 }
 
 // select pty channle
-func seletPtyChannel(pty_chan chan ssh.Channel, channel ssh.Channel, sshReqChan <-chan *ssh.Request, userConf *config.SSHConfig) {
+func seletPtyChannel(pty_chan chan ssh.Channel, channel ssh.Channel, sshReqChan <-chan *ssh.Request, userConf *SSHConfig) {
 	for {
 		select {
 		case req := <-sshReqChan:
 			if req == nil {
 				continue
 			}
-			//payload
-			r := utils.NewReader(req.Payload)
+			r := rw.NewReader(req.Payload)
 
 			switch req.Type {
 			case "pty-req", "shell":
@@ -209,15 +205,8 @@ func seletPtyChannel(pty_chan chan ssh.Channel, channel ssh.Channel, sshReqChan 
 						break
 					}
 
-					//read mode list array
-					userConf.ModeList = make([]config.Mode, modeListLen/5)
-					for i := 0; r.CheckLength(int(5)) > 0; i++ {
-						key, _ := r.ReadByte()
-						value, _ := r.ReadBigEndian32()
-
-						userConf.ModeList[i].Key = key
-						userConf.ModeList[i].Val = value
-					}
+					//read all modelist item (contains end zero)
+					userConf.PtyRequestMsg.Modelist, _ = r.ReadBytes(int(modeListLen))
 
 					pty_chan <- channel
 				}
@@ -242,7 +231,7 @@ func seletPtyChannel(pty_chan chan ssh.Channel, channel ssh.Channel, sshReqChan 
 				}
 				env, _ := r.ReadBytes(int(envLen))
 
-				if utils.SetVal(&userConf.Env, string(envName), string(env)) {
+				if reflect.SetVal(&userConf.Env, string(envName), string(env)) {
 					logrus.Debugf("env of %s's value is: %s", envName, env)
 				} else {
 					logrus.Warn("can not set config envs with SetVal")
