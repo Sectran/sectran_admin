@@ -1,10 +1,13 @@
 package response
 
 import (
-	"net/http"
 	"github.com/gin-gonic/gin"
 	"github.com/go-admin-team/go-admin-core/sdk/pkg"
+	"net/http"
 )
+
+type response struct {
+}
 
 var Default = &response{}
 
