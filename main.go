@@ -1,9 +1,8 @@
 package main
 
 import (
-	"fmt"
-	"sectran/api"
 	"sectran/api/model"
+	"sectran/api/service"
 )
 
 func main() {
@@ -14,9 +13,6 @@ func main() {
 		Age:       24,
 		Telephone: "121212321312",
 	}
-	user, _ := api.ResponseMsg(1234, "this is test message", u)
-	fmt.Println(user)
-
-	suc, _ := api.ResponseSuccess("data success")
-	fmt.Println(suc)
+	service.OK(u, "操作成功")
+	//fmt.Println(user)
 }

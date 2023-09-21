@@ -1,11 +1,9 @@
 package ssh
 
 import (
-	"fmt"
 	"io"
 	"net"
 	"os"
-	"sectran/user/config"
 	"strconv"
 	"time"
 
@@ -13,22 +11,13 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-type PtyReqMsg struct {
-	Term     string
-	Columns  uint32
-	Rows     uint32
-	Width    uint32
-	Height   uint32
-	Modelist string
-}
-
 const (
 	SectranSSHCVeriosn string = "SSH-2.0-Sectran"
 )
 
-func NewSSHClient(userConf *config.SSHConfig) (io.ReadWriteCloser, error) {
-	if !config.CheckSSHConfig(userConf) {
-		return nil, fmt.Errorf("invalid user SSH configuration")
+func NewSSHClient(userConf *SSHConfig) (io.ReadWriteCloser, error) {
+	if err := CheckSSHConfig(userConf); err != nil {
+		return nil, err
 	}
 
 	var (
@@ -40,7 +29,6 @@ func NewSSHClient(userConf *config.SSHConfig) (io.ReadWriteCloser, error) {
 		client    *ssh.Client
 		request   <-chan *ssh.Request
 		channel   ssh.Channel
-		modeList  []byte
 		ptyReqMes PtyReqMsg
 	)
 
@@ -70,7 +58,7 @@ func NewSSHClient(userConf *config.SSHConfig) (io.ReadWriteCloser, error) {
 		BannerCallback: func(message string) error {
 			return nil
 		},
-		// maybe network is so bad
+		// maybe network is so bad？
 		Timeout: 10 * time.Second,
 		Auth:    auth,
 	}
@@ -85,17 +73,6 @@ func NewSSHClient(userConf *config.SSHConfig) (io.ReadWriteCloser, error) {
 		goto end
 	}
 	go ssh.DiscardRequests(request)
-
-	for _, v := range userConf.ModeList {
-		modeList = append(modeList, ssh.Marshal(&v)...)
-	}
-	modeList = append(modeList, 0)
-	ptyReqMes.Term = userConf.PtyRequestMsg.Term
-	ptyReqMes.Columns = userConf.PtyRequestMsg.Columns
-	ptyReqMes.Rows = userConf.PtyRequestMsg.Rows
-	ptyReqMes.Width = userConf.PtyRequestMsg.Width
-	ptyReqMes.Height = userConf.PtyRequestMsg.Height
-	ptyReqMes.Modelist = string(modeList)
 
 	_, err = channel.SendRequest("pty-req", true, ssh.Marshal(&ptyReqMes))
 	if err != nil {

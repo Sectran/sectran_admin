@@ -89,7 +89,6 @@ func sshdStartup(conf GlobalFlags) error {
 			go handlePeerConnection(conn)
 		case s := <-signalChan:
 			logrus.Infof("recieve signal:%d,sectran will stop in one while", s)
-			//todo:other work
 			os.Exit(0)
 		}
 	}
@@ -105,7 +104,7 @@ func handlePeerConnection(conn net.Conn) {
 	)
 
 	//copy config from server config
-	userConf := *sc
+	userConf := sc
 	if GConfig.protocol == "websocket" {
 
 		userConf.ModeList = append(userConf.ModeList, config.Mode{Key: 53, Val: 1})

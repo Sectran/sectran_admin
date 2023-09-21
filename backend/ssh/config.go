@@ -1,4 +1,12 @@
-package config
+package ssh
+
+import (
+	"fmt"
+
+	"golang.org/x/crypto/ssh"
+)
+
+const SSH_SERVICE_DEFAULT_PORT int = 15927
 
 // RFC 4254 Section 6.2.
 type PtyReqMsg struct {
@@ -7,7 +15,7 @@ type PtyReqMsg struct {
 	Rows     uint32
 	Width    uint32
 	Height   uint32
-	Modelist string
+	Modelist []byte
 }
 
 type Mode struct {
@@ -36,8 +44,30 @@ type SSHConfig struct {
 	InteractiveAuth bool      `json:"interactiveAuth"` //interactive authentificate
 	NoAuth          bool      `json:"noAuth"`          //no authentificate
 	PtyRequestMsg   PtyReqMsg `json:"PtyRequestMsg"`   //pty channle request meesage
-	ModeList        []Mode    `json:"ModeList"`        //ssh mode list info
 	Env             Env       `json:"Env"`             //ssh client envs
+}
+
+func (c *SSHConfig) SetModelist(k byte, v uint32) error {
+	if k > 129 {
+		return fmt.Errorf("invalid mode item key")
+	}
+
+	m := Mode{
+		Key: k,
+		Val: v,
+	}
+	c.PtyRequestMsg.Modelist = append(c.PtyRequestMsg.Modelist, ssh.Marshal(&m)...)
+	return nil
+}
+
+func (c *SSHConfig) SetDefaultConfig() {
+	c.SetModelist(53, 1)
+	c.SetModelist(128, 14400)
+	c.SetModelist(129, 14400)
+
+	c.PtyRequestMsg.Term = "xterm256"
+	c.PtyRequestMsg.Rows = 180
+	c.PtyRequestMsg.Columns = 90
 }
 
 func NewSSHConfig() *SSHConfig {
@@ -45,39 +75,51 @@ func NewSSHConfig() *SSHConfig {
 	return config
 }
 
-func CheckSSHConfig(config *SSHConfig) bool {
-	var result bool = false
+func CheckSSHConfig(config *SSHConfig) error {
+	if config == nil {
+		return fmt.Errorf("config can't be nil")
+	}
 
 	if config.Port <= 0 {
-		goto end
+		return fmt.Errorf("port can't less than zero")
+	}
+
+	if config.NoAuth {
+		config.NoAuth = true
+		config.PasswordAuth = false
+		config.PublicKeyAuth = false
+		config.InteractiveAuth = false
+		return nil
 	}
 
 	if config.InteractiveAuth {
-		result = true
 		config.PasswordAuth = false
 		config.PublicKeyAuth = false
-		goto end
+		config.NoAuth = false
+		return nil
 	}
 
 	if len(config.UserName) <= 0 {
-		goto end
+		return fmt.Errorf("you have to provice username if you need to access target ssh server without KbdInteractiveAuth")
 	}
 
 	if config.PublicKeyAuth {
-		result = true
+		if len(config.PrivateKey) <= 0 {
+			return fmt.Errorf("you have to provice PrivateKey if you need to access target ssh server with PublicKeyAuth")
+		}
 		config.InteractiveAuth = false
 		config.PasswordAuth = false
-		goto end
+		config.NoAuth = false
 	}
 
 	if config.PasswordAuth {
 		if len(config.Password) <= 0 {
-			goto end
+			return fmt.Errorf("you have to provice password if you need to access target ssh server without KbdInteractiveAuth")
 		}
 		config.PublicKeyAuth = false
 		config.InteractiveAuth = false
+		config.NoAuth = false
 	}
-	result = true
-end:
-	return result
+
+	return nil
 }
