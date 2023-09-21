@@ -19,8 +19,7 @@ const (
 	SectranSSHDVeriosn    string = "SSH-2.0-Sectran"
 	SectranSSHDPrivateKey string = "id_rsa"
 	SectranSSHDPublicKey  string = "id_rsa.pub"
-	SectranWelcome        string = "Welcome to SectranV1.0."
-	// \r\nAny question plz contact ryanwymail@163.com.
+	SectranWelcome        string = "Welcome to SectranV1.0.\r\nAny question plz contact ryanwymail@163.com."
 )
 
 func getSSHSigner() (ssh.Signer, error) {
