@@ -5,8 +5,11 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-
 func init() {
+
+}
+
+func MysqlConnect() {
 	var DB *gorm.DB
 	var err error
 	DB, err = gorm.Open("mysql", "root:123456@/db_test?charset=utf8&parseTime=True&loc=Local")

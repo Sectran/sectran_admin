@@ -1,6 +1,6 @@
 package user
 
-import "sectran/api"
+import "github.com/gin-gonic/gin"
 
 func UserList() string {
 	u, err := GetUserById(1)
@@ -14,4 +14,8 @@ func UserList() string {
 	}
 
 	return s
+}
+
+func Login(c *gin.Context) {
+	err := PostUserLogin()
 }

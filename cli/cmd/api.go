@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"log"
 	"os"
+	"sectran/api/db"
 )
 
 func init() {
@@ -29,9 +30,11 @@ func Execute() {
 }
 
 func initRoute() {
+	//连接mysql
+	db.MysqlConnect()
 	r := gin.Default()
 	//curl http://localhost:8080/hello 获取到json返回值
-	//{“name”:"hello world"}
+
 	r.GET("/hello", func(context *gin.Context) {
 		context.JSON(200, gin.H{
 			"name": "hello world",
