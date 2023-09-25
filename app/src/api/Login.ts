@@ -1,2 +1,2 @@
 import requests from '@/server/request'
-export const register = <T>(data:T) => requests('/Login/register',data)
+export const login = <T>(data:T) => requests('/login/index',data)
