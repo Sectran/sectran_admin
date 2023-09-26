@@ -17,11 +17,13 @@ func PostUserLogin(c *gin.Context) {
 		response.RequestError(c, nil, "请输入密码账号")
 		return
 	}
+	err := LoginImpl(p)
 
 	fmt.Printf("%v\n", p.UserName)
+	fmt.Printf("%v\n", err)
 	//testString(p)
 }
 
-func testString(s string) {
-	fmt.Printf("inner: %v, %v\n", s, &s)
-}
+//func testString(s string) {
+//	fmt.Printf("inner: %v, %v\n", s, &s)
+//}
