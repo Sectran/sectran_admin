@@ -1,2 +1,2 @@
 import requests from '@/server/request'
-export const List = () => requests('/api/hello')
+export const addDepartment = <T>(data:T) => requests('/department/add',data)
