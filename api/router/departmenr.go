@@ -8,13 +8,11 @@ import (
 func DepartmentRouter(e *gin.Engine) {
 
 	login := e.Group("department")
+	//请求列表
+	{
+		login.POST("/list", department.ListDepartment)
+	}
 	{
 		login.POST("/add", department.AddDepartment)
 	}
-
-	//登录接口
-	{
-		login.POST("/list", department.List)
-	}
-
 }

@@ -11,18 +11,19 @@ type departmentParameter struct {
 }
 
 // List 查询部门列表
-func List(c *gin.Context) {
-	//table, total := ListImpl()
+func ListDepartment(c *gin.Context) {
+	table, total := ListDepartmentImpl(c)
 }
 
+// AddDepartment 添加部门
 func AddDepartment(c *gin.Context) {
 	p := departmentParameter{}
 	if err := c.ShouldBindJSON(&p); err != nil {
 		response.RequestError(c, nil, "请输入")
 		return
 	}
-	AddDepartmentImpl(p)
-	//if err != nil {
-	//	response.RequestOk(c, nil, "添加成功")
-	//}
+	err := AddDepartmentImpl(p)
+	if err != nil {
+		response.RequestOk(c, nil, "添加成功")
+	}
 }

@@ -2,13 +2,15 @@ package department
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	uuid "github.com/satori/go.uuid"
 	"sectran/api/service"
 )
 
-func ListImpl() ([]departmentParameter, int) {
-	var tableList []departmentParameter
+func ListDepartmentImpl(c *gin.Context) ([]DepartmentModel, int) {
+	var tableList []DepartmentModel
 	var total int
+
 	return tableList, total
 }
 
@@ -19,7 +21,6 @@ type DepartmentModel struct {
 }
 
 func AddDepartmentImpl(p departmentParameter) error {
-
 	Db := service.Db
 	fmt.Printf("%v\n", Db)
 	if !Db.HasTable(&DepartmentModel{}) {
