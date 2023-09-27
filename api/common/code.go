@@ -1,4 +1,4 @@
-package service
+package common
 
 const (
 	RSP_SUCCECC uint32 = 200 + iota

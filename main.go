@@ -1,8 +1,8 @@
 package main
 
 import (
+	"sectran/api/common"
 	"sectran/api/model"
-	"sectran/api/service"
 )
 
 func main() {
@@ -13,6 +13,6 @@ func main() {
 		Age:       24,
 		Telephone: "121212321312",
 	}
-	service.OK(u, "操作成功")
+	common.OK(u, "操作成功")
 	//fmt.Println(user)
 }

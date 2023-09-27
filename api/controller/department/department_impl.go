@@ -4,35 +4,49 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	uuid "github.com/satori/go.uuid"
-	"sectran/api/service"
+	"sectran/api/common"
+	"sectran/api/model"
+	"strconv"
 )
 
-func ListDepartmentImpl(c *gin.Context) ([]DepartmentModel, int) {
-	var tableList []DepartmentModel
+func listDepartmentImpl(c *gin.Context) (error, []model.DepartmentModel, int) {
+	var tableList []model.DepartmentModel
 	var total int
-
-	return tableList, total
-}
-
-type DepartmentModel struct {
-	ID       string `json:"id"`       //部门ID
-	Name     string `json:"name"`     //部门名称
-	Describe string `json:"describe"` //部门描述
-}
-
-func AddDepartmentImpl(p departmentParameter) error {
-	Db := service.Db
-	fmt.Printf("%v\n", Db)
-	if !Db.HasTable(&DepartmentModel{}) {
-		Db.CreateTable(&DepartmentModel{})
+	Db := common.Db
+	page, _ := strconv.Atoi(c.Query("page"))
+	pageSize, _ := strconv.Atoi(c.Query("pageSize"))
+	//分页
+	if page > 0 && pageSize > 0 {
+		Db = Db.Limit(pageSize).Offset((page - 1) * pageSize)
 	}
-	fmt.Printf("%v\n", p.Name)
-	var B = DepartmentModel{
-		ID:       uuid.Must(uuid.NewV4(), nil).String(),
+	err := Db.Find(&tableList).Offset(-1).Limit(-1).Count(&total).Error
+	return err, tableList, total
+}
+
+func addDepartmentImpl(p departmentParameter) error {
+	Db := common.Db
+	fmt.Printf("%v\n", Db)
+
+	var B = model.DepartmentModel{
+		Id:       uuid.Must(uuid.NewV4(), nil).String(),
 		Name:     p.Name,
 		Describe: p.Describe,
 	}
 	err := Db.Create(&B).Error
+	return err
+}
 
+func redactDepartmentImpl(p RedactDepartmentParameter) error {
+	Db := common.Db
+	var tableList []model.DepartmentModel
+	fmt.Printf("%v\n", Db)
+	err := Db.Model(&tableList).Where("id = ?", p.Id).Updates(map[string]interface{}{"name": p.Name, "describe": p.Describe}).Error
+	return err
+}
+
+func deleteDepartmentImpl(p common.DeleteDto) error {
+	Db := common.Db
+	var tableList []model.DepartmentModel
+	err := Db.Where("id = ?", p.Id).Delete(&tableList).Error
 	return err
 }

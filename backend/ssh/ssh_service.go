@@ -26,12 +26,12 @@ type SSHModuleMessage struct {
 	Cancle       context.CancelFunc
 }
 
-// global ssh service config
+// global ssh common config
 var SSHModuleConfig SSHConfig
 
 // chan SSHConnRequest: request a proxy
 // chan SSHConnResponse: response for request channle
-// CancelFunc: if want to stop ssh service gracefully
+// CancelFunc: if want to stop ssh common gracefully
 // error: some error
 func StartSSHModule(config *SSHConfig) (*SSHModuleMessage, error) {
 	if err := CheckSSHConfig(config); err != nil {
@@ -45,7 +45,7 @@ func StartSSHModule(config *SSHConfig) (*SSHModuleMessage, error) {
 	reqChan := make(chan *SSHConnRequest, 1)
 	resChan := make(chan *SSHConnResponse, 1)
 
-	//start tcp service
+	//start tcp common
 	go startSSHTcpService(config, reqChan, net.JoinHostPort(config.Host, strconv.Itoa(int(config.Port))))
 
 	message := &SSHModuleMessage{
@@ -137,7 +137,7 @@ func startSSHTcpService(config *SSHConfig, netChan chan *SSHConnRequest, addr st
 		logrus.Fatalf("error listen in addr %s.due to %s", addr, err)
 	}
 	defer l.Close()
-	logrus.Infof("start ssh proxy tcp service with %s", addr)
+	logrus.Infof("start ssh proxy tcp common with %s", addr)
 
 	for {
 		c, err := l.Accept()

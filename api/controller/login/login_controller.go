@@ -14,7 +14,7 @@ type loginParameter struct {
 func PostUserLogin(c *gin.Context) {
 	p := loginParameter{}
 	if err := c.ShouldBindJSON(&p); err != nil {
-		response.RequestError(c, nil, "请输入密码账号")
+		response.RequestError(c, "请输入密码账号")
 		return
 	}
 	err := LoginImpl(p)

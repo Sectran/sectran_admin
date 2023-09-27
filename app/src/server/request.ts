@@ -52,7 +52,7 @@ const requests: Function = (url: string, param: AxiosRequestConfig<string>, fect
     return new Promise((resolve, reject) => {
         switch (fecth) {
             case "get":
-                axios.get(url, param).then((response: any) => {
+                axios.get(url, { params: param }).then((response: any) => {
 
                     if (response.data.code === 200) {
                         let { data } = response;

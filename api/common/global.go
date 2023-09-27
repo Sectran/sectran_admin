@@ -1,4 +1,4 @@
-package service
+package common
 
 import "github.com/jinzhu/gorm"
 

@@ -28,7 +28,7 @@ func Login(c *gin.Context) {
 	p := loginParameter{}
 	err := c.BindJSON(&p)
 	if err != nil {
-		response.RequestError(c, nil, "请输入密码账号")
+		response.RequestError(c, "请输入密码账号")
 		return
 	}
 

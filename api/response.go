@@ -20,10 +20,9 @@ func RequestOk(c *gin.Context, data interface{}, msg string) {
 	})
 }
 
-func RequestError(c *gin.Context, data interface{}, msg string) {
+func RequestError(c *gin.Context, msg string) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": http.StatusInternalServerError,
-		"data": data,
 		"msg":  msg,
 	})
 }

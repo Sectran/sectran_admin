@@ -1,7 +1,7 @@
 package loginController
 
 func LoginImpl(p loginParameter) error {
-	//Db := service.Db
+	//Db := common.Db
 	//err := ; err != nil {
 	//	c.JSON(http.StatusOK, gin.H{
 	//		"code": http.StatusBadRequest,

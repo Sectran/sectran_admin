@@ -14,7 +14,7 @@ type pageData = {
 // dataCallBack?: (data: any) => any
 
 
-export const useTableHooks = <K extends object>(SearchObject: K) => {
+export const useTableHooks = <K extends object>(SearchObject: K, api: any) => {
     //表格头部颜色
     const headerStyle = { background: '#F8F8F9' }
     //分页可以选择的条数
@@ -37,14 +37,14 @@ export const useTableHooks = <K extends object>(SearchObject: K) => {
     //确认后的搜索条件
     let notarizeFrom = reactive({})
     //当前表格数据
-    const tableData = ref([{ name: 1231 }]);
+    const tableData = ref([]);
     //分页参数
     const paginationOpt = {
         current: 1,
         pageSize: 10,
         pageSizeOptions: ["10", "30", "50"],
-        total:100,
-        onChange: (current:number, size:number) => {
+        total: 100,
+        onChange: (current: number, size: number) => {
             console.log(current)
             console.log(size)
             paginationOpt.current = current
@@ -102,6 +102,12 @@ export const useTableHooks = <K extends object>(SearchObject: K) => {
             let Height = tableDom.getBoundingClientRect().height
             tabHeight.value = Height - 120
         }
+        console.log(pageData)
+        api({ ...pageData }).then((res: any) => {
+            console.log(res)
+            tableData.value = res.data
+        })
+
     })
 
 
