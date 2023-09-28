@@ -15,15 +15,12 @@ type departmentParameter struct {
 // ListDepartment List 查询部门列表
 func ListDepartment(c *gin.Context) {
 	if err, table, total := listDepartmentImpl(c); err != nil {
-		fmt.Println(total)
 		response.RequestError(c, "添加失败")
 	} else {
 		fmt.Println(table)
-		//var data =: {
-		//	table,
-		//		total
-		//}
-		response.RequestOk(c, table, "查询成功")
+		fmt.Println(total)
+		data := common.TableDto{Table: table, Total: total}
+		response.RequestOk(c, data, "查询成功")
 	}
 }
 
@@ -60,12 +57,17 @@ func RedactDepartment(c *gin.Context) {
 	}
 }
 
-//删除部门
-
+// 删除部门
 func DeleteDepartment(c *gin.Context) {
 	p := common.DeleteDto{}
-	c.ShouldBindJSON(&p)
-
+	err := c.ShouldBindJSON(&p)
+	if err != nil {
+		return
+	}
+	_, ok := c.GetPostForm("id")
+	if !ok {
+		response.RequestError(c, "请输入id")
+	}
 	if err := deleteDepartmentImpl(p); err != nil {
 		response.RequestError(c, "删除失败")
 	} else {

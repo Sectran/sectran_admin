@@ -10,13 +10,18 @@ export default {
         userName: '用户名'
     },
     department:{
-        Name:'部门名称'
+        name:'部门名称',
+        description:'部门描述'
     },
     AsideMenu: {
         userinfo: '用户信息'
     },
     public: {
-        Submit: '提 交'
+        Submit: '提 交',
+        delete:'删 除',
+        add:'新 增',
+        redact:'编 辑',
+        operation:'操 作'
     },
     menu:{
         configuration:'配置',

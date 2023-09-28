@@ -25,8 +25,6 @@ func listDepartmentImpl(c *gin.Context) (error, []model.DepartmentModel, int) {
 
 func addDepartmentImpl(p departmentParameter) error {
 	Db := common.Db
-	fmt.Printf("%v\n", Db)
-
 	var B = model.DepartmentModel{
 		Id:       uuid.Must(uuid.NewV4(), nil).String(),
 		Name:     p.Name,

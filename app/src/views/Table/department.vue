@@ -13,12 +13,14 @@
                     <a-button type="primary" @click="on_search()">{{ t('public.Submit') }}</a-button>
                 </a-form-item>
             </a-form>
+     
+                <a-space wrap>
+                    <a-button @click="addOpen = true" type="primary">{{ t('public.add') }}</a-button>
+
+                </a-space>
+        
         </div>
-        <div>
-            <a-space wrap>
-                <a-button @click="addOpen = true" type="primary">新增</a-button>
-            </a-space>
-        </div>
+
         <a-table class="table-style" :columns="columns" :data-source="tableData" :scroll="{ y: tabHeight }"
             :pagination="paginationOpt">
             <template #headerCell="{ column }">
@@ -28,9 +30,8 @@
             <template #bodyCell="{ column, record }">
                 <template v-if="column.dataIndex === 'operation'">
                     <a-space :size="8">
-                        <a-button type="link" @click="on_redact(record)">编辑</a-button>
-                        <a-button type="link" danger @click="on_delete(record.id)">删除</a-button>
-     
+                        <a-button type="link" @click="on_redact(record)">{{ t('public.redact') }}</a-button>
+                        <a-button type="link" danger @click="on_delete(record.id)">{{ t('public.delete') }}</a-button>
                     </a-space>
                 </template>
             </template>
@@ -75,7 +76,7 @@ type listItemType = {
 }
 import { useTableHooks } from "@/Hooks/useTableHooks"
 import { onMounted, ref, reactive } from 'vue';
-import { addDepartment, redactDepartment, listDepartment ,deleteDepartment} from "@/api/admin"
+import { addDepartment, redactDepartment, listDepartment, deleteDepartment } from "@/api/admin"
 import { useI18n } from 'vue-i18n'
 import type { Dayjs } from 'dayjs';
 const { t } = useI18n()
@@ -94,17 +95,17 @@ const formState = reactive<FormState>({
 
 
 const columns = [{
-    title: 'user.userName',
+    title: 'department.name',
     dataIndex: 'name',
 
 },
 {
-    title: 'user.userName',
+    title: 'department.description',
     dataIndex: 'describe',
 
 },
 {
-    title: 'operation',
+    title:  'public.operation' ,
     dataIndex: 'operation',
 },
 
@@ -117,7 +118,7 @@ const on_redact = (data: listItemType) => {
 
 
 const onFinish = (values: any) => {
-    
+
     redactDepartment({ ...values, id: '0fd8134d-f349-46ea-89a3-2e2a4f101a3f' }).then(() => {
         addOpen.value = false
     })
@@ -129,9 +130,9 @@ const onFinish = (values: any) => {
     })
 };
 
-const on_delete = (id:string) =>{
-    deleteDepartment({id}).then(()=>{
-        
+const on_delete = (id: string) => {
+    deleteDepartment({ id }).then(() => {
+
     })
 }
 onMounted(() => {
