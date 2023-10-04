@@ -1,3 +1,6 @@
+//go:build terminal
+// +build terminal
+
 package ssh
 
 /*
@@ -5,8 +8,10 @@ package ssh
 #cgo CFLAGS: -I${SRCDIR}/../libs/
 #cgo darwin LDFLAGS: -framework CoreFoundation -framework Security -lpthread -ldl -lm -lsectran-terminal
 #cgo linux LDFLAGS: -lsectran-terminal -lpthread -ldl -lm
+#include <stdlib.h>
 #include "terminal.h"
 
+#ifdef DEBUG
 void sectran_terminal_print_to_file(const sectran_terminal* terminal)
 {
     const char* filename = "terminal.dump";
@@ -22,9 +27,9 @@ void sectran_terminal_print_to_file(const sectran_terminal* terminal)
         printf("Unable to open file %s for writing.\n", filename);
         return;
     }
-#ifdef DEBUG
+
     printf("terminal cursor_row:%d\n",terminal->cursor_row);
-#endif
+
     for (int j = 0; j <= terminal->cursor_row; j++)
     {
         sectran_buffer_row row = terminal->buffer->rows[j];
@@ -40,6 +45,7 @@ void sectran_terminal_print_to_file(const sectran_terminal* terminal)
     fflush(stdout);
     fclose(file);
 }
+#endif
 */
 import "C"
 import (
@@ -56,7 +62,7 @@ func XtermStart(width, heigth int) unsafe.Pointer {
 }
 
 func XtermGetCommand(terminal unsafe.Pointer) []byte {
-	cchar := C.get_current_command((*C.sectran_terminal)(terminal))
+	cchar := C.get_current_command((terminal))
 	if cchar != nil {
 		defer C.free(unsafe.Pointer(cchar))
 		byteSlice := ([]byte)(C.GoString(cchar))
@@ -66,10 +72,10 @@ func XtermGetCommand(terminal unsafe.Pointer) []byte {
 }
 
 func XtermWrite(termianl unsafe.Pointer, data []byte) {
-	C.sectran_terminal_write((*C.sectran_terminal)(termianl), (*C.char)(unsafe.Pointer(&data[0])), C.int(len(data)))
-	C.sectran_terminal_print_to_file((*C.sectran_terminal)(termianl))
+	C.sectran_terminal_write((termianl), (*C.char)(unsafe.Pointer(&data[0])), C.int(len(data)))
+	// C.sectran_terminal_print_to_file((termianl))
 }
 
 func XtermFree(termianl unsafe.Pointer) {
-	C.sectran_terminal_stop((*C.sectran_terminal)(termianl))
+	C.sectran_terminal_stop(termianl)
 }

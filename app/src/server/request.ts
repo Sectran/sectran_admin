@@ -33,7 +33,6 @@ axios.interceptors.request.use(
  */
 axios.interceptors.response.use(
     (response: any) => {
-        if (response.headers.authorization) localStorage.setItem("xxypt_Token", response.headers.authorization);
         return response
     },
     (error: string) => {
@@ -53,9 +52,9 @@ const requests: Function = (url: string, param: AxiosRequestConfig<string>, fect
     return new Promise((resolve, reject) => {
         switch (fecth) {
             case "get":
-                axios.get(url, param).then((response: any) => {
+                axios.get(url, { params: param }).then((response: any) => {
 
-                    if (response.data.code === 200 && response.data.state) {
+                    if (response.data.code === 200) {
                         let { data } = response;
                         message.success(data.msg);
                         resolve(data);
@@ -68,7 +67,8 @@ const requests: Function = (url: string, param: AxiosRequestConfig<string>, fect
             case "post":
                 axios.post(url, param).then(
                     (response: any) => {
-                        if (response.data.code === 200 && response.data.state) {
+                        console.log(response)
+                        if (response.data.code === 200) {
                             let { data } = response;
                             message.success(data.msg);
                             resolve(data);
@@ -142,6 +142,7 @@ function msag(err: { response: { status: number; data: { error: { details: strin
  * @param data
  */
 function Landing(data: { code: number, status: number | string; msg: string }) {
+    console.log(data)
     message.error(data.msg);
 }
 

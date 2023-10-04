@@ -10,13 +10,20 @@ export default {
         userName:'userName'
     },
     department:{
-        Name:'industry title'
+        Name:'industry title',
+        description:'Department description'
     },
     AsideMenu:{
         userinfo:'userinfo'
     },
     public:{
-        Submit:'Submit'
+        Submit:'Submit',
+        delete:'delete',
+        add:'add',
+        redact:'redact',
+        operation:'operation'
+
+        
     },
     menu:{
         configuration:'configuration',

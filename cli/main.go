@@ -6,7 +6,6 @@ import (
 
 func main() {
 	cmd.Execute()
-
 }
 
 //package cli

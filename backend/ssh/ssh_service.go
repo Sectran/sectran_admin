@@ -27,12 +27,12 @@ type SSHModuleMessage struct {
 	Cancle       context.CancelFunc
 }
 
-// global ssh service config
+// global ssh common config
 var SSHModuleConfig SSHConfig
 
 // chan SSHConnRequest: request a proxy
 // chan SSHConnResponse: response for request channle
-// CancelFunc: if want to stop ssh service gracefully
+// CancelFunc: if want to stop ssh common gracefully
 // error: some error
 func StartSSHModule(config *SSHConfig) (*SSHModuleMessage, error) {
 	if err := CheckSSHConfig(config); err != nil {
@@ -46,7 +46,7 @@ func StartSSHModule(config *SSHConfig) (*SSHModuleMessage, error) {
 	reqChan := make(chan *SSHConnRequest, 1)
 	resChan := make(chan *SSHConnResponse, 1)
 
-	//start tcp service
+	//start tcp common
 	go startSSHTcpService(config, reqChan, net.JoinHostPort(config.Host, strconv.Itoa(int(config.Port))))
 
 	message := &SSHModuleMessage{
@@ -80,7 +80,8 @@ func handleConnection(ctx context.Context, message *SSHModuleMessage) {
 				break
 			}
 
-			var terminal unsafe.Pointer = XtermStart(int(req.Config.PtyRequestMsg.Columns)-5, int(req.Config.PtyRequestMsg.Rows)-10)
+			var terminal unsafe.Pointer
+			// terminal = XtermStart(int(req.Config.PtyRequestMsg.Columns), int(req.Config.PtyRequestMsg.Rows))
 
 			go handleReveredClientConnection(rwcc, rwcs, terminal)
 			go handleReveredServerConnection(rwcs, rwcc, terminal)
@@ -125,7 +126,7 @@ func handleServerOutput(r io.Reader, w io.Writer, stopper chan int, termianl uns
 		}
 
 		if n > 0 {
-			XtermWrite(termianl, buffer[:n])
+			// XtermWrite(termianl, buffer[:n])
 			_, err = w.Write(buffer[:n])
 			if err != nil {
 				logrus.Errorf("write error :%s", err)
@@ -150,7 +151,7 @@ func handleUserInput(r io.Reader, w io.Writer, stopper chan int, termianl unsafe
 		}
 
 		if n == 1 && buffer[0] == '\r' {
-			logrus.Infof("get current command :%s", XtermGetCommand(termianl))
+			// logrus.Infof("get current command :%s", XtermGetCommand(termianl))
 		}
 
 		if n > 0 {
@@ -169,7 +170,7 @@ func startSSHTcpService(config *SSHConfig, netChan chan *SSHConnRequest, addr st
 		logrus.Fatalf("error listen in addr %s.due to %s", addr, err)
 	}
 	defer l.Close()
-	logrus.Infof("start ssh proxy tcp service with %s", addr)
+	logrus.Infof("start ssh proxy tcp common with %s", addr)
 
 	for {
 		c, err := l.Accept()

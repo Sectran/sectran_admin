@@ -4,13 +4,13 @@
             <div class="Login-title">{{ uselocals('login.login') }}</div>
             <a-form :model="formState" layout="vertical" name="basic" :label-col="{ span: 8 }" autocomplete="off"
                 @finish="onFinish" @finishFailed="onFinishFailed">
+                <!-- :rules="[{ required: true, message: 'Please input your username!' }]" -->
                 <a-form-item :label="uselocals('login.userName')" name="username"
-                    :rules="[{ required: true, message: 'Please input your username!' }]">
+                 >
                     <a-input v-model:value="formState.username" />
                 </a-form-item>
-
-                <a-form-item :label="uselocals('login.password')" name="password"
-                    :rules="[{ required: true, message: 'Please input your password!' }]">
+                <!-- :rules="[{ required: true, message: 'Please input your password!' }]" -->
+                <a-form-item :label="uselocals('login.password')" name="password">
                     <a-input-password v-model:value="formState.password" />
                 </a-form-item>
 
@@ -28,9 +28,9 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
 import { uselocals } from "@/Hooks/localsHooks"
-import { useRouter } from 'vue-router';
-import { register } from "@/api/Login"
-const router = useRouter();
+// import { useRouter } from 'vue-router';
+import { login } from "@/api/Login"
+// const router = useRouter();
 interface FormState {
     username: string;
     password: string;
@@ -46,10 +46,10 @@ const formState = reactive<FormState>({
 const onFinish = (values: { username: string, password: string }) => {
     console.log('Success:', values);
 
-    register<{ username: string, password: string }>({ password: values.password, username: values.username }).then((res: any) => {
+    login<{ username: string, password: string }>({ password: values.password, username: values.username }).then((res: any) => {
         console.log(res)
     })
-    // router.replace('/')
+    // router.replace('/')                                                                                                                         
 };
 
 
