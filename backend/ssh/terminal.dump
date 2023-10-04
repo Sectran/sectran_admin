@@ -1,28 +1,28 @@
-0:
-1:Authorized users only. All activities may be monitored and reported.
-2:Last login: Mon Sep 25 00:38:26 2023 from 192.168.31.73
-3:
-4:
-5:Welcome to 5.10.0-106.18.0.68.oe2209.x86_64
-6:
-7:System information as of time: 
-8:
-9:System load: 
-10:Processes: 
-11:Memory used: 
-12:Swap used: 
-13:Usage On: 
-14:IP address: 
-15:IP address: 
-16:Users online: 
-17:
-18:
-19:[root@localhost ~]# ks
-20:-bash: ks: command not found
-21:[root@localhost ~]# ll
-22:total 392
-23:-rw-------. 1 root    root      1044 Sep 24 07:57 anaconda-ks.cfg
-24:drwxr-xr-x. 4 root    root      4096 May 28 19:46 go
-25:-rw-r--r--. 1 tcpdump tcpdump    324 Jul 17 00:57 icmp.pcap
-26:-rw-r--r--. 1 root    root    387648 Aug 21 02:14 output.mp4
-27:[root@localhost ~]# 
+0:[root@localhost ~]# pwd
+1:/root
+2:[root@localhost ~]# cd /opt/
+3:[root@localhost opt]# cd sectran/
+4:[root@localhost sectran]# ll
+5:total 5392
+6:drwxr-xr-x. 7 root root    4096 Sep 23 13:08 api
+7:drwxr-xr-x. 4 root root    4096 Sep 23 13:08 app
+8:drwxr-xr-x. 6 root root    4096 Sep 23 13:08 backend
+9:drwxr-xr-x. 4 root root    4096 Sep 23 15:43 build
+10:drwxr-xr-x. 5 root root    4096 Sep 23 13:08 cli
+11:drwxr-xr-x. 5 root root    4096 Sep 23 13:08 common
+12:-rw-r--r--. 1 root root       0 Sep 23 15:43 config.toml
+13:drwxr-xr-x. 2 root root    4096 Sep 23 13:08 conn
+14:drwxr-xr-x. 2 root root    4096 Sep 23 13:08 docs
+15:-rw-r--r--. 1 root root    1961 Sep 23 15:43 go.mod
+16:-rw-r--r--. 1 root root   25995 Sep 23 15:43 go.sum
+17:-rw-------. 1 root root     891 Sep 23 15:56 id_rsa
+18:-rw-------. 1 root root     213 Sep 23 15:56 id_rsa.pub
+19:drwxr-xr-x. 2 root root    4096 Sep 23 13:08 images
+20:-rw-r--r--. 1 root root   11357 Sep 23 15:43 LICENSE
+21:-rw-r--r--. 1 root root     630 Sep 23 15:43 main.go
+22:-rw-r--r--. 1 root root    2523 Sep 23 15:43 makefile
+23:-rw-r--r--. 1 root root    1160 Sep 23 15:43 README.md
+24:-rwxr-xr-x. 1 root root 5410056 Sep 23 23:47 sectran
+25:-rw-r--r--. 1 root root      13 Sep 23 15:43 startup.sh
+26:-rw-r--r--. 1 root root    2970 Sep 23 23:34 terminal.dump
+27:[root@localhost sectran]# 

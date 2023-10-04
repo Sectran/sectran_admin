@@ -2,9 +2,10 @@ package department
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	response "sectran/api"
 	"sectran/api/common"
+
+	"github.com/gin-gonic/gin"
 )
 
 type departmentParameter struct {

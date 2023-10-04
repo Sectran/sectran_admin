@@ -81,14 +81,13 @@ func handleConnection(ctx context.Context, message *SSHModuleMessage) {
 			}
 
 			var terminal unsafe.Pointer
-			// terminal = XtermStart(int(req.Config.PtyRequestMsg.Columns), int(req.Config.PtyRequestMsg.Rows))
+			terminal = XtermStart(int(req.Config.PtyRequestMsg.Columns), int(req.Config.PtyRequestMsg.Rows))
 
 			go handleReveredClientConnection(rwcc, rwcs, terminal)
 			go handleReveredServerConnection(rwcs, rwcc, terminal)
 
 		case <-ctx.Done():
 			logrus.Infof("a connection is done")
-			//clean
 		}
 	}
 
@@ -126,7 +125,7 @@ func handleServerOutput(r io.Reader, w io.Writer, stopper chan int, termianl uns
 		}
 
 		if n > 0 {
-			// XtermWrite(termianl, buffer[:n])
+			XtermWrite(termianl, buffer[:n])
 			_, err = w.Write(buffer[:n])
 			if err != nil {
 				logrus.Errorf("write error :%s", err)
@@ -151,7 +150,7 @@ func handleUserInput(r io.Reader, w io.Writer, stopper chan int, termianl unsafe
 		}
 
 		if n == 1 && buffer[0] == '\r' {
-			// logrus.Infof("get current command :%s", XtermGetCommand(termianl))
+			logrus.Infof("get current command :%s", XtermGetCommand(termianl))
 		}
 
 		if n > 0 {

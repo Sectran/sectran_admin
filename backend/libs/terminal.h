@@ -1,12 +1,10 @@
 #ifndef SRCTRAN_TERMINAL_H
 #define SRCTRAN_TERMINAL_H
 
-/*allocte a terminal*/
-void *sectran_terminal_alloc(int width, int height);
-/*wiret data to terminal*/
-int sectran_terminal_write(void *terminal, const char *c, int size);
-/*stop terminal*/
-void sectran_terminal_stop(void *terminal);
-/*get current command line*/
-char *get_current_command(void *term);
+typedef void *sectran_terminal_handle;
+sectran_terminal_handle *sectran_terminal_alloc(int width, int height);
+int sectran_terminal_write(sectran_terminal_handle *terminal, const char *c,
+                           int size);
+void sectran_terminal_stop(sectran_terminal_handle *terminal);
+char *get_current_command(sectran_terminal_handle *term);
 #endif

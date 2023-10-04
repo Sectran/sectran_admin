@@ -1,0 +1,4 @@
+/Users/ryan/Desktop/development/go/sectran/build/CMakeFiles/sectran-terminal.dir
+/Users/ryan/Desktop/development/go/sectran/build/CMakeFiles/terminal_test.dir
+/Users/ryan/Desktop/development/go/sectran/build/CMakeFiles/edit_cache.dir
+/Users/ryan/Desktop/development/go/sectran/build/CMakeFiles/rebuild_cache.dir

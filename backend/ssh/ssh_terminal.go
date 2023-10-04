@@ -1,6 +1,3 @@
-//go:build terminal
-// +build terminal
-
 package ssh
 
 /*
@@ -10,42 +7,6 @@ package ssh
 #cgo linux LDFLAGS: -lsectran-terminal -lpthread -ldl -lm
 #include <stdlib.h>
 #include "terminal.h"
-
-#ifdef DEBUG
-void sectran_terminal_print_to_file(const sectran_terminal* terminal)
-{
-    const char* filename = "terminal.dump";
-    if (!filename || !terminal || !terminal->buffer)
-    {
-        printf("Invalid arguments or uninitialized terminal.\n");
-        return;
-    }
-
-    FILE* file = fopen(filename, "w");
-    if (file == NULL)
-    {
-        printf("Unable to open file %s for writing.\n", filename);
-        return;
-    }
-
-    printf("terminal cursor_row:%d\n",terminal->cursor_row);
-
-    for (int j = 0; j <= terminal->cursor_row; j++)
-    {
-        sectran_buffer_row row = terminal->buffer->rows[j];
-        fprintf(file, "%d:", j);
-        for (int i = 0; i < row.length; i++)
-        {
-            fprintf(file, "%c", row.chars[i]);
-        }
-
-        fprintf(file, "\n");
-    }
-
-    fflush(stdout);
-    fclose(file);
-}
-#endif
 */
 import "C"
 import (
@@ -62,7 +23,7 @@ func XtermStart(width, heigth int) unsafe.Pointer {
 }
 
 func XtermGetCommand(terminal unsafe.Pointer) []byte {
-	cchar := C.get_current_command((terminal))
+	cchar := C.get_current_command((*C.sectran_terminal_handle)(unsafe.Pointer(terminal)))
 	if cchar != nil {
 		defer C.free(unsafe.Pointer(cchar))
 		byteSlice := ([]byte)(C.GoString(cchar))
@@ -71,11 +32,10 @@ func XtermGetCommand(terminal unsafe.Pointer) []byte {
 	return nil
 }
 
-func XtermWrite(termianl unsafe.Pointer, data []byte) {
-	C.sectran_terminal_write((termianl), (*C.char)(unsafe.Pointer(&data[0])), C.int(len(data)))
-	// C.sectran_terminal_print_to_file((termianl))
+func XtermWrite(terminal unsafe.Pointer, data []byte) {
+	C.sectran_terminal_write((*C.sectran_terminal_handle)(unsafe.Pointer(terminal)), (*C.char)(unsafe.Pointer(&data[0])), C.int(len(data)))
 }
 
-func XtermFree(termianl unsafe.Pointer) {
-	C.sectran_terminal_stop(termianl)
+func XtermFree(terminal unsafe.Pointer) {
+	C.sectran_terminal_stop((*C.sectran_terminal_handle)(unsafe.Pointer(terminal)))
 }
