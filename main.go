@@ -1,18 +1,42 @@
 package main
 
 import (
-	"sectran/api/model"
-	"sectran/api/service"
+	"os"
+	"os/signal"
+	"sectran/backend/ssh"
+	"syscall"
+
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	u := model.User{
-		Username:  "ryan",
-		Realname:  "ryan wilson",
-		Adreess:   "nanJing",
-		Age:       24,
-		Telephone: "121212321312",
+	config := ssh.SSHConfig{
+		Port:            19527,
+		Host:            "0.0.0.0",
+		InteractiveAuth: true,
 	}
-	service.OK(u, "操作成功")
-	//fmt.Println(user)
+
+	sm, err := ssh.StartSSHModule(&config)
+	if err != nil {
+		logrus.Infof("%+v\n", err)
+	}
+
+	signalChan := make(chan os.Signal, 1)
+
+	signal.Notify(signalChan,
+		syscall.SIGINT,
+		syscall.SIGTERM,
+		syscall.SIGQUIT,
+	)
+
+	for {
+		select {
+		case res := <-sm.ResponseChan:
+			if res.Err != nil {
+				logrus.Infof("recieve error info: %+v\n", res.Err)
+			}
+		case <-signalChan:
+			os.Exit(0)
+		}
+	}
 }

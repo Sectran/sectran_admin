@@ -25,4 +25,5 @@ id_rsa*
 sectran
 
 # No Open Source
-
+backend/terminal
+backend/license

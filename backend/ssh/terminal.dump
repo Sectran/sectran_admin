@@ -1,0 +1,28 @@
+0:
+1:Authorized users only. All activities may be monitored and reported.
+2:Last login: Mon Sep 25 00:38:26 2023 from 192.168.31.73
+3:
+4:
+5:Welcome to 5.10.0-106.18.0.68.oe2209.x86_64
+6:
+7:System information as of time: 
+8:
+9:System load: 
+10:Processes: 
+11:Memory used: 
+12:Swap used: 
+13:Usage On: 
+14:IP address: 
+15:IP address: 
+16:Users online: 
+17:
+18:
+19:[root@localhost ~]# ks
+20:-bash: ks: command not found
+21:[root@localhost ~]# ll
+22:total 392
+23:-rw-------. 1 root    root      1044 Sep 24 07:57 anaconda-ks.cfg
+24:drwxr-xr-x. 4 root    root      4096 May 28 19:46 go
+25:-rw-r--r--. 1 tcpdump tcpdump    324 Jul 17 00:57 icmp.pcap
+26:-rw-r--r--. 1 root    root    387648 Aug 21 02:14 output.mp4
+27:[root@localhost ~]# 

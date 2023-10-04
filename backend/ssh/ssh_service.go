@@ -6,6 +6,7 @@ import (
 	"net"
 	"sectran/common/constants"
 	"strconv"
+	"unsafe"
 
 	"github.com/sirupsen/logrus"
 )
@@ -17,7 +18,7 @@ type SSHConnRequest struct {
 }
 
 type SSHConnResponse struct {
-	err error
+	Err error
 }
 
 type SSHModuleMessage struct {
@@ -73,13 +74,16 @@ func handleConnection(ctx context.Context, message *SSHModuleMessage) {
 			rwcc, err = NewSSHClient(req.Config)
 			if err != nil {
 				message.ResponseChan <- &SSHConnResponse{
-					err: err,
+					Err: err,
 				}
+				req.Conn.Close()
 				break
 			}
 
-			go handleReveredClientConnection(rwcc, rwcs)
-			go handleReveredServerConnection(rwcs, rwcc)
+			var terminal unsafe.Pointer = XtermStart(int(req.Config.PtyRequestMsg.Columns)-5, int(req.Config.PtyRequestMsg.Rows)-10)
+
+			go handleReveredClientConnection(rwcc, rwcs, terminal)
+			go handleReveredServerConnection(rwcs, rwcc, terminal)
 
 		case <-ctx.Done():
 			logrus.Infof("a connection is done")
@@ -89,25 +93,24 @@ func handleConnection(ctx context.Context, message *SSHModuleMessage) {
 
 }
 
-func handleReveredClientConnection(r io.ReadWriteCloser, w io.ReadWriteCloser) {
-	// Just have a method to trigger it
+func handleReveredClientConnection(r io.ReadWriteCloser, w io.ReadWriteCloser, termianl unsafe.Pointer) {
+	var stopper chan int = make(chan int, 1)
+	handleServerOutput(r, w, stopper, termianl)
+
+	<-stopper
+}
+
+func handleReveredServerConnection(r io.ReadWriteCloser, w io.ReadWriteCloser, termianl unsafe.Pointer) {
 	defer r.Close()
 	defer w.Close()
 
 	var stopper chan int = make(chan int, 1)
-	reversedFunc(r, w, stopper)
+	handleUserInput(r, w, stopper, termianl)
 
 	<-stopper
 }
 
-func handleReveredServerConnection(r io.ReadWriteCloser, w io.ReadWriteCloser) {
-	var stopper chan int = make(chan int, 1)
-	reversedFunc(r, w, stopper)
-
-	<-stopper
-}
-
-func reversedFunc(r io.Reader, w io.Writer, stopper chan int) {
+func handleServerOutput(r io.Reader, w io.Writer, stopper chan int, termianl unsafe.Pointer) {
 	close := func(stopper chan int) {
 		stopper <- 1
 	}
@@ -119,6 +122,35 @@ func reversedFunc(r io.Reader, w io.Writer, stopper chan int) {
 		if err != nil {
 			logrus.Errorf("read error :%s", err)
 			return
+		}
+
+		if n > 0 {
+			XtermWrite(termianl, buffer[:n])
+			_, err = w.Write(buffer[:n])
+			if err != nil {
+				logrus.Errorf("write error :%s", err)
+				return
+			}
+		}
+	}
+}
+
+func handleUserInput(r io.Reader, w io.Writer, stopper chan int, termianl unsafe.Pointer) {
+	close := func(stopper chan int) {
+		stopper <- 1
+	}
+	defer close(stopper)
+
+	var buffer []byte = make([]byte, 4096)
+	for {
+		n, err := r.Read(buffer)
+		if err != nil {
+			logrus.Errorf("read error :%s", err)
+			return
+		}
+
+		if n == 1 && buffer[0] == '\r' {
+			logrus.Infof("get current command :%s", XtermGetCommand(termianl))
 		}
 
 		if n > 0 {
@@ -153,11 +185,11 @@ func startSSHTcpService(config *SSHConfig, netChan chan *SSHConnRequest, addr st
 		logrus.Infof("destnation number is:%s", clientConfig.Password)
 
 		//todo:change client config to what you want here
-		clientConfig.Host = "192.168.1.102"
+		clientConfig.Host = "192.168.31.100"
 		clientConfig.Port = 22
 		clientConfig.PasswordAuth = true
 		clientConfig.UserName = "root"
-		clientConfig.Password = "Openeulerpass!"
+		clientConfig.Password = "Ryan@1218pass"
 
 		netChan <- &SSHConnRequest{
 			Conn:            rwc,

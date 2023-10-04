@@ -84,7 +84,7 @@ func NewSSHServer(conn net.Conn, userConf *SSHConfig) (io.ReadWriteCloser, error
 	//manual auth
 	if userConf.InteractiveAuth {
 		config.KeyboardInteractiveCallback = func(conn ssh.ConnMetadata, client ssh.KeyboardInteractiveChallenge) (*ssh.Permissions, error) {
-			questions := []string{"Please enter the temporary sequence of the destination host:"}
+			questions := []string{"Enter your access token:"}
 			answers, err := client("", SectranWelcome, questions, []bool{true})
 			if err != nil {
 				return nil, err
@@ -110,7 +110,7 @@ func NewSSHServer(conn net.Conn, userConf *SSHConfig) (io.ReadWriteCloser, error
 
 	_, chans, reqs, err := ssh.NewServerConn(conn, config)
 	if err != nil {
-		logrus.Fatalf("new ssh server: %v", err)
+		logrus.Errorf("new ssh server: %v", err)
 	}
 	//discard all requests
 	requestHandler := func(reqs <-chan *ssh.Request) {

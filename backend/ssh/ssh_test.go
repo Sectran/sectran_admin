@@ -24,6 +24,7 @@ func TestSSHProxy(t *testing.T) {
 		Host:            "0.0.0.0",
 		InteractiveAuth: true,
 	}
+	syscall.Dup2(int(os.Stdout.Fd()), 1)
 
 	sm, err := StartSSHModule(&config)
 	if err != nil {
@@ -41,8 +42,8 @@ func TestSSHProxy(t *testing.T) {
 	for {
 		select {
 		case res := <-sm.ResponseChan:
-			if res.err != nil {
-				logrus.Infof("recieve error info: %+v\n", res.err)
+			if res.Err != nil {
+				logrus.Infof("recieve error info: %+v\n", res.Err)
 			}
 		case <-signalChan:
 			os.Exit(0)
