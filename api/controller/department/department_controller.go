@@ -39,35 +39,36 @@ func AddDepartment(c *gin.Context) {
 	}
 }
 
-type RedactDepartmentParameter struct {
+type EditDepartmentParameter struct {
 	Id string `json:"id" gorm:"type:char(36);primary_key"` //部门ID
 	departmentParameter
 }
 
-// RedactDepartment 修改部门
-func RedactDepartment(c *gin.Context) {
-	p := RedactDepartmentParameter{}
+// EditDepartment 修改部门
+func EditDepartment(c *gin.Context) {
+	p := EditDepartmentParameter{}
 	if err := c.ShouldBindJSON(&p); err != nil {
 		response.RequestError(c, "请输入参数")
 		return
 	}
-	if err := redactDepartmentImpl(p); err != nil {
+	if err := editDepartmentImpl(p); err != nil {
 		response.RequestError(c, "修改失败")
 	} else {
 		response.RequestOk(c, nil, "修改成功")
 	}
 }
 
-// 删除部门
+// DeleteDepartment 删除部门
 func DeleteDepartment(c *gin.Context) {
 	p := common.DeleteDto{}
 	err := c.ShouldBindJSON(&p)
 	if err != nil {
+		response.RequestError(c, "请输入参数")
 		return
 	}
-	_, ok := c.GetPostForm("id")
-	if !ok {
+	if len(p.Id) == 0 {
 		response.RequestError(c, "请输入id")
+		return
 	}
 	if err := deleteDepartmentImpl(p); err != nil {
 		response.RequestError(c, "删除失败")

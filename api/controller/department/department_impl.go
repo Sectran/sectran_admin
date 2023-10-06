@@ -34,7 +34,7 @@ func addDepartmentImpl(p departmentParameter) error {
 	return err
 }
 
-func redactDepartmentImpl(p RedactDepartmentParameter) error {
+func editDepartmentImpl(p EditDepartmentParameter) error {
 	Db := common.Db
 	var tableList []model.DepartmentModel
 	fmt.Printf("%v\n", Db)

@@ -11,7 +11,7 @@ func DepartmentRouter(e *gin.Engine) {
 	//请求列表
 	login.GET("/list", department.ListDepartment)
 	login.POST("/add", department.AddDepartment)
-	login.POST("/redact", department.RedactDepartment)
+	login.POST("/edit", department.EditDepartment)
 	login.POST("/delete", department.DeleteDepartment)
 
 }

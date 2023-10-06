@@ -13,12 +13,12 @@
                     <a-button type="primary" @click="on_search()">{{ t('public.Submit') }}</a-button>
                 </a-form-item>
             </a-form>
-     
-                <a-space wrap>
-                    <a-button @click="addOpen = true" type="primary">{{ t('public.add') }}</a-button>
 
-                </a-space>
-        
+            <a-space wrap>
+                <a-button @click="addOpen = true" type="primary">{{ t('public.add') }}</a-button>
+
+            </a-space>
+
         </div>
 
         <a-table class="table-style" :columns="columns" :data-source="tableData" :scroll="{ y: tabHeight }"
@@ -76,7 +76,7 @@ type listItemType = {
 }
 import { useTableHooks } from "@/Hooks/useTableHooks"
 import { onMounted, ref, reactive } from 'vue';
-import { addDepartment, redactDepartment, listDepartment, deleteDepartment } from "@/api/admin"
+import { addDepartment, editDepartment, listDepartment, deleteDepartment } from "@/api/admin"
 import { useI18n } from 'vue-i18n'
 import type { Dayjs } from 'dayjs';
 const { t } = useI18n()
@@ -105,7 +105,7 @@ const columns = [{
 
 },
 {
-    title:  'public.operation' ,
+    title: 'public.operation',
     dataIndex: 'operation',
 },
 
@@ -119,7 +119,7 @@ const on_redact = (data: listItemType) => {
 
 const onFinish = (values: any) => {
 
-    redactDepartment({ ...values, id: '0fd8134d-f349-46ea-89a3-2e2a4f101a3f' }).then(() => {
+    editDepartment({ ...values, id: '0fd8134d-f349-46ea-89a3-2e2a4f101a3f' }).then(() => {
         addOpen.value = false
     })
 

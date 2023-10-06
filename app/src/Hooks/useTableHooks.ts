@@ -5,6 +5,11 @@ type pageData = {
     page: number,
     page_size: number
 }
+
+type resTable = {
+    table: any
+    total: number
+}
 /**
  * 
  * @param SearchObject 搜索表单数据
@@ -39,7 +44,7 @@ export const useTableHooks = <K extends object>(SearchObject: K, api: any) => {
     //当前表格数据
     const tableData = ref([]);
     //分页参数
-    const paginationOpt = {
+    const paginationOpt = reactive({
         current: 1,
         pageSize: 10,
         pageSizeOptions: ["10", "30", "50"],
@@ -50,7 +55,7 @@ export const useTableHooks = <K extends object>(SearchObject: K, api: any) => {
             paginationOpt.current = current
             paginationOpt.pageSize = size
         },
-    }
+    })
 
 
 
@@ -90,10 +95,12 @@ export const useTableHooks = <K extends object>(SearchObject: K, api: any) => {
     //点击分页
     const pagingChange = (val: number) => {
         pageData.page = val;
+        Fun_requestList()
     };
     //修改每页条数
     const sizeChange = (pageSize: number) => {
         pageData.page_size = pageSize
+        Fun_requestList()
     }
 
     onMounted(() => {
@@ -102,13 +109,19 @@ export const useTableHooks = <K extends object>(SearchObject: K, api: any) => {
             let Height = tableDom.getBoundingClientRect().height
             tabHeight.value = Height - 120
         }
-        console.log(pageData)
-        api({ ...pageData }).then((res: any) => {
-            console.log(res)
-            tableData.value = res.data
-        })
+        Fun_requestList()
 
     })
+
+    //请求接口
+    const Fun_requestList = () => {
+        console.log(pageData)
+        api({ ...pageData }).then((res: { data: resTable }) => {
+            let { table, total } = res.data
+            tableData.value = table
+            paginationOpt.total = total
+        })
+    }
 
 
     return {
