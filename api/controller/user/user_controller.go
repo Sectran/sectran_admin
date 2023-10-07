@@ -5,31 +5,22 @@ import (
 	response "sectran/api"
 )
 
-//func UserList() string {
-//	u, err := GetUserById(1)
-//	if err != nil {
-//		return api.ResponseError("找不到这个用户")
-//	}
-//
-//	s, err := api.ResponseMsg(api.RSP_SUCCECC, "查找用户成功", u)
-//	if err != nil {
-//		return api.ResponseError("内部错误")
-//	}
-//
-//	return s
-//}
-
-type loginParameter struct {
+type userParameter struct {
 	UserName string `json:"userName"` //用户名
 	Password string `json:"password"` //密码
 }
 
-func Login(c *gin.Context) {
-	p := loginParameter{}
-	err := c.BindJSON(&p)
-	if err != nil {
-		response.RequestError(c, "请输入密码账号")
+// AddUser 添加部门
+func AddUser(c *gin.Context) {
+	p := userParameter{}
+	if err := c.ShouldBindJSON(&p); err != nil {
+		response.RequestError(c, "请输入参数")
 		return
 	}
-
+	response.RequestOk(c, p, "添加成功")
+	//if err := addDepartmentImpl(p); err != nil {
+	//	response.RequestError(c, "添加失败")
+	//} else {
+	//	response.RequestOk(c, nil, "添加成功")
+	//}
 }

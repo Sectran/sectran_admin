@@ -9,6 +9,7 @@ import (
 	"strconv"
 )
 
+// 查询部门列表
 func listDepartmentImpl(c *gin.Context) (error, []model.DepartmentModel, int) {
 	var tableList []model.DepartmentModel
 	var total int
@@ -23,6 +24,7 @@ func listDepartmentImpl(c *gin.Context) (error, []model.DepartmentModel, int) {
 	return err, tableList, total
 }
 
+// 查询添加部门
 func addDepartmentImpl(p departmentParameter) error {
 	Db := common.Db
 	var B = model.DepartmentModel{
@@ -34,6 +36,7 @@ func addDepartmentImpl(p departmentParameter) error {
 	return err
 }
 
+// 编辑部门
 func editDepartmentImpl(p EditDepartmentParameter) error {
 	Db := common.Db
 	var tableList []model.DepartmentModel
@@ -42,6 +45,7 @@ func editDepartmentImpl(p EditDepartmentParameter) error {
 	return err
 }
 
+// 删除部门
 func deleteDepartmentImpl(p common.DeleteDto) error {
 	Db := common.Db
 	var tableList []model.DepartmentModel

@@ -1,7 +1,6 @@
 package department
 
 import (
-	"fmt"
 	response "sectran/api"
 	"sectran/api/common"
 
@@ -16,10 +15,8 @@ type departmentParameter struct {
 // ListDepartment List 查询部门列表
 func ListDepartment(c *gin.Context) {
 	if err, table, total := listDepartmentImpl(c); err != nil {
-		response.RequestError(c, "添加失败")
+		response.RequestError(c, "查询失败")
 	} else {
-		fmt.Println(table)
-		fmt.Println(total)
 		data := common.TableDto{Table: table, Total: total}
 		response.RequestOk(c, data, "查询成功")
 	}

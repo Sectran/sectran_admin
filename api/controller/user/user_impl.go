@@ -2,7 +2,6 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
-	"sectran/api/common"
 	"sectran/api/model"
 )
 
@@ -24,7 +23,7 @@ func PostUserLogin(c *gin.Context) {
 	if err != nil {
 		return
 	}
-	Db := common.Db
+	//Db := common.Db
 	//if err := Db.Where("user_name = ?", p.UserName).First(&Kp).Error; err != nil {
 	//	c.JSON(http.StatusOK, gin.H{
 	//		"code": http.StatusBadRequest,

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
-	"sectran/api/db"
 	"sectran/api/router"
 )
 
@@ -30,6 +29,6 @@ func Execute() {
 
 func initialize() {
 	//连接mysql
-	db.MysqlConnect()
+	//db.MysqlConnect()
 	router.InitRouter()
 }

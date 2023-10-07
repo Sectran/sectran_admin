@@ -16,9 +16,7 @@
 
             <a-space wrap>
                 <a-button @click="addOpen = true" type="primary">{{ t('public.add') }}</a-button>
-
             </a-space>
-
         </div>
 
         <a-table class="table-style" :columns="columns" :data-source="tableData" :scroll="{ y: tabHeight }"
@@ -50,7 +48,7 @@
                     <a-input v-model:value="formState.describe" />
                 </a-form-item>
                 <a-form-item :wrapper-col="{ offset: 4, span: 16 }">
-                    <a-button type="primary" html-type="submit">确定</a-button>
+                    <a-button type="primary" html-type="submit">{{ t('public.Submit') }}</a-button>
                 </a-form-item>
             </a-form>
         </a-modal>

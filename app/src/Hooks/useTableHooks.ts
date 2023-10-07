@@ -116,11 +116,11 @@ export const useTableHooks = <K extends object>(SearchObject: K, api: any) => {
     //请求接口
     const Fun_requestList = () => {
         console.log(pageData)
-        api({ ...pageData }).then((res: { data: resTable }) => {
-            let { table, total } = res.data
-            tableData.value = table
-            paginationOpt.total = total
-        })
+        // api({ ...pageData }).then((res: { data: resTable }) => {
+        //     let { table, total } = res.data
+        //     tableData.value = table
+        //     paginationOpt.total = total
+        // })
     }
 
 

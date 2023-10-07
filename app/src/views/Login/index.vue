@@ -5,8 +5,7 @@
             <a-form :model="formState" layout="vertical" name="basic" :label-col="{ span: 8 }" autocomplete="off"
                 @finish="onFinish" @finishFailed="onFinishFailed">
                 <!-- :rules="[{ required: true, message: 'Please input your username!' }]" -->
-                <a-form-item :label="uselocals('login.userName')" name="username"
-                 >
+                <a-form-item :label="uselocals('login.userName')" name="username">
                     <a-input v-model:value="formState.username" />
                 </a-form-item>
                 <!-- :rules="[{ required: true, message: 'Please input your password!' }]" -->
@@ -46,13 +45,13 @@ const formState = reactive<FormState>({
 const onFinish = (values: { username: string, password: string }) => {
     console.log('Success:', values);
 
-    login<{ username: string, password: string }>({ password: values.password, username: values.username }).then((res: any) => {
+    login<{ username: string, password: string }>({ password: values.password, username: values.username }).then((res: { data: { token: string } }) => {
         console.log(res)
+        let { token } = res.data
+        localStorage.setItem('token', token)
     })
-    // router.replace('/')                                                                                                                         
+    // router.replace('/')                                                                                                                 
 };
-
-
 
 const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);

@@ -7,12 +7,16 @@ export default {
         record:'Remember me'
     },
     user:{
-        userName:'userName'
+        userName:'userName',
+        usernameVerification:'please input userName',
+        password:'password',
+        passwordVerification:'please input password',
     },
     department:{
         Name:'industry title',
         description:'Department description'
     },
+
     AsideMenu:{
         userinfo:'userinfo'
     },
