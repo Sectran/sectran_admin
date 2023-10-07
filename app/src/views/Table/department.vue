@@ -29,7 +29,7 @@
                 <template v-if="column.dataIndex === 'operation'">
                     <a-space :size="8">
                         <a-button type="link" @click="on_redact(record)">{{ t('public.redact') }}</a-button>
-                        <a-button type="link" danger @click="on_delete(record.id)">{{ t('public.delete') }}</a-button>
+                        <a-button type="link" danger @click="handleDelete(record.id)">{{ t('public.delete') }}</a-button>
                     </a-space>
                 </template>
             </template>
@@ -81,9 +81,9 @@ const { t } = useI18n()
 const addOpen = ref<boolean>(false);
 // let listItem = reactive<listItemType>()
 
-let { tabHeight, SearchFrom, on_search, paginationOpt, tableData } = useTableHooks<SearchType>({
+let { tabHeight, SearchFrom, on_search, handleDelete,paginationOpt, tableData } = useTableHooks<SearchType>({
     user: "",
-}, listDepartment);
+}, listDepartment,deleteDepartment);
 
 
 const formState = reactive<FormState>({
@@ -128,11 +128,6 @@ const onFinish = (values: any) => {
     })
 };
 
-const on_delete = (id: string) => {
-    deleteDepartment({ id }).then(() => {
-
-    })
-}
 onMounted(() => {
 
 })

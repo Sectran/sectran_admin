@@ -1,5 +1,5 @@
 import { reactive, ref, onMounted, } from "vue";
-
+import { Modal } from 'ant-design-vue';
 import type { Ref } from "vue"
 type pageData = {
     page: number,
@@ -19,7 +19,7 @@ type resTable = {
 // dataCallBack?: (data: any) => any
 
 
-export const useTableHooks = <K extends object>(SearchObject: K, api: any) => {
+export const useTableHooks = <K extends object>(SearchObject: K, Listapi: Function, deleteApi: Function) => {
     //表格头部颜色
     const headerStyle = { background: '#F8F8F9' }
     //分页可以选择的条数
@@ -74,14 +74,22 @@ export const useTableHooks = <K extends object>(SearchObject: K, api: any) => {
     }
 
     // 删除操作
-    const handleDelete = (id: number) => {
-        console.log(id)
-        // 二次确认删除
-        // ElMessageBox.confirm("确定要删除吗？", "提示", {
-        //     type: "warning"
-        // }).then(() => {
-        //     ElMessage.success("删除成功");
-        // }).catch(() => { });
+    const handleDelete = (id: string) => {
+        Modal.confirm({
+            title: '删除操作',
+            content: '确定要删除这一条记录吗？',
+            async onOk() {
+                try {
+                    return await deleteApi({ id }).then(() => {
+                        Fun_requestList()
+                    })
+                } catch {
+                    return console.log('Oops errors!');
+                }
+            },
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            onCancel() { },
+        });
     };
 
 
@@ -116,11 +124,11 @@ export const useTableHooks = <K extends object>(SearchObject: K, api: any) => {
     //请求接口
     const Fun_requestList = () => {
         console.log(pageData)
-        // api({ ...pageData }).then((res: { data: resTable }) => {
-        //     let { table, total } = res.data
-        //     tableData.value = table
-        //     paginationOpt.total = total
-        // })
+        Listapi({ ...pageData }).then((res: { data: resTable }) => {
+            let { table, total } = res.data
+            tableData.value = table
+            paginationOpt.total = total
+        })
     }
 
 
