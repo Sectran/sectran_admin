@@ -1,9 +1,14 @@
 import { reactive, ref, onMounted, } from "vue";
-
+import { Modal } from 'ant-design-vue';
 import type { Ref } from "vue"
 type pageData = {
     page: number,
     page_size: number
+}
+
+type resTable = {
+    table: any
+    total: number
 }
 /**
  * 
@@ -14,7 +19,7 @@ type pageData = {
 // dataCallBack?: (data: any) => any
 
 
-export const useTableHooks = <K extends object>(SearchObject: K, api: any) => {
+export const useTableHooks = <K extends object>(SearchObject: K, Listapi: Function, deleteApi: Function) => {
     //表格头部颜色
     const headerStyle = { background: '#F8F8F9' }
     //分页可以选择的条数
@@ -39,7 +44,7 @@ export const useTableHooks = <K extends object>(SearchObject: K, api: any) => {
     //当前表格数据
     const tableData = ref([]);
     //分页参数
-    const paginationOpt = {
+    const paginationOpt = reactive({
         current: 1,
         pageSize: 10,
         pageSizeOptions: ["10", "30", "50"],
@@ -50,7 +55,7 @@ export const useTableHooks = <K extends object>(SearchObject: K, api: any) => {
             paginationOpt.current = current
             paginationOpt.pageSize = size
         },
-    }
+    })
 
 
 
@@ -69,14 +74,22 @@ export const useTableHooks = <K extends object>(SearchObject: K, api: any) => {
     }
 
     // 删除操作
-    const handleDelete = (id: number) => {
-        console.log(id)
-        // 二次确认删除
-        // ElMessageBox.confirm("确定要删除吗？", "提示", {
-        //     type: "warning"
-        // }).then(() => {
-        //     ElMessage.success("删除成功");
-        // }).catch(() => { });
+    const handleDelete = (id: string) => {
+        Modal.confirm({
+            title: '删除操作',
+            content: '确定要删除这一条记录吗？',
+            async onOk() {
+                try {
+                    return await deleteApi({ id }).then(() => {
+                        Fun_requestList()
+                    })
+                } catch {
+                    return console.log('Oops errors!');
+                }
+            },
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            onCancel() { },
+        });
     };
 
 
@@ -90,10 +103,12 @@ export const useTableHooks = <K extends object>(SearchObject: K, api: any) => {
     //点击分页
     const pagingChange = (val: number) => {
         pageData.page = val;
+        Fun_requestList()
     };
     //修改每页条数
     const sizeChange = (pageSize: number) => {
         pageData.page_size = pageSize
+        Fun_requestList()
     }
 
     onMounted(() => {
@@ -102,13 +117,19 @@ export const useTableHooks = <K extends object>(SearchObject: K, api: any) => {
             let Height = tableDom.getBoundingClientRect().height
             tabHeight.value = Height - 120
         }
-        console.log(pageData)
-        api({ ...pageData }).then((res: any) => {
-            console.log(res)
-            tableData.value = res.data
-        })
+        Fun_requestList()
 
     })
+
+    //请求接口
+    const Fun_requestList = () => {
+        console.log(pageData)
+        Listapi({ ...pageData }).then((res: { data: resTable }) => {
+            let { table, total } = res.data
+            tableData.value = table
+            paginationOpt.total = total
+        })
+    }
 
 
     return {

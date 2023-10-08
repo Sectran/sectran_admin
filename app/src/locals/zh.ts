@@ -7,7 +7,10 @@ export default {
         record:'记住密码'
     },
     user: {
-        userName: '用户名'
+        userName:'用户',
+        usernameVerification:'请输入用户名！',
+        password:'密码',
+        passwordVerification:'请输入密码！',
     },
     department:{
         name:'部门名称',

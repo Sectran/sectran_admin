@@ -13,12 +13,10 @@
                     <a-button type="primary" @click="on_search()">{{ t('public.Submit') }}</a-button>
                 </a-form-item>
             </a-form>
-     
-                <a-space wrap>
-                    <a-button @click="addOpen = true" type="primary">{{ t('public.add') }}</a-button>
 
-                </a-space>
-        
+            <a-space wrap>
+                <a-button @click="addOpen = true" type="primary">{{ t('public.add') }}</a-button>
+            </a-space>
         </div>
 
         <a-table class="table-style" :columns="columns" :data-source="tableData" :scroll="{ y: tabHeight }"
@@ -31,7 +29,7 @@
                 <template v-if="column.dataIndex === 'operation'">
                     <a-space :size="8">
                         <a-button type="link" @click="on_redact(record)">{{ t('public.redact') }}</a-button>
-                        <a-button type="link" danger @click="on_delete(record.id)">{{ t('public.delete') }}</a-button>
+                        <a-button type="link" danger @click="handleDelete(record.id)">{{ t('public.delete') }}</a-button>
                     </a-space>
                 </template>
             </template>
@@ -50,7 +48,7 @@
                     <a-input v-model:value="formState.describe" />
                 </a-form-item>
                 <a-form-item :wrapper-col="{ offset: 4, span: 16 }">
-                    <a-button type="primary" html-type="submit">确定</a-button>
+                    <a-button type="primary" html-type="submit">{{ t('public.Submit') }}</a-button>
                 </a-form-item>
             </a-form>
         </a-modal>
@@ -76,16 +74,16 @@ type listItemType = {
 }
 import { useTableHooks } from "@/Hooks/useTableHooks"
 import { onMounted, ref, reactive } from 'vue';
-import { addDepartment, redactDepartment, listDepartment, deleteDepartment } from "@/api/admin"
+import { addDepartment, editDepartment, listDepartment, deleteDepartment } from "@/api/admin"
 import { useI18n } from 'vue-i18n'
 import type { Dayjs } from 'dayjs';
 const { t } = useI18n()
 const addOpen = ref<boolean>(false);
 // let listItem = reactive<listItemType>()
 
-let { tabHeight, SearchFrom, on_search, paginationOpt, tableData } = useTableHooks<SearchType>({
+let { tabHeight, SearchFrom, on_search, handleDelete,paginationOpt, tableData } = useTableHooks<SearchType>({
     user: "",
-}, listDepartment);
+}, listDepartment,deleteDepartment);
 
 
 const formState = reactive<FormState>({
@@ -105,7 +103,7 @@ const columns = [{
 
 },
 {
-    title:  'public.operation' ,
+    title: 'public.operation',
     dataIndex: 'operation',
 },
 
@@ -119,7 +117,7 @@ const on_redact = (data: listItemType) => {
 
 const onFinish = (values: any) => {
 
-    redactDepartment({ ...values, id: '0fd8134d-f349-46ea-89a3-2e2a4f101a3f' }).then(() => {
+    editDepartment({ ...values, id: '0fd8134d-f349-46ea-89a3-2e2a4f101a3f' }).then(() => {
         addOpen.value = false
     })
 
@@ -130,11 +128,6 @@ const onFinish = (values: any) => {
     })
 };
 
-const on_delete = (id: string) => {
-    deleteDepartment({ id }).then(() => {
-
-    })
-}
 onMounted(() => {
 
 })

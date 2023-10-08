@@ -14,10 +14,10 @@ axios.defaults.baseURL = BASE_URL;
 
 axios.interceptors.request.use(
     (config: any) => {
-        const xxypt_Token: string | null = localStorage.getItem("xxypt_Token");
-        if (xxypt_Token) {
+        const token: string | null = localStorage.getItem("token");
+        if (token) {
             config.headers = {
-                "authorization": `Bearer ${xxypt_Token}`,
+                "authorization": `Bearer ${token}`,
             };
         }
 
