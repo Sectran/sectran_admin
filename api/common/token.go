@@ -1,90 +1,85 @@
 package common
 
 import (
-	"github.com/dgrijalva/jwt-go"
+	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
+	response "sectran/api"
+	"strings"
 	"time"
 )
 
-// 用户信息类，作为生成token的参数
-type UserClaims struct {
-	//ID    string `json:"userId"`
-	UserName string `json:"userName"`
-	Password string `json:"password"`
-	//jwt-go提供的标准claim
-	jwt.StandardClaims
+type CustomClaims struct {
+	UserName             string `json:"userName"`
+	Password             string `json:"password"`
+	jwt.RegisteredClaims        // 内嵌标准的声明
 }
 
-var (
-	//自定义的token秘钥
-	secret = []byte("16849841325189456f487")
-	//该路由下不校验token
-	noVerify = []interface{}{"/login", "/ping"}
-	//token有效时间（纳秒）
-	effectTime = 2 * time.Hour
-)
+// TokenExpireDuration jwt token 的过期时间
+const TokenExpireDuration = time.Hour * 24
 
-// 生成token
-func GenerateToken(claims *UserClaims) string {
-	//设置token有效期，也可不设置有效期，采用redis的方式
-	//   1)将token存储在redis中，设置过期时间，token如没过期，则自动刷新redis过期时间，
-	//   2)通过这种方式，可以很方便的为token续期，而且也可以实现长时间不登录的话，强制登录
-	//本例只是简单采用 设置token有效期的方式，只是提供了刷新token的方法，并没有做续期处理的逻辑
-	claims.ExpiresAt = time.Now().Add(effectTime).Unix()
-	//生成token
-	sign, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(secret)
-	if err != nil {
-		//这里因为项目接入了统一异常处理，所以使用panic并不会使程序终止，如不接入，可使用原始方式处理错误
-		//接入统一异常可参考 https://blog.csdn.net/u014155085/article/details/106733391
-		panic(err)
+// CustomSecret 用于加盐的字符串
+var CustomSecret = []byte("夏天夏天悄悄过去")
+
+// GenToken 生成JWT
+func GenToken(username, password string) (string, error) {
+	claims := CustomClaims{
+		username,
+		password,
+		jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(TokenExpireDuration)),
+			Issuer:    "my-project", // 签发人
+		},
 	}
-	return sign
+	// 使用指定的签名方法创建签名对象
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	// 使用指定的secret签名并获得完整的编码后的字符串token
+	return token.SignedString(CustomSecret)
 }
 
-// 验证token
-func JwtVerify(c *gin.Context) {
-	//过滤是否验证token
-	//文档里我没给出utils.IsContainArr的代码，这个东西不重要，你直接删掉这段都行，这只是一个url过滤的逻辑
-	token := c.GetHeader("token")
-	if token == "" {
-		panic("token not exist !")
-	}
-	//验证token，并存储在请求中
-	c.Set("user", parseToken(token))
-}
-
-// 解析Token
-func parseToken(tokenString string) *UserClaims {
-	//解析token
-	token, err := jwt.ParseWithClaims(tokenString, &UserClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return secret, nil
+// ParseToken 解析JWT
+func ParseToken(tokenString string) (*CustomClaims, error) {
+	// 解析token
+	// 如果是自定义Claim结构体则需要使用 ParseWithClaims 方法
+	token, err := jwt.ParseWithClaims(tokenString, &CustomClaims{}, func(token *jwt.Token) (i interface{}, err error) {
+		return CustomSecret, nil
 	})
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	claims, ok := token.Claims.(*UserClaims)
-	if !ok {
-		panic("token is valid")
+	// 对token对象中的Claim进行类型断言
+	if claims, ok := token.Claims.(*CustomClaims); ok && token.Valid { // 校验token
+		return claims, nil
 	}
-	return claims
+	return nil, errors.New("invalid token")
 }
 
-// 更新token
-func Refresh(tokenString string) string {
-	jwt.TimeFunc = func() time.Time {
-		return time.Unix(0, 0)
+// JWTAuthMiddleware 基于JWT的认证中间件
+func JWTAuthMiddleware() func(c *gin.Context) {
+	return func(c *gin.Context) {
+		authHeader := c.Request.Header.Get("Authorization")
+		if authHeader == "" {
+			response.RequestError(c, "请求头中auth为空")
+
+			c.Abort()
+			return
+		}
+		// 按空格分割
+		parts := strings.SplitN(authHeader, " ", 2)
+		if !(len(parts) == 2 && parts[0] == "Bearer") {
+			response.RequestError(c, "请求头中auth格式有误")
+			c.Abort()
+			return
+		}
+		// parts[1]是获取到的tokenString，我们使用之前定义好的解析JWT的函数来解析它
+		mc, err := ParseToken(parts[1])
+		if err != nil {
+			response.RequestError(c, "无效的Token")
+			c.Abort()
+			return
+		}
+		// 将当前请求的username信息保存到请求的上下文c上
+		c.Set("username", mc.UserName)
+		c.Next() // 后续的处理函数可以用过c.Get("username")来获取当前请求的用户信息
 	}
-	token, err := jwt.ParseWithClaims(tokenString, &UserClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return secret, nil
-	})
-	if err != nil {
-		panic(err)
-	}
-	claims, ok := token.Claims.(*UserClaims)
-	if !ok {
-		panic("token is valid")
-	}
-	jwt.TimeFunc = time.Now
-	claims.StandardClaims.ExpiresAt = time.Now().Add(2 * time.Hour).Unix()
-	return GenerateToken(claims)
 }

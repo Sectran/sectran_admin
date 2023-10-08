@@ -15,6 +15,11 @@ type TokenDto struct {
 	Token string `json:"token"`
 }
 
+type UserDto struct {
+	UserName string `json:"userName"` //用户名称
+	Password string `json:"password"` //用户密码
+}
+
 // JWTClaims token属性
 type JWTClaims struct {
 	jwt.StandardClaims      // 包中自带的默认属性

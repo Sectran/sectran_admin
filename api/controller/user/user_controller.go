@@ -16,14 +16,9 @@ func ListUser(c *gin.Context) {
 	}
 }
 
-type userParameter struct {
-	UserName string `json:"userName"` //部门名称
-	Password string `json:"password"` //部门描述
-}
-
 // AddUser 添加用户
 func AddUser(c *gin.Context) {
-	p := userParameter{}
+	p := common.UserDto{}
 	if err := c.ShouldBindJSON(&p); err != nil {
 		response.RequestError(c, "请输入参数")
 		return
@@ -36,8 +31,8 @@ func AddUser(c *gin.Context) {
 }
 
 type EditDepartmentParameter struct {
-	Id string `json:"id" gorm:"type:char(36);primary_key"` //部门ID
-	userParameter
+	Id string `json:"id" gorm:"type:char(36);primary_key"` //用户ID
+	common.UserDto
 }
 
 // EditDepartment 修改部门

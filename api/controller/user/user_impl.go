@@ -32,7 +32,7 @@ func listUserImpl(c *gin.Context) (error, []model.UserModel, int) {
 }
 
 // 查询添加部门
-func addUserImpl(p userParameter) (error, string) {
+func addUserImpl(p common.UserDto) (error, string) {
 	Db := common.Db
 
 	if err := Db.Where("user_name = ?", p.UserName).First(&model.UserModel{}).Error; err != nil {

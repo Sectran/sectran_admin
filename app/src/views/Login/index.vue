@@ -20,6 +20,8 @@
                     <a-button type="primary" html-type="submit">{{ uselocals('public.Submit') }}</a-button>
                 </a-form-item>
             </a-form>
+
+            <div @click="on_token">测试token</div>
         </div>
     </div>
 </template>
@@ -28,7 +30,7 @@
 import { reactive } from 'vue';
 import { uselocals } from "@/Hooks/localsHooks"
 // import { useRouter } from 'vue-router';
-import { login } from "@/api/Login"
+import { login ,userInfo} from "@/api/Login"
 // const router = useRouter();
 interface FormState {
     username: string;
@@ -56,6 +58,15 @@ const onFinish = (values: { username: string, password: string }) => {
 const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
 };
+
+
+const on_token = () =>{
+    console.log('测试toke')
+
+    userInfo().then((res:any)=>{
+        console.log(res)
+    })
+}
 </script>
 
 <style lang="less" scoped>
