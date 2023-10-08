@@ -1,0 +1,3 @@
+INSERT INTO `user_models`(`id`, `user_name`, `password`, `revamp_time`, `revamp_name`, `is_delete`) VALUES ('07a4c5fe-9f38-42b6-acff-7b85db3b19d2', '测试二号1', '$2a$10$RwHdDzgvn6CFbng7nYbSDu1.uEWkXNk0PY63gxPHeRykh117dFrOe', '2023-10-08 01:10:07', '', 0);
+INSERT INTO `user_models`(`id`, `user_name`, `password`, `revamp_time`, `revamp_name`, `is_delete`) VALUES ('d7fa9b09-789d-4468-8328-a2223b7243ae', '测试一号', '$2a$10$Ix9EoW4uqNPUHp9Tn4yVV.EkcW8x5rnsuWHKhmLXZVgoOVxs60jUG', '2023-10-07 23:17:45', '', 1);
+INSERT INTO `user_models`(`id`, `user_name`, `password`, `revamp_time`, `revamp_name`, `is_delete`) VALUES ('dd201714-1b2b-45b4-a0b2-00ce388557d6', '1248869969@qq.com', '$2a$10$y8bdUvGQfm.I5fVhJgnMgevvlktv5hcg66lor.TwfTeKtIy5HFALm', '2023-10-08 21:46:19', '', 0);

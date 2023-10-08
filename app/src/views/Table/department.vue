@@ -2,7 +2,7 @@
     <div class="tablePage-style">
         <div class="table-nav">
             <a-form layout="inline" :model="SearchFrom">
-                <a-form-item :label="t('department.Name')" name="fieldA">
+                <a-form-item :label="t('department.name')" name="fieldA">
                     <a-input v-model:value="SearchFrom.user" placeholder="请输入用户名" />
                 </a-form-item>
                 <a-form-item :label="t('user.userName')" name="fieldA">
@@ -63,6 +63,7 @@ type SearchType = {
 };
 
 interface FormState {
+    id?:string
     name: string;
     describe: string;
 }
@@ -81,7 +82,7 @@ const { t } = useI18n()
 const addOpen = ref<boolean>(false);
 // let listItem = reactive<listItemType>()
 
-let { tabHeight, SearchFrom, on_search, handleDelete,paginationOpt, tableData } = useTableHooks<SearchType>({
+let { tabHeight, SearchFrom, on_search, handleDelete,paginationOpt, tableData,Fun_requestList } = useTableHooks<SearchType>({
     user: "",
 }, listDepartment,deleteDepartment);
 
@@ -103,28 +104,37 @@ const columns = [{
 
 },
 {
+    title: 'department.add_user',
+    dataIndex: 'add_user',
+},
+{
     title: 'public.operation',
     dataIndex: 'operation',
 },
+
+
 
 ]
 const on_redact = (data: listItemType) => {
     console.log(data.id)
     addOpen.value = true
-    // listItem = data
+    formState.name = data.name
+    formState.describe = data.describe
+    formState.id = data.id
 }
 
 
-const onFinish = (values: any) => {
+const onFinish = () => {
 
-    editDepartment({ ...values, id: '0fd8134d-f349-46ea-89a3-2e2a4f101a3f' }).then(() => {
+    let api
+    if(formState.id){
+        api = editDepartment
+    }else {
+        api = addDepartment
+    }
+    api(formState).then(() => {
         addOpen.value = false
-    })
-
-    return
-
-    addDepartment(values).then(() => {
-        addOpen.value = false
+        Fun_requestList()
     })
 };
 

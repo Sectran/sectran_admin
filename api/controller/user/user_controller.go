@@ -23,6 +23,10 @@ func AddUser(c *gin.Context) {
 		response.RequestError(c, "请输入参数")
 		return
 	}
+	if !common.EmailRegexp(p.UserName) {
+		response.RequestError(c, "请输入正确的用户名格式(邮箱)")
+		return
+	}
 	if err, msg := addUserImpl(p); err != nil {
 		response.RequestError(c, msg)
 	} else {

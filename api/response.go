@@ -26,3 +26,10 @@ func RequestError(c *gin.Context, msg string) {
 		"msg":  msg,
 	})
 }
+
+func TokenError(c *gin.Context, msg string) {
+	c.JSON(http.StatusOK, gin.H{
+		"code": http.StatusUnauthorized,
+		"msg":  msg,
+	})
+}

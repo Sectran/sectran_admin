@@ -3,7 +3,7 @@
  * layout布局之外的路由
  */
 export const LoginRoute = {
-  path: '/login',
+  path: '/',
   name: 'Login',
   component: () => import(/* webpackChunkName: "login" */ 'views/Login/index.vue'),
   meta: {

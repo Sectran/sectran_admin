@@ -24,11 +24,12 @@ func ListDepartment(c *gin.Context) {
 // AddDepartment 添加部门
 func AddDepartment(c *gin.Context) {
 	p := departmentParameter{}
+
 	if err := c.ShouldBindJSON(&p); err != nil {
 		response.RequestError(c, "请输入参数")
 		return
 	}
-	if err := addDepartmentImpl(p); err != nil {
+	if err := addDepartmentImpl(p, c); err != nil {
 		response.RequestError(c, "添加失败")
 	} else {
 		response.RequestOk(c, nil, "添加成功")

@@ -34,7 +34,6 @@ func listUserImpl(c *gin.Context) (error, []model.UserModel, int) {
 // 查询添加部门
 func addUserImpl(p common.UserDto) (error, string) {
 	Db := common.Db
-
 	if err := Db.Where("user_name = ?", p.UserName).First(&model.UserModel{}).Error; err != nil {
 		//密码加密保存到数据库
 		hash, err := bcrypt.GenerateFromPassword([]byte(p.Password), bcrypt.DefaultCost) //加密处理

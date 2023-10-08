@@ -80,7 +80,7 @@ import type { FormInstance } from 'ant-design-vue';
 const { t } = useI18n()
 import { adduser, listUser, deleteUser ,edituser} from "@/api/admin"
 const formRef = ref<FormInstance>();
-let { tabHeight, SearchFrom, on_search, handleDelete, paginationOpt, tableData } = useTableHooks<SearchType>({
+let { tabHeight, SearchFrom, on_search, handleDelete, paginationOpt, tableData ,   Fun_requestList} = useTableHooks<SearchType>({
     user: "",
 }, listUser, deleteUser);
 const addOpen = ref<boolean>(false);
@@ -118,8 +118,9 @@ const onFinish = () => {
     }else {
         api = adduser
     }
-    api(formState).then((res: any) => {
-        console.log(res)
+    api(formState).then(() => {
+        addOpen.value = false
+        Fun_requestList()
     })
 };
 

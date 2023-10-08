@@ -14,7 +14,8 @@ export default {
     },
     department:{
         name:'部门名称',
-        description:'部门描述'
+        description:'部门描述',
+        add_user:'添加人'
     },
     AsideMenu: {
         userinfo: '用户信息'

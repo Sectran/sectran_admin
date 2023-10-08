@@ -147,6 +147,7 @@ export const useTableHooks = <K extends object>(SearchObject: K, Listapi: Functi
         pageSizes,
         Table_loading,
         tabHeight,
-        paginationOpt
+        paginationOpt,
+        Fun_requestList
     };
 }

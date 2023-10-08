@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-
+import router from '@/router/index'
 
 import { TIMEOUT, BASE_URL } from "./config";
 
@@ -143,7 +143,11 @@ function msag(err: { response: { status: number; data: { error: { details: strin
  */
 function Landing(data: { code: number, status: number | string; msg: string }) {
     console.log(data)
-    message.error(data.msg);
+    let {code,msg} = data
+    message.error(msg);
+    if(code === 401) {
+        router.push('/')
+    }
 }
 
 

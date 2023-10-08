@@ -13,8 +13,9 @@ export default {
         passwordVerification:'please input password',
     },
     department:{
-        Name:'industry title',
-        description:'Department description'
+        name:'industry title',
+        description:'Department description',
+        add_user:'add_user'
     },
 
     AsideMenu:{

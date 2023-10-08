@@ -13,27 +13,20 @@ type loginParameter struct {
 
 func PostUserLogin(c *gin.Context) {
 	p := loginParameter{}
+
 	if err := c.ShouldBindJSON(&p); err != nil {
 		response.RequestError(c, "请输入密码账号")
 		return
 	}
-	if err := LoginImpl(p); err != nil {
-		response.RequestError(c, "请输入正确的密码账号")
+	if err, msg := LoginImpl(p); err != nil {
+		response.RequestError(c, msg)
 	} else {
 		token, err := common.GenToken(p.UserName, p.Password)
 		if err != nil {
-			response.RequestError(c, "登录失败")
+			response.RequestError(c, "token生成失败")
+			return
 		}
-
 		data := common.TokenDto{Token: token}
-		response.RequestOk(c, data, "登录成功")
+		response.RequestOk(c, data, msg)
 	}
-
-	//fmt.Printf("%v\n", p.UserName)
-	//fmt.Printf("%v\n", err)
-	//testString(p)
 }
-
-//func testString(s string) {
-//	fmt.Printf("inner: %v, %v\n", s, &s)
-//}
