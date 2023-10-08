@@ -32,6 +32,11 @@ type Env struct {
 	LC_MONETARY string
 }
 
+type SetEnvRequest struct {
+	Name  string
+	Value string
+}
+
 // ssh connetion params
 type SSHConfig struct {
 	Host            string    `json:"Host"`            //host

@@ -1,28 +1,18 @@
-0:[root@localhost ~]# pwd
-1:/root
-2:[root@localhost ~]# cd /opt/
-3:[root@localhost opt]# cd sectran/
-4:[root@localhost sectran]# ll
-5:total 5392
-6:drwxr-xr-x. 7 root root    4096 Sep 23 13:08 api
-7:drwxr-xr-x. 4 root root    4096 Sep 23 13:08 app
-8:drwxr-xr-x. 6 root root    4096 Sep 23 13:08 backend
-9:drwxr-xr-x. 4 root root    4096 Sep 23 15:43 build
-10:drwxr-xr-x. 5 root root    4096 Sep 23 13:08 cli
-11:drwxr-xr-x. 5 root root    4096 Sep 23 13:08 common
-12:-rw-r--r--. 1 root root       0 Sep 23 15:43 config.toml
-13:drwxr-xr-x. 2 root root    4096 Sep 23 13:08 conn
-14:drwxr-xr-x. 2 root root    4096 Sep 23 13:08 docs
-15:-rw-r--r--. 1 root root    1961 Sep 23 15:43 go.mod
-16:-rw-r--r--. 1 root root   25995 Sep 23 15:43 go.sum
-17:-rw-------. 1 root root     891 Sep 23 15:56 id_rsa
-18:-rw-------. 1 root root     213 Sep 23 15:56 id_rsa.pub
-19:drwxr-xr-x. 2 root root    4096 Sep 23 13:08 images
-20:-rw-r--r--. 1 root root   11357 Sep 23 15:43 LICENSE
-21:-rw-r--r--. 1 root root     630 Sep 23 15:43 main.go
-22:-rw-r--r--. 1 root root    2523 Sep 23 15:43 makefile
-23:-rw-r--r--. 1 root root    1160 Sep 23 15:43 README.md
-24:-rwxr-xr-x. 1 root root 5410056 Sep 23 23:47 sectran
-25:-rw-r--r--. 1 root root      13 Sep 23 15:43 startup.sh
-26:-rw-r--r--. 1 root root    2970 Sep 23 23:34 terminal.dump
-27:[root@localhost sectran]# 
+Last login: Sat Oct  7 13:26:12 2023 from 127.0.0.1
+ryan@Ryans-MacBook-Pro ~$ ls
+Applications                                   Public                                         nacos_file_kv_storage_test_backup_brotherluxcq
+Applications (Parallels)                       Qt5.14.2                                       nacos_file_kv_storage_test_brotherluxcq
+Desktop                                        Sunlogin Files                                 node_modules
+Documents                                      bash_profile                                   oradiag_ryan
+Downloads                                      devTools                                       package-lock.json
+Library                                        exp.pcap                                       package.json
+Movies                                         go                                             rdp_protocol.pcapng
+Music                                          java_error_in_clion.hprof                      sensors
+Parallels                                      logs                                           vcpkg
+Pictures                                       nacos                                          yarn.lock
+ryan@Ryans-MacBook-Pro ~$ pwd
+/Users/ryan
+ryan@Ryans-MacBook-Pro ~$ 中文
+zsh: command not found: 中文
+ryan@Ryans-MacBook-Pro ~$ exit
+

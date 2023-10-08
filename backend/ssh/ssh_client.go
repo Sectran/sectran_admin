@@ -4,6 +4,7 @@ import (
 	"io"
 	"net"
 	"os"
+	"reflect"
 	"strconv"
 	"time"
 
@@ -29,7 +30,11 @@ func NewSSHClient(userConf *SSHConfig) (io.ReadWriteCloser, error) {
 		client  *ssh.Client
 		request <-chan *ssh.Request
 		channel ssh.Channel
+		envVal  reflect.Value
 	)
+
+	// 获取结构体env的反射值
+	envVal = reflect.ValueOf(userConf.Env)
 
 	//InteractiveAuth and PasswordAuth is the same for client side
 	if userConf.PasswordAuth || userConf.InteractiveAuth || userConf.NoAuth {
@@ -72,6 +77,22 @@ func NewSSHClient(userConf *SSHConfig) (io.ReadWriteCloser, error) {
 		goto end
 	}
 	go ssh.DiscardRequests(request)
+
+	//WARNING!! env reuqest must send before pty-request otherwise  it will not work
+	for i := 0; i < envVal.NumField(); i++ {
+		field := envVal.Field(i)
+		if stringValue, ok := field.Interface().(string); ok {
+			r := SetEnvRequest{
+				Name:  envVal.Type().Field(i).Name,
+				Value: stringValue,
+			}
+			if _, err = channel.SendRequest("env", true, ssh.Marshal(&r)); err != nil {
+				logrus.Errorf("internal error, error to send message to env channel")
+				goto end
+			}
+			logrus.Infof("client send env of %s's value is: %s", r.Name, r.Value)
+		}
+	}
 
 	_, err = channel.SendRequest("pty-req", true, ssh.Marshal(&userConf.PtyRequestMsg))
 	if err != nil {

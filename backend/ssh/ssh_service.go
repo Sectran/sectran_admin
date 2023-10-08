@@ -71,6 +71,10 @@ func handleConnection(ctx context.Context, message *SSHModuleMessage) {
 		select {
 		case req = <-message.RequestChan:
 			rwcs = req.Conn
+
+			//disable echo
+			req.Config.PtyRequestMsg.Modelist[164] = 0
+			logrus.Infof("request mode list:%v,len:%d", req.Config.PtyRequestMsg.Modelist, len(req.Config.PtyRequestMsg.Modelist))
 			rwcc, err = NewSSHClient(req.Config)
 			if err != nil {
 				message.ResponseChan <- &SSHConnResponse{
@@ -94,6 +98,9 @@ func handleConnection(ctx context.Context, message *SSHModuleMessage) {
 }
 
 func handleReveredClientConnection(r io.ReadWriteCloser, w io.ReadWriteCloser, termianl unsafe.Pointer) {
+	defer r.Close()
+	defer w.Close()
+
 	var stopper chan int = make(chan int, 1)
 	handleServerOutput(r, w, stopper, termianl)
 
@@ -126,6 +133,7 @@ func handleServerOutput(r io.Reader, w io.Writer, stopper chan int, termianl uns
 
 		if n > 0 {
 			XtermWrite(termianl, buffer[:n])
+			DumpToFile(termianl)
 			_, err = w.Write(buffer[:n])
 			if err != nil {
 				logrus.Errorf("write error :%s", err)
@@ -150,7 +158,8 @@ func handleUserInput(r io.Reader, w io.Writer, stopper chan int, termianl unsafe
 		}
 
 		if n == 1 && buffer[0] == '\r' {
-			logrus.Infof("get current command :%s", XtermGetCommand(termianl))
+			command := XtermGetCommand(termianl)
+			logrus.Infof("get current command :%s", command)
 		}
 
 		if n > 0 {
@@ -185,11 +194,17 @@ func startSSHTcpService(config *SSHConfig, netChan chan *SSHConnRequest, addr st
 		logrus.Infof("destnation number is:%s", clientConfig.Password)
 
 		//todo:change client config to what you want here
-		clientConfig.Host = "192.168.31.100"
+		// clientConfig.Host = "192.168.31.100"
+		// clientConfig.Port = 22
+		// clientConfig.UserName = "root"
+		// clientConfig.Password = "Ryan@1218pass"
+
+		clientConfig.Host = "127.0.0.1"
 		clientConfig.Port = 22
+		clientConfig.UserName = "Ryan"
+		clientConfig.Password = "passwordryan"
+
 		clientConfig.PasswordAuth = true
-		clientConfig.UserName = "root"
-		clientConfig.Password = "Ryan@1218pass"
 
 		netChan <- &SSHConnRequest{
 			Conn:            rwc,

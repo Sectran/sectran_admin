@@ -91,6 +91,17 @@ func NewSSHServer(conn net.Conn, userConf *SSHConfig) (io.ReadWriteCloser, error
 			}
 
 			userConf.Password = answers[0]
+
+			// questions := []string{"target:", "username:", "password:"}
+			// answers, err := client("", SectranWelcome, questions, []bool{true, true, false})
+			// if err != nil {
+			// 	return nil, err
+			// }
+
+			// userConf.Host = answers[0]
+			// userConf.UserName = answers[1]
+			// userConf.Password = answers[2]
+			// userConf.Port = 22
 			logrus.Infof("Selected interactive authentication and authentication always release")
 			return permissions, nil
 		}
@@ -111,6 +122,7 @@ func NewSSHServer(conn net.Conn, userConf *SSHConfig) (io.ReadWriteCloser, error
 	_, chans, reqs, err := ssh.NewServerConn(conn, config)
 	if err != nil {
 		logrus.Errorf("new ssh server: %v", err)
+		return nil, err
 	}
 	//discard all requests
 	requestHandler := func(reqs <-chan *ssh.Request) {
@@ -230,6 +242,7 @@ func seletPtyChannel(pty_chan chan ssh.Channel, channel ssh.Channel, sshReqChan 
 				}
 				env, _ := r.ReadBytes(int(envLen))
 
+				//export LANG=zh_CN.UTF-8/string(env)
 				if reflect.SetVal(&userConf.Env, string(envName), string(env)) {
 					logrus.Debugf("env of %s's value is: %s", envName, env)
 				} else {

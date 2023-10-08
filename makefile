@@ -38,7 +38,6 @@ GO_VERSION_MIN = $(shell echo $(GO_VERSION) | $(CMD_CUT) -d'.' -f2)
 		exit 1; \
 	fi
 
-
 .PHONY: help
 help:
 	@echo "# environment"
@@ -77,9 +76,14 @@ version:
 
 .PHONY: build
 build: version .checkver_$(CMD_GO)
-	CGO_ENABLED=0 $(CMD_GO) build -ldflags "-w -s" -o bin/sectran-${OS}-${ARCH}
+	@mkdir -p pkg
+	cd ./backend/terminal/build && cmake .. && make && make install && cd -
+	\cp ./backend/terminal/libs/* ./pkg
+	CGO_ENABLED=1 $(CMD_GO) build -ldflags "-w -s -extldflags=-Wl,-rpath,." -o pkg/sectran-${OS}-${ARCH}
 	
 .PHONY: clean
 clean:
 	@if [ -e bin/sectran-${os}-${arch} ]; then rm -f bin/sectran-${os}-${arch}; fi
 	@if [ -e cli/version/version.go ]; then rm -f cli/version/version.go; fi
+	@if [ -e terminal.dump ]; then rm -f terminal.dump; fi
+	@if [ -e build ]; then rm -f build; fi
