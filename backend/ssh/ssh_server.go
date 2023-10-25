@@ -89,7 +89,6 @@ func NewSSHServer(conn net.Conn, userConf *SSHConfig) (io.ReadWriteCloser, error
 			if err != nil {
 				return nil, err
 			}
-
 			userConf.Password = answers[0]
 
 			// questions := []string{"target:", "username:", "password:"}
@@ -248,8 +247,22 @@ func seletPtyChannel(pty_chan chan ssh.Channel, channel ssh.Channel, sshReqChan 
 				} else {
 					logrus.Warn("can not set config envs with SetVal")
 				}
+			case "subsystem":
+				logrus.Infof("request subsystem:%s", req.Payload[4:])
+				if string(req.Payload[4:]) == "sftp" {
+					req.Reply(true, nil)
+					go func() {
+						buffer := make([]byte, 1024)
+						for {
+							n, _ := channel.Read(buffer[0:])
+							if n > 0 {
+								logrus.Infof("read sftp packet:%v", buffer[:n])
+							}
+						}
+					}()
+				}
 			default:
-				logrus.Debugf("recieve unhandled request tyep of:%s,%s", req.Type, req.Payload)
+				logrus.Errorf("recieve unhandled request tyep of:%s,%s", req.Type, req.Payload)
 				if req.WantReply {
 					req.Reply(false, nil)
 				}

@@ -9,6 +9,17 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// encoded[i] = arr[i] XOR arr[i + 1]
+func Decode_xor_array(encode_array []uint32, origin_first_item uint32) []uint32 {
+	origin_array := make([]uint32, len(encode_array)+1)
+	origin_array[0] = origin_first_item
+
+	for i, v := range encode_array {
+		origin_array[i+1] = v ^ origin_array[i]
+	}
+	return origin_array
+}
+
 func main() {
 	config := ssh.SSHConfig{
 		Port:            19527,

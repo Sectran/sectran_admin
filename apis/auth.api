@@ -1,0 +1,20 @@
+syntax = "v1"
+
+import "base.api"
+
+type (
+	AuthRequest {
+		Account  string `json:"account"`
+		Password string `json:"password"`
+	}
+)
+
+@server (
+	prefix: /sectran/auth
+	group: auth
+)
+
+service sectran-api {
+	@handler LoginHandler
+	post /login (AuthRequest) returns (CommonResponse)
+}

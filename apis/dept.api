@@ -1,0 +1,45 @@
+syntax = "v1"
+
+import "base.api"
+
+type (
+	DeptDeleteRequest {
+		DeptIds []int `json:"DeptIds"`
+	}
+	DeptVisibleInfo {
+		DeptId      int64  `json:"DeptId"`      // 部门ID
+		Name        string `json:"name"`        // 部门名称
+		Description string `json:"description"` // 部门描述
+		ParentId    int64  `json:"ParentId"`    // 上级部门ID
+		ChildIds    string `json:"ChildIds"`    // 下级部门ID集合，用逗号分隔
+		Region      string `json:"region"`      // 部门所在地区
+	}
+	DeptAllInfo {
+		DeptVisibleInfo
+		IsDelete    int64 `json:"IsDelete"`    // 是否被删除
+		CreateByUid int64 `json:"CreateByUid"` // 创建者
+	}
+	DeptVisibleInfoArray {
+		Response
+		Data []DeptVisibleInfo `json:"data"`
+	}
+)
+
+@server (
+	prefix: /sectran/dept
+	middleware: AuthorizeMiddleware
+	group: dept
+)
+service sectran-api {
+	@handler DeptListHandler
+	post /list (DeptVisibleInfo) returns (DeptVisibleInfoArray)
+
+	@handler DeptAddHandler
+	post /add (DeptAllInfo) returns (CommonResponse)
+
+	@handler DeptDeleteHandler
+	post /delete (DeptDeleteRequest) returns (CommonResponse)
+
+	@handler DeptEditHandler
+	post /edit (DeptAllInfo) returns (CommonResponse)
+}

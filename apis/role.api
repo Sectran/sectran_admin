@@ -1,0 +1,43 @@
+syntax = "v1"
+
+import "base.api"
+
+type (
+	RoleDeleteRequest {
+		RoleIds []int `json:"RoleIds"`
+	}
+	RoleVisibleInfo {
+		RoleId      int64  `json:"RoleId"`      // 角色ID
+		Name        string `json:"name"`        // 角色名称
+		Description string `json:"description"` // 角色描述
+		CreateTime  string `json:"CreateTime"`  // 创建时间
+	}
+	RoleAllInfo {
+		RoleVisibleInfo
+		CreateByUid int64 `json:"CreateByUid"` // 创建者
+		IsDelete    int64 `json:"IsDelete"`    // 是否被删除
+	}
+	RoleVisibleInfoArray {
+		Response
+		Data []RoleVisibleInfo `json:"data"`
+	}
+)
+
+@server (
+	prefix: /sectran/role
+	middleware: AuthorizeMiddleware
+	group: role
+)
+service sectran-api {
+	@handler RoleListHandler
+	post /list (RoleVisibleInfo) returns (RoleVisibleInfoArray)
+
+	@handler RoleAddHandler
+	post /add (RoleAllInfo) returns (CommonResponse)
+
+	@handler RoleDeleteHandler
+	post /delete (RoleDeleteRequest) returns (CommonResponse)
+
+	@handler RoleEditHandler
+	post /edit (RoleAllInfo) returns (CommonResponse)
+}

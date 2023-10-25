@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/pkg/sftp"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh"
 )
@@ -72,6 +73,7 @@ func NewSSHClient(userConf *SSHConfig) (io.ReadWriteCloser, error) {
 		goto end
 	}
 
+	sftp.NewClient(client)
 	channel, request, err = client.Conn.OpenChannel("session", nil)
 	if err != nil {
 		goto end
@@ -86,6 +88,10 @@ func NewSSHClient(userConf *SSHConfig) (io.ReadWriteCloser, error) {
 				Name:  envVal.Type().Field(i).Name,
 				Value: stringValue,
 			}
+			if len(r.Value) <= 0 {
+				r.Value = "en_US.UTF-8"
+			}
+
 			if _, err = channel.SendRequest("env", true, ssh.Marshal(&r)); err != nil {
 				logrus.Errorf("internal error, error to send message to env channel")
 				goto end

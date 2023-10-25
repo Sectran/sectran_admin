@@ -1,1 +1,0 @@
-INSERT INTO `department_models`(`id`, `name`, `describe`, `add_time`, `revamp_time`, `add_user`, `is_delete`, `superior_id`, `subordinate_id`, `correlation_user_int`, `correlation_resource_int`, `location`) VALUES ('76d4555b-fb71-4195-ab78-ed9cbd741e62', '测试部门12', '测试描述', '2023-10-08 23:48:29', '2023-10-08 23:59:18', '1248869969@qq.com', 0, '', '', 0, 0, '');

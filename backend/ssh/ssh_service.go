@@ -72,9 +72,7 @@ func handleConnection(ctx context.Context, message *SSHModuleMessage) {
 		case req = <-message.RequestChan:
 			rwcs = req.Conn
 
-			//disable echo
-			req.Config.PtyRequestMsg.Modelist[164] = 0
-			logrus.Infof("request mode list:%v,len:%d", req.Config.PtyRequestMsg.Modelist, len(req.Config.PtyRequestMsg.Modelist))
+			logrus.Debugf("request mode list:%v,len:%d", req.Config.PtyRequestMsg.Modelist, len(req.Config.PtyRequestMsg.Modelist))
 			rwcc, err = NewSSHClient(req.Config)
 			if err != nil {
 				message.ResponseChan <- &SSHConnResponse{

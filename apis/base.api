@@ -1,0 +1,13 @@
+syntax = "v1"
+
+type Response {
+	Code int    `json:"code"`
+	Msg  string `json:"msg"`
+}
+
+type (
+	CommonResponse {
+		Response
+		Data string `json:"data"`
+	}
+)
