@@ -23,8 +23,16 @@ func NewUserListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserList
 	}
 }
 
-func (l *UserListLogic) UserList(req *types.UserVisibleInfo) (resp *types.UserVisibleInfoArray, err error) {
-	// todo: add your logic here and delete this line
+func (l *UserListLogic) UserList(req *types.UserQueryInfo) (*types.CommonResponse, error) {
+	err := l.svcCtx.Validator.Struct(req)
+	if err != nil {
+		return types.BuildCommonResponse("null", "invalid params", types.ERROR_ILLEGAL_PARAMS), nil
+	}
 
-	return
+	users, err := l.svcCtx.StUserModel.Find(l.ctx, req)
+	if err != nil {
+		return types.BuildCommonResponse("null", "failed to query users", 501), nil
+	}
+
+	return types.BuildCommonResponse(users, "users info query successfully", 200), nil
 }

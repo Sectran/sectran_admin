@@ -7,4 +7,6 @@ type Config struct {
 	Mysql struct {
 		Datasource string
 	}
+	Secret  string
+	ExpTime int64
 }

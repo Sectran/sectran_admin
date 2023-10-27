@@ -7,20 +7,26 @@ type (
 		UserIds []int `json:"user_ids"`
 	}
 	UserVisibleInfo {
-		UserId      int64  `json:"user_id"`     // 用户ID
+		UserId      int64  `json:"userId"`      // 用户ID
 		Account     string `json:"account"`     // 用户账号
 		Username    string `json:"username"`    // 用户姓名
-		DeptId      int64  `json:"dept_id"`     // 用户所属部门ID
+		DeptId      int64  `json:"deptId"`      // 用户所属部门ID
 		Disable     int64  `json:"disable"`     // 账号是否禁用
 		Description string `json:"description"` // 账号描述
-		CreateTime  string `json:"create_time"` // 创建时间
-		RoleId      int64  `json:"role_id"`     // 用户角色ID
+		Email       string `json:"email"`       // 用户邮箱
+		Telephone   string `json:"telephone"`   // 用户电话
+		CreateTime  string `json:"createTime"`  // 创建时间
+		RoleId      int64  `json:"roleId"`      // 用户角色ID
+	}
+	UserQueryInfo {
+		UserVisibleInfo
+		PageInfo
 	}
 	UserAllInfo {
 		UserVisibleInfo
-		CreateByUid int64  `json:"create_by_uid"` // 创建人
-		IsDelete    int64  `json:"is_delete"`     // 是否被删除
-		Password    string `json:"password"`      // 用户密码
+		CreateByUid int64  `json:"createByUid"` // 创建人
+		IsDeleted   int64  `json:"isDeleted"`   // 是否被删除
+		Password    string `json:"password"`    // 用户密码
 	}
 	UserVisibleInfoArray {
 		Response
@@ -35,7 +41,7 @@ type (
 )
 service sectran-api {
 	@handler UserListHandler
-	post /list (UserVisibleInfo) returns (UserVisibleInfoArray)
+	post /list (UserQueryInfo) returns (UserVisibleInfoArray)
 
 	@handler UserAddHandler
 	post /add (UserAllInfo) returns (CommonResponse)

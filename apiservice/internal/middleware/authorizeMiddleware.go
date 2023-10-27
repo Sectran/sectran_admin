@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"sectran/apiservice/internal/types"
 	"time"
+
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type UserAuthedInfo struct {
@@ -16,7 +18,7 @@ type AuthorizeMiddleware struct {
 	UserSessionPool map[string]*UserAuthedInfo
 }
 
-const auth_route_path string = "/sectran/user/add"
+const auth_route_path string = "/sectran/auth/login"
 
 func NewAuthorizeMiddleware() *AuthorizeMiddleware {
 	return &AuthorizeMiddleware{
@@ -41,6 +43,7 @@ func (m *AuthorizeMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			value, ok := m.UserSessionPool[token]
 			if !ok {
 				msg = "you are not login yet."
+				logx.Errorf("%s", token)
 				goto fatal
 			}
 

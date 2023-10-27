@@ -40,7 +40,7 @@ type (
 		Name        string         `db:"name"`          // 角色名称
 		Description sql.NullString `db:"description"`   // 角色描述
 		CreateByUid int64          `db:"create_by_uid"` // 创建者
-		IsDelete    int64          `db:"is_delete"`     // 是否被删除
+		IsDeleted   int64          `db:"is_deleted"`    // 是否被删除
 		CreateTime  time.Time      `db:"create_time"`   // 创建时间
 	}
 )
@@ -81,13 +81,13 @@ func (m *defaultStRoleModel) FindOne(ctx context.Context, roleId int64) (*StRole
 
 func (m *defaultStRoleModel) Insert(ctx context.Context, data *StRole) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.table, stRoleRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.RoleId, data.Name, data.Description, data.CreateByUid, data.IsDelete)
+	ret, err := m.conn.ExecCtx(ctx, query, data.RoleId, data.Name, data.Description, data.CreateByUid, data.IsDeleted)
 	return ret, err
 }
 
 func (m *defaultStRoleModel) Update(ctx context.Context, data *StRole) error {
 	query := fmt.Sprintf("update %s set %s where `role_id` = ?", m.table, stRoleRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.Name, data.Description, data.CreateByUid, data.IsDelete, data.RoleId)
+	_, err := m.conn.ExecCtx(ctx, query, data.Name, data.Description, data.CreateByUid, data.IsDeleted, data.RoleId)
 	return err
 }
 

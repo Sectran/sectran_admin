@@ -4,20 +4,21 @@ import "base.api"
 
 type (
 	DeptDeleteRequest {
-		DeptIds []int `json:"DeptIds"`
+		DeptIds []int `json:"deptIds"`
 	}
 	DeptVisibleInfo {
-		DeptId      int64  `json:"DeptId"`      // 部门ID
+		PageInfo
+		DeptId      int64  `json:"deptId"`      // 部门ID
 		Name        string `json:"name"`        // 部门名称
 		Description string `json:"description"` // 部门描述
-		ParentId    int64  `json:"ParentId"`    // 上级部门ID
-		ChildIds    string `json:"ChildIds"`    // 下级部门ID集合，用逗号分隔
+		ParentId    int64  `json:"parentId"`    // 上级部门ID
+		ChildIds    string `json:"childIds"`    // 下级部门ID集合，用逗号分隔
 		Region      string `json:"region"`      // 部门所在地区
 	}
 	DeptAllInfo {
 		DeptVisibleInfo
-		IsDelete    int64 `json:"IsDelete"`    // 是否被删除
-		CreateByUid int64 `json:"CreateByUid"` // 创建者
+		IsDeleted   int64 `json:"isDeleted"`   // 是否被删除
+		CreateByUid int64 `json:"createByUid"` // 创建者
 	}
 	DeptVisibleInfoArray {
 		Response

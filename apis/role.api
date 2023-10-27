@@ -7,15 +7,16 @@ type (
 		RoleIds []int `json:"RoleIds"`
 	}
 	RoleVisibleInfo {
-		RoleId      int64  `json:"RoleId"`      // 角色ID
+		PageInfo
+		RoleId      int64  `json:"roleId"`      // 角色ID
 		Name        string `json:"name"`        // 角色名称
 		Description string `json:"description"` // 角色描述
-		CreateTime  string `json:"CreateTime"`  // 创建时间
+		CreateTime  string `json:"createTime"`  // 创建时间
 	}
 	RoleAllInfo {
 		RoleVisibleInfo
-		CreateByUid int64 `json:"CreateByUid"` // 创建者
-		IsDelete    int64 `json:"IsDelete"`    // 是否被删除
+		CreateByUid int64 `json:"createByUid"` // 创建者
+		IsDeleted   int64 `json:"isDeleted"`   // 是否被删除
 	}
 	RoleVisibleInfoArray {
 		Response

@@ -5,7 +5,6 @@ import (
 
 	"sectran/apiservice/internal/svc"
 	"sectran/apiservice/internal/types"
-	"sectran/apiservice/model/st_user"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -24,13 +23,16 @@ func NewUserAddLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserAddLo
 	}
 }
 
-func (l *UserAddLogic) UserAdd(req *types.UserAllInfo) (resp *types.CommonResponse, err error) {
-	l.svcCtx.StUserModel.Insert(l.ctx, &st_user.StUser{})
-	return &types.CommonResponse{
-		Response: types.Response{
-			Code: 200,
-			Msg:  "this is user add requet",
-		},
-		Data: "Success to add user!",
-	}, nil
+func (l *UserAddLogic) UserAdd(req *types.UserAllInfo) (*types.CommonResponse, error) {
+	err := l.svcCtx.Validator.Struct(req)
+	if err != nil {
+		return types.BuildCommonResponse("null", "invalid params", types.ERROR_ILLEGAL_PARAMS), nil
+	}
+
+	_, err = l.svcCtx.StUserModel.Insert(l.ctx, req)
+	if err != nil {
+		return types.BuildCommonResponse("null", "failed to add this user account", types.ERROR_REUQEST_FAILED), nil
+	}
+
+	return types.BuildCommonResponse("null", "user account add successfully", types.REQUEST_SUCCESS), nil
 }

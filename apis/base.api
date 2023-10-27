@@ -11,3 +11,11 @@ type (
 		Data string `json:"data"`
 	}
 )
+
+type (
+	PageInfo {
+		PageStart int `json:"pageStart"`
+		PageEnd   int `json:"pageEnd"`
+		PageSize  int `json:"pageSize"`
+	}
+)
