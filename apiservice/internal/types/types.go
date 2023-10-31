@@ -1,7 +1,7 @@
 package types
 
 const (
-	REQUEST_SUCCESS int = 200 + iota
+	REQUEST_SUCCESS int = 200 + iota //请求成功
 )
 
 const (
@@ -54,7 +54,7 @@ type UserDeleteRequest struct {
 // https://github.com/go-playground/validator/blob/master/README.md#network
 type UserVisibleInsertInfo struct {
 	UserId      int64  `json:"userId" validate:"required,gte=0"`                   // 用户ID (自动填充)
-	Account     string `json:"account" validate:"required,alphanum,min=0,max=255"` // 用户账号
+	Account     string `json:"account" validate:"required,alphanum,min=5,max=255"` // 用户账号
 	Username    string `json:"username" validate:"required,min=5,max=255"`         // 用户姓名
 	DeptId      int64  `json:"deptId" validate:"required,gte=0"`                   // 用户所属部门ID
 	Disable     uint8  `json:"disable" validate:"oneof=0 1"`                       // 账号是否禁用

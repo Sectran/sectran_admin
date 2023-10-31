@@ -37,7 +37,7 @@ func (l *LoginLogic) Login(req *types.AuthRequest) (resp *types.CommonResponse, 
 		"username": req.Account,
 		"nbf":      now,                           // do not work before
 		"exp":      now + l.svcCtx.Config.ExpTime, // exp time
-		"iat":      now,                           // issur at
+		"iat":      now,                           // issue at
 		"iss":      "sc@sectran",
 	})
 

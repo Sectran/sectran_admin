@@ -5,6 +5,7 @@ import (
 	"sectran/apiservice/internal/types"
 	"time"
 
+	"github.com/robfig/cron/v3"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -21,9 +22,23 @@ type AuthorizeMiddleware struct {
 const auth_route_path string = "/sectran/auth/login"
 
 func NewAuthorizeMiddleware() *AuthorizeMiddleware {
-	return &AuthorizeMiddleware{
+	auth := &AuthorizeMiddleware{
 		UserSessionPool: make(map[string]*UserAuthedInfo),
 	}
+
+	c := cron.New(cron.WithSeconds())
+	c.AddFunc("0 10/* * * * *", func() {
+		logx.Infof("calling token verify method")
+		now := time.Now().Unix()
+		for token, info := range auth.UserSessionPool {
+			if now > info.expTime {
+				delete(auth.UserSessionPool, token)
+			}
+		}
+	})
+	go c.Start()
+
+	return auth
 }
 
 func (m *AuthorizeMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
@@ -49,7 +64,7 @@ func (m *AuthorizeMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 
 			now := time.Now().Unix()
 			//User session has timed out
-			if value.expTime > now {
+			if value.expTime < now {
 				msg = "this session is time out."
 				goto fatal
 			}
@@ -60,7 +75,7 @@ func (m *AuthorizeMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			//增加接口的签名功能，防止中间人攻击
 
 			//update token exp time
-			value.expTime = time.Now().Unix()
+			value.expTime = time.Now().Unix() + 1800
 		}
 		next(w, r)
 
