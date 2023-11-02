@@ -79,11 +79,12 @@ build: version .checkver_$(CMD_GO)
 	@mkdir -p pkg
 	@if [ -d ./backend/terminal/build ]; then rm -rf ./backend/terminal/build; fi
 	@mkdir -p ./backend/terminal/build
-	cd ./backend/terminal/build && cmake .. && make && make install && cd -
+	cd ./backend/terminal/build && cmake .. -DCMAKE_BUILD_TYPE=Release && make && make install && cd -
 	CGO_ENABLED=1 $(CMD_GO) build -ldflags "-w -s -extldflags=-Wl,-rpath,." -o pkg/sectran-${OS}-${ARCH}
+.PHONY: package
+package: build
 	@if [ -f pkg.tar.gz ]; then rm -f pkg.tar.gz; fi
 	tar -zcvf pkg.tar.gz pkg
-	
 .PHONY: clean
 clean:
 	@if [ -e bin/sectran-${os}-${arch} ]; then rm -f bin/sectran-${os}-${arch}; fi

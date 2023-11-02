@@ -33,7 +33,6 @@ func XtermStart(width, heigth int) unsafe.Pointer {
 func XtermGetCommand(terminal unsafe.Pointer) []byte {
 	cchar := C.get_current_command((*C.sectran_terminal_handle)(unsafe.Pointer(terminal)))
 	if cchar != nil {
-		defer C.free(unsafe.Pointer(cchar))
 		byteSlice := ([]byte)(C.GoString(cchar))
 		return byteSlice
 	}

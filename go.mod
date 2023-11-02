@@ -68,6 +68,7 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jonboulle/clockwork v0.2.2 // indirect
 	github.com/pkg/sftp v1.13.6
+	github.com/robfig/cron/v3 v3.0.1
 	golang.org/x/net v0.15.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/term v0.13.0 // indirect

@@ -3,7 +3,6 @@ package ssh
 import (
 	"crypto/rsa"
 	"fmt"
-	"io"
 	"net"
 	"os"
 	"sectran/common/utils/cert"
@@ -66,7 +65,7 @@ func getSSHSigner() (ssh.Signer, error) {
 	return signer, nil
 }
 
-func NewSSHServer(conn net.Conn, userConf *SSHConfig) (io.ReadWriteCloser, error) {
+func NewSSHServer(conn net.Conn, userConf *SSHConfig) (*SSHChannels, error) {
 	//always auth
 	config := &ssh.ServerConfig{
 		ServerVersion: SectranSSHDVeriosn,
@@ -134,21 +133,17 @@ func NewSSHServer(conn net.Conn, userConf *SSHConfig) (io.ReadWriteCloser, error
 	}
 	go requestHandler(reqs)
 
-	var ptyChan chan ssh.Channel = make(chan ssh.Channel, 1)
-	var errChan chan error = make(chan error, 1)
-
-	go newChannelHandler(ptyChan, errChan, userConf, chans)
-	select {
-	case ch := <-ptyChan:
-		return ch, nil
-	case <-errChan:
-		return nil, err
-	case <-time.After(time.Duration(100) * time.Second):
-		return nil, fmt.Errorf("ssh channle accept time out")
+	chans_ := &SSHChannels{
+		Pty:  make(chan ssh.Channel, 1),
+		Sftp: make(chan ssh.Channel, 1),
+		Err:  make(chan error, 1),
 	}
+
+	go newChannelHandler(chans_.Pty, chans_.Sftp, chans_.Err, userConf, chans)
+	return chans_, nil
 }
 
-func newChannelHandler(pty chan ssh.Channel, errc chan error, userConf *SSHConfig, chans <-chan ssh.NewChannel) {
+func newChannelHandler(pty chan ssh.Channel, sftp chan ssh.Channel, errc chan error, userConf *SSHConfig, chans <-chan ssh.NewChannel) {
 	for newChannel := range chans {
 		channelType := newChannel.ChannelType()
 		if channelType != "session" {
@@ -160,12 +155,13 @@ func newChannelHandler(pty chan ssh.Channel, errc chan error, userConf *SSHConfi
 			newChannel.Reject(ssh.ConnectionFailed, "Failed to accept SSH Channel Request, developers are working on it.")
 			errc <- err
 		}
-		go seletPtyChannel(pty, channel, requests, userConf)
+		logrus.Infof("incomming a ssh channel")
+		go seletPtyChannel(pty, sftp, channel, requests, userConf)
 	}
 }
 
 // select pty channle
-func seletPtyChannel(pty_chan chan ssh.Channel, channel ssh.Channel, sshReqChan <-chan *ssh.Request, userConf *SSHConfig) {
+func seletPtyChannel(pty_chan chan ssh.Channel, sftp_chan chan ssh.Channel, channel ssh.Channel, sshReqChan <-chan *ssh.Request, userConf *SSHConfig) {
 	for {
 		select {
 		case req := <-sshReqChan:
@@ -251,15 +247,7 @@ func seletPtyChannel(pty_chan chan ssh.Channel, channel ssh.Channel, sshReqChan 
 				logrus.Infof("request subsystem:%s", req.Payload[4:])
 				if string(req.Payload[4:]) == "sftp" {
 					req.Reply(true, nil)
-					go func() {
-						buffer := make([]byte, 1024)
-						for {
-							n, _ := channel.Read(buffer[0:])
-							if n > 0 {
-								logrus.Infof("read sftp packet:%v", buffer[:n])
-							}
-						}
-					}()
+					sftp_chan <- channel
 				}
 			default:
 				logrus.Errorf("recieve unhandled request tyep of:%s,%s", req.Type, req.Payload)
@@ -268,6 +256,7 @@ func seletPtyChannel(pty_chan chan ssh.Channel, channel ssh.Channel, sshReqChan 
 				}
 			}
 		case <-time.After(time.Duration(10) * time.Second):
+			logrus.Infof("auto exit this channel request")
 			return
 		}
 	}
