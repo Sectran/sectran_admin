@@ -1,7 +1,7 @@
 package types
 
 const (
-	REQUEST_SUCCESS int = 200 + iota
+	REQUEST_SUCCESS int = 200 + iota //请求成功
 )
 
 const (
@@ -54,7 +54,7 @@ type UserDeleteRequest struct {
 // https://github.com/go-playground/validator/blob/master/README.md#network
 type UserVisibleInsertInfo struct {
 	UserId      int64  `json:"userId" validate:"required,gte=0"`                   // 用户ID (自动填充)
-	Account     string `json:"account" validate:"required,alphanum,min=0,max=255"` // 用户账号
+	Account     string `json:"account" validate:"required,alphanum,min=5,max=255"` // 用户账号
 	Username    string `json:"username" validate:"required,min=5,max=255"`         // 用户姓名
 	DeptId      int64  `json:"deptId" validate:"required,gte=0"`                   // 用户所属部门ID
 	Disable     uint8  `json:"disable" validate:"oneof=0 1"`                       // 账号是否禁用
@@ -93,6 +93,24 @@ type UserAllInfo struct {
 // -----------------role---------------
 type RoleDeleteRequest struct {
 	RoleIds []int `json:"RoleIds"`
+}
+
+type RoleQueryInfo struct {
+	RoleVisibleQueryInfo
+	PageInfo
+}
+
+type RoleVisibleQueryInfo struct {
+	UserId      int64  `json:"userId" validate:"gte=-1"`             // 用户ID
+	Account     string `json:"account" validate:"min=0,max=255"`     // 用户账号
+	Username    string `json:"username" validate:"min=0,max=255"`    // 用户姓名
+	DeptId      int64  `json:"deptId" validate:"gte=-1"`             // 用户所属部门ID
+	Disable     uint8  `json:"disable" validate:"oneof=0 1"`         // 账号是否禁用
+	Description string `json:"description" validate:"min=0,max=255"` // 账号描述
+	Email       string `json:"email" validate:"min=0,max=50"`        // 用户邮箱
+	Telephone   string `json:"telephone" validate:"min=0,max=20"`    // 用户电话
+	CreateTime  string `json:"createTime" validate:"min=0,max=20"`   // 创建时间
+	RoleId      int64  `json:"roleId" validate:"gte=-1"`             // 用户角色ID
 }
 
 type RoleVisibleInfo struct {

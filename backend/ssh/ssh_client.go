@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/pkg/sftp"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh"
 )
@@ -17,7 +16,12 @@ const (
 	SectranSSHCVeriosn string = "SSH-2.0-Sectran"
 )
 
-func NewSSHClient(userConf *SSHConfig) (io.ReadWriteCloser, error) {
+type SSHClient struct {
+	PtyChannel io.ReadWriteCloser
+	Client     *ssh.Client
+}
+
+func NewSSHClient(userConf *SSHConfig) (*SSHClient, error) {
 	if err := CheckSSHConfig(userConf); err != nil {
 		return nil, err
 	}
@@ -73,14 +77,13 @@ func NewSSHClient(userConf *SSHConfig) (io.ReadWriteCloser, error) {
 		goto end
 	}
 
-	sftp.NewClient(client)
 	channel, request, err = client.Conn.OpenChannel("session", nil)
 	if err != nil {
 		goto end
 	}
 	go ssh.DiscardRequests(request)
 
-	//WARNING!! env reuqest must send before pty-request otherwise  it will not work
+	//WARNING!! env reuqest must send before pty-request otherwise it will not work
 	for i := 0; i < envVal.NumField(); i++ {
 		field := envVal.Field(i)
 		if stringValue, ok := field.Interface().(string); ok {
@@ -112,7 +115,10 @@ func NewSSHClient(userConf *SSHConfig) (io.ReadWriteCloser, error) {
 		goto end
 	}
 
-	return channel, nil
+	return &SSHClient{
+		PtyChannel: channel,
+		Client:     client,
+	}, nil
 end:
 	return nil, err
 }

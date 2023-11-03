@@ -9,12 +9,14 @@ import (
 	"unsafe"
 
 	"github.com/sirupsen/logrus"
+	"golang.org/x/crypto/ssh"
 )
 
 type SSHConnRequest struct {
 	ReqProtocolType constants.REQ_PROTOCOL_TYPE //user terminal protocol
 	Config          *SSHConfig                  //terget server config
 	Conn            io.ReadWriteCloser          //net connection
+	ConnType        uint8                       // pty/sftp
 }
 
 type SSHConnResponse struct {
@@ -27,8 +29,16 @@ type SSHModuleMessage struct {
 	Cancle       context.CancelFunc
 }
 
+type SSHChannels struct {
+	Pty  chan ssh.Channel
+	Sftp chan ssh.Channel
+	Err  chan error
+}
+
 // global ssh common config
 var SSHModuleConfig SSHConfig
+
+type handlePostRead func(data []byte, termianl unsafe.Pointer) bool
 
 // chan SSHConnRequest: request a proxy
 // chan SSHConnResponse: response for request channle
@@ -61,113 +71,90 @@ func StartSSHModule(config *SSHConfig) (*SSHModuleMessage, error) {
 
 func handleConnection(ctx context.Context, message *SSHModuleMessage) {
 	var (
-		err  error
-		req  *SSHConnRequest
-		rwcc io.ReadWriteCloser
-		rwcs io.ReadWriteCloser
+		err       error
+		req       *SSHConnRequest
+		rwcc      io.ReadWriteCloser
+		rwcs      io.ReadWriteCloser
+		sshClient *SSHClient
 	)
 
 	for {
 		select {
 		case req = <-message.RequestChan:
 			rwcs = req.Conn
-
-			logrus.Debugf("request mode list:%v,len:%d", req.Config.PtyRequestMsg.Modelist, len(req.Config.PtyRequestMsg.Modelist))
-			rwcc, err = NewSSHClient(req.Config)
-			if err != nil {
-				message.ResponseChan <- &SSHConnResponse{
-					Err: err,
+			switch req.ConnType {
+			case 0: //SSH
+				sshClient, err = NewSSHClient(req.Config)
+				if err != nil {
+					message.ResponseChan <- &SSHConnResponse{
+						Err: err,
+					}
+					req.Conn.Close()
+					break
 				}
+
+				rwcc = sshClient.PtyChannel
+				var terminal unsafe.Pointer
+				terminal = XtermStart(int(req.Config.PtyRequestMsg.Columns), int(req.Config.PtyRequestMsg.Rows))
+
+				peerPostReadCb := func(data []byte, termianl unsafe.Pointer) bool {
+					if len(data) == 1 && data[0] == '\r' {
+						command := XtermGetCommand(termianl)
+						logrus.Infof("get current command :%s", command)
+					}
+					return true
+				}
+
+				clientPostReadCb := func(data []byte, termianl unsafe.Pointer) bool {
+					XtermWrite(termianl, data)
+					DumpToFile(termianl)
+					return true
+				}
+
+				go RevereConnection(rwcs, rwcc, peerPostReadCb, clientPostReadCb, terminal)
+			case 1: //SFTP
+				logrus.Errorf("sftp is not surpported now")
 				req.Conn.Close()
-				break
+			default:
+				logrus.Errorf("unkone request type of %d in ssh channel", req.ConnType)
 			}
-
-			var terminal unsafe.Pointer
-			terminal = XtermStart(int(req.Config.PtyRequestMsg.Columns), int(req.Config.PtyRequestMsg.Rows))
-
-			go handleReveredClientConnection(rwcc, rwcs, terminal)
-			go handleReveredServerConnection(rwcs, rwcc, terminal)
-
 		case <-ctx.Done():
 			logrus.Infof("a connection is done")
 		}
+
 	}
-
 }
 
-func handleReveredClientConnection(r io.ReadWriteCloser, w io.ReadWriteCloser, termianl unsafe.Pointer) {
-	defer r.Close()
-	defer w.Close()
+func RevereConnection(peer, client io.ReadWriteCloser, peerPostRead handlePostRead,
+	clientPostRead handlePostRead, termianl unsafe.Pointer) {
+	errChan := make(chan error, 1)
 
-	var stopper chan int = make(chan int, 1)
-	handleServerOutput(r, w, stopper, termianl)
-
-	<-stopper
-}
-
-func handleReveredServerConnection(r io.ReadWriteCloser, w io.ReadWriteCloser, termianl unsafe.Pointer) {
-	defer r.Close()
-	defer w.Close()
-
-	var stopper chan int = make(chan int, 1)
-	handleUserInput(r, w, stopper, termianl)
-
-	<-stopper
-}
-
-func handleServerOutput(r io.Reader, w io.Writer, stopper chan int, termianl unsafe.Pointer) {
-	close := func(stopper chan int) {
-		stopper <- 1
-	}
-	defer close(stopper)
-
-	var buffer []byte = make([]byte, 4096)
-	for {
-		n, err := r.Read(buffer)
-		if err != nil {
-			logrus.Errorf("read error :%s", err)
-			return
-		}
-
-		if n > 0 {
-			XtermWrite(termianl, buffer[:n])
-			DumpToFile(termianl)
-			_, err = w.Write(buffer[:n])
-			if err != nil {
-				logrus.Errorf("write error :%s", err)
+	proxy := func(from io.ReadWriteCloser, to io.ReadWriteCloser, postRead handlePostRead,
+		errChan chan error, termianl unsafe.Pointer) {
+		var buffer []byte = make([]byte, 4096)
+		for {
+			if n, err := from.Read(buffer); err != nil {
+				errChan <- err
 				return
+			} else if n > 0 {
+				if postRead(buffer[:n], termianl) {
+					if _, err := to.Write(buffer[:n]); err != nil {
+						errChan <- err
+						return
+					}
+				}
 			}
 		}
 	}
-}
 
-func handleUserInput(r io.Reader, w io.Writer, stopper chan int, termianl unsafe.Pointer) {
-	close := func(stopper chan int) {
-		stopper <- 1
-	}
-	defer close(stopper)
+	defer peer.Close()
+	defer client.Close()
 
-	var buffer []byte = make([]byte, 4096)
-	for {
-		n, err := r.Read(buffer)
-		if err != nil {
-			logrus.Errorf("read error :%s", err)
-			return
-		}
+	go proxy(peer, client, peerPostRead, errChan, termianl)
+	go proxy(client, peer, clientPostRead, errChan, termianl)
 
-		if n == 1 && buffer[0] == '\r' {
-			command := XtermGetCommand(termianl)
-			logrus.Infof("get current command :%s", command)
-		}
-
-		if n > 0 {
-			_, err = w.Write(buffer[:n])
-			if err != nil {
-				logrus.Errorf("write error :%s", err)
-				return
-			}
-		}
-	}
+	err := <-errChan
+	logrus.Errorf("proxy error due to :%s", err)
 }
 
 func startSSHTcpService(config *SSHConfig, netChan chan *SSHConnRequest, addr string) {
@@ -184,30 +171,49 @@ func startSSHTcpService(config *SSHConfig, netChan chan *SSHConnRequest, addr st
 			logrus.Errorf("error accept client due to %s", err)
 		}
 
-		clientConfig := *config
-		rwc, err := NewSSHServer(c, &clientConfig)
-		if err != nil {
-			logrus.Errorf("error New SSH Server due to %s", err)
-		}
-		logrus.Infof("destnation number is:%s", clientConfig.Password)
+		go func(clientConfig *SSHConfig, netChan chan *SSHConnRequest) {
+			channels, err := NewSSHServer(c, clientConfig)
+			if err != nil {
+				logrus.Errorf("error New SSH Server due to %s", err)
+				return
+			}
 
-		//todo:change client config to what you want here
-		// clientConfig.Host = "192.168.31.100"
-		// clientConfig.Port = 22
-		// clientConfig.UserName = "root"
-		// clientConfig.Password = "Ryan@1218pass"
+			for {
+				select {
+				case pty := <-channels.Pty:
+					logrus.Infof("destnation number is:%s", clientConfig.Password)
 
-		clientConfig.Host = "127.0.0.1"
-		clientConfig.Port = 22
-		clientConfig.UserName = "Ryan"
-		clientConfig.Password = "passwordryan"
+					//todo:change client config to what you want here
+					// clientConfig.Host = "192.168.31.100"
+					// clientConfig.Port = 22
+					// clientConfig.UserName = "root"
+					// clientConfig.Password = "Ryan@1218pass"
 
-		clientConfig.PasswordAuth = true
+					clientConfig.Host = "127.0.0.1"
+					clientConfig.Port = 22
+					clientConfig.UserName = "Ryan"
+					clientConfig.Password = "passwordryan"
 
-		netChan <- &SSHConnRequest{
-			Conn:            rwc,
-			Config:          &clientConfig,
-			ReqProtocolType: constants.REQUEST_TCP,
-		}
+					clientConfig.PasswordAuth = true
+
+					netChan <- &SSHConnRequest{
+						ConnType:        0,
+						Conn:            pty,
+						Config:          clientConfig,
+						ReqProtocolType: constants.REQUEST_TCP,
+					}
+				case sftp := <-channels.Sftp:
+					netChan <- &SSHConnRequest{
+						ConnType:        1,
+						Conn:            sftp,
+						Config:          clientConfig,
+						ReqProtocolType: constants.REQUEST_TCP,
+					}
+				case err := <-channels.Err:
+					logrus.Errorf("waiting for SSH channel to encounter an error in a loop %s", err)
+					return
+				}
+			}
+		}(config, netChan)
 	}
 }

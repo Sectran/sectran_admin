@@ -1,3 +1,5 @@
 package ssh
 
+func NewSftpClient() {
 
+}

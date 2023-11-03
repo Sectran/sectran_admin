@@ -1,4 +1,4 @@
-Last login: Sat Oct  7 13:26:12 2023 from 127.0.0.1
+Last login: Thu Oct 26 09:25:11 2023
 ryan@Ryans-MacBook-Pro ~$ ls
 Applications                                   Public                                         nacos_file_kv_storage_test_backup_brotherluxcq
 Applications (Parallels)                       Qt5.14.2                                       nacos_file_kv_storage_test_brotherluxcq
@@ -10,9 +10,20 @@ Movies                                         go                               
 Music                                          java_error_in_clion.hprof                      sensors
 Parallels                                      logs                                           vcpkg
 Pictures                                       nacos                                          yarn.lock
-ryan@Ryans-MacBook-Pro ~$ pwd
-/Users/ryan
-ryan@Ryans-MacBook-Pro ~$ 中文
-zsh: command not found: 中文
-ryan@Ryans-MacBook-Pro ~$ exit
-
+ryan@Ryans-MacBook-Pro ~$ Desktop                                        Sunlogin Files                                 node_modules
+Documentn
+Downloadn
+Librarn
+Movieg
+Musis
+Parallelg
+Picturek
+zsh: command not found: Desktop
+zsh: command not found: Documents
+zsh: command not found: Downloads
+zsh: command not found: Library
+zsh: command not found: Movies
+zsh: command not found: Music
+zsh: command not found: Parallels
+zsh: command not found: Pictures
+ryan@Ryans-MacBook-Pro ~$ 
