@@ -23,8 +23,15 @@ func NewRoleAddLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleAddLo
 	}
 }
 
-func (l *RoleAddLogic) RoleAdd(req *types.RoleAllInfo) (resp *types.CommonResponse, err error) {
-	// todo: add your logic here and delete this line
+func (l *RoleAddLogic) RoleAdd(req *types.RoleAllInfo) (*types.CommonResponse, error) {
+	err := l.svcCtx.Validator.Struct(req)
+	if err != nil {
+		return types.BuildCommonResponse("null", "invalid params", types.ERROR_ILLEGAL_PARAMS), nil
+	}
+	_, err = l.svcCtx.StRoleModel.Insert(l.ctx, req)
+	if err != nil {
+		return types.BuildCommonResponse("null", "failed to add this user account", types.ERROR_REUQEST_FAILED), nil
+	}
 
-	return
+	return types.BuildCommonResponse("null", "user account add successfully", types.REQUEST_SUCCESS), nil
 }

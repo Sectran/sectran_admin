@@ -23,18 +23,14 @@ func NewRoleListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleList
 	}
 }
 
-// (*types.CommonResponse, error)
-func (l *RoleListLogic) RoleList(req *types.RoleVisibleInfo) (resp *types.CommonResponse, err error) {
-	// todo: add your logic here and delete this line
-	//err := l.svcCtx.Validator.Struct(req)
-	//if err != nil {
-	//	return types.BuildCommonResponse("null", "invalid params", types.ERROR_ILLEGAL_PARAMS), nil
-	//}
-	return
-	//roles, err := l.svcCtx.StRoleModel.FindOne(l.ctx, req)
-	//if err != nil {
-	//	return types.BuildCommonResponse("null", "failed to query users", 501), nil
-	//}
-	//return types.BuildCommonResponse(roles, "users info query successfully", 200), nil
-
+func (l *RoleListLogic) RoleList(roleQuery *types.RoleQueryInfo) (*types.CommonResponse, error) {
+	err := l.svcCtx.Validator.Struct(roleQuery)
+	if err != nil {
+		return types.BuildCommonResponse("null", "invalid params", types.ERROR_ILLEGAL_PARAMS), nil
+	}
+	roles, err := l.svcCtx.StRoleModel.Find(l.ctx, roleQuery)
+	if err != nil {
+		return types.BuildCommonResponse("null", "failed to query users", 501), nil
+	}
+	return types.BuildCommonResponse(roles, "users info query successfully", 200), nil
 }

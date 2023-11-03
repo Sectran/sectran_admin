@@ -2,7 +2,8 @@ Name: sectran-api
 Host: 0.0.0.0
 Port: 8888
 Mysql:
-  DataSource: root:Ryan@1218pass@tcp(127.0.0.1:3306)/sectran?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+#  DataSource: root:Ryan@1218pass@tcp(127.0.0.1:3306)/sectran?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+    DataSource: root:123456@tcp(127.0.0.1:3306)/sectran?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 Secret: cs@sectran_key
 ExpTime: 1800
 Middlewares:

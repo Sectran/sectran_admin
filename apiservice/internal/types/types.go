@@ -101,24 +101,17 @@ type RoleQueryInfo struct {
 }
 
 type RoleVisibleQueryInfo struct {
-	UserId      int64  `json:"userId" validate:"gte=-1"`             // 用户ID
-	Account     string `json:"account" validate:"min=0,max=255"`     // 用户账号
-	Username    string `json:"username" validate:"min=0,max=255"`    // 用户姓名
-	DeptId      int64  `json:"deptId" validate:"gte=-1"`             // 用户所属部门ID
-	Disable     uint8  `json:"disable" validate:"oneof=0 1"`         // 账号是否禁用
-	Description string `json:"description" validate:"min=0,max=255"` // 账号描述
-	Email       string `json:"email" validate:"min=0,max=50"`        // 用户邮箱
-	Telephone   string `json:"telephone" validate:"min=0,max=20"`    // 用户电话
-	CreateTime  string `json:"createTime" validate:"min=0,max=20"`   // 创建时间
-	RoleId      int64  `json:"roleId" validate:"gte=-1"`             // 用户角色ID
+	RoleId     int64  `json:"roleId" validate:"gte=-1"`           //角色ID
+	Name       string `json:"name" validate:"min=0,max=255"`      //角色名称
+	CreateTime string `json:"createTime" validate:"min=0,max=20"` // 创建时间
+
 }
 
 type RoleVisibleInfo struct {
-	PageInfo
-	RoleId      int64  `json:"roleId"`      // 角色ID
-	Name        string `json:"name"`        // 角色名称
-	Description string `json:"description"` // 角色描述
-	CreateTime  string `json:"createTime"`  // 创建时间
+	RoleId      int64  `json:"roleId"  validate:"required,gte=0"`    // 角色ID
+	Name        string `json:"name"  validate:"min=0,max=255"`       // 角色名称
+	Description string `json:"description" validate:"min=0,max=255"` // 角色描述
+	CreateTime  string `json:"createTime"`                           // 创建时间
 }
 
 type RoleAllInfo struct {
