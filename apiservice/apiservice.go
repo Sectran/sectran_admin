@@ -12,6 +12,7 @@ import (
 	"github.com/zeromicro/go-zero/rest"
 )
 
+// var configFile = flag.String("f", "D:\\本地项目\\xx\\Sectran\\apiservice\\etc\\sectran-api.yaml", "the config file")
 var configFile = flag.String("f", "etc/sectran-api.yaml", "the config file")
 
 func main() {

@@ -4,9 +4,9 @@
             <div class="Login-title">{{ uselocals('login.login') }}</div>
             <a-form :model="formState" layout="vertical" name="basic" :label-col="{ span: 8 }" autocomplete="off"
                 @finish="onFinish" @finishFailed="onFinishFailed">
-                <!-- :rules="[{ required: true, message: 'Please input your username!' }]" -->
-                <a-form-item :label="uselocals('login.userName')" name="username">
-                    <a-input v-model:value="formState.username" />
+                <!-- :rules="[{ required: true, message: 'Please input your account!' }]" -->
+                <a-form-item :label="uselocals('login.account')" name="account">
+                    <a-input v-model:value="formState.account" />
                 </a-form-item>
                 <!-- :rules="[{ required: true, message: 'Please input your password!' }]" -->
                 <a-form-item :label="uselocals('login.password')" name="password">
@@ -29,26 +29,27 @@ import { reactive } from 'vue';
 import { uselocals } from "@/Hooks/localsHooks"
 import { useRouter } from 'vue-router';
 import { login } from "@/api/Login"
+
 const router = useRouter();
 interface FormState {
-    username: string;
+    account: string;
     password: string;
     remember: boolean;
 }
 
 const formState = reactive<FormState>({
-    username: '',
+    account: '',
     password: '',
     remember: true,
 });
 
-const onFinish = (values: { username: string, password: string }) => {
+const onFinish = (values: { account: string, password: string }) => {
     console.log('Success:', values);
-
-    login<{ username: string, password: string }>({ password: values.password, username: values.username }).then((res: { data: { token: string } }) => {
+    let fromData = JSON.stringify({password: values.password, account: values.account})
+    login<string>(fromData).then((res: { data: { data: string } }) => {
         console.log(res)
-        let { token } = res.data
-        localStorage.setItem('token', token)
+        let { data } = res.data
+        localStorage.setItem('token', data)
         router.replace('/admin/user') 
     })
                                                                                                                   

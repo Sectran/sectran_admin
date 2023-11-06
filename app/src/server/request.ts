@@ -15,12 +15,13 @@ axios.defaults.baseURL = BASE_URL;
 axios.interceptors.request.use(
     (config: any) => {
         const token: string | null = localStorage.getItem("token");
-        if (token) {
-            config.headers = {
-                "authorization": `Bearer ${token}`,
-            };
+        let headers: any = {
+            'Content-Type': 'application/json'
         }
-
+        if (token) {
+            headers['authorization'] = `Bearer ${token}`
+        }
+        config.headers = headers
         return config;
     },
     (error: any) => {
@@ -53,7 +54,6 @@ const requests: Function = (url: string, param: AxiosRequestConfig<string>, fect
         switch (fecth) {
             case "get":
                 axios.get(url, { params: param }).then((response: any) => {
-
                     if (response.data.code === 200) {
                         let { data } = response;
                         message.success(data.msg);
@@ -143,9 +143,9 @@ function msag(err: { response: { status: number; data: { error: { details: strin
  */
 function Landing(data: { code: number, status: number | string; msg: string }) {
     console.log(data)
-    let {code,msg} = data
+    let { code, msg } = data
     message.error(msg);
-    if(code === 401) {
+    if (code === 401) {
         router.push('/')
     }
 }
