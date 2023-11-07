@@ -96,7 +96,7 @@ func (m *defaultStRoleModel) Find(ctx context.Context, roleQuery *types.RoleQuer
 
 func (m *defaultStRoleModel) Insert(ctx context.Context, data *types.RoleAllInfo) (sql.Result, error) {
 	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.table, stRoleRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.RoleId, data.Name, data.Description, data.CreateByUid, data.IsDelete)
+	ret, err := m.conn.ExecCtx(ctx, query, data.RoleId, data.Name, data.Description, data.CreateByUid, data.CreateTime)
 	return ret, err
 }
 

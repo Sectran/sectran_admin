@@ -111,13 +111,13 @@ type RoleVisibleInfo struct {
 	RoleId      int64  `json:"roleId"  validate:"required,gte=0"`    // 角色ID
 	Name        string `json:"name"  validate:"min=0,max=255"`       // 角色名称
 	Description string `json:"description" validate:"min=0,max=255"` // 角色描述
-	CreateTime  string `json:"createTime"`                           // 创建时间
+	CreateTime  string `json:"createTime"  validate:"-"`             // 创建时间
 }
 
 type RoleAllInfo struct {
 	RoleVisibleInfo
-	CreateByUid int64 `json:"createByUid"` // 创建者
-	IsDelete    uint8 `json:"isDeleted"`   // 是否被删除
+	CreateByUid int64 `json:"createByUid" validate:"gte=0"` // 创建者
+	//IsDelete    uint8 `json:"isDeleted"`                    // 是否被删除
 }
 
 type RoleVisibleInfoArray struct {

@@ -43,7 +43,6 @@ CREATE TABLE `st_role` (
   `name` varchar(11) NOT NULL COMMENT '角色名称',
   `description` varchar(1024) DEFAULT NULL COMMENT '角色描述',
   `create_by_uid` int(11) NOT NULL COMMENT '创建者',
-  `is_deleted` tinyint(1) NOT NULL COMMENT '是否被删除',
   `create_time` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
   PRIMARY KEY (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
