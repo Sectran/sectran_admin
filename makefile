@@ -44,7 +44,9 @@ help:
 	@echo "    $$ make env					# show makefile environment/variables"
 	@echo ""
 	@echo "# build"
-	@echo "    $$ make build					# build Sectran"
+	@echo "    $$ make build					# build Sectran in release mode"
+	@echo "    $$ make debug					# build Sectran in debug mode"
+	@echo "    $$ make release					# build Sectran int release mode"
 	@echo ""
 	@echo "# clean"
 	@echo "    $$ make clean				# wipe ./bin/"
@@ -74,13 +76,20 @@ version:
 	@echo "    BuildTime string = \"$(DATE)\"" >> ${VERSIONGO}
 	@echo ")" >> ${VERSIONGO}
 
+DCMAKE_BUILD_TYPE = Release
 .PHONY: build
 build: version .checkver_$(CMD_GO)
 	@mkdir -p pkg
 	@if [ -d ./backend/terminal/build ]; then rm -rf ./backend/terminal/build; fi
 	@mkdir -p ./backend/terminal/build
-	cd ./backend/terminal/build && cmake .. -DCMAKE_BUILD_TYPE=Release && make && make install && cd -
+	cd ./backend/terminal/build && cmake .. -DCMAKE_BUILD_TYPE=$(DCMAKE_BUILD_TYPE) && make && make install && cd -
 	CGO_ENABLED=1 $(CMD_GO) build -ldflags "-w -s -extldflags=-Wl,-rpath,." -o pkg/sectran-${OS}-${ARCH}
+
+debug: DCMAKE_BUILD_TYPE = Debug
+debug: build
+
+release: build
+
 .PHONY: package
 package: build
 	@if [ -f pkg.tar.gz ]; then rm -f pkg.tar.gz; fi

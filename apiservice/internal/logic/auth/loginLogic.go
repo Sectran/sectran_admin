@@ -46,7 +46,9 @@ func (l *LoginLogic) Login(req *types.AuthRequest) (resp *types.CommonResponse, 
 		return types.BuildCommonResponse("null", "erro issue token to this user.", types.ERROR_ISSUE_TOKEN), nil
 	}
 
-	l.svcCtx.AuthorizeMiddleware.UserSessionPool[tokenString] = &middleware.UserAuthedInfo{}
+	l.svcCtx.AuthorizeMiddleware.UserSessionPool[tokenString] = &middleware.UserAuthedInfo{
+		ExpTime: now + 1800,
+	}
 
 	return types.BuildCommonResponse(tokenString, "user login success.", types.REQUEST_SUCCESS), nil
 }

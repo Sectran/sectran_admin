@@ -1,20 +1,20 @@
 package ssh
 
 /*
-#cgo LDFLAGS: -L${SRCDIR}/../terminal/libs/
-#cgo CFLAGS: -I${SRCDIR}/../terminal/libs/
+#cgo LDFLAGS: -L${SRCDIR}/../../pkg/
 #cgo darwin LDFLAGS: -framework CoreFoundation -framework Security -lpthread -ldl -lm -lsectran-terminal
 #cgo linux LDFLAGS: -lsectran-terminal -lpthread -ldl -lm
-#include <stdlib.h>
 
+#include <stdlib.h>
 typedef void *sectran_terminal_handle;
 sectran_terminal_handle *sectran_terminal_alloc(int width, int height);
 int sectran_terminal_write(sectran_terminal_handle *terminal, const char *c,
                            int size);
 void sectran_terminal_stop(sectran_terminal_handle *terminal);
-char *get_current_command(sectran_terminal_handle *term);
+char *get_current_command(sectran_terminal_handle *terminal);
 void sectran_terminal_print_to_file(sectran_terminal_handle* terminal);
-
+void terminal_buffer_flush(sectran_terminal_handle* terminal);
+void mark_stdin_start(sectran_terminal_handle* terminal);
 */
 import "C"
 import (
@@ -33,6 +33,7 @@ func XtermStart(width, heigth int) unsafe.Pointer {
 func XtermGetCommand(terminal unsafe.Pointer) []byte {
 	cchar := C.get_current_command((*C.sectran_terminal_handle)(unsafe.Pointer(terminal)))
 	if cchar != nil {
+		defer C.free(unsafe.Pointer(cchar))
 		byteSlice := ([]byte)(C.GoString(cchar))
 		return byteSlice
 	}
@@ -47,6 +48,14 @@ func XtermFree(terminal unsafe.Pointer) {
 	C.sectran_terminal_stop((*C.sectran_terminal_handle)(unsafe.Pointer(terminal)))
 }
 
-func DumpToFile(terminal unsafe.Pointer) {
+func XtermDumpToFile(terminal unsafe.Pointer) {
 	C.sectran_terminal_print_to_file((*C.sectran_terminal_handle)(unsafe.Pointer(terminal)))
+}
+
+func XtermFlush(terminal unsafe.Pointer) {
+	C.terminal_buffer_flush((*C.sectran_terminal_handle)(unsafe.Pointer(terminal)))
+}
+
+func XtermMarkStdinStart(terminal unsafe.Pointer) {
+	C.mark_stdin_start((*C.sectran_terminal_handle)(unsafe.Pointer(terminal)))
 }

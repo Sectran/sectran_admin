@@ -100,14 +100,20 @@ func handleConnection(ctx context.Context, message *SSHModuleMessage) {
 				peerPostReadCb := func(data []byte, termianl unsafe.Pointer) bool {
 					if len(data) == 1 && data[0] == '\r' {
 						command := XtermGetCommand(termianl)
-						logrus.Infof("get current command :%s", command)
+						if len(command) > 0 {
+							logrus.Infof("get current command :%s", command)
+						}
+						XtermFlush(termianl)
+					} else {
+						XtermMarkStdinStart(termianl)
 					}
 					return true
 				}
 
 				clientPostReadCb := func(data []byte, termianl unsafe.Pointer) bool {
+					logrus.Infof("%q", data)
 					XtermWrite(termianl, data)
-					DumpToFile(termianl)
+					XtermDumpToFile(termianl)
 					return true
 				}
 

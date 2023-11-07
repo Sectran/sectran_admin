@@ -11,7 +11,7 @@ import (
 
 type UserAuthedInfo struct {
 	*types.UserAllInfo
-	expTime int64
+	ExpTime int64
 }
 
 type AuthorizeMiddleware struct {
@@ -31,7 +31,7 @@ func NewAuthorizeMiddleware() *AuthorizeMiddleware {
 		logx.Infof("calling token verify method")
 		now := time.Now().Unix()
 		for token, info := range auth.UserSessionPool {
-			if now > info.expTime {
+			if now > info.ExpTime {
 				delete(auth.UserSessionPool, token)
 			}
 		}
@@ -64,7 +64,7 @@ func (m *AuthorizeMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 
 			now := time.Now().Unix()
 			//User session has timed out
-			if value.expTime < now {
+			if value.ExpTime < now {
 				msg = "this session is time out."
 				goto fatal
 			}
@@ -75,7 +75,7 @@ func (m *AuthorizeMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			//增加接口的签名功能，防止中间人攻击
 
 			//update token exp time
-			value.expTime = time.Now().Unix() + 1800
+			value.ExpTime = time.Now().Unix() + 1800
 		}
 		next(w, r)
 

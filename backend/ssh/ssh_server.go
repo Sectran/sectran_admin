@@ -256,7 +256,7 @@ func seletPtyChannel(pty_chan chan ssh.Channel, sftp_chan chan ssh.Channel, chan
 				}
 			}
 		case <-time.After(time.Duration(10) * time.Second):
-			logrus.Infof("auto exit this channel request")
+			logrus.Debugf("auto exit this channel request")
 			return
 		}
 	}
