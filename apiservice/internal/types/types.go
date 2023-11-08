@@ -40,10 +40,15 @@ type AuthRequest struct {
 }
 
 // -----------------page---------------
+//type PageInfo struct {
+//	PageStart int `json:"pageStart" validate:"required,gte=1"`
+//	PageEnd   int `json:"pageEnd" validate:"required,gte=1"`
+//	PageSize  int `json:"pageSize" validate:"required,gte=1"`
+//}
+
 type PageInfo struct {
-	PageStart int `json:"pageStart" validate:"required,gte=1"`
-	PageEnd   int `json:"pageEnd" validate:"required,gte=1"`
-	PageSize  int `json:"pageSize" validate:"required,gte=1"`
+	PageNum  int `json:"pageNum"  validate:"required,gte=1"`
+	PageSize int `json:"pageSize" validate:"required,gte=1"`
 }
 
 // -----------------user---------------
@@ -101,7 +106,7 @@ type RoleQueryInfo struct {
 }
 
 type RoleVisibleQueryInfo struct {
-	RoleId     int64  `json:"roleId" validate:"gte=-1"`           //角色ID
+	//RoleId     int64  `json:"roleId" validate:"gte=-1"`           //角色ID
 	Name       string `json:"name" validate:"min=0,max=255"`      //角色名称
 	CreateTime string `json:"createTime" validate:"min=0,max=20"` // 创建时间
 
@@ -111,12 +116,13 @@ type RoleVisibleInfo struct {
 	RoleId      int64  `json:"roleId"  validate:"required,gte=0"`    // 角色ID
 	Name        string `json:"name"  validate:"min=0,max=255"`       // 角色名称
 	Description string `json:"description" validate:"min=0,max=255"` // 角色描述
-	CreateTime  string `json:"createTime"  validate:"-"`             // 创建时间
 }
 
 type RoleAllInfo struct {
 	RoleVisibleInfo
 	CreateByUid int64 `json:"createByUid" validate:"gte=0"` // 创建者
+
+	CreateTime string `json:"createTime"  validate:"-"` // 创建时间
 	//IsDelete    uint8 `json:"isDeleted"`                    // 是否被删除
 }
 

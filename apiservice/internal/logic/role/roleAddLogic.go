@@ -23,7 +23,7 @@ func NewRoleAddLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleAddLo
 	}
 }
 
-func (l *RoleAddLogic) RoleAdd(req *types.RoleAllInfo) (*types.CommonResponse, error) {
+func (l *RoleAddLogic) RoleAdd(req *types.RoleVisibleInfo) (*types.CommonResponse, error) {
 	err := l.svcCtx.Validator.Struct(req)
 	if err != nil {
 		return types.BuildCommonResponse("null", "invalid params", types.ERROR_ILLEGAL_PARAMS), nil

@@ -17,13 +17,13 @@ import (
 var (
 	stRoleFieldNames          = builder.RawFieldNames(&StRole{})
 	stRoleRows                = strings.Join(stRoleFieldNames, ",")
-	stRoleRowsExpectAutoSet   = strings.Join(stringx.Remove(stRoleFieldNames, "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
+	stRoleRowsExpectAutoSet   = strings.Join(stringx.Remove(stRoleFieldNames, "`role_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), ",")
 	stRoleRowsWithPlaceHolder = strings.Join(stringx.Remove(stRoleFieldNames, "`role_id`", "`create_at`", "`create_time`", "`created_at`", "`update_at`", "`update_time`", "`updated_at`"), "=?,") + "=?"
 )
 
 type (
 	stRoleModel interface {
-		Insert(ctx context.Context, data *types.RoleAllInfo) (sql.Result, error)
+		Insert(ctx context.Context, data *types.RoleVisibleInfo) (sql.Result, error)
 		Find(ctx context.Context, roleId *types.RoleQueryInfo) (*StRole, error)
 		Update(ctx context.Context, data *StRole) error
 		Delete(ctx context.Context, roleId int64) error
@@ -39,7 +39,6 @@ type (
 		Name        string         `db:"name"`          // 角色名称
 		Description sql.NullString `db:"description"`   // 角色描述
 		CreateByUid int64          `db:"create_by_uid"` // 创建者
-		IsDeleted   int64          `db:"is_deleted"`    // 是否被删除
 		CreateTime  time.Time      `db:"create_time"`   // 创建时间
 	}
 )
@@ -66,19 +65,17 @@ func (m *defaultStRoleModel) Delete(ctx context.Context, roleId int64) error {
 
 func (m *defaultStRoleModel) Find(ctx context.Context, roleQuery *types.RoleQueryInfo) (*StRole, error) {
 	query := fmt.Sprintf("select %s from %s where `role_id` = ? limit 1", stRoleRows, m.table)
-
 	var args []interface{}
-
 	if roleQuery != nil {
 		query = fmt.Sprintf(" %s where 1=1 ", query)
 		if len(roleQuery.Name) > 0 {
-			query = fmt.Sprintf(" %s and `username` = ? ", query)
+			query = fmt.Sprintf(" %s and `name` = ? ", query)
 			args = append(args, roleQuery.Name)
 		}
-		if roleQuery.RoleId > 0 {
-			query = fmt.Sprintf(" %s and`user_id` = ? ", query)
-			args = append(args, roleQuery.RoleId)
-		}
+		//if roleQuery.RoleId > 0 {
+		//	query = fmt.Sprintf(" %s and`user_id` = ? ", query)
+		//	args = append(args, roleQuery.RoleId)
+		//}
 
 	}
 
@@ -94,15 +91,15 @@ func (m *defaultStRoleModel) Find(ctx context.Context, roleQuery *types.RoleQuer
 	}
 }
 
-func (m *defaultStRoleModel) Insert(ctx context.Context, data *types.RoleAllInfo) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.table, stRoleRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.RoleId, data.Name, data.Description, data.CreateByUid, data.CreateTime)
+func (m *defaultStRoleModel) Insert(ctx context.Context, data *types.RoleVisibleInfo) (sql.Result, error) {
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, stRoleRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Name, data.Description, 1)
 	return ret, err
 }
 
 func (m *defaultStRoleModel) Update(ctx context.Context, data *StRole) error {
 	query := fmt.Sprintf("update %s set %s where `role_id` = ?", m.table, stRoleRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.Name, data.Description, data.CreateByUid, data.IsDeleted, data.RoleId)
+	_, err := m.conn.ExecCtx(ctx, query, data.Name, data.Description, data.CreateByUid, data.RoleId)
 	return err
 }
 
