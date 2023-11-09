@@ -16,6 +16,11 @@ type Response struct {
 	Code int    `json:"code"`
 	Msg  string `json:"msg"`
 }
+type PageType struct {
+	PageNum  int64 `json:"pageNum"`
+	PageSize int64 `json:"pageSize"`
+	Total    int64 `json:"total"`
+}
 
 type CommonResponse struct {
 	Response
@@ -24,6 +29,25 @@ type CommonResponse struct {
 
 func BuildCommonResponse(data any, msg string, code int) *CommonResponse {
 	return &CommonResponse{
+		Response: Response{
+			Msg:  msg,
+			Code: code,
+		},
+		Data: data,
+	}
+}
+
+type TableType struct {
+	Response
+	Data DataType `json:"data"`
+}
+type DataType struct {
+	List     any `json:"list"`
+	PageData PageType
+}
+
+func TableResponse(data DataType, msg string, code int) *TableType {
+	return &TableType{
 		Response: Response{
 			Msg:  msg,
 			Code: code,
@@ -47,8 +71,8 @@ type AuthRequest struct {
 //}
 
 type PageInfo struct {
-	PageNum  int `json:"pageNum"  validate:"required,gte=1"`
-	PageSize int `json:"pageSize" validate:"required,gte=1"`
+	PageNum  int64 `json:"pageNum"  validate:"required,gte=1"`
+	PageSize int64 `json:"pageSize" validate:"required,gte=1"`
 }
 
 // -----------------user---------------

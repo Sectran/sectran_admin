@@ -30,7 +30,7 @@ func (l *RoleListLogic) RoleList(roleQuery *types.RoleQueryInfo) (*types.CommonR
 	}
 	roles, err := l.svcCtx.StRoleModel.Find(l.ctx, roleQuery)
 	if err != nil {
-		return types.BuildCommonResponse("null", "failed to query users", 501), nil
+		return types.BuildCommonResponse("null", "failed to query roles", 501), nil
 	}
-	return types.BuildCommonResponse(roles, "users info query successfully", 200), nil
+	return types.BuildCommonResponse(roles, "roles info query successfully", 200), nil
 }

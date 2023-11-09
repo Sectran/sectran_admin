@@ -4,12 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/logx"
 	"sectran/apiservice/internal/types"
 	"strings"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/stores/builder"
-	"github.com/zeromicro/go-zero/core/stores/sqlc"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/core/stringx"
 )
@@ -24,7 +24,7 @@ var (
 type (
 	stRoleModel interface {
 		Insert(ctx context.Context, data *types.RoleVisibleInfo) (sql.Result, error)
-		Find(ctx context.Context, roleId *types.RoleQueryInfo) (*StRole, error)
+		Find(ctx context.Context, roleId *types.RoleQueryInfo) (*types.DataType, error)
 		Update(ctx context.Context, data *StRole) error
 		Delete(ctx context.Context, roleId int64) error
 	}
@@ -63,30 +63,37 @@ func (m *defaultStRoleModel) Delete(ctx context.Context, roleId int64) error {
 	return err
 }
 
-func (m *defaultStRoleModel) Find(ctx context.Context, roleQuery *types.RoleQueryInfo) (*StRole, error) {
-	query := fmt.Sprintf("select %s from %s where `role_id` = ? limit 1", stRoleRows, m.table)
-	var args []interface{}
-	if roleQuery != nil {
-		query = fmt.Sprintf(" %s where 1=1 ", query)
-		if len(roleQuery.Name) > 0 {
-			query = fmt.Sprintf(" %s and `name` = ? ", query)
-			args = append(args, roleQuery.Name)
-		}
-		//if roleQuery.RoleId > 0 {
-		//	query = fmt.Sprintf(" %s and`user_id` = ? ", query)
-		//	args = append(args, roleQuery.RoleId)
-		//}
+// []*StRole
+func (m *defaultStRoleModel) Find(ctx context.Context, roleQuery *types.RoleQueryInfo) (*types.DataType, error) {
+	where := "1=1"
 
+	if len(roleQuery.Name) > 0 {
+		where = where + fmt.Sprintf(" AND name like '%%%s%%'", roleQuery.Name)
+	}
+	var total int64
+	totalQuery := fmt.Sprintf("select count(*) as count from %s where %s", m.table, where)
+	totalErr := m.conn.QueryRow(&total, totalQuery)
+	if totalErr != nil {
+		logx.Errorf("error query user by account deu to %s", totalErr)
+		return nil, totalErr
 	}
 
-	var resp StRole
-	err := m.conn.QueryRowCtx(ctx, &resp, query, args...)
+	query := fmt.Sprintf("select %s from %s where %s limit ?,?", stRoleRows, m.table, where)
+	var resp []*StRole
+	err := m.conn.QueryRows(&resp, query, (roleQuery.PageNum-1)*roleQuery.PageSize, roleQuery.PageSize)
+	data := &types.DataType{
+		List: resp,
+		PageData: types.PageType{
+			PageNum:  roleQuery.PageNum,
+			PageSize: roleQuery.PageSize,
+			Total:    total,
+		},
+	}
 	switch err {
 	case nil:
-		return &resp, nil
-	case sqlc.ErrNotFound:
-		return nil, ErrNotFound
+		return data, nil
 	default:
+		logx.Errorf("error query user by account deu to %s", err)
 		return nil, err
 	}
 }
