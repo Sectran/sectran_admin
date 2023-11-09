@@ -98,20 +98,26 @@ func handleConnection(ctx context.Context, message *SSHModuleMessage) {
 				terminal = XtermStart(int(req.Config.PtyRequestMsg.Columns), int(req.Config.PtyRequestMsg.Rows))
 
 				peerPostReadCb := func(data []byte, termianl unsafe.Pointer) bool {
-					if len(data) == 1 && data[0] == '\r' {
-						command := XtermGetCommand(termianl)
-						if len(command) > 0 {
+					logrus.Infof("%q", data)
+					if len(data) == 1 {
+						switch data[0] {
+						case '\r':
+							command := XtermGetCommand(termianl)
 							logrus.Infof("get current command :%s", command)
+						case 0x03:
+							//just flush buffer
+							XtermGetCommand(termianl)
+						default:
+							XtermMarkStdin(termianl, data)
 						}
-						XtermFlush(termianl)
 					} else {
-						XtermMarkStdinStart(termianl)
+						XtermMarkStdin(termianl, data)
 					}
 					return true
 				}
 
 				clientPostReadCb := func(data []byte, termianl unsafe.Pointer) bool {
-					logrus.Infof("%q", data)
+					// logrus.Infof("%q", data)
 					XtermWrite(termianl, data)
 					XtermDumpToFile(termianl)
 					return true
