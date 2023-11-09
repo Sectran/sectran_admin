@@ -14,7 +14,7 @@ void sectran_terminal_stop(sectran_terminal_handle *terminal);
 char *get_current_command(sectran_terminal_handle *terminal);
 void sectran_terminal_print_to_file(sectran_terminal_handle* terminal);
 void terminal_buffer_flush(sectran_terminal_handle* terminal);
-void mark_stdin_start(sectran_terminal_handle* terminal);
+void mark_stdin(sectran_terminal_handle* terminal,char *data,int data_len);
 */
 import "C"
 import (
@@ -23,7 +23,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/Users/ryan/Desktop/development/go/sectran/backend/terminal/lib/
 // while true; do cat terminal.dump; sleep 1; clear; done
 func XtermStart(width, heigth int) unsafe.Pointer {
 	logrus.Infof("new terminal width:%d,height:%d", width, heigth)
@@ -56,6 +55,6 @@ func XtermFlush(terminal unsafe.Pointer) {
 	C.terminal_buffer_flush((*C.sectran_terminal_handle)(unsafe.Pointer(terminal)))
 }
 
-func XtermMarkStdinStart(terminal unsafe.Pointer) {
-	C.mark_stdin_start((*C.sectran_terminal_handle)(unsafe.Pointer(terminal)))
+func XtermMarkStdin(terminal unsafe.Pointer, data []byte) {
+	C.mark_stdin((*C.sectran_terminal_handle)(unsafe.Pointer(terminal)), (*C.char)(unsafe.Pointer(&data[0])), C.int(len(data)))
 }
