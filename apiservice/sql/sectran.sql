@@ -29,7 +29,6 @@ CREATE TABLE `st_dept` (
   `child_ids` varchar(4096) NOT NULL COMMENT '下级部门ID集合，用逗号分隔',
   `create_by_uid` int(11) DEFAULT NULL COMMENT '创建者',
   `region` varchar(1024) NOT NULL COMMENT '部门所在地区',
-  `is_deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否被删除',
   `create_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
   PRIMARY KEY (`dept_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

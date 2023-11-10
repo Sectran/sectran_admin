@@ -16,11 +16,6 @@ type Response struct {
 	Code int    `json:"code"`
 	Msg  string `json:"msg"`
 }
-type PageType struct {
-	PageNum  int64 `json:"pageNum"`
-	PageSize int64 `json:"pageSize"`
-	Total    int64 `json:"total"`
-}
 
 type CommonResponse struct {
 	Response
@@ -37,23 +32,20 @@ func BuildCommonResponse(data any, msg string, code int) *CommonResponse {
 	}
 }
 
-type TableType struct {
-	Response
-	Data DataType `json:"data"`
-}
-type DataType struct {
-	List     any `json:"list"`
-	PageData PageType
+type PageVisibleInfo struct {
+	PageNum  int64 `json:"pageNum"`
+	PageSize int64 `json:"pageSize"`
+	Total    int64 `json:"total"`
 }
 
-func TableResponse(data DataType, msg string, code int) *TableType {
-	return &TableType{
-		Response: Response{
-			Msg:  msg,
-			Code: code,
-		},
-		Data: data,
-	}
+type PageListVisibleInfo struct {
+	List     any `json:"list"`
+	PageInfo PageVisibleInfo
+}
+
+type TableVisibleInfo struct {
+	Response
+	PageListVisibleInfo
 }
 
 // -----------------auth---------------
@@ -121,7 +113,7 @@ type UserAllInfo struct {
 
 // -----------------role---------------
 type RoleDeleteRequest struct {
-	RoleIds []int `json:"RoleIds"`
+	RoleId int64 `json:"role_id"  validate:"required,gte=0"` // 角色ID
 }
 
 type RoleQueryInfo struct {
@@ -130,24 +122,30 @@ type RoleQueryInfo struct {
 }
 
 type RoleVisibleQueryInfo struct {
-	//RoleId     int64  `json:"roleId" validate:"gte=-1"`           //角色ID
+	RoleId     int64  `json:"role_id" validate:"gte=-1"`          //角色ID
 	Name       string `json:"name" validate:"min=0,max=255"`      //角色名称
 	CreateTime string `json:"createTime" validate:"min=0,max=20"` // 创建时间
 
 }
 
 type RoleVisibleInfo struct {
-	RoleId      int64  `json:"roleId"  validate:"required,gte=0"`    // 角色ID
+	RoleId      int64  `json:"role_id"  validate:"required,gte=0"`   // 角色ID
 	Name        string `json:"name"  validate:"min=0,max=255"`       // 角色名称
 	Description string `json:"description" validate:"min=0,max=255"` // 角色描述
 }
 
 type RoleAllInfo struct {
 	RoleVisibleInfo
-	CreateByUid int64 `json:"createByUid" validate:"gte=0"` // 创建者
-
-	CreateTime string `json:"createTime"  validate:"-"` // 创建时间
+	CreateByUid int64  `json:"createByUid" validate:"gte=0"` // 创建者
+	CreateTime  string `json:"createTime"  validate:"-"`     // 创建时间
 	//IsDelete    uint8 `json:"isDeleted"`                    // 是否被删除
+}
+
+type RoleEditInfo struct {
+	RoleId      int64  `json:"role_id"  validate:"required,gte=1"`   // 角色ID
+	Name        string `json:"name"  validate:"min=1,max=255"`       // 角色名称
+	Description string `json:"description" validate:"min=1,max=255"` // 角色描述
+	CreateByUid int64  `json:"createByUid" validate:"gte=0"`         // 创建者
 }
 
 type RoleVisibleInfoArray struct {
@@ -156,6 +154,31 @@ type RoleVisibleInfoArray struct {
 }
 
 // -----------------department---------------
+type DeptAddRequest struct {
+	Name        string `json:"name"  validate:"min=0,max=255"`        // 部门名称
+	Description string `json:"description"  validate:"min=0,max=255"` // 部门描述
+	ParentId    int64  `json:"parentId"  validate:"gte=0"`            // 上级部门ID
+	ChildIds    string `json:"childIds"`                              // 下级部门ID集合，用逗号分隔
+	Region      string `json:"region"`                                // 部门所在地区
+	CreateByUid int64  `json:"createByUid" validate:"gte=0"`          // 创建者
+}
+
+type DeptQueryInfo struct {
+	PageInfo
+	DeptId   int64  `json:"dept_id" validate:"gte=-1"`       //角色ID
+	Name     string `json:"name" validate:"min=0,max=255"`   //角色名称
+	ParentId int64  `json:"parentId"  validate:"gte=-1"`     // 上级部门ID
+	Region   string `json:"region" validate:"min=0,max=255"` // 部门所在地区
+}
+
+type DeptEditInfo struct {
+	DeptId      int64  `json:"dept_id" validate:"gte=1"`             //部门ID
+	Name        string `json:"name"  validate:"min=1,max=255"`       // 部门名称
+	Description string `json:"description" validate:"min=1,max=255"` // 部门描述
+	ParentId    int64  `json:"parentId"  validate:"gte=0"`           // 上级部门ID
+	Region      string `json:"region"`                               // 部门所在地区
+}
+
 type DeptDeleteRequest struct {
 	DeptIds []int `json:"deptIds"`
 }
@@ -172,7 +195,7 @@ type DeptVisibleInfo struct {
 
 type DeptAllInfo struct {
 	DeptVisibleInfo
-	IsDelete    uint8 `json:"isDeleted"`   // 是否被删除
+	//IsDelete    uint8 `json:"isDeleted"`   // 是否被删除
 	CreateByUid int64 `json:"createByUid"` // 创建者
 }
 

@@ -24,9 +24,9 @@ var (
 type (
 	stRoleModel interface {
 		Insert(ctx context.Context, data *types.RoleVisibleInfo) (sql.Result, error)
-		Find(ctx context.Context, roleId *types.RoleQueryInfo) (*types.DataType, error)
-		Update(ctx context.Context, data *StRole) error
-		Delete(ctx context.Context, roleId int64) error
+		Find(ctx context.Context, roleId *types.RoleQueryInfo) (*types.PageListVisibleInfo, error)
+		Update(ctx context.Context, data *types.RoleEditInfo) error
+		Delete(ctx context.Context, roleId *types.RoleDeleteRequest) error
 	}
 
 	defaultStRoleModel struct {
@@ -57,33 +57,36 @@ func (m *defaultStRoleModel) withSession(session sqlx.Session) *defaultStRoleMod
 	}
 }
 
-func (m *defaultStRoleModel) Delete(ctx context.Context, roleId int64) error {
+func (m *defaultStRoleModel) Delete(ctx context.Context, roleId *types.RoleDeleteRequest) error {
 	query := fmt.Sprintf("delete from %s where `role_id` = ?", m.table)
-	_, err := m.conn.ExecCtx(ctx, query, roleId)
+	_, err := m.conn.ExecCtx(ctx, query, roleId.RoleId)
 	return err
 }
 
 // []*StRole
-func (m *defaultStRoleModel) Find(ctx context.Context, roleQuery *types.RoleQueryInfo) (*types.DataType, error) {
+func (m *defaultStRoleModel) Find(ctx context.Context, roleQuery *types.RoleQueryInfo) (*types.PageListVisibleInfo, error) {
 	where := "1=1"
-
 	if len(roleQuery.Name) > 0 {
-		where = where + fmt.Sprintf(" AND name like '%%%s%%'", roleQuery.Name)
+		where = where + fmt.Sprintf(" AND name = '%s'", roleQuery.Name)
 	}
+	if roleQuery.RoleId > 0 {
+		where = where + fmt.Sprintf(" AND role_id = '%d'", roleQuery.RoleId)
+	}
+
 	var total int64
 	totalQuery := fmt.Sprintf("select count(*) as count from %s where %s", m.table, where)
 	totalErr := m.conn.QueryRow(&total, totalQuery)
 	if totalErr != nil {
-		logx.Errorf("error query user by account deu to %s", totalErr)
+		logx.Errorf("error query Role total fail  %s", totalErr)
 		return nil, totalErr
 	}
 
 	query := fmt.Sprintf("select %s from %s where %s limit ?,?", stRoleRows, m.table, where)
 	var resp []*StRole
 	err := m.conn.QueryRows(&resp, query, (roleQuery.PageNum-1)*roleQuery.PageSize, roleQuery.PageSize)
-	data := &types.DataType{
+	data := &types.PageListVisibleInfo{
 		List: resp,
-		PageData: types.PageType{
+		PageInfo: types.PageVisibleInfo{
 			PageNum:  roleQuery.PageNum,
 			PageSize: roleQuery.PageSize,
 			Total:    total,
@@ -104,9 +107,10 @@ func (m *defaultStRoleModel) Insert(ctx context.Context, data *types.RoleVisible
 	return ret, err
 }
 
-func (m *defaultStRoleModel) Update(ctx context.Context, data *StRole) error {
+func (m *defaultStRoleModel) Update(ctx context.Context, data *types.RoleEditInfo) error {
 	query := fmt.Sprintf("update %s set %s where `role_id` = ?", m.table, stRoleRowsWithPlaceHolder)
 	_, err := m.conn.ExecCtx(ctx, query, data.Name, data.Description, data.CreateByUid, data.RoleId)
+	fmt.Print(err)
 	return err
 }
 

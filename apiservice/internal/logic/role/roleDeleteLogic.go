@@ -23,8 +23,15 @@ func NewRoleDeleteLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleDe
 	}
 }
 
-func (l *RoleDeleteLogic) RoleDelete(req *types.RoleDeleteRequest) (resp *types.CommonResponse, err error) {
-	// todo: add your logic here and delete this line
+func (l *RoleDeleteLogic) RoleDelete(req *types.RoleDeleteRequest) (*types.CommonResponse, error) {
+	err := l.svcCtx.Validator.Struct(req)
+	if err != nil {
+		return types.BuildCommonResponse("null", "invalid params", 500), err
+	}
+	err = l.svcCtx.StRoleModel.Delete(l.ctx, req)
+	if err != nil {
+		return types.BuildCommonResponse("null", "failed to edit this account", 501), err
+	}
 
-	return
+	return types.BuildCommonResponse("null", "Role account delete successfully", 200), nil
 }

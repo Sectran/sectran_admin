@@ -23,8 +23,14 @@ func NewDeptListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeptList
 	}
 }
 
-func (l *DeptListLogic) DeptList(req *types.DeptVisibleInfo) (resp *types.DeptVisibleInfoArray, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+func (l *DeptListLogic) DeptList(DeptQuery *types.DeptQueryInfo) (*types.CommonResponse, error) {
+	err := l.svcCtx.Validator.Struct(DeptQuery)
+	if err != nil {
+		return types.BuildCommonResponse("null", "invalid params", types.ERROR_ILLEGAL_PARAMS), nil
+	}
+	roles, err := l.svcCtx.StDeptModel.Find(l.ctx, DeptQuery)
+	if err != nil {
+		return types.BuildCommonResponse("null", "failed to query roles", 501), nil
+	}
+	return types.BuildCommonResponse(roles, "roles info query successfully", 200), nil
 }

@@ -23,8 +23,15 @@ func NewDeptAddLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeptAddLo
 	}
 }
 
-func (l *DeptAddLogic) DeptAdd(req *types.DeptAllInfo) (resp *types.CommonResponse, err error) {
-	// todo: add your logic here and delete this line
+func (l *DeptAddLogic) DeptAdd(req *types.DeptAddRequest) (*types.CommonResponse, error) {
+	err := l.svcCtx.Validator.Struct(req)
+	if err != nil {
+		return types.BuildCommonResponse("null", "invalid params", types.ERROR_ILLEGAL_PARAMS), nil
+	}
+	_, err = l.svcCtx.StDeptModel.Insert(l.ctx, req)
+	if err != nil {
+		return types.BuildCommonResponse("null", "failed to add this user account", types.ERROR_REUQEST_FAILED), nil
+	}
 
-	return
+	return types.BuildCommonResponse("null", "dept account add successfully", types.REQUEST_SUCCESS), nil
 }

@@ -23,8 +23,15 @@ func NewDeptEditLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeptEdit
 	}
 }
 
-func (l *DeptEditLogic) DeptEdit(req *types.DeptAllInfo) (resp *types.CommonResponse, err error) {
-	// todo: add your logic here and delete this line
+func (l *DeptEditLogic) DeptEdit(req *types.DeptEditInfo) (*types.CommonResponse, error) {
+	err := l.svcCtx.Validator.Struct(req)
+	if err != nil {
+		return types.BuildCommonResponse("null", "invalid params", 500), err
+	}
+	err = l.svcCtx.StDeptModel.Update(l.ctx, req)
+	if err != nil {
+		return types.BuildCommonResponse("null", "failed to edit this account", 501), err
+	}
 
-	return
+	return types.BuildCommonResponse("null", "Role account edit successfully", 200), nil
 }
