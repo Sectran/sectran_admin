@@ -2,7 +2,6 @@ package dept
 
 import (
 	"context"
-
 	"sectran/apiservice/internal/svc"
 	"sectran/apiservice/internal/types"
 
@@ -28,6 +27,7 @@ func (l *DeptAddLogic) DeptAdd(req *types.DeptAddRequest) (*types.CommonResponse
 	if err != nil {
 		return types.BuildCommonResponse("null", "invalid params", types.ERROR_ILLEGAL_PARAMS), nil
 	}
+
 	_, err = l.svcCtx.StDeptModel.Insert(l.ctx, req)
 	if err != nil {
 		return types.BuildCommonResponse("null", "failed to add this user account", types.ERROR_REUQEST_FAILED), nil

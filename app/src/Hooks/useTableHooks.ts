@@ -2,24 +2,27 @@ import { reactive, ref, onMounted, } from "vue";
 import { Modal } from 'ant-design-vue';
 import type { Ref } from "vue"
 type pageData = {
-    page: number,
-    page_size: number
+    pageNum: number,
+    pageSize: number
 }
 
 type resTable = {
-    table: any
-    total: number
+    list: any
+    PageInfo: {
+        total:Number
+    }
 }
+
+
+
 /**
  * 
  * @param SearchObject 搜索表单数据
+ * @param Listapi 请求列表方法
+ * @param deleteApi  删除方法
  * @returns sizeChange 数据
  */
-// api: (params: any) => Promise<any>,
-// dataCallBack?: (data: any) => any
-
-
-export const useTableHooks = <K extends object>(SearchObject: K, Listapi: Function, deleteApi: Function) => {
+export const useTableHooks = <K extends object>(SearchObject: K, paramList: {listApi:Function,paramFormat:Function}, deleteApi: Function) => {
     //表格头部颜色
     const headerStyle = { background: '#F8F8F9' }
     //分页可以选择的条数
@@ -31,8 +34,8 @@ export const useTableHooks = <K extends object>(SearchObject: K, Listapi: Functi
     let pageTotal = ref(200)
     //分页
     let pageData = reactive<pageData>({
-        page: 1,
-        page_size: 10
+        pageNum: 1,
+        pageSize: 10
     })
     //表格是否正在加载
     const Table_loading = ref(false)
@@ -54,6 +57,9 @@ export const useTableHooks = <K extends object>(SearchObject: K, Listapi: Functi
             console.log(size)
             paginationOpt.current = current
             paginationOpt.pageSize = size
+            pageData.pageNum = current
+            pageData.pageSize = size
+            Fun_requestList()
         },
     })
 
@@ -69,28 +75,11 @@ export const useTableHooks = <K extends object>(SearchObject: K, Listapi: Functi
         } else {
             notarizeFrom = { ...SearchFrom }
         }
-        pageData.page = 1
-        console.log({ ...pageData, ...notarizeFrom })
+        pageData.pageNum = 1
+        Fun_requestList()
     }
 
-    // 删除操作
-    const handleDelete = (id: string) => {
-        Modal.confirm({
-            title: '删除操作',
-            content: '确定要删除这一条记录吗？',
-            async onOk() {
-                try {
-                    return await deleteApi({ id }).then(() => {
-                        Fun_requestList()
-                    })
-                } catch {
-                    return console.log('Oops errors!');
-                }
-            },
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            onCancel() { },
-        });
-    };
+
 
 
     //表单重置
@@ -102,12 +91,12 @@ export const useTableHooks = <K extends object>(SearchObject: K, Listapi: Functi
 
     //点击分页
     const pagingChange = (val: number) => {
-        pageData.page = val;
+        pageData.pageNum = val;
         Fun_requestList()
     };
     //修改每页条数
     const sizeChange = (pageSize: number) => {
-        pageData.page_size = pageSize
+        pageData.pageSize = pageSize
         Fun_requestList()
     }
 
@@ -124,10 +113,11 @@ export const useTableHooks = <K extends object>(SearchObject: K, Listapi: Functi
     //请求接口
     const Fun_requestList = () => {
         console.log(pageData)
-        Listapi({ ...pageData }).then((res: { data: resTable }) => {
-            let { table, total } = res.data
-            tableData.value = table
-            paginationOpt.total = total
+        let fromData = paramList.paramFormat({...SearchObject,...pageData})
+        paramList.listApi(fromData).then((res: { data: resTable }) => {
+            let { list, PageInfo } = res.data
+            tableData.value = list
+            paginationOpt.total = PageInfo.total
         })
     }
 
@@ -137,7 +127,6 @@ export const useTableHooks = <K extends object>(SearchObject: K, Listapi: Functi
         Fromreset,
         pagingChange,
         on_search,
-        handleDelete,
         SearchFrom,
         pageData,
         headerStyle,

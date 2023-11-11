@@ -33,7 +33,8 @@ export default {
     menu:{
         configuration:'configuration',
         userAdmin:'user admin',
-        departmentAdmin:'department admin'
+        departmentAdmin:'department admin',
+        roleAdmin:"role admin"
     }
 
 

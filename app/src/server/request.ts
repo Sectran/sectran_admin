@@ -19,7 +19,7 @@ axios.interceptors.request.use(
             'Content-Type': 'application/json'
         }
         if (token) {
-            headers['authorization'] = `Bearer ${token}`
+            headers['authorization'] = `${token}`
         }
         config.headers = headers
         return config;

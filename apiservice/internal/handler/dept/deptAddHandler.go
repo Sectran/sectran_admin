@@ -18,6 +18,7 @@ func DeptAddHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		l := dept.NewDeptAddLogic(r.Context(), svcCtx)
+
 		resp, err := l.DeptAdd(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)

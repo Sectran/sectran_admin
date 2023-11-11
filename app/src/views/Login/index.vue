@@ -46,9 +46,10 @@ const formState = reactive<FormState>({
 const onFinish = (values: { account: string, password: string }) => {
     console.log('Success:', values);
     let fromData = JSON.stringify({password: values.password, account: values.account})
-    login<string>(fromData).then((res: { data: { data: string } }) => {
-        console.log(res)
-        let { data } = res.data
+    login<string>(fromData).then((res: {  data: string  }) => {
+
+        let { data } = res
+        console.log(data)
         localStorage.setItem('token', data)
         router.replace('/admin/user') 
     })

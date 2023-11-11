@@ -29,7 +29,6 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/uuid v1.3.1 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.0 // indirect
-	github.com/kr/fs v0.1.0 // indirect
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
@@ -68,7 +67,6 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jonboulle/clockwork v0.2.2 // indirect
-	github.com/pkg/sftp v1.13.6
 	github.com/robfig/cron/v3 v3.0.1
 	golang.org/x/net v0.15.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect

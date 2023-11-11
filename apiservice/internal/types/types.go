@@ -129,7 +129,7 @@ type RoleVisibleQueryInfo struct {
 }
 
 type RoleVisibleInfo struct {
-	RoleId      int64  `json:"role_id"  validate:"required,gte=0"`   // 角色ID
+	//RoleId      int64  `json:"role_id"  validate:"required,gte=0"`   // 角色ID
 	Name        string `json:"name"  validate:"min=0,max=255"`       // 角色名称
 	Description string `json:"description" validate:"min=0,max=255"` // 角色描述
 }
@@ -175,8 +175,10 @@ type DeptEditInfo struct {
 	DeptId      int64  `json:"dept_id" validate:"gte=1"`             //部门ID
 	Name        string `json:"name"  validate:"min=1,max=255"`       // 部门名称
 	Description string `json:"description" validate:"min=1,max=255"` // 部门描述
-	ParentId    int64  `json:"parentId"  validate:"gte=0"`           // 上级部门ID
-	Region      string `json:"region"`                               // 部门所在地区
+	//ParentId    int64  `json:"parentId"  validate:"gte=0"`           // 上级部门ID
+	Region string `json:"region"` // 部门所在地区
+	//ChildIds    string `json:"childIds"`                             // 下级部门ID集合，用逗号分隔
+	//CreateByUid int64  `json:"createByUid" validate:"gte=0"`         // 创建者
 }
 
 type DeptDeleteRequest struct {

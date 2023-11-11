@@ -28,6 +28,20 @@ let Layout = [
                 },
             },
 
+            {
+                path: 'role',
+                name: 'role',
+                component: () => import('views/Table/role.vue'),
+                meta: {
+                    // title: '部门管理',
+                    title: 'roleAdmin',
+                },
+            },
+
+
+
+            
+
         ]
     }]
 

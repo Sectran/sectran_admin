@@ -30,6 +30,7 @@ export default {
     menu:{
         configuration:'配置',
         userAdmin:'人员管理',
-        departmentAdmin:'部门管理'
+        departmentAdmin:'部门管理',
+        roleAdmin:"角色管理"
     }
 }
