@@ -8,6 +8,7 @@ import (
 	"sectran/common/utils/cert"
 	"sectran/common/utils/reflect"
 	"sectran/common/utils/rw"
+	"strconv"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -20,6 +21,17 @@ const (
 	SectranSSHDPublicKey  string = "id_rsa.pub"
 	SectranWelcome        string = "Welcome to SectranV1.0.\r\nAny question plz contact ryanwymail@163.com."
 )
+
+type SSHChannels struct {
+	Pty  chan *ChannelRequest
+	Sftp chan *ChannelRequest
+	Err  chan *ChannelRequest
+}
+
+type ChannelRequest struct {
+	Data     interface{}
+	UserConf *SSHConfig
+}
 
 func getSSHSigner() (ssh.Signer, error) {
 	var (
@@ -83,23 +95,39 @@ func NewSSHServer(conn net.Conn, userConf *SSHConfig) (*SSHChannels, error) {
 	//manual auth
 	if userConf.InteractiveAuth {
 		config.KeyboardInteractiveCallback = func(conn ssh.ConnMetadata, client ssh.KeyboardInteractiveChallenge) (*ssh.Permissions, error) {
-			questions := []string{"Enter your access token:"}
-			answers, err := client("", SectranWelcome, questions, []bool{true})
-			if err != nil {
-				return nil, err
-			}
-			userConf.Password = answers[0]
-
-			// questions := []string{"target:", "username:", "password:"}
-			// answers, err := client("", SectranWelcome, questions, []bool{true, true, false})
+			//===========================start===========================
+			// questions := []string{"Enter your access token:"}
+			// answers, err := client("", SectranWelcome, questions, []bool{true})
 			// if err != nil {
 			// 	return nil, err
 			// }
+			// userConf.Password = answers[0]
 
-			// userConf.Host = answers[0]
-			// userConf.UserName = answers[1]
-			// userConf.Password = answers[2]
+			// //todo:change client config to what you want here
+			// userConf.Host = "127.0.0.1"
 			// userConf.Port = 22
+			// userConf.UserName = "Ryan"
+			// userConf.Password = "passwordryan"
+			//===========================end===========================
+
+			//===========================start===========================
+			questions := []string{"target:", "port:", "username:", "password:"}
+			answers, err := client("", SectranWelcome, questions, []bool{true, true, true, false})
+			if err != nil {
+				return nil, err
+			}
+
+			userConf.Host = answers[0]
+			port, err := strconv.Atoi(answers[1])
+			if err != nil {
+				return nil, err
+			}
+
+			userConf.Port = int32(port)
+			userConf.UserName = answers[2]
+			userConf.Password = answers[3]
+			//===========================end===========================
+
 			logrus.Infof("Selected interactive authentication and authentication always release")
 			return permissions, nil
 		}
@@ -133,17 +161,18 @@ func NewSSHServer(conn net.Conn, userConf *SSHConfig) (*SSHChannels, error) {
 	}
 	go requestHandler(reqs)
 
+	//make(chan ssh.Channel, 1)
 	chans_ := &SSHChannels{
-		Pty:  make(chan ssh.Channel, 1),
-		Sftp: make(chan ssh.Channel, 1),
-		Err:  make(chan error, 1),
+		Pty:  make(chan *ChannelRequest, 1),
+		Sftp: make(chan *ChannelRequest, 1),
+		Err:  make(chan *ChannelRequest, 1),
 	}
 
 	go newChannelHandler(chans_.Pty, chans_.Sftp, chans_.Err, userConf, chans)
 	return chans_, nil
 }
 
-func newChannelHandler(pty chan ssh.Channel, sftp chan ssh.Channel, errc chan error, userConf *SSHConfig, chans <-chan ssh.NewChannel) {
+func newChannelHandler(pty chan *ChannelRequest, sftp chan *ChannelRequest, errc chan *ChannelRequest, userConf *SSHConfig, chans <-chan ssh.NewChannel) {
 	for newChannel := range chans {
 		channelType := newChannel.ChannelType()
 		if channelType != "session" {
@@ -153,7 +182,9 @@ func newChannelHandler(pty chan ssh.Channel, sftp chan ssh.Channel, errc chan er
 		channel, requests, err := newChannel.Accept()
 		if err != nil {
 			newChannel.Reject(ssh.ConnectionFailed, "Failed to accept SSH Channel Request, developers are working on it.")
-			errc <- err
+			errc <- &ChannelRequest{
+				Data: err,
+			}
 		}
 		logrus.Infof("incomming a ssh channel")
 		go seletPtyChannel(pty, sftp, channel, requests, userConf)
@@ -161,7 +192,7 @@ func newChannelHandler(pty chan ssh.Channel, sftp chan ssh.Channel, errc chan er
 }
 
 // select pty channle
-func seletPtyChannel(pty_chan chan ssh.Channel, sftp_chan chan ssh.Channel, channel ssh.Channel, sshReqChan <-chan *ssh.Request, userConf *SSHConfig) {
+func seletPtyChannel(pty_chan chan *ChannelRequest, sftp_chan chan *ChannelRequest, channel ssh.Channel, sshReqChan <-chan *ssh.Request, userConf *SSHConfig) {
 	for {
 		select {
 		case req := <-sshReqChan:
@@ -214,7 +245,10 @@ func seletPtyChannel(pty_chan chan ssh.Channel, sftp_chan chan ssh.Channel, chan
 					//read all modelist item (contains end zero)
 					userConf.PtyRequestMsg.Modelist, _ = r.ReadBytes(int(modeListLen))
 
-					pty_chan <- channel
+					pty_chan <- &ChannelRequest{
+						Data:     channel,
+						UserConf: userConf,
+					}
 				}
 			case "env":
 				if r.CheckLength(int(4)) < 0 {
@@ -247,7 +281,10 @@ func seletPtyChannel(pty_chan chan ssh.Channel, sftp_chan chan ssh.Channel, chan
 				logrus.Infof("request subsystem:%s", req.Payload[4:])
 				if string(req.Payload[4:]) == "sftp" {
 					req.Reply(true, nil)
-					sftp_chan <- channel
+					sftp_chan <- &ChannelRequest{
+						Data:     channel,
+						UserConf: userConf,
+					}
 				}
 			default:
 				logrus.Errorf("recieve unhandled request tyep of:%s,%s", req.Type, req.Payload)

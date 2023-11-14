@@ -29,12 +29,6 @@ type SSHModuleMessage struct {
 	Cancle       context.CancelFunc
 }
 
-type SSHChannels struct {
-	Pty  chan ssh.Channel
-	Sftp chan ssh.Channel
-	Err  chan error
-}
-
 // global ssh common config
 var SSHModuleConfig SSHConfig
 
@@ -98,12 +92,13 @@ func handleConnection(ctx context.Context, message *SSHModuleMessage) {
 				terminal = XtermStart(int(req.Config.PtyRequestMsg.Columns), int(req.Config.PtyRequestMsg.Rows))
 
 				peerPostReadCb := func(data []byte, termianl unsafe.Pointer) bool {
-					logrus.Infof("%q", data)
 					if len(data) == 1 {
 						switch data[0] {
 						case '\r':
 							command := XtermGetCommand(termianl)
-							logrus.Infof("get current command :%s", command)
+							if len(command) > 0 {
+								logrus.Infof("get current command :\n%s", command)
+							}
 						case 0x03:
 							//just flush buffer
 							XtermGetCommand(termianl)
@@ -194,35 +189,28 @@ func startSSHTcpService(config *SSHConfig, netChan chan *SSHConnRequest, addr st
 				select {
 				case pty := <-channels.Pty:
 					logrus.Infof("destnation number is:%s", clientConfig.Password)
-
-					//todo:change client config to what you want here
-					// clientConfig.Host = "192.168.31.100"
-					// clientConfig.Port = 22
-					// clientConfig.UserName = "root"
-					// clientConfig.Password = "Ryan@1218pass"
-
-					clientConfig.Host = "127.0.0.1"
-					clientConfig.Port = 22
-					clientConfig.UserName = "Ryan"
-					clientConfig.Password = "passwordryan"
+					clientConfig.Host = pty.UserConf.Host
+					clientConfig.Port = pty.UserConf.Port
+					clientConfig.UserName = pty.UserConf.UserName
+					clientConfig.Password = pty.UserConf.Password
 
 					clientConfig.PasswordAuth = true
 
 					netChan <- &SSHConnRequest{
 						ConnType:        0,
-						Conn:            pty,
+						Conn:            pty.Data.(ssh.Channel),
 						Config:          clientConfig,
 						ReqProtocolType: constants.REQUEST_TCP,
 					}
 				case sftp := <-channels.Sftp:
 					netChan <- &SSHConnRequest{
 						ConnType:        1,
-						Conn:            sftp,
+						Conn:            sftp.Data.(ssh.Channel),
 						Config:          clientConfig,
 						ReqProtocolType: constants.REQUEST_TCP,
 					}
 				case err := <-channels.Err:
-					logrus.Errorf("waiting for SSH channel to encounter an error in a loop %s", err)
+					logrus.Errorf("waiting for SSH channel to encounter an error in a loop %s", err.Data)
 					return
 				}
 			}
