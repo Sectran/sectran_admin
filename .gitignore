@@ -29,4 +29,5 @@ backend/terminal
 backend/license
 build
 pkg
+vendor
 *.tar.gz

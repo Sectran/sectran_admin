@@ -8,7 +8,6 @@ import (
 	"sectran/common/utils/cert"
 	"sectran/common/utils/reflect"
 	"sectran/common/utils/rw"
-	"strconv"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -96,36 +95,36 @@ func NewSSHServer(conn net.Conn, userConf *SSHConfig) (*SSHChannels, error) {
 	if userConf.InteractiveAuth {
 		config.KeyboardInteractiveCallback = func(conn ssh.ConnMetadata, client ssh.KeyboardInteractiveChallenge) (*ssh.Permissions, error) {
 			//===========================start===========================
-			// questions := []string{"Enter your access token:"}
-			// answers, err := client("", SectranWelcome, questions, []bool{true})
-			// if err != nil {
-			// 	return nil, err
-			// }
-			// userConf.Password = answers[0]
+			questions := []string{"Enter your access token:"}
+			answers, err := client("", SectranWelcome, questions, []bool{true})
+			if err != nil {
+				return nil, err
+			}
+			userConf.Password = answers[0]
 
-			// //todo:change client config to what you want here
-			// userConf.Host = "127.0.0.1"
-			// userConf.Port = 22
-			// userConf.UserName = "Ryan"
-			// userConf.Password = "passwordryan"
+			//todo:change client config to what you want here
+			userConf.Host = "127.0.0.1"
+			userConf.Port = 22
+			userConf.UserName = "Ryan"
+			userConf.Password = "passwordryan"
 			//===========================end===========================
 
 			//===========================start===========================
-			questions := []string{"target:", "port:", "username:", "password:"}
-			answers, err := client("", SectranWelcome, questions, []bool{true, true, true, false})
-			if err != nil {
-				return nil, err
-			}
+			// questions := []string{"target:", "port:", "username:", "password:"}
+			// answers, err := client("", SectranWelcome, questions, []bool{true, true, true, false})
+			// if err != nil {
+			// 	return nil, err
+			// }
 
-			userConf.Host = answers[0]
-			port, err := strconv.Atoi(answers[1])
-			if err != nil {
-				return nil, err
-			}
+			// userConf.Host = answers[0]
+			// port, err := strconv.Atoi(answers[1])
+			// if err != nil {
+			// 	return nil, err
+			// }
 
-			userConf.Port = int32(port)
-			userConf.UserName = answers[2]
-			userConf.Password = answers[3]
+			// userConf.Port = int32(port)
+			// userConf.UserName = answers[2]
+			// userConf.Password = answers[3]
 			//===========================end===========================
 
 			logrus.Infof("Selected interactive authentication and authentication always release")

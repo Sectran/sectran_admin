@@ -76,8 +76,11 @@ version:
 	@echo "    BuildTime string = \"$(DATE)\"" >> ${VERSIONGO}
 	@echo ")" >> ${VERSIONGO}
 
-DCMAKE_BUILD_TYPE = Release
+.PHONY: front
+front: cd ./app && yarn install && yarn build
+
 .PHONY: build
+build: DCMAKE_BUILD_TYPE = Release
 build: version .checkver_$(CMD_GO)
 	@mkdir -p pkg
 	@if [ -d ./backend/terminal/build ]; then rm -rf ./backend/terminal/build; fi
@@ -85,6 +88,7 @@ build: version .checkver_$(CMD_GO)
 	cd ./backend/terminal/build && cmake .. -DCMAKE_BUILD_TYPE=$(DCMAKE_BUILD_TYPE) && make && make install && cd -
 	CGO_ENABLED=1 $(CMD_GO) build -ldflags "-w -s -extldflags=-Wl,-rpath,." -o pkg/sectran-${OS}-${ARCH}
 
+.PHONY: debug
 debug: DCMAKE_BUILD_TYPE = Debug
 debug: build
 
