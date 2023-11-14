@@ -60,7 +60,6 @@ CREATE TABLE `st_user` (
   `description` varchar(255) DEFAULT NULL COMMENT '账号描述',
   `create_time` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
   `create_by_uid` int(11) NOT NULL COMMENT '创建人',
-  `is_deleted` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否被删除',
   `role_id` int(11) NOT NULL COMMENT '用户角色ID',
   `telephone` varchar(15) DEFAULT NULL COMMENT '用户手机号码',
   `email` varchar(100) DEFAULT NULL COMMENT '用户邮箱',

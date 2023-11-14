@@ -44,7 +44,6 @@ type (
 		Description sql.NullString `db:"description"`   // 账号描述
 		CreateTime  time.Time      `db:"create_time"`   // 创建时间
 		CreateByUid int64          `db:"create_by_uid"` // 创建人
-		IsDeleted   int64          `db:"is_deleted"`    // 是否被删除
 		RoleId      int64          `db:"role_id"`       // 用户角色ID
 		Telephone   string         `db:"telephone"`     // 用户手机号码
 		Email       string         `db:"email"`         // 用户邮箱
