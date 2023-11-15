@@ -1,3 +1,6 @@
+//go:build ssh_commands_audit
+// +build ssh_commands_audit
+
 package ssh
 
 /*

@@ -18,6 +18,8 @@ DATE := $(shell git log -1 --format=%cd --date=format:"%Y%m%d")
 
 VERSIONGO ?= cli/version/version.go
 
+.DEFAULT_GOAL := help
+
 .check_%:
 	@command -v $* >/dev/null
 	if [ $$? -ne 0 ]; then
@@ -41,15 +43,15 @@ GO_VERSION_MIN = $(shell echo $(GO_VERSION) | $(CMD_CUT) -d'.' -f2)
 .PHONY: help
 help:
 	@echo "# environment"
-	@echo "    $$ make env					# show makefile environment/variables"
+	@echo "    $$ make env                          # show makefile environment/variables"
 	@echo ""
 	@echo "# build"
-	@echo "    $$ make build					# build Sectran in release mode"
-	@echo "    $$ make debug					# build Sectran in debug mode"
-	@echo "    $$ make release					# build Sectran int release mode"
+	@echo "    $$ make                              # build Sectran in release mode"
+	@echo "    $$ make debug                        # build Sectran in debug mode"
+	@echo "    $$ make release                      # build Sectran int release mode"
 	@echo ""
 	@echo "# clean"
-	@echo "    $$ make clean				# wipe ./bin/"
+	@echo "    $$ make clean                        # clean project"
 	@echo ""
 
 .PHONY: env
@@ -80,30 +82,35 @@ version:
 front: cd ./app && yarn install && yarn build
 
 .PHONY: build
-build: DCMAKE_BUILD_TYPE = Release
 build: version .checkver_$(CMD_GO)
 	@mkdir -p pkg
-	@if [ -d ./backend/terminal/build ]; then rm -rf ./backend/terminal/build; fi
-	@mkdir -p ./backend/terminal/build
-	cd ./backend/terminal/build && cmake .. -DCMAKE_BUILD_TYPE=$(DCMAKE_BUILD_TYPE) && make && make install && cd -
-	CGO_ENABLED=1 $(CMD_GO) build -ldflags "-w -s -extldflags=-Wl,-rpath,." -o pkg/sectran-${OS}-${ARCH}
+	@if [ -d "$(CURDIR)/backend/terminal/" ]; then \
+		build_dir="$(CURDIR)/backend/terminal/build"; \
+		if [ -d "$$build_dir" ]; then rm -rf "$$build_dir"; fi; \
+		mkdir -p "$$build_dir"; \
+		cd "$$build_dir" && cmake .. -DCMAKE_BUILD_TYPE=$(DCMAKE_BUILD_TYPE) && make && make install && cd - ; \
+		export GOLANG_TAGS="ssh_commands_audit"; \
+	fi;\
+	echo "build with tags $$GOLANG_TAGS"; \
+	CGO_ENABLED=1 $(CMD_GO) build -tags "$$GOLANG_TAGS" -ldflags "-w -s -extldflags=-Wl,-rpath,." -o $(CURDIR)/pkg/sectran-${OS}-${ARCH}
 
-.PHONY: debug
+.PHONY: debug 
 debug: DCMAKE_BUILD_TYPE = Debug
 debug: build
 
+.PHONY: release 
+release: DCMAKE_BUILD_TYPE = Release 
 release: build
 
+
 .PHONY: package
-package: build
+package: release
 	@if [ -f pkg.tar.gz ]; then rm -f pkg.tar.gz; fi
 	tar -zcvf pkg.tar.gz pkg
+	
 .PHONY: clean
 clean:
 	@if [ -e bin/sectran-${os}-${arch} ]; then rm -f bin/sectran-${os}-${arch}; fi
 	@if [ -e cli/version/version.go ]; then rm -f cli/version/version.go; fi
 	@if [ -e terminal.dump ]; then rm -f terminal.dump; fi
 	@if [ -d build ]; then rm -f build; fi
-	
-
-# goctl api go --api ./apis/apis.api --dir ./apiservice --style goZero

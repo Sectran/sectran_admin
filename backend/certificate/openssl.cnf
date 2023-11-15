@@ -7,7 +7,7 @@ distinguished_name = dn
 [dn]
 C=CN
 ST=JS
-L=NJ
+L=NanJing
 O=Sectran
 OU=IT
 CN=Sectran
