@@ -78,8 +78,6 @@ version:
 	@echo "    BuildTime string = \"$(DATE)\"" >> ${VERSIONGO}
 	@echo ")" >> ${VERSIONGO}
 
-.PHONY: front
-front: cd ./app && yarn install && yarn build
 
 .PHONY: build
 build: version .checkver_$(CMD_GO)
@@ -101,7 +99,6 @@ debug: build
 .PHONY: release 
 release: DCMAKE_BUILD_TYPE = Release 
 release: build
-
 
 .PHONY: package
 package: release

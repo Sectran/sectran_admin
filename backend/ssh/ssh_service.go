@@ -13,9 +13,9 @@ import (
 )
 
 type SSHConnRequest struct {
-	ReqProtocolType constants.REQ_PROTOCOL_TYPE //user terminal protocol
-	Config          *SSHConfig                  //terget server config
-	Conn            io.ReadWriteCloser          //net connection
+	ReqProtocolType constants.REQ_PROTOCOL_TYPE // user terminal protocol
+	Config          *SSHConfig                  // terget server config
+	Conn            io.ReadWriteCloser          // net connection
 	ConnType        uint8                       // pty/sftp
 }
 
@@ -92,6 +92,7 @@ func handleConnection(ctx context.Context, message *SSHModuleMessage) {
 				terminal = XtermStart(int(req.Config.PtyRequestMsg.Columns), int(req.Config.PtyRequestMsg.Rows))
 
 				peerPostReadCb := func(data []byte, termianl unsafe.Pointer) bool {
+					// logrus.Infof("%q", data)
 					if len(data) == 1 {
 						switch data[0] {
 						case '\r':
@@ -101,7 +102,7 @@ func handleConnection(ctx context.Context, message *SSHModuleMessage) {
 							}
 						case 0x03:
 							//just flush buffer
-							XtermGetCommand(termianl)
+							_ = XtermGetCommand(termianl)
 						default:
 							XtermMarkStdin(termianl, data)
 						}
@@ -112,7 +113,6 @@ func handleConnection(ctx context.Context, message *SSHModuleMessage) {
 				}
 
 				clientPostReadCb := func(data []byte, termianl unsafe.Pointer) bool {
-					// logrus.Infof("%q", data)
 					XtermWrite(termianl, data)
 					XtermDumpToFile(termianl)
 					return true
