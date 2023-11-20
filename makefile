@@ -82,8 +82,8 @@ version:
 .PHONY: build
 build: version .checkver_$(CMD_GO)
 	@mkdir -p pkg
-	@if [ -d "$(CURDIR)/backend/terminal/" ]; then \
-		build_dir="$(CURDIR)/backend/terminal/build"; \
+	@if [ -d "$(CURDIR)/terminal/" ]; then \
+		build_dir="$(CURDIR)/terminal/build"; \
 		if [ -d "$$build_dir" ]; then rm -rf "$$build_dir"; fi; \
 		mkdir -p "$$build_dir"; \
 		cd "$$build_dir" && cmake .. -DCMAKE_BUILD_TYPE=$(DCMAKE_BUILD_TYPE) && make && make install && cd - ; \

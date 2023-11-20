@@ -1,5 +1,0 @@
-package ssh
-
-func NewSftpClient() {
-
-}
