@@ -21,12 +21,9 @@
 
 # Go workspace file
 go.work
+go.work.sum
 id_rsa*
-sectran
 .DS_Store
-
-# No Open Source
-terminal
 license
 build
 pkg
