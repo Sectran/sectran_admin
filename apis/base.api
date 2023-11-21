@@ -13,9 +13,9 @@ type (
 )
 
 type (
-	PageInfo {
-		PageStart int `json:"pageStart"`
-		PageEnd   int `json:"pageEnd"`
-		PageSize  int `json:"pageSize"`
+	Pagination {
+		PageNum    int64 `json:"pageNum" validate:"required,gte=0"`    //查询或者响应的开始页数
+		PageSize   int64 `json:"pageSize" validate:"required,gte=1"`   //查询或者响应的页数大小
+		TotalPages int64 `json:"totalPages" validate:"required,gte=1"` //查询或者响应的总页数
 	}
 )

@@ -32,39 +32,16 @@ func BuildCommonResponse(data any, msg string, code int) *CommonResponse {
 	}
 }
 
-type PageVisibleInfo struct {
-	PageNum  int64 `json:"pageNum"`
-	PageSize int64 `json:"pageSize"`
-	Total    int64 `json:"total"`
-}
-
-type PageListVisibleInfo struct {
-	List     any `json:"list"`
-	PageInfo PageVisibleInfo
-}
-
-type TableVisibleInfo struct {
-	Response
-	PageListVisibleInfo
+type Pagination struct {
+	PageNum    int64 `json:"pageNum" validate:"required,gte=0"`    //查询或者响应的开始页数
+	PageSize   int64 `json:"pageSize" validate:"required,gte=1"`   //查询或者响应的页数大小
+	TotalPages int64 `json:"totalPages" validate:"required,gte=1"` //查询或者响应的总页数
 }
 
 // -----------------auth---------------
-
 type AuthRequest struct {
 	Account  string `json:"account" validate:"required,alphanum,min=0,max=255"`
 	Password string `json:"password" validate:"require,ascii"`
-}
-
-// -----------------page---------------
-//type PageInfo struct {
-//	PageStart int `json:"pageStart" validate:"required,gte=1"`
-//	PageEnd   int `json:"pageEnd" validate:"required,gte=1"`
-//	PageSize  int `json:"pageSize" validate:"required,gte=1"`
-//}
-
-type PageInfo struct {
-	PageNum  int64 `json:"pageNum"  validate:"required,gte=1"`
-	PageSize int64 `json:"pageSize" validate:"required,gte=1"`
 }
 
 // -----------------user---------------
@@ -73,7 +50,7 @@ type UserDeleteRequest struct {
 }
 
 // https://github.com/go-playground/validator/blob/master/README.md#network
-type UserVisibleInsertInfo struct {
+type UserInsertInfo struct {
 	UserId      int64  `json:"userId" validate:"required,gte=0"`                   // 用户ID (自动填充)
 	Account     string `json:"account" validate:"required,alphanum,min=5,max=255"` // 用户账号
 	Username    string `json:"username" validate:"required,min=5,max=255"`         // 用户姓名
@@ -86,7 +63,7 @@ type UserVisibleInsertInfo struct {
 	RoleId      int64  `json:"roleId" validate:"required,gte=0"`                   // 用户角色ID
 }
 
-type UserVisibleQueryInfo struct {
+type UserQueryInfo struct {
 	UserId      int64  `json:"userId" validate:"gte=-1"`             // 用户ID
 	Account     string `json:"account" validate:"min=0,max=255"`     // 用户账号
 	Username    string `json:"username" validate:"min=0,max=255"`    // 用户姓名
@@ -99,13 +76,7 @@ type UserVisibleQueryInfo struct {
 	RoleId      int64  `json:"roleId" validate:"gte=-1"`             // 用户角色ID
 }
 
-type UserQueryInfo struct {
-	UserVisibleQueryInfo
-	PageInfo
-}
-
 type UserAllInfo struct {
-	UserVisibleInsertInfo
 	CreateByUid int64  `json:"createByUid" validate:"gte=0"`       // 创建人
 	IsDeleted   uint8  `json:"isDeleted"  validate:"oneof=0 1"`    // 是否被删除
 	Password    string `json:"password" validate:"required,ascii"` // 用户密码

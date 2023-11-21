@@ -26,7 +26,7 @@ CREATE TABLE `st_dept` (
   `name` varchar(48) NOT NULL COMMENT '部门名称',
   `description` varchar(1024) DEFAULT NULL COMMENT '部门描述',
   `parent_id` int(11) NOT NULL COMMENT '上级部门ID',
-  `child_ids` varchar(4096) NOT NULL COMMENT '下级部门ID集合，用逗号分隔',
+  `child_ids` varchar(4096) NOT NULL COMMENT '下级部门ID集合,用逗号分隔',
   `create_by_uid` int(11) DEFAULT NULL COMMENT '创建者',
   `region` varchar(1024) NOT NULL COMMENT '部门所在地区',
   `create_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
