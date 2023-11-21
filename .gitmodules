@@ -1,1 +1,3 @@
-s
+[submodule "sectran_chard"]
+	path = sectran_chard
+	url = git@github.com:Sectran/sectran_chard.git
