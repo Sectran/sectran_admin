@@ -3,7 +3,7 @@
 username="root"
 password="Ryan@1218pass"
 database="sectran"
-target_dir="../apiservice"
+target_dir=".."
 
 goctl api go --api="apis.api" --style="goZero" --dir=$target_dir
 tables=$(mysql -uroot -pRyan@1218pass -e "use sectran;show tables" | grep st_ | grep -v grep)
