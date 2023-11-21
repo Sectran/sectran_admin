@@ -23,6 +23,7 @@
 go.work
 id_rsa*
 sectran
+.DS_Store
 
 # No Open Source
 terminal
