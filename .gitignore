@@ -29,3 +29,4 @@ build
 pkg
 vendor
 *.tar.gz
+__debug_bin
