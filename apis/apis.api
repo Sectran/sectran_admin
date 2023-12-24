@@ -1,6 +1,0 @@
-syntax = "v1"
-
-import "user.api"
-import "auth.api"
-import "role.api"
-import "dept.api"

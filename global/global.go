@@ -1,8 +1,9 @@
 package global
 
 import (
-	"github.com/qiniu/qmgo"
 	"sync"
+
+	"github.com/qiniu/qmgo"
 
 	"github.com/Sectran/sectran_admin/utils/timer"
 	"github.com/songzhibin97/gkit/cache/local_cache"
@@ -17,6 +18,9 @@ import (
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
 )
+
+type Config struct {
+}
 
 var (
 	GVA_DB     *gorm.DB

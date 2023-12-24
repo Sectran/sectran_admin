@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	// load conf
 	global.GVA_VP = core.Viper("./conf/sectran_admin.yaml") // 初始化Viper
 
 	initialize.OtherInit()
@@ -17,11 +18,6 @@ func main() {
 	global.GVA_DB = initialize.Gorm() // gorm连接数据库
 	initialize.Timer()
 	initialize.DBList()
-	if global.GVA_DB != nil {
-		initialize.RegisterTables() // 初始化表
-		// 程序结束前关闭数据库链接
-		db, _ := global.GVA_DB.DB()
-		defer db.Close()
-	}
+
 	core.RunWindowsServer()
 }

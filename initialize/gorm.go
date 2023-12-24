@@ -4,7 +4,6 @@ import (
 	"os"
 
 	"github.com/Sectran/sectran_admin/global"
-	"github.com/Sectran/sectran_admin/model/example"
 	"github.com/Sectran/sectran_admin/model/system"
 
 	"go.uber.org/zap"
@@ -36,25 +35,7 @@ func RegisterTables() {
 	db := global.GVA_DB
 	err := db.AutoMigrate(
 		// 系统模块表
-		system.SysApi{},
-		system.SysUser{},
-		system.SysBaseMenu{},
-		system.JwtBlacklist{},
-		system.SysAuthority{},
-		system.SysDictionary{},
-		system.SysOperationRecord{},
-		system.SysAutoCodeHistory{},
-		system.SysDictionaryDetail{},
-		system.SysBaseMenuParameter{},
-		system.SysBaseMenuBtn{},
-		system.SysAuthorityBtn{},
-		system.SysAutoCode{},
-		system.SysChatGptOption{},
-
-		example.ExaFile{},
-		example.ExaCustomer{},
-		example.ExaFileChunk{},
-		example.ExaFileUploadAndDownload{},
+		system.User{},
 	)
 	if err != nil {
 		global.GVA_LOG.Error("register table failed", zap.Error(err))

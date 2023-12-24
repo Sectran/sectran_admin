@@ -1,10 +1,11 @@
 package internal
 
 import (
-	"gorm.io/gorm/schema"
 	"log"
 	"os"
 	"time"
+
+	"gorm.io/gorm/schema"
 
 	"github.com/Sectran/sectran_admin/global"
 	"gorm.io/gorm"
@@ -58,5 +59,6 @@ func (g *_gorm) Config(prefix string, singular bool) *gorm.Config {
 	default:
 		config.Logger = _default.LogMode(logger.Info)
 	}
+
 	return config
 }

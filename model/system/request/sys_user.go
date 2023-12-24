@@ -1,9 +1,5 @@
 package request
 
-import (
-	"github.com/Sectran/sectran_admin/model/system"
-)
-
 // Register User register structure
 type Register struct {
 	Username     string `json:"userName" example:"用户名"`
@@ -43,14 +39,28 @@ type SetUserAuthorities struct {
 	AuthorityIds []uint `json:"authorityIds"` // 角色ID
 }
 
-type ChangeUserInfo struct {
-	ID           uint                  `gorm:"primarykey"`                                                                           // 主键ID
-	NickName     string                `json:"nickName" gorm:"default:系统用户;comment:用户昵称"`                                            // 用户昵称
-	Phone        string                `json:"phone"  gorm:"comment:用户手机号"`                                                          // 用户手机号
-	AuthorityIds []uint                `json:"authorityIds" gorm:"-"`                                                                // 角色ID
-	Email        string                `json:"email"  gorm:"comment:用户邮箱"`                                                           // 用户邮箱
-	HeaderImg    string                `json:"headerImg" gorm:"default:https://qmplusimg.henrongyi.top/gva_header.jpg;comment:用户头像"` // 用户头像
-	SideMode     string                `json:"sideMode"  gorm:"comment:用户侧边主题"`                                                      // 用户侧边主题
-	Enable       int                   `json:"enable" gorm:"comment:冻结用户"`                                                           //冻结用户
-	Authorities  []system.SysAuthority `json:"-" gorm:"many2many:sys_user_authority;"`
+// type ChangeUserInfo struct {
+// 	ID           uint                  `gorm:"primarykey"`                                                                           // 主键ID
+// 	NickName     string                `json:"nickName" gorm:"default:系统用户;comment:用户昵称"`                                            // 用户昵称
+// 	Phone        string                `json:"phone"  gorm:"comment:用户手机号"`                                                          // 用户手机号
+// 	AuthorityIds []uint                `json:"authorityIds" gorm:"-"`                                                                // 角色ID
+// 	Email        string                `json:"email"  gorm:"comment:用户邮箱"`                                                           // 用户邮箱
+// 	HeaderImg    string                `json:"headerImg" gorm:"default:https://qmplusimg.henrongyi.top/gva_header.jpg;comment:用户头像"` // 用户头像
+// 	SideMode     string                `json:"sideMode"  gorm:"comment:用户侧边主题"`                                                      // 用户侧边主题
+// 	Enable       int                   `json:"enable" gorm:"comment:冻结用户"`                                                           //冻结用户
+// 	Authorities  []system.SysAuthority `json:"-" gorm:"many2many:sys_user_authority;"`
+// }
+
+type UserListDTO struct {
+	List
+	Name string
+}
+
+type UserDTO struct {
+	Id          int    // 用户id
+	Name        string // 用户名称
+	DeptId      int    // 部门id
+	Description string // 描述
+	Email       string // emial
+	Telephone   string // phone
 }

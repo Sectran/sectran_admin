@@ -6,7 +6,6 @@ import (
 
 	"github.com/Sectran/sectran_admin/global"
 	"github.com/Sectran/sectran_admin/initialize"
-	"github.com/Sectran/sectran_admin/service/system"
 	"go.uber.org/zap"
 )
 
@@ -27,7 +26,7 @@ func RunWindowsServer() {
 	}
 	// 从db加载jwt数据
 	if global.GVA_DB != nil {
-		system.LoadAll()
+		// system.LoadAll()
 	}
 
 	Router := initialize.Routers()

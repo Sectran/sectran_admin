@@ -3,13 +3,11 @@ package middleware
 import (
 	"context"
 	"errors"
-	"net/http"
 	"time"
 
 	"go.uber.org/zap"
 
 	"github.com/Sectran/sectran_admin/global"
-	"github.com/Sectran/sectran_admin/model/common/response"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,15 +23,16 @@ type LimitConfig struct {
 }
 
 func (l LimitConfig) LimitWithTime() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		if err := l.CheckOrMark(l.GenerationKey(c), l.Expire, l.Limit); err != nil {
-			c.JSON(http.StatusOK, gin.H{"code": response.ERROR, "msg": err})
-			c.Abort()
-			return
-		} else {
-			c.Next()
-		}
-	}
+	// return func(c *gin.Context) {
+	// 	if err := l.CheckOrMark(l.GenerationKey(c), l.Expire, l.Limit); err != nil {
+	// 		c.JSON(http.StatusOK, gin.H{"code": response.ERROR, "msg": err})
+	// 		c.Abort()
+	// 		return
+	// 	} else {
+	// 		c.Next()
+	// 	}
+	// }
+	return nil
 }
 
 // DefaultGenerationKey 默认生成key
