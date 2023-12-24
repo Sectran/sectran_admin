@@ -70,3 +70,12 @@
 [github.com/Sectran/sectran_admin]2023/12/24 - 15:10:01.231	[34minfo[0m	/Users/wusheng/workspace/open/sectran_admin/initialize/router.go:49	register swagger handler
 [github.com/Sectran/sectran_admin]2023/12/24 - 15:10:01.232	[34minfo[0m	/Users/wusheng/workspace/open/sectran_admin/initialize/router.go:59	router register success
 [github.com/Sectran/sectran_admin]2023/12/24 - 15:10:01.232	[34minfo[0m	/Users/wusheng/workspace/open/sectran_admin/core/server.go:39	server run success on 	{"address": ":8888"}
+[github.com/Sectran/sectran_admin]2023/12/24 - 15:32:37.161	[34minfo[0m	/Users/wusheng/workspace/open/sectran_admin/initialize/router.go:49	register swagger handler
+[github.com/Sectran/sectran_admin]2023/12/24 - 15:32:37.162	[34minfo[0m	/Users/wusheng/workspace/open/sectran_admin/initialize/router.go:59	router register success
+[github.com/Sectran/sectran_admin]2023/12/24 - 15:32:37.162	[34minfo[0m	/Users/wusheng/workspace/open/sectran_admin/core/server.go:39	server run success on 	{"address": ":8888"}
+[github.com/Sectran/sectran_admin]2023/12/24 - 15:33:17.044	[34minfo[0m	/Users/wusheng/workspace/open/sectran_admin/initialize/router.go:49	register swagger handler
+[github.com/Sectran/sectran_admin]2023/12/24 - 15:33:17.044	[34minfo[0m	/Users/wusheng/workspace/open/sectran_admin/initialize/router.go:61	router register success
+[github.com/Sectran/sectran_admin]2023/12/24 - 15:33:17.044	[34minfo[0m	/Users/wusheng/workspace/open/sectran_admin/core/server.go:39	server run success on 	{"address": ":8888"}
+[github.com/Sectran/sectran_admin]2023/12/24 - 15:35:37.553	[34minfo[0m	/Users/wusheng/workspace/open/sectran_admin/initialize/router.go:49	register swagger handler
+[github.com/Sectran/sectran_admin]2023/12/24 - 15:35:37.554	[34minfo[0m	/Users/wusheng/workspace/open/sectran_admin/initialize/router.go:61	router register success
+[github.com/Sectran/sectran_admin]2023/12/24 - 15:35:37.554	[34minfo[0m	/Users/wusheng/workspace/open/sectran_admin/core/server.go:39	server run success on 	{"address": ":8888"}

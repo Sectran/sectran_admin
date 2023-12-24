@@ -15,15 +15,15 @@ func (Device) TableName() string {
 }
 
 type DeviceAccount struct {
-	Id              int
-	DeviceId        int
-	Username        string
-	Password        string
-	IsAdministrator int
-	Protocol        string
-	Port            int
-	PrivateKetyPas  string
-	PrivateKey      string
+	Id                 int
+	DeviceId           int
+	Username           string
+	Password           string
+	IsAdministrator    int
+	Protocol           string
+	Port               int
+	PrivateKeyPassword string
+	PrivateKey         string
 }
 
 func (DeviceAccount) TableName() string {
