@@ -1,14 +1,10 @@
-# If you prefer the allow list template instead of the deny list, see community template:
-# https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
-#
+### Go template
 # Binaries for programs and plugins
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
-*.vscode
-*.idea
 
 # Test binary, built with `go test -c`
 *.test
@@ -19,14 +15,18 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
-# Go workspace file
-go.work
-go.work.sum
-id_rsa*
-.DS_Store
-license
-build
-pkg
-vendor
-*.tar.gz
-__debug_bin
+*.gz
+*.rar
+*.tmp
+
+# Other files and folders
+.settings/
+.idea/
+.vscode/
+
+# config file avoid exposing private data
+*_dev.yaml
+
+# Build files
+*_api
+*_rpc

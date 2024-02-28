@@ -1,24 +1,21 @@
-FROM golang:alpine as builder
+FROM alpine:3.19
 
-WORKDIR /go/src/github.com/Sectran/sectran_admin
-COPY . .
+# Define the project name | 定义项目名称
+ARG PROJECT=sectran_admin
+# Define the config file name | 定义配置文件名
+ARG CONFIG_FILE=sectran_admin.yaml
+# Define the author | 定义作者
+ARG AUTHOR="example@example.com"
 
-RUN go env -w GO111MODULE=on \
-    && go env -w GOPROXY=https://goproxy.cn,direct \
-    && go env -w CGO_ENABLED=0 \
-    && go env \
-    && go mod tidy \
-    && go build -o server .
+LABEL org.opencontainers.image.authors=${AUTHOR}
 
-FROM alpine:latest
+WORKDIR /app
+ENV PROJECT=${PROJECT}
+ENV CONFIG_FILE=${CONFIG_FILE}
 
-LABEL MAINTAINER="SliverHorn@sliver_horn@qq.com"
+COPY ./${PROJECT}_api ./
+COPY ./etc/${CONFIG_FILE} ./etc/
 
-WORKDIR /go/src/github.com/Sectran/sectran_admin
+EXPOSE 8080
 
-COPY --from=0 /go/src/github.com/Sectran/sectran_admin/server ./
-COPY --from=0 /go/src/github.com/Sectran/sectran_admin/resource ./resource/
-COPY --from=0 /go/src/github.com/Sectran/sectran_admin/config.docker.yaml ./
-
-EXPOSE 8888
-ENTRYPOINT ./server -c config.docker.yaml
+ENTRYPOINT ./${PROJECT}_api -f etc/${CONFIG_FILE}
