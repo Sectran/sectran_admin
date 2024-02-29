@@ -1,10 +1,10 @@
 Name: SectranAdmin.api
 Host: 0.0.0.0
-Port: 8080
+Port: 8081
 Timeout: 2000
 
 Auth:
-  AccessSecret: # the same as core
+  AccessSecret: sectran@199212121
   AccessExpire: 259200
 
 CROSConf:
@@ -13,7 +13,7 @@ CROSConf:
 Log:
   ServiceName: SectranAdminApiLogger
   Mode: file
-  Path: /home/data/logs/SectranAdmin/api
+  Path: ./logs/SectranAdmin/api
   Level: info
   Compress: false
   KeepDays: 7
@@ -21,25 +21,29 @@ Log:
 
 DatabaseConf:
   Type: mysql
-  Host: 127.0.0.1
+  Host: 101.133.229.239
   Port: 3306
-  DBName: simple_admin
-  Username: # set your username
-  Password: # set your password
+  DBName: sectran
+  Username: root
+  Password: root
   MaxOpenConn: 100
   SSLMode: disable
   CacheTime: 5
 
+CoreRpc:
+  Target: k8s://default/core-rpc-svc:9101
+  Enabled: true
+
 RedisConf:
-  Host: 127.0.0.1:6379
+  Host: 101.133.229.239:6379
 
 CasbinDatabaseConf:
   Type: mysql
-  Host: 127.0.0.1
+  Host: 101.133.229.239
   Port: 3306
-  DBName: simple_admin
-  Username: # set your username
-  Password: # set your password
+  DBName: sectran
+  Username: root
+  Password: root
   MaxOpenConn: 100
   SSLMode: disable
   CacheTime: 5

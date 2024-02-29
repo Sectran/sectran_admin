@@ -6,5 +6,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// SectranAdmin is the predicate function for sectranadmin builders.
-type SectranAdmin func(*sql.Selector)
+// Department is the predicate function for department builders.
+type Department func(*sql.Selector)
+
+// Role is the predicate function for role builders.
+type Role func(*sql.Selector)
+
+// User is the predicate function for user builders.
+type User func(*sql.Selector)

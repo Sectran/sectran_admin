@@ -2,8 +2,93 @@
 
 package ent
 
+import (
+	"sectran_admin/ent/department"
+	"sectran_admin/ent/role"
+	"sectran_admin/ent/schema"
+	"sectran_admin/ent/user"
+	"time"
+)
+
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	departmentMixin := schema.Department{}.Mixin()
+	departmentMixinFields0 := departmentMixin[0].Fields()
+	_ = departmentMixinFields0
+	departmentFields := schema.Department{}.Fields()
+	_ = departmentFields
+	// departmentDescCreatedAt is the schema descriptor for created_at field.
+	departmentDescCreatedAt := departmentMixinFields0[1].Descriptor()
+	// department.DefaultCreatedAt holds the default value on creation for the created_at field.
+	department.DefaultCreatedAt = departmentDescCreatedAt.Default.(func() time.Time)
+	// departmentDescUpdatedAt is the schema descriptor for updated_at field.
+	departmentDescUpdatedAt := departmentMixinFields0[2].Descriptor()
+	// department.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	department.DefaultUpdatedAt = departmentDescUpdatedAt.Default.(func() time.Time)
+	// department.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	department.UpdateDefaultUpdatedAt = departmentDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// departmentDescName is the schema descriptor for name field.
+	departmentDescName := departmentFields[0].Descriptor()
+	// department.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	department.NameValidator = departmentDescName.Validators[0].(func(string) error)
+	// departmentDescArea is the schema descriptor for area field.
+	departmentDescArea := departmentFields[1].Descriptor()
+	// department.AreaValidator is a validator for the "area" field. It is called by the builders before save.
+	department.AreaValidator = departmentDescArea.Validators[0].(func(string) error)
+	// departmentDescParentDepartmentsIds is the schema descriptor for parent_departments_ids field.
+	departmentDescParentDepartmentsIds := departmentFields[3].Descriptor()
+	// department.ParentDepartmentsIdsValidator is a validator for the "parent_departments_ids" field. It is called by the builders before save.
+	department.ParentDepartmentsIdsValidator = departmentDescParentDepartmentsIds.Validators[0].(func(string) error)
+	roleMixin := schema.Role{}.Mixin()
+	roleMixinFields0 := roleMixin[0].Fields()
+	_ = roleMixinFields0
+	roleFields := schema.Role{}.Fields()
+	_ = roleFields
+	// roleDescCreatedAt is the schema descriptor for created_at field.
+	roleDescCreatedAt := roleMixinFields0[1].Descriptor()
+	// role.DefaultCreatedAt holds the default value on creation for the created_at field.
+	role.DefaultCreatedAt = roleDescCreatedAt.Default.(func() time.Time)
+	// roleDescUpdatedAt is the schema descriptor for updated_at field.
+	roleDescUpdatedAt := roleMixinFields0[2].Descriptor()
+	// role.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	role.DefaultUpdatedAt = roleDescUpdatedAt.Default.(func() time.Time)
+	// role.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	role.UpdateDefaultUpdatedAt = roleDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// roleDescName is the schema descriptor for name field.
+	roleDescName := roleFields[0].Descriptor()
+	// role.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	role.NameValidator = roleDescName.Validators[0].(func(string) error)
+	userMixin := schema.User{}.Mixin()
+	userMixinFields0 := userMixin[0].Fields()
+	_ = userMixinFields0
+	userFields := schema.User{}.Fields()
+	_ = userFields
+	// userDescCreatedAt is the schema descriptor for created_at field.
+	userDescCreatedAt := userMixinFields0[1].Descriptor()
+	// user.DefaultCreatedAt holds the default value on creation for the created_at field.
+	user.DefaultCreatedAt = userDescCreatedAt.Default.(func() time.Time)
+	// userDescUpdatedAt is the schema descriptor for updated_at field.
+	userDescUpdatedAt := userMixinFields0[2].Descriptor()
+	// user.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	user.DefaultUpdatedAt = userDescUpdatedAt.Default.(func() time.Time)
+	// user.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	user.UpdateDefaultUpdatedAt = userDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// userDescAccount is the schema descriptor for account field.
+	userDescAccount := userFields[0].Descriptor()
+	// user.AccountValidator is a validator for the "account" field. It is called by the builders before save.
+	user.AccountValidator = userDescAccount.Validators[0].(func(string) error)
+	// userDescName is the schema descriptor for name field.
+	userDescName := userFields[1].Descriptor()
+	// user.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	user.NameValidator = userDescName.Validators[0].(func(string) error)
+	// userDescDepartmentID is the schema descriptor for department_id field.
+	userDescDepartmentID := userFields[3].Descriptor()
+	// user.DepartmentIDValidator is a validator for the "department_id" field. It is called by the builders before save.
+	user.DepartmentIDValidator = userDescDepartmentID.Validators[0].(func(uint64) error)
+	// userDescRoleID is the schema descriptor for role_id field.
+	userDescRoleID := userFields[4].Descriptor()
+	// user.RoleIDValidator is a validator for the "role_id" field. It is called by the builders before save.
+	user.RoleIDValidator = userDescRoleID.Validators[0].(func(uint64) error)
 }

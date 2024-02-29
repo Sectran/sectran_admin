@@ -1,0 +1,3 @@
+{"@timestamp":"2024-02-29T21:42:21.445+08:00","caller":"proc/shutdown.go:58","content":"Got signal 2, shutting down...","level":"info"}
+{"@timestamp":"2024-02-29T22:50:28.044+08:00","caller":"proc/shutdown.go:58","content":"Got signal 2, shutting down...","level":"info"}
+{"@timestamp":"2024-02-29T23:02:38.263+08:00","caller":"proc/shutdown.go:58","content":"Got signal 2, shutting down...","level":"info"}

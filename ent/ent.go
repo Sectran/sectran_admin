@@ -7,7 +7,9 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
-	"sectran_admin/ent/sectranadmin"
+	"sectran_admin/ent/department"
+	"sectran_admin/ent/role"
+	"sectran_admin/ent/user"
 	"sync"
 
 	"entgo.io/ent"
@@ -73,7 +75,9 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			sectranadmin.Table: sectranadmin.ValidColumn,
+			department.Table: department.ValidColumn,
+			role.Table:       role.ValidColumn,
+			user.Table:       user.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

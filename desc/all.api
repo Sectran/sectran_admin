@@ -1,1 +1,4 @@
 import "base.api"
+import "./sectranadmin/department.api"
+import "./sectranadmin/role.api"
+import "./sectranadmin/user.api"

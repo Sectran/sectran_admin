@@ -1,0 +1,86 @@
+import "../base.api"
+
+type (
+    // The response data of department information | Department信息
+    DepartmentInfo {
+        BaseIDInfo
+
+        // The name of the department. 
+        Name  *string `json:"name,optional"`
+
+        // The area where the department is located. 
+        Area  *string `json:"area,optional"`
+
+        // Description of the department. 
+        Description  *string `json:"description,optional"`
+
+        // Comma-separated list of parent department IDs in ascending order. 
+        ParentDepartmentsIds  *string `json:"parentDepartmentsIds,optional"`
+    }
+
+    // The response data of department list | Department列表数据
+    DepartmentListResp {
+        BaseDataInfo
+
+        // Department list data | Department列表数据
+        Data DepartmentListInfo `json:"data"`
+    }
+
+    // Department list data | Department列表数据
+    DepartmentListInfo {
+        BaseListInfo
+
+        // The API list data | Department列表数据
+        Data  []DepartmentInfo  `json:"data"`
+    }
+
+    // Get department list request params | Department列表请求参数
+    DepartmentListReq {
+        PageInfo
+
+        // The name of the department. 
+        Name  *string `json:"name,optional"`
+
+        // The area where the department is located. 
+        Area  *string `json:"area,optional"`
+
+        // Description of the department. 
+        Description  *string `json:"description,optional"`
+    }
+
+    // Department information response | Department信息返回体
+    DepartmentInfoResp {
+        BaseDataInfo
+
+        // Department information | Department数据
+        Data DepartmentInfo `json:"data"`
+    }
+)
+
+@server(
+    jwt: Auth
+    group: department
+    middleware: Authority
+)
+
+service SectranAdmin {
+    // Create department information | 创建Department
+    @handler createDepartment
+    post /department/create (DepartmentInfo) returns (BaseMsgResp)
+
+    // Update department information | 更新Department
+    @handler updateDepartment
+    post /department/update (DepartmentInfo) returns (BaseMsgResp)
+
+    // Delete department information | 删除Department信息
+    @handler deleteDepartment
+    post /department/delete (IDsReq) returns (BaseMsgResp)
+
+    // Get department list | 获取Department列表
+    @handler getDepartmentList
+    post /department/list (DepartmentListReq) returns (DepartmentListResp)
+
+    // Get department by ID | 通过ID获取Department
+    @handler getDepartmentById
+    post /department (IDReq) returns (DepartmentInfoResp)
+}

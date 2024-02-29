@@ -1,0 +1,74 @@
+import "../base.api"
+
+type (
+    // The response data of role information | Role信息
+    RoleInfo {
+        BaseIDInfo
+
+        // The name of the role. 
+        Name  *string `json:"name,optional"`
+
+        // The weight of the role. Smaller values indicate higher priority. 
+        Weight  *int `json:"weight,optional"`
+    }
+
+    // The response data of role list | Role列表数据
+    RoleListResp {
+        BaseDataInfo
+
+        // Role list data | Role列表数据
+        Data RoleListInfo `json:"data"`
+    }
+
+    // Role list data | Role列表数据
+    RoleListInfo {
+        BaseListInfo
+
+        // The API list data | Role列表数据
+        Data  []RoleInfo  `json:"data"`
+    }
+
+    // Get role list request params | Role列表请求参数
+    RoleListReq {
+        PageInfo
+
+        // The name of the role. 
+        Name  *string `json:"name,optional"`
+    }
+
+    // Role information response | Role信息返回体
+    RoleInfoResp {
+        BaseDataInfo
+
+        // Role information | Role数据
+        Data RoleInfo `json:"data"`
+    }
+)
+
+@server(
+    jwt: Auth
+    group: role
+    middleware: Authority
+)
+
+service SectranAdmin {
+    // Create role information | 创建Role
+    @handler createRole
+    post /role/create (RoleInfo) returns (BaseMsgResp)
+
+    // Update role information | 更新Role
+    @handler updateRole
+    post /role/update (RoleInfo) returns (BaseMsgResp)
+
+    // Delete role information | 删除Role信息
+    @handler deleteRole
+    post /role/delete (IDsReq) returns (BaseMsgResp)
+
+    // Get role list | 获取Role列表
+    @handler getRoleList
+    post /role/list (RoleListReq) returns (RoleListResp)
+
+    // Get role by ID | 通过ID获取Role
+    @handler getRoleById
+    post /role (IDReq) returns (RoleInfoResp)
+}

@@ -8,21 +8,101 @@ import (
 )
 
 var (
-	// SectranAdminsColumns holds the columns for the "sectran_admins" table.
-	SectranAdminsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
+	// DepartmentsColumns holds the columns for the "departments" table.
+	DepartmentsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
+		{Name: "name", Type: field.TypeString, Comment: "The name of the department."},
+		{Name: "area", Type: field.TypeString, Comment: "The area where the department is located."},
+		{Name: "description", Type: field.TypeString, Comment: "Description of the department."},
+		{Name: "parent_departments_ids", Type: field.TypeString, Comment: "Comma-separated list of parent department IDs in ascending order."},
 	}
-	// SectranAdminsTable holds the schema information for the "sectran_admins" table.
-	SectranAdminsTable = &schema.Table{
-		Name:       "sectran_admins",
-		Columns:    SectranAdminsColumns,
-		PrimaryKey: []*schema.Column{SectranAdminsColumns[0]},
+	// DepartmentsTable holds the schema information for the "departments" table.
+	DepartmentsTable = &schema.Table{
+		Name:       "departments",
+		Columns:    DepartmentsColumns,
+		PrimaryKey: []*schema.Column{DepartmentsColumns[0]},
+	}
+	// RolesColumns holds the columns for the "roles" table.
+	RolesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
+		{Name: "name", Type: field.TypeString, Comment: "The name of the role."},
+		{Name: "weight", Type: field.TypeInt, Comment: "The weight of the role. Smaller values indicate higher priority."},
+	}
+	// RolesTable holds the schema information for the "roles" table.
+	RolesTable = &schema.Table{
+		Name:       "roles",
+		Columns:    RolesColumns,
+		PrimaryKey: []*schema.Column{RolesColumns[0]},
+	}
+	// UsersColumns holds the columns for the "users" table.
+	UsersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
+		{Name: "account", Type: field.TypeString, Unique: true, Comment: "User account."},
+		{Name: "name", Type: field.TypeString, Comment: "User name."},
+		{Name: "password", Type: field.TypeString, Comment: "User password."},
+		{Name: "role_id", Type: field.TypeUint64, Comment: "ID of the user's role."},
+		{Name: "status", Type: field.TypeEnum, Comment: "User status (enabled or disabled).", Enums: []string{"disabled", "enabled"}, Default: "enabled"},
+		{Name: "description", Type: field.TypeString, Nullable: true, Comment: "User description."},
+		{Name: "email", Type: field.TypeString, Nullable: true, Comment: "User email."},
+		{Name: "phone_number", Type: field.TypeString, Nullable: true, Comment: "User phone number."},
+		{Name: "department_id", Type: field.TypeUint64, Nullable: true, Comment: "ID of the user's department."},
+	}
+	// UsersTable holds the schema information for the "users" table.
+	UsersTable = &schema.Table{
+		Name:       "users",
+		Columns:    UsersColumns,
+		PrimaryKey: []*schema.Column{UsersColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "users_departments_departments",
+				Columns:    []*schema.Column{UsersColumns[11]},
+				RefColumns: []*schema.Column{DepartmentsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// UserRolesColumns holds the columns for the "user_roles" table.
+	UserRolesColumns = []*schema.Column{
+		{Name: "user_id", Type: field.TypeUint64},
+		{Name: "role_id", Type: field.TypeUint64},
+	}
+	// UserRolesTable holds the schema information for the "user_roles" table.
+	UserRolesTable = &schema.Table{
+		Name:       "user_roles",
+		Columns:    UserRolesColumns,
+		PrimaryKey: []*schema.Column{UserRolesColumns[0], UserRolesColumns[1]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "user_roles_user_id",
+				Columns:    []*schema.Column{UserRolesColumns[0]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "user_roles_role_id",
+				Columns:    []*schema.Column{UserRolesColumns[1]},
+				RefColumns: []*schema.Column{RolesColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		SectranAdminsTable,
+		DepartmentsTable,
+		RolesTable,
+		UsersTable,
+		UserRolesTable,
 	}
 )
 
 func init() {
+	UsersTable.ForeignKeys[0].RefTable = DepartmentsTable
+	UserRolesTable.ForeignKeys[0].RefTable = UsersTable
+	UserRolesTable.ForeignKeys[1].RefTable = RolesTable
 }
