@@ -15,7 +15,7 @@ type (
         Description  *string `json:"description,optional"`
 
         // Comma-separated list of parent department IDs in ascending order. 
-        ParentDepartmentsIds  *string `json:"parentDepartmentsIds,optional"`
+        ParentDepartments  *string `json:"parentDepartments,optional"`
     }
 
     // The response data of department list | Department列表数据

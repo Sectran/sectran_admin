@@ -17,6 +17,7 @@ func (Role) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").
 			NotEmpty().
+			Unique().
 			Comment("The name of the role.").
 			Annotations(entsql.WithComments(true)),
 		field.Int("weight").

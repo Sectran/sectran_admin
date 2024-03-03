@@ -126,7 +126,7 @@ type DepartmentInfo struct {
 	// Description of the department.
 	Description *string `json:"description,optional"`
 	// Comma-separated list of parent department IDs in ascending order.
-	ParentDepartmentsIds *string `json:"parentDepartmentsIds,optional"`
+	ParentDepartments *string `json:"parentDepartments,optional"`
 }
 
 // The response data of department list | Department列表数据
@@ -265,4 +265,106 @@ type UserInfoResp struct {
 	BaseDataInfo
 	// User information | User数据
 	Data UserInfo `json:"data"`
+}
+
+// The response data of account information | Account信息
+// swagger:model AccountInfo
+type AccountInfo struct {
+	BaseIDInfo
+	// account username
+	Username *string `json:"username,optional"`
+	// account port
+	Port *uint32 `json:"port,optional"`
+	// protocol of the this account.
+	Protocol *uint8 `json:"protocol,optional"`
+	// account password
+	Password *string `json:"password,optional"`
+	// private_key of the this account.
+	PrivateKey *string `json:"privateKey,optional"`
+	// account belong to
+	DeviceId *uint64 `json:"deviceId,optional"`
+}
+
+// The response data of account list | Account列表数据
+// swagger:model AccountListResp
+type AccountListResp struct {
+	BaseDataInfo
+	// Account list data | Account列表数据
+	Data AccountListInfo `json:"data"`
+}
+
+// Account list data | Account列表数据
+// swagger:model AccountListInfo
+type AccountListInfo struct {
+	BaseListInfo
+	// The API list data | Account列表数据
+	Data []AccountInfo `json:"data"`
+}
+
+// Get account list request params | Account列表请求参数
+// swagger:model AccountListReq
+type AccountListReq struct {
+	PageInfo
+	// account username
+	Username *string `json:"username,optional"`
+	// account password
+	Password *string `json:"password,optional"`
+	// private_key of the this account.
+	PrivateKey *string `json:"privateKey,optional"`
+}
+
+// Account information response | Account信息返回体
+// swagger:model AccountInfoResp
+type AccountInfoResp struct {
+	BaseDataInfo
+	// Account information | Account数据
+	Data AccountInfo `json:"data"`
+}
+
+// The response data of device information | Device信息
+// swagger:model DeviceInfo
+type DeviceInfo struct {
+	BaseIDInfo
+	// The name of the device.
+	Name *string `json:"name,optional"`
+	// login host
+	Host *string `json:"host,optional"`
+	// Description of the device.
+	Description *string `json:"description,optional"`
+}
+
+// The response data of device list | Device列表数据
+// swagger:model DeviceListResp
+type DeviceListResp struct {
+	BaseDataInfo
+	// Device list data | Device列表数据
+	Data DeviceListInfo `json:"data"`
+}
+
+// Device list data | Device列表数据
+// swagger:model DeviceListInfo
+type DeviceListInfo struct {
+	BaseListInfo
+	// The API list data | Device列表数据
+	Data []DeviceInfo `json:"data"`
+}
+
+// Get device list request params | Device列表请求参数
+// swagger:model DeviceListReq
+type DeviceListReq struct {
+	PageInfo
+	// The name of the device.
+	Name *string `json:"name,optional"`
+	// login host
+	Host *string `json:"host,optional"`
+	// Description of the device.
+	Description *string `json:"description,optional"`
+}
+
+// Device information response | Device信息返回体
+// swagger:model DeviceInfoResp
+type DeviceInfoResp struct {
+	BaseDataInfo
+	// Device information | Device数据
+	Data DeviceInfo `json:"data"`
 }

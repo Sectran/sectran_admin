@@ -18,6 +18,146 @@
   "host": "localhost:8081",
   "basePath": "/",
   "paths": {
+    "/account": {
+      "post": {
+        "description": "Get account by ID | 通过ID获取Account",
+        "tags": [
+          "account"
+        ],
+        "summary": "Get account by ID | 通过ID获取Account",
+        "operationId": "GetAccountById",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/IDReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "AccountInfoResp",
+            "schema": {
+              "$ref": "#/definitions/AccountInfoResp"
+            }
+          }
+        }
+      }
+    },
+    "/account/create": {
+      "post": {
+        "description": "Create account information | 创建Account",
+        "tags": [
+          "account"
+        ],
+        "summary": "Create account information | 创建Account",
+        "operationId": "CreateAccount",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/AccountInfo"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "BaseMsgResp",
+            "schema": {
+              "$ref": "#/definitions/BaseMsgResp"
+            }
+          }
+        }
+      }
+    },
+    "/account/delete": {
+      "post": {
+        "description": "Delete account information | 删除Account信息",
+        "tags": [
+          "account"
+        ],
+        "summary": "Delete account information | 删除Account信息",
+        "operationId": "DeleteAccount",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/IDsReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "BaseMsgResp",
+            "schema": {
+              "$ref": "#/definitions/BaseMsgResp"
+            }
+          }
+        }
+      }
+    },
+    "/account/list": {
+      "post": {
+        "description": "Get account list | 获取Account列表",
+        "tags": [
+          "account"
+        ],
+        "summary": "Get account list | 获取Account列表",
+        "operationId": "GetAccountList",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/AccountListReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "AccountListResp",
+            "schema": {
+              "$ref": "#/definitions/AccountListResp"
+            }
+          }
+        }
+      }
+    },
+    "/account/update": {
+      "post": {
+        "description": "Update account information | 更新Account",
+        "tags": [
+          "account"
+        ],
+        "summary": "Update account information | 更新Account",
+        "operationId": "UpdateAccount",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/AccountInfo"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "BaseMsgResp",
+            "schema": {
+              "$ref": "#/definitions/BaseMsgResp"
+            }
+          }
+        }
+      }
+    },
     "/department": {
       "post": {
         "description": "Get department by ID | 通过ID获取Department",
@@ -145,6 +285,146 @@
             "schema": {
               "type": "object",
               "$ref": "#/definitions/DepartmentInfo"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "BaseMsgResp",
+            "schema": {
+              "$ref": "#/definitions/BaseMsgResp"
+            }
+          }
+        }
+      }
+    },
+    "/device": {
+      "post": {
+        "description": "Get device by ID | 通过ID获取Device",
+        "tags": [
+          "device"
+        ],
+        "summary": "Get device by ID | 通过ID获取Device",
+        "operationId": "GetDeviceById",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/IDReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "DeviceInfoResp",
+            "schema": {
+              "$ref": "#/definitions/DeviceInfoResp"
+            }
+          }
+        }
+      }
+    },
+    "/device/create": {
+      "post": {
+        "description": "Create device information | 创建Device",
+        "tags": [
+          "device"
+        ],
+        "summary": "Create device information | 创建Device",
+        "operationId": "CreateDevice",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/DeviceInfo"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "BaseMsgResp",
+            "schema": {
+              "$ref": "#/definitions/BaseMsgResp"
+            }
+          }
+        }
+      }
+    },
+    "/device/delete": {
+      "post": {
+        "description": "Delete device information | 删除Device信息",
+        "tags": [
+          "device"
+        ],
+        "summary": "Delete device information | 删除Device信息",
+        "operationId": "DeleteDevice",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/IDsReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "BaseMsgResp",
+            "schema": {
+              "$ref": "#/definitions/BaseMsgResp"
+            }
+          }
+        }
+      }
+    },
+    "/device/list": {
+      "post": {
+        "description": "Get device list | 获取Device列表",
+        "tags": [
+          "device"
+        ],
+        "summary": "Get device list | 获取Device列表",
+        "operationId": "GetDeviceList",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/DeviceListReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "DeviceListResp",
+            "schema": {
+              "$ref": "#/definitions/DeviceListResp"
+            }
+          }
+        }
+      }
+    },
+    "/device/update": {
+      "post": {
+        "description": "Update device information | 更新Device",
+        "tags": [
+          "device"
+        ],
+        "summary": "Update device information | 更新Device",
+        "operationId": "UpdateDevice",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/DeviceInfo"
             }
           }
         ],
@@ -458,6 +738,173 @@
     }
   },
   "definitions": {
+    "AccountInfo": {
+      "description": "The response data of account information | Account信息",
+      "type": "object",
+      "properties": {
+        "createdAt": {
+          "description": "Create date | 创建日期",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "CreatedAt"
+        },
+        "deviceId": {
+          "description": "account belong to",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "DeviceId"
+        },
+        "id": {
+          "description": "ID",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "Id"
+        },
+        "password": {
+          "description": "account password",
+          "type": "string",
+          "x-go-name": "Password"
+        },
+        "port": {
+          "description": "account port",
+          "type": "integer",
+          "format": "uint32",
+          "x-go-name": "Port"
+        },
+        "privateKey": {
+          "description": "private_key of the this account.",
+          "type": "string",
+          "x-go-name": "PrivateKey"
+        },
+        "protocol": {
+          "description": "protocol of the this account.",
+          "type": "integer",
+          "format": "uint8",
+          "x-go-name": "Protocol"
+        },
+        "updatedAt": {
+          "description": "Update date | 更新日期",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "UpdatedAt"
+        },
+        "username": {
+          "description": "account username",
+          "type": "string",
+          "x-go-name": "Username"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "AccountInfoResp": {
+      "description": "Account information response | Account信息返回体",
+      "type": "object",
+      "properties": {
+        "code": {
+          "description": "Error code | 错误代码",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Code"
+        },
+        "data": {
+          "description": "Data | 数据",
+          "type": "string",
+          "x-go-name": "Data",
+          "$ref": "#/definitions/AccountInfo"
+        },
+        "msg": {
+          "description": "Message | 提示信息",
+          "type": "string",
+          "x-go-name": "Msg"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "AccountListInfo": {
+      "description": "Account list data | Account列表数据",
+      "type": "object",
+      "properties": {
+        "data": {
+          "description": "The API list data | Account列表数据",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AccountInfo"
+          },
+          "x-go-name": "Data"
+        },
+        "total": {
+          "description": "The total number of data | 数据总数",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "Total"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "AccountListReq": {
+      "description": "Get account list request params | Account列表请求参数",
+      "type": "object",
+      "required": [
+        "page",
+        "pageSize"
+      ],
+      "properties": {
+        "page": {
+          "description": "Page number | 第几页",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0,
+          "x-go-name": "Page"
+        },
+        "pageSize": {
+          "description": "Page size | 单页数据行数",
+          "type": "integer",
+          "format": "uint64",
+          "maximum": 100000,
+          "x-go-name": "PageSize"
+        },
+        "password": {
+          "description": "account password",
+          "type": "string",
+          "x-go-name": "Password"
+        },
+        "privateKey": {
+          "description": "private_key of the this account.",
+          "type": "string",
+          "x-go-name": "PrivateKey"
+        },
+        "username": {
+          "description": "account username",
+          "type": "string",
+          "x-go-name": "Username"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "AccountListResp": {
+      "description": "The response data of account list | Account列表数据",
+      "type": "object",
+      "properties": {
+        "code": {
+          "description": "Error code | 错误代码",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Code"
+        },
+        "data": {
+          "description": "Data | 数据",
+          "type": "string",
+          "x-go-name": "Data",
+          "$ref": "#/definitions/AccountListInfo"
+        },
+        "msg": {
+          "description": "Message | 提示信息",
+          "type": "string",
+          "x-go-name": "Msg"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
     "BaseDataInfo": {
       "description": "The basic response with data | 基础带数据信息",
       "type": "object",
@@ -597,10 +1044,10 @@
           "type": "string",
           "x-go-name": "Name"
         },
-        "parentDepartmentsIds": {
+        "parentDepartments": {
           "description": "Comma-separated list of parent department IDs in ascending order.",
           "type": "string",
-          "x-go-name": "ParentDepartmentsIds"
+          "x-go-name": "ParentDepartments"
         },
         "updatedAt": {
           "description": "Update date | 更新日期",
@@ -711,6 +1158,155 @@
           "type": "string",
           "x-go-name": "Data",
           "$ref": "#/definitions/DepartmentListInfo"
+        },
+        "msg": {
+          "description": "Message | 提示信息",
+          "type": "string",
+          "x-go-name": "Msg"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "DeviceInfo": {
+      "description": "The response data of device information | Device信息",
+      "type": "object",
+      "properties": {
+        "createdAt": {
+          "description": "Create date | 创建日期",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "CreatedAt"
+        },
+        "description": {
+          "description": "Description of the device.",
+          "type": "string",
+          "x-go-name": "Description"
+        },
+        "host": {
+          "description": "login host",
+          "type": "string",
+          "x-go-name": "Host"
+        },
+        "id": {
+          "description": "ID",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "Id"
+        },
+        "name": {
+          "description": "The name of the device.",
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "updatedAt": {
+          "description": "Update date | 更新日期",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "UpdatedAt"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "DeviceInfoResp": {
+      "description": "Device information response | Device信息返回体",
+      "type": "object",
+      "properties": {
+        "code": {
+          "description": "Error code | 错误代码",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Code"
+        },
+        "data": {
+          "description": "Data | 数据",
+          "type": "string",
+          "x-go-name": "Data",
+          "$ref": "#/definitions/DeviceInfo"
+        },
+        "msg": {
+          "description": "Message | 提示信息",
+          "type": "string",
+          "x-go-name": "Msg"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "DeviceListInfo": {
+      "description": "Device list data | Device列表数据",
+      "type": "object",
+      "properties": {
+        "data": {
+          "description": "The API list data | Device列表数据",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DeviceInfo"
+          },
+          "x-go-name": "Data"
+        },
+        "total": {
+          "description": "The total number of data | 数据总数",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "Total"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "DeviceListReq": {
+      "description": "Get device list request params | Device列表请求参数",
+      "type": "object",
+      "required": [
+        "page",
+        "pageSize"
+      ],
+      "properties": {
+        "description": {
+          "description": "Description of the device.",
+          "type": "string",
+          "x-go-name": "Description"
+        },
+        "host": {
+          "description": "login host",
+          "type": "string",
+          "x-go-name": "Host"
+        },
+        "name": {
+          "description": "The name of the device.",
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "page": {
+          "description": "Page number | 第几页",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0,
+          "x-go-name": "Page"
+        },
+        "pageSize": {
+          "description": "Page size | 单页数据行数",
+          "type": "integer",
+          "format": "uint64",
+          "maximum": 100000,
+          "x-go-name": "PageSize"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "DeviceListResp": {
+      "description": "The response data of device list | Device列表数据",
+      "type": "object",
+      "properties": {
+        "code": {
+          "description": "Error code | 错误代码",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Code"
+        },
+        "data": {
+          "description": "Data | 数据",
+          "type": "string",
+          "x-go-name": "Data",
+          "$ref": "#/definitions/DeviceListInfo"
         },
         "msg": {
           "description": "Message | 提示信息",

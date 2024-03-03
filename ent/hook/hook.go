@@ -8,6 +8,18 @@ import (
 	"sectran_admin/ent"
 )
 
+// The AccountFunc type is an adapter to allow the use of ordinary
+// function as Account mutator.
+type AccountFunc func(context.Context, *ent.AccountMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AccountFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AccountMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AccountMutation", m)
+}
+
 // The DepartmentFunc type is an adapter to allow the use of ordinary
 // function as Department mutator.
 type DepartmentFunc func(context.Context, *ent.DepartmentMutation) (ent.Value, error)
@@ -18,6 +30,18 @@ func (f DepartmentFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, 
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DepartmentMutation", m)
+}
+
+// The DeviceFunc type is an adapter to allow the use of ordinary
+// function as Device mutator.
+type DeviceFunc func(context.Context, *ent.DeviceMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f DeviceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.DeviceMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DeviceMutation", m)
 }
 
 // The RoleFunc type is an adapter to allow the use of ordinary

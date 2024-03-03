@@ -8,15 +8,41 @@ import (
 )
 
 var (
+	// AccountsColumns holds the columns for the "accounts" table.
+	AccountsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
+		{Name: "username", Type: field.TypeString, Comment: "account username"},
+		{Name: "port", Type: field.TypeUint32, Comment: "account port"},
+		{Name: "protocol", Type: field.TypeUint8, Comment: "protocol of the this account."},
+		{Name: "password", Type: field.TypeString, Comment: "account password"},
+		{Name: "private_key", Type: field.TypeString, Comment: "private_key of the this account."},
+		{Name: "device_id", Type: field.TypeUint64, Nullable: true, Comment: "account belong to"},
+	}
+	// AccountsTable holds the schema information for the "accounts" table.
+	AccountsTable = &schema.Table{
+		Name:       "accounts",
+		Columns:    AccountsColumns,
+		PrimaryKey: []*schema.Column{AccountsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "accounts_devices_devices",
+				Columns:    []*schema.Column{AccountsColumns[8]},
+				RefColumns: []*schema.Column{DevicesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
 	// DepartmentsColumns holds the columns for the "departments" table.
 	DepartmentsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
-		{Name: "name", Type: field.TypeString, Comment: "The name of the department."},
+		{Name: "name", Type: field.TypeString, Unique: true, Comment: "The name of the department."},
 		{Name: "area", Type: field.TypeString, Comment: "The area where the department is located."},
 		{Name: "description", Type: field.TypeString, Comment: "Description of the department."},
-		{Name: "parent_departments_ids", Type: field.TypeString, Comment: "Comma-separated list of parent department IDs in ascending order."},
+		{Name: "parent_departments", Type: field.TypeString, Comment: "Comma-separated list of parent department IDs in ascending order."},
 	}
 	// DepartmentsTable holds the schema information for the "departments" table.
 	DepartmentsTable = &schema.Table{
@@ -24,12 +50,27 @@ var (
 		Columns:    DepartmentsColumns,
 		PrimaryKey: []*schema.Column{DepartmentsColumns[0]},
 	}
+	// DevicesColumns holds the columns for the "devices" table.
+	DevicesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
+		{Name: "name", Type: field.TypeString, Comment: "The name of the device."},
+		{Name: "host", Type: field.TypeString, Unique: true, Comment: "login host"},
+		{Name: "description", Type: field.TypeString, Comment: "Description of the device."},
+	}
+	// DevicesTable holds the schema information for the "devices" table.
+	DevicesTable = &schema.Table{
+		Name:       "devices",
+		Columns:    DevicesColumns,
+		PrimaryKey: []*schema.Column{DevicesColumns[0]},
+	}
 	// RolesColumns holds the columns for the "roles" table.
 	RolesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
-		{Name: "name", Type: field.TypeString, Comment: "The name of the role."},
+		{Name: "name", Type: field.TypeString, Unique: true, Comment: "The name of the role."},
 		{Name: "weight", Type: field.TypeInt, Comment: "The weight of the role. Smaller values indicate higher priority."},
 	}
 	// RolesTable holds the schema information for the "roles" table.
@@ -75,13 +116,16 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		AccountsTable,
 		DepartmentsTable,
+		DevicesTable,
 		RolesTable,
 		UsersTable,
 	}
 )
 
 func init() {
+	AccountsTable.ForeignKeys[0].RefTable = DevicesTable
 	UsersTable.ForeignKeys[0].RefTable = DepartmentsTable
 	UsersTable.ForeignKeys[1].RefTable = RolesTable
 }

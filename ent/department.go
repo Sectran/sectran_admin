@@ -28,7 +28,7 @@ type Department struct {
 	// Description of the department.
 	Description string `json:"description,omitempty"`
 	// Comma-separated list of parent department IDs in ascending order.
-	ParentDepartmentsIds string `json:"parent_departments_ids,omitempty"`
+	ParentDepartments string `json:"parent_departments,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the DepartmentQuery when eager-loading is set.
 	Edges        DepartmentEdges `json:"edges"`
@@ -60,7 +60,7 @@ func (*Department) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case department.FieldID:
 			values[i] = new(sql.NullInt64)
-		case department.FieldName, department.FieldArea, department.FieldDescription, department.FieldParentDepartmentsIds:
+		case department.FieldName, department.FieldArea, department.FieldDescription, department.FieldParentDepartments:
 			values[i] = new(sql.NullString)
 		case department.FieldCreatedAt, department.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -115,11 +115,11 @@ func (d *Department) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				d.Description = value.String
 			}
-		case department.FieldParentDepartmentsIds:
+		case department.FieldParentDepartments:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field parent_departments_ids", values[i])
+				return fmt.Errorf("unexpected type %T for field parent_departments", values[i])
 			} else if value.Valid {
-				d.ParentDepartmentsIds = value.String
+				d.ParentDepartments = value.String
 			}
 		default:
 			d.selectValues.Set(columns[i], values[i])
@@ -177,8 +177,8 @@ func (d *Department) String() string {
 	builder.WriteString("description=")
 	builder.WriteString(d.Description)
 	builder.WriteString(", ")
-	builder.WriteString("parent_departments_ids=")
-	builder.WriteString(d.ParentDepartmentsIds)
+	builder.WriteString("parent_departments=")
+	builder.WriteString(d.ParentDepartments)
 	builder.WriteByte(')')
 	return builder.String()
 }

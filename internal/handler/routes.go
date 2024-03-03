@@ -4,8 +4,10 @@ package handler
 import (
 	"net/http"
 
+	account "sectran_admin/internal/handler/account"
 	base "sectran_admin/internal/handler/base"
 	department "sectran_admin/internal/handler/department"
+	device "sectran_admin/internal/handler/device"
 	role "sectran_admin/internal/handler/role"
 	user "sectran_admin/internal/handler/user"
 	"sectran_admin/internal/svc"
@@ -55,7 +57,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		// rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 	)
 
 	server.AddRoutes(
@@ -89,7 +91,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		// rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 	)
 
 	server.AddRoutes(
@@ -123,6 +125,74 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
-		// rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/account/create",
+					Handler: account.CreateAccountHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/account/update",
+					Handler: account.UpdateAccountHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/account/delete",
+					Handler: account.DeleteAccountHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/account/list",
+					Handler: account.GetAccountListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/account",
+					Handler: account.GetAccountByIdHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/device/create",
+					Handler: device.CreateDeviceHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/device/update",
+					Handler: device.UpdateDeviceHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/device/delete",
+					Handler: device.DeleteDeviceHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/device/list",
+					Handler: device.GetDeviceListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/device",
+					Handler: device.GetDeviceByIdHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 	)
 }

@@ -80,9 +80,9 @@ func Description(v string) predicate.Department {
 	return predicate.Department(sql.FieldEQ(FieldDescription, v))
 }
 
-// ParentDepartmentsIds applies equality check predicate on the "parent_departments_ids" field. It's identical to ParentDepartmentsIdsEQ.
-func ParentDepartmentsIds(v string) predicate.Department {
-	return predicate.Department(sql.FieldEQ(FieldParentDepartmentsIds, v))
+// ParentDepartments applies equality check predicate on the "parent_departments" field. It's identical to ParentDepartmentsEQ.
+func ParentDepartments(v string) predicate.Department {
+	return predicate.Department(sql.FieldEQ(FieldParentDepartments, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -360,69 +360,69 @@ func DescriptionContainsFold(v string) predicate.Department {
 	return predicate.Department(sql.FieldContainsFold(FieldDescription, v))
 }
 
-// ParentDepartmentsIdsEQ applies the EQ predicate on the "parent_departments_ids" field.
-func ParentDepartmentsIdsEQ(v string) predicate.Department {
-	return predicate.Department(sql.FieldEQ(FieldParentDepartmentsIds, v))
+// ParentDepartmentsEQ applies the EQ predicate on the "parent_departments" field.
+func ParentDepartmentsEQ(v string) predicate.Department {
+	return predicate.Department(sql.FieldEQ(FieldParentDepartments, v))
 }
 
-// ParentDepartmentsIdsNEQ applies the NEQ predicate on the "parent_departments_ids" field.
-func ParentDepartmentsIdsNEQ(v string) predicate.Department {
-	return predicate.Department(sql.FieldNEQ(FieldParentDepartmentsIds, v))
+// ParentDepartmentsNEQ applies the NEQ predicate on the "parent_departments" field.
+func ParentDepartmentsNEQ(v string) predicate.Department {
+	return predicate.Department(sql.FieldNEQ(FieldParentDepartments, v))
 }
 
-// ParentDepartmentsIdsIn applies the In predicate on the "parent_departments_ids" field.
-func ParentDepartmentsIdsIn(vs ...string) predicate.Department {
-	return predicate.Department(sql.FieldIn(FieldParentDepartmentsIds, vs...))
+// ParentDepartmentsIn applies the In predicate on the "parent_departments" field.
+func ParentDepartmentsIn(vs ...string) predicate.Department {
+	return predicate.Department(sql.FieldIn(FieldParentDepartments, vs...))
 }
 
-// ParentDepartmentsIdsNotIn applies the NotIn predicate on the "parent_departments_ids" field.
-func ParentDepartmentsIdsNotIn(vs ...string) predicate.Department {
-	return predicate.Department(sql.FieldNotIn(FieldParentDepartmentsIds, vs...))
+// ParentDepartmentsNotIn applies the NotIn predicate on the "parent_departments" field.
+func ParentDepartmentsNotIn(vs ...string) predicate.Department {
+	return predicate.Department(sql.FieldNotIn(FieldParentDepartments, vs...))
 }
 
-// ParentDepartmentsIdsGT applies the GT predicate on the "parent_departments_ids" field.
-func ParentDepartmentsIdsGT(v string) predicate.Department {
-	return predicate.Department(sql.FieldGT(FieldParentDepartmentsIds, v))
+// ParentDepartmentsGT applies the GT predicate on the "parent_departments" field.
+func ParentDepartmentsGT(v string) predicate.Department {
+	return predicate.Department(sql.FieldGT(FieldParentDepartments, v))
 }
 
-// ParentDepartmentsIdsGTE applies the GTE predicate on the "parent_departments_ids" field.
-func ParentDepartmentsIdsGTE(v string) predicate.Department {
-	return predicate.Department(sql.FieldGTE(FieldParentDepartmentsIds, v))
+// ParentDepartmentsGTE applies the GTE predicate on the "parent_departments" field.
+func ParentDepartmentsGTE(v string) predicate.Department {
+	return predicate.Department(sql.FieldGTE(FieldParentDepartments, v))
 }
 
-// ParentDepartmentsIdsLT applies the LT predicate on the "parent_departments_ids" field.
-func ParentDepartmentsIdsLT(v string) predicate.Department {
-	return predicate.Department(sql.FieldLT(FieldParentDepartmentsIds, v))
+// ParentDepartmentsLT applies the LT predicate on the "parent_departments" field.
+func ParentDepartmentsLT(v string) predicate.Department {
+	return predicate.Department(sql.FieldLT(FieldParentDepartments, v))
 }
 
-// ParentDepartmentsIdsLTE applies the LTE predicate on the "parent_departments_ids" field.
-func ParentDepartmentsIdsLTE(v string) predicate.Department {
-	return predicate.Department(sql.FieldLTE(FieldParentDepartmentsIds, v))
+// ParentDepartmentsLTE applies the LTE predicate on the "parent_departments" field.
+func ParentDepartmentsLTE(v string) predicate.Department {
+	return predicate.Department(sql.FieldLTE(FieldParentDepartments, v))
 }
 
-// ParentDepartmentsIdsContains applies the Contains predicate on the "parent_departments_ids" field.
-func ParentDepartmentsIdsContains(v string) predicate.Department {
-	return predicate.Department(sql.FieldContains(FieldParentDepartmentsIds, v))
+// ParentDepartmentsContains applies the Contains predicate on the "parent_departments" field.
+func ParentDepartmentsContains(v string) predicate.Department {
+	return predicate.Department(sql.FieldContains(FieldParentDepartments, v))
 }
 
-// ParentDepartmentsIdsHasPrefix applies the HasPrefix predicate on the "parent_departments_ids" field.
-func ParentDepartmentsIdsHasPrefix(v string) predicate.Department {
-	return predicate.Department(sql.FieldHasPrefix(FieldParentDepartmentsIds, v))
+// ParentDepartmentsHasPrefix applies the HasPrefix predicate on the "parent_departments" field.
+func ParentDepartmentsHasPrefix(v string) predicate.Department {
+	return predicate.Department(sql.FieldHasPrefix(FieldParentDepartments, v))
 }
 
-// ParentDepartmentsIdsHasSuffix applies the HasSuffix predicate on the "parent_departments_ids" field.
-func ParentDepartmentsIdsHasSuffix(v string) predicate.Department {
-	return predicate.Department(sql.FieldHasSuffix(FieldParentDepartmentsIds, v))
+// ParentDepartmentsHasSuffix applies the HasSuffix predicate on the "parent_departments" field.
+func ParentDepartmentsHasSuffix(v string) predicate.Department {
+	return predicate.Department(sql.FieldHasSuffix(FieldParentDepartments, v))
 }
 
-// ParentDepartmentsIdsEqualFold applies the EqualFold predicate on the "parent_departments_ids" field.
-func ParentDepartmentsIdsEqualFold(v string) predicate.Department {
-	return predicate.Department(sql.FieldEqualFold(FieldParentDepartmentsIds, v))
+// ParentDepartmentsEqualFold applies the EqualFold predicate on the "parent_departments" field.
+func ParentDepartmentsEqualFold(v string) predicate.Department {
+	return predicate.Department(sql.FieldEqualFold(FieldParentDepartments, v))
 }
 
-// ParentDepartmentsIdsContainsFold applies the ContainsFold predicate on the "parent_departments_ids" field.
-func ParentDepartmentsIdsContainsFold(v string) predicate.Department {
-	return predicate.Department(sql.FieldContainsFold(FieldParentDepartmentsIds, v))
+// ParentDepartmentsContainsFold applies the ContainsFold predicate on the "parent_departments" field.
+func ParentDepartmentsContainsFold(v string) predicate.Department {
+	return predicate.Department(sql.FieldContainsFold(FieldParentDepartments, v))
 }
 
 // HasUsers applies the HasEdge predicate on the "users" edge.

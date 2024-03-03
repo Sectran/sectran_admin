@@ -67,9 +67,9 @@ func (dc *DepartmentCreate) SetDescription(s string) *DepartmentCreate {
 	return dc
 }
 
-// SetParentDepartmentsIds sets the "parent_departments_ids" field.
-func (dc *DepartmentCreate) SetParentDepartmentsIds(s string) *DepartmentCreate {
-	dc.mutation.SetParentDepartmentsIds(s)
+// SetParentDepartments sets the "parent_departments" field.
+func (dc *DepartmentCreate) SetParentDepartments(s string) *DepartmentCreate {
+	dc.mutation.SetParentDepartments(s)
 	return dc
 }
 
@@ -166,12 +166,12 @@ func (dc *DepartmentCreate) check() error {
 	if _, ok := dc.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "Department.description"`)}
 	}
-	if _, ok := dc.mutation.ParentDepartmentsIds(); !ok {
-		return &ValidationError{Name: "parent_departments_ids", err: errors.New(`ent: missing required field "Department.parent_departments_ids"`)}
+	if _, ok := dc.mutation.ParentDepartments(); !ok {
+		return &ValidationError{Name: "parent_departments", err: errors.New(`ent: missing required field "Department.parent_departments"`)}
 	}
-	if v, ok := dc.mutation.ParentDepartmentsIds(); ok {
-		if err := department.ParentDepartmentsIdsValidator(v); err != nil {
-			return &ValidationError{Name: "parent_departments_ids", err: fmt.Errorf(`ent: validator failed for field "Department.parent_departments_ids": %w`, err)}
+	if v, ok := dc.mutation.ParentDepartments(); ok {
+		if err := department.ParentDepartmentsValidator(v); err != nil {
+			return &ValidationError{Name: "parent_departments", err: fmt.Errorf(`ent: validator failed for field "Department.parent_departments": %w`, err)}
 		}
 	}
 	return nil
@@ -226,9 +226,9 @@ func (dc *DepartmentCreate) createSpec() (*Department, *sqlgraph.CreateSpec) {
 		_spec.SetField(department.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
-	if value, ok := dc.mutation.ParentDepartmentsIds(); ok {
-		_spec.SetField(department.FieldParentDepartmentsIds, field.TypeString, value)
-		_node.ParentDepartmentsIds = value
+	if value, ok := dc.mutation.ParentDepartments(); ok {
+		_spec.SetField(department.FieldParentDepartments, field.TypeString, value)
+		_node.ParentDepartments = value
 	}
 	if nodes := dc.mutation.UsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

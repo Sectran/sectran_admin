@@ -5,7 +5,9 @@ package ent
 import (
 	"context"
 	"fmt"
+	"sectran_admin/ent/account"
 	"sectran_admin/ent/department"
+	"sectran_admin/ent/device"
 	"sectran_admin/ent/role"
 	"sectran_admin/ent/user"
 )
@@ -55,6 +57,85 @@ func (o OrderDirection) reverse() OrderDirection {
 }
 
 const errInvalidPagination = "INVALID_PAGINATION"
+
+type AccountPager struct {
+	Order  account.OrderOption
+	Filter func(*AccountQuery) (*AccountQuery, error)
+}
+
+// AccountPaginateOption enables pagination customization.
+type AccountPaginateOption func(*AccountPager)
+
+// DefaultAccountOrder is the default ordering of Account.
+var DefaultAccountOrder = Desc(account.FieldID)
+
+func newAccountPager(opts []AccountPaginateOption) (*AccountPager, error) {
+	pager := &AccountPager{}
+	for _, opt := range opts {
+		opt(pager)
+	}
+	if pager.Order == nil {
+		pager.Order = DefaultAccountOrder
+	}
+	return pager, nil
+}
+
+func (p *AccountPager) ApplyFilter(query *AccountQuery) (*AccountQuery, error) {
+	if p.Filter != nil {
+		return p.Filter(query)
+	}
+	return query, nil
+}
+
+// AccountPageList is Account PageList result.
+type AccountPageList struct {
+	List        []*Account   `json:"list"`
+	PageDetails *PageDetails `json:"pageDetails"`
+}
+
+func (a *AccountQuery) Page(
+	ctx context.Context, pageNum uint64, pageSize uint64, opts ...AccountPaginateOption,
+) (*AccountPageList, error) {
+
+	pager, err := newAccountPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if a, err = pager.ApplyFilter(a); err != nil {
+		return nil, err
+	}
+
+	ret := &AccountPageList{}
+
+	ret.PageDetails = &PageDetails{
+		Page: pageNum,
+		Size: pageSize,
+	}
+
+	count, err := a.Clone().Count(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ret.PageDetails.Total = uint64(count)
+
+	if pager.Order != nil {
+		a = a.Order(pager.Order)
+	} else {
+		a = a.Order(DefaultAccountOrder)
+	}
+
+	a = a.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
+	list, err := a.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ret.List = list
+
+	return ret, nil
+}
 
 type DepartmentPager struct {
 	Order  department.OrderOption
@@ -123,6 +204,85 @@ func (d *DepartmentQuery) Page(
 		d = d.Order(pager.Order)
 	} else {
 		d = d.Order(DefaultDepartmentOrder)
+	}
+
+	d = d.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
+	list, err := d.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ret.List = list
+
+	return ret, nil
+}
+
+type DevicePager struct {
+	Order  device.OrderOption
+	Filter func(*DeviceQuery) (*DeviceQuery, error)
+}
+
+// DevicePaginateOption enables pagination customization.
+type DevicePaginateOption func(*DevicePager)
+
+// DefaultDeviceOrder is the default ordering of Device.
+var DefaultDeviceOrder = Desc(device.FieldID)
+
+func newDevicePager(opts []DevicePaginateOption) (*DevicePager, error) {
+	pager := &DevicePager{}
+	for _, opt := range opts {
+		opt(pager)
+	}
+	if pager.Order == nil {
+		pager.Order = DefaultDeviceOrder
+	}
+	return pager, nil
+}
+
+func (p *DevicePager) ApplyFilter(query *DeviceQuery) (*DeviceQuery, error) {
+	if p.Filter != nil {
+		return p.Filter(query)
+	}
+	return query, nil
+}
+
+// DevicePageList is Device PageList result.
+type DevicePageList struct {
+	List        []*Device    `json:"list"`
+	PageDetails *PageDetails `json:"pageDetails"`
+}
+
+func (d *DeviceQuery) Page(
+	ctx context.Context, pageNum uint64, pageSize uint64, opts ...DevicePaginateOption,
+) (*DevicePageList, error) {
+
+	pager, err := newDevicePager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if d, err = pager.ApplyFilter(d); err != nil {
+		return nil, err
+	}
+
+	ret := &DevicePageList{}
+
+	ret.PageDetails = &PageDetails{
+		Page: pageNum,
+		Size: pageSize,
+	}
+
+	count, err := d.Clone().Count(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ret.PageDetails.Total = uint64(count)
+
+	if pager.Order != nil {
+		d = d.Order(pager.Order)
+	} else {
+		d = d.Order(DefaultDeviceOrder)
 	}
 
 	d = d.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))

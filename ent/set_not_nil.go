@@ -5,6 +5,174 @@ package ent
 import "time"
 
 // set field if value's pointer is not nil.
+func (a *AccountUpdate) SetNotNilUpdatedAt(value *time.Time) *AccountUpdate {
+	if value != nil {
+		return a.SetUpdatedAt(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountUpdateOne) SetNotNilUpdatedAt(value *time.Time) *AccountUpdateOne {
+	if value != nil {
+		return a.SetUpdatedAt(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountCreate) SetNotNilUpdatedAt(value *time.Time) *AccountCreate {
+	if value != nil {
+		return a.SetUpdatedAt(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountUpdate) SetNotNilUsername(value *string) *AccountUpdate {
+	if value != nil {
+		return a.SetUsername(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountUpdateOne) SetNotNilUsername(value *string) *AccountUpdateOne {
+	if value != nil {
+		return a.SetUsername(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountCreate) SetNotNilUsername(value *string) *AccountCreate {
+	if value != nil {
+		return a.SetUsername(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountUpdate) SetNotNilPort(value *uint32) *AccountUpdate {
+	if value != nil {
+		return a.SetPort(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountUpdateOne) SetNotNilPort(value *uint32) *AccountUpdateOne {
+	if value != nil {
+		return a.SetPort(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountCreate) SetNotNilPort(value *uint32) *AccountCreate {
+	if value != nil {
+		return a.SetPort(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountUpdate) SetNotNilProtocol(value *uint8) *AccountUpdate {
+	if value != nil {
+		return a.SetProtocol(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountUpdateOne) SetNotNilProtocol(value *uint8) *AccountUpdateOne {
+	if value != nil {
+		return a.SetProtocol(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountCreate) SetNotNilProtocol(value *uint8) *AccountCreate {
+	if value != nil {
+		return a.SetProtocol(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountUpdate) SetNotNilPassword(value *string) *AccountUpdate {
+	if value != nil {
+		return a.SetPassword(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountUpdateOne) SetNotNilPassword(value *string) *AccountUpdateOne {
+	if value != nil {
+		return a.SetPassword(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountCreate) SetNotNilPassword(value *string) *AccountCreate {
+	if value != nil {
+		return a.SetPassword(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountUpdate) SetNotNilPrivateKey(value *string) *AccountUpdate {
+	if value != nil {
+		return a.SetPrivateKey(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountUpdateOne) SetNotNilPrivateKey(value *string) *AccountUpdateOne {
+	if value != nil {
+		return a.SetPrivateKey(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountCreate) SetNotNilPrivateKey(value *string) *AccountCreate {
+	if value != nil {
+		return a.SetPrivateKey(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountUpdate) SetNotNilDeviceID(value *uint64) *AccountUpdate {
+	if value != nil {
+		return a.SetDeviceID(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountUpdateOne) SetNotNilDeviceID(value *uint64) *AccountUpdateOne {
+	if value != nil {
+		return a.SetDeviceID(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountCreate) SetNotNilDeviceID(value *uint64) *AccountCreate {
+	if value != nil {
+		return a.SetDeviceID(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
 func (d *DepartmentUpdate) SetNotNilUpdatedAt(value *time.Time) *DepartmentUpdate {
 	if value != nil {
 		return d.SetUpdatedAt(*value)
@@ -101,25 +269,121 @@ func (d *DepartmentCreate) SetNotNilDescription(value *string) *DepartmentCreate
 }
 
 // set field if value's pointer is not nil.
-func (d *DepartmentUpdate) SetNotNilParentDepartmentsIds(value *string) *DepartmentUpdate {
+func (d *DepartmentUpdate) SetNotNilParentDepartments(value *string) *DepartmentUpdate {
 	if value != nil {
-		return d.SetParentDepartmentsIds(*value)
+		return d.SetParentDepartments(*value)
 	}
 	return d
 }
 
 // set field if value's pointer is not nil.
-func (d *DepartmentUpdateOne) SetNotNilParentDepartmentsIds(value *string) *DepartmentUpdateOne {
+func (d *DepartmentUpdateOne) SetNotNilParentDepartments(value *string) *DepartmentUpdateOne {
 	if value != nil {
-		return d.SetParentDepartmentsIds(*value)
+		return d.SetParentDepartments(*value)
 	}
 	return d
 }
 
 // set field if value's pointer is not nil.
-func (d *DepartmentCreate) SetNotNilParentDepartmentsIds(value *string) *DepartmentCreate {
+func (d *DepartmentCreate) SetNotNilParentDepartments(value *string) *DepartmentCreate {
 	if value != nil {
-		return d.SetParentDepartmentsIds(*value)
+		return d.SetParentDepartments(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DeviceUpdate) SetNotNilUpdatedAt(value *time.Time) *DeviceUpdate {
+	if value != nil {
+		return d.SetUpdatedAt(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DeviceUpdateOne) SetNotNilUpdatedAt(value *time.Time) *DeviceUpdateOne {
+	if value != nil {
+		return d.SetUpdatedAt(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DeviceCreate) SetNotNilUpdatedAt(value *time.Time) *DeviceCreate {
+	if value != nil {
+		return d.SetUpdatedAt(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DeviceUpdate) SetNotNilName(value *string) *DeviceUpdate {
+	if value != nil {
+		return d.SetName(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DeviceUpdateOne) SetNotNilName(value *string) *DeviceUpdateOne {
+	if value != nil {
+		return d.SetName(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DeviceCreate) SetNotNilName(value *string) *DeviceCreate {
+	if value != nil {
+		return d.SetName(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DeviceUpdate) SetNotNilHost(value *string) *DeviceUpdate {
+	if value != nil {
+		return d.SetHost(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DeviceUpdateOne) SetNotNilHost(value *string) *DeviceUpdateOne {
+	if value != nil {
+		return d.SetHost(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DeviceCreate) SetNotNilHost(value *string) *DeviceCreate {
+	if value != nil {
+		return d.SetHost(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DeviceUpdate) SetNotNilDescription(value *string) *DeviceUpdate {
+	if value != nil {
+		return d.SetDescription(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DeviceUpdateOne) SetNotNilDescription(value *string) *DeviceUpdateOne {
+	if value != nil {
+		return d.SetDescription(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DeviceCreate) SetNotNilDescription(value *string) *DeviceCreate {
+	if value != nil {
+		return d.SetDescription(*value)
 	}
 	return d
 }

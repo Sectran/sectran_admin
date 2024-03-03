@@ -24,8 +24,8 @@ const (
 	FieldArea = "area"
 	// FieldDescription holds the string denoting the description field in the database.
 	FieldDescription = "description"
-	// FieldParentDepartmentsIds holds the string denoting the parent_departments_ids field in the database.
-	FieldParentDepartmentsIds = "parent_departments_ids"
+	// FieldParentDepartments holds the string denoting the parent_departments field in the database.
+	FieldParentDepartments = "parent_departments"
 	// EdgeUsers holds the string denoting the users edge name in mutations.
 	EdgeUsers = "users"
 	// Table holds the table name of the department in the database.
@@ -47,7 +47,7 @@ var Columns = []string{
 	FieldName,
 	FieldArea,
 	FieldDescription,
-	FieldParentDepartmentsIds,
+	FieldParentDepartments,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -71,8 +71,8 @@ var (
 	NameValidator func(string) error
 	// AreaValidator is a validator for the "area" field. It is called by the builders before save.
 	AreaValidator func(string) error
-	// ParentDepartmentsIdsValidator is a validator for the "parent_departments_ids" field. It is called by the builders before save.
-	ParentDepartmentsIdsValidator func(string) error
+	// ParentDepartmentsValidator is a validator for the "parent_departments" field. It is called by the builders before save.
+	ParentDepartmentsValidator func(string) error
 )
 
 // OrderOption defines the ordering options for the Department queries.
@@ -108,9 +108,9 @@ func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDescription, opts...).ToFunc()
 }
 
-// ByParentDepartmentsIds orders the results by the parent_departments_ids field.
-func ByParentDepartmentsIds(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldParentDepartmentsIds, opts...).ToFunc()
+// ByParentDepartments orders the results by the parent_departments field.
+func ByParentDepartments(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldParentDepartments, opts...).ToFunc()
 }
 
 // ByUsersCount orders the results by users count.

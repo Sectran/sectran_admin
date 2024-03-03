@@ -77,16 +77,16 @@ func (du *DepartmentUpdate) SetNillableDescription(s *string) *DepartmentUpdate 
 	return du
 }
 
-// SetParentDepartmentsIds sets the "parent_departments_ids" field.
-func (du *DepartmentUpdate) SetParentDepartmentsIds(s string) *DepartmentUpdate {
-	du.mutation.SetParentDepartmentsIds(s)
+// SetParentDepartments sets the "parent_departments" field.
+func (du *DepartmentUpdate) SetParentDepartments(s string) *DepartmentUpdate {
+	du.mutation.SetParentDepartments(s)
 	return du
 }
 
-// SetNillableParentDepartmentsIds sets the "parent_departments_ids" field if the given value is not nil.
-func (du *DepartmentUpdate) SetNillableParentDepartmentsIds(s *string) *DepartmentUpdate {
+// SetNillableParentDepartments sets the "parent_departments" field if the given value is not nil.
+func (du *DepartmentUpdate) SetNillableParentDepartments(s *string) *DepartmentUpdate {
 	if s != nil {
-		du.SetParentDepartmentsIds(*s)
+		du.SetParentDepartments(*s)
 	}
 	return du
 }
@@ -180,9 +180,9 @@ func (du *DepartmentUpdate) check() error {
 			return &ValidationError{Name: "area", err: fmt.Errorf(`ent: validator failed for field "Department.area": %w`, err)}
 		}
 	}
-	if v, ok := du.mutation.ParentDepartmentsIds(); ok {
-		if err := department.ParentDepartmentsIdsValidator(v); err != nil {
-			return &ValidationError{Name: "parent_departments_ids", err: fmt.Errorf(`ent: validator failed for field "Department.parent_departments_ids": %w`, err)}
+	if v, ok := du.mutation.ParentDepartments(); ok {
+		if err := department.ParentDepartmentsValidator(v); err != nil {
+			return &ValidationError{Name: "parent_departments", err: fmt.Errorf(`ent: validator failed for field "Department.parent_departments": %w`, err)}
 		}
 	}
 	return nil
@@ -212,8 +212,8 @@ func (du *DepartmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := du.mutation.Description(); ok {
 		_spec.SetField(department.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := du.mutation.ParentDepartmentsIds(); ok {
-		_spec.SetField(department.FieldParentDepartmentsIds, field.TypeString, value)
+	if value, ok := du.mutation.ParentDepartments(); ok {
+		_spec.SetField(department.FieldParentDepartments, field.TypeString, value)
 	}
 	if du.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -328,16 +328,16 @@ func (duo *DepartmentUpdateOne) SetNillableDescription(s *string) *DepartmentUpd
 	return duo
 }
 
-// SetParentDepartmentsIds sets the "parent_departments_ids" field.
-func (duo *DepartmentUpdateOne) SetParentDepartmentsIds(s string) *DepartmentUpdateOne {
-	duo.mutation.SetParentDepartmentsIds(s)
+// SetParentDepartments sets the "parent_departments" field.
+func (duo *DepartmentUpdateOne) SetParentDepartments(s string) *DepartmentUpdateOne {
+	duo.mutation.SetParentDepartments(s)
 	return duo
 }
 
-// SetNillableParentDepartmentsIds sets the "parent_departments_ids" field if the given value is not nil.
-func (duo *DepartmentUpdateOne) SetNillableParentDepartmentsIds(s *string) *DepartmentUpdateOne {
+// SetNillableParentDepartments sets the "parent_departments" field if the given value is not nil.
+func (duo *DepartmentUpdateOne) SetNillableParentDepartments(s *string) *DepartmentUpdateOne {
 	if s != nil {
-		duo.SetParentDepartmentsIds(*s)
+		duo.SetParentDepartments(*s)
 	}
 	return duo
 }
@@ -444,9 +444,9 @@ func (duo *DepartmentUpdateOne) check() error {
 			return &ValidationError{Name: "area", err: fmt.Errorf(`ent: validator failed for field "Department.area": %w`, err)}
 		}
 	}
-	if v, ok := duo.mutation.ParentDepartmentsIds(); ok {
-		if err := department.ParentDepartmentsIdsValidator(v); err != nil {
-			return &ValidationError{Name: "parent_departments_ids", err: fmt.Errorf(`ent: validator failed for field "Department.parent_departments_ids": %w`, err)}
+	if v, ok := duo.mutation.ParentDepartments(); ok {
+		if err := department.ParentDepartmentsValidator(v); err != nil {
+			return &ValidationError{Name: "parent_departments", err: fmt.Errorf(`ent: validator failed for field "Department.parent_departments": %w`, err)}
 		}
 	}
 	return nil
@@ -493,8 +493,8 @@ func (duo *DepartmentUpdateOne) sqlSave(ctx context.Context) (_node *Department,
 	if value, ok := duo.mutation.Description(); ok {
 		_spec.SetField(department.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := duo.mutation.ParentDepartmentsIds(); ok {
-		_spec.SetField(department.FieldParentDepartmentsIds, field.TypeString, value)
+	if value, ok := duo.mutation.ParentDepartments(); ok {
+		_spec.SetField(department.FieldParentDepartments, field.TypeString, value)
 	}
 	if duo.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{

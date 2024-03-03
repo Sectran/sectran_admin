@@ -1,0 +1,92 @@
+import "../base.api"
+
+type (
+    // The response data of account information | Account信息
+    AccountInfo {
+        BaseIDInfo
+
+        // account username 
+        Username  *string `json:"username,optional"`
+
+        // account port 
+        Port  *uint32 `json:"port,optional"`
+
+        // protocol of the this account. 
+        Protocol  *uint8 `json:"protocol,optional"`
+
+        // account password 
+        Password  *string `json:"password,optional"`
+
+        // private_key of the this account. 
+        PrivateKey  *string `json:"privateKey,optional"`
+
+        // account belong to 
+        DeviceId  *uint64 `json:"deviceId,optional"`
+    }
+
+    // The response data of account list | Account列表数据
+    AccountListResp {
+        BaseDataInfo
+
+        // Account list data | Account列表数据
+        Data AccountListInfo `json:"data"`
+    }
+
+    // Account list data | Account列表数据
+    AccountListInfo {
+        BaseListInfo
+
+        // The API list data | Account列表数据
+        Data  []AccountInfo  `json:"data"`
+    }
+
+    // Get account list request params | Account列表请求参数
+    AccountListReq {
+        PageInfo
+
+        // account username 
+        Username  *string `json:"username,optional"`
+
+        // account password 
+        Password  *string `json:"password,optional"`
+
+        // private_key of the this account. 
+        PrivateKey  *string `json:"privateKey,optional"`
+    }
+
+    // Account information response | Account信息返回体
+    AccountInfoResp {
+        BaseDataInfo
+
+        // Account information | Account数据
+        Data AccountInfo `json:"data"`
+    }
+)
+
+@server(
+    jwt: Auth
+    group: account
+    middleware: Authority
+)
+
+service SectranAdmin {
+    // Create account information | 创建Account
+    @handler createAccount
+    post /account/create (AccountInfo) returns (BaseMsgResp)
+
+    // Update account information | 更新Account
+    @handler updateAccount
+    post /account/update (AccountInfo) returns (BaseMsgResp)
+
+    // Delete account information | 删除Account信息
+    @handler deleteAccount
+    post /account/delete (IDsReq) returns (BaseMsgResp)
+
+    // Get account list | 获取Account列表
+    @handler getAccountList
+    post /account/list (AccountListReq) returns (AccountListResp)
+
+    // Get account by ID | 通过ID获取Account
+    @handler getAccountById
+    post /account (IDReq) returns (AccountInfoResp)
+}

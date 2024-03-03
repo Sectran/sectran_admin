@@ -18,6 +18,7 @@ func (Department) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").
 			NotEmpty().
+			Unique().
 			Comment("The name of the department.").
 			Annotations(entsql.WithComments(true)),
 
@@ -30,7 +31,7 @@ func (Department) Fields() []ent.Field {
 			Comment("Description of the department.").
 			Annotations(entsql.WithComments(true)),
 
-		field.String("parent_departments_ids").
+		field.String("parent_departments").
 			NotEmpty().
 			Comment("Comma-separated list of parent department IDs in ascending order.").
 			Annotations(entsql.WithComments(true)),

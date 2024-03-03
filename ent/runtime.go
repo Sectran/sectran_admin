@@ -3,7 +3,9 @@
 package ent
 
 import (
+	"sectran_admin/ent/account"
 	"sectran_admin/ent/department"
+	"sectran_admin/ent/device"
 	"sectran_admin/ent/role"
 	"sectran_admin/ent/schema"
 	"sectran_admin/ent/user"
@@ -14,6 +16,43 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	accountMixin := schema.Account{}.Mixin()
+	accountMixinFields0 := accountMixin[0].Fields()
+	_ = accountMixinFields0
+	accountFields := schema.Account{}.Fields()
+	_ = accountFields
+	// accountDescCreatedAt is the schema descriptor for created_at field.
+	accountDescCreatedAt := accountMixinFields0[1].Descriptor()
+	// account.DefaultCreatedAt holds the default value on creation for the created_at field.
+	account.DefaultCreatedAt = accountDescCreatedAt.Default.(func() time.Time)
+	// accountDescUpdatedAt is the schema descriptor for updated_at field.
+	accountDescUpdatedAt := accountMixinFields0[2].Descriptor()
+	// account.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	account.DefaultUpdatedAt = accountDescUpdatedAt.Default.(func() time.Time)
+	// account.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	account.UpdateDefaultUpdatedAt = accountDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// accountDescUsername is the schema descriptor for username field.
+	accountDescUsername := accountFields[0].Descriptor()
+	// account.UsernameValidator is a validator for the "username" field. It is called by the builders before save.
+	account.UsernameValidator = accountDescUsername.Validators[0].(func(string) error)
+	// accountDescProtocol is the schema descriptor for protocol field.
+	accountDescProtocol := accountFields[2].Descriptor()
+	// account.ProtocolValidator is a validator for the "protocol" field. It is called by the builders before save.
+	account.ProtocolValidator = func() func(uint8) error {
+		validators := accountDescProtocol.Validators
+		fns := [...]func(uint8) error{
+			validators[0].(func(uint8) error),
+			validators[1].(func(uint8) error),
+		}
+		return func(protocol uint8) error {
+			for _, fn := range fns {
+				if err := fn(protocol); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	departmentMixin := schema.Department{}.Mixin()
 	departmentMixinFields0 := departmentMixin[0].Fields()
 	_ = departmentMixinFields0
@@ -37,10 +76,33 @@ func init() {
 	departmentDescArea := departmentFields[1].Descriptor()
 	// department.AreaValidator is a validator for the "area" field. It is called by the builders before save.
 	department.AreaValidator = departmentDescArea.Validators[0].(func(string) error)
-	// departmentDescParentDepartmentsIds is the schema descriptor for parent_departments_ids field.
-	departmentDescParentDepartmentsIds := departmentFields[3].Descriptor()
-	// department.ParentDepartmentsIdsValidator is a validator for the "parent_departments_ids" field. It is called by the builders before save.
-	department.ParentDepartmentsIdsValidator = departmentDescParentDepartmentsIds.Validators[0].(func(string) error)
+	// departmentDescParentDepartments is the schema descriptor for parent_departments field.
+	departmentDescParentDepartments := departmentFields[3].Descriptor()
+	// department.ParentDepartmentsValidator is a validator for the "parent_departments" field. It is called by the builders before save.
+	department.ParentDepartmentsValidator = departmentDescParentDepartments.Validators[0].(func(string) error)
+	deviceMixin := schema.Device{}.Mixin()
+	deviceMixinFields0 := deviceMixin[0].Fields()
+	_ = deviceMixinFields0
+	deviceFields := schema.Device{}.Fields()
+	_ = deviceFields
+	// deviceDescCreatedAt is the schema descriptor for created_at field.
+	deviceDescCreatedAt := deviceMixinFields0[1].Descriptor()
+	// device.DefaultCreatedAt holds the default value on creation for the created_at field.
+	device.DefaultCreatedAt = deviceDescCreatedAt.Default.(func() time.Time)
+	// deviceDescUpdatedAt is the schema descriptor for updated_at field.
+	deviceDescUpdatedAt := deviceMixinFields0[2].Descriptor()
+	// device.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	device.DefaultUpdatedAt = deviceDescUpdatedAt.Default.(func() time.Time)
+	// device.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	device.UpdateDefaultUpdatedAt = deviceDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// deviceDescName is the schema descriptor for name field.
+	deviceDescName := deviceFields[0].Descriptor()
+	// device.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	device.NameValidator = deviceDescName.Validators[0].(func(string) error)
+	// deviceDescHost is the schema descriptor for host field.
+	deviceDescHost := deviceFields[1].Descriptor()
+	// device.HostValidator is a validator for the "host" field. It is called by the builders before save.
+	device.HostValidator = deviceDescHost.Validators[0].(func(string) error)
 	roleMixin := schema.Role{}.Mixin()
 	roleMixinFields0 := roleMixin[0].Fields()
 	_ = roleMixinFields0
