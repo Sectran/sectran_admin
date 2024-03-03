@@ -90,6 +90,11 @@ func RoleID(v uint64) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldRoleID, v))
 }
 
+// Status applies equality check predicate on the "status" field. It's identical to StatusEQ.
+func Status(v bool) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldStatus, v))
+}
+
 // Description applies equality check predicate on the "description" field. It's identical to DescriptionEQ.
 func Description(v string) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldDescription, v))
@@ -430,44 +435,24 @@ func RoleIDNotIn(vs ...uint64) predicate.User {
 	return predicate.User(sql.FieldNotIn(FieldRoleID, vs...))
 }
 
-// RoleIDGT applies the GT predicate on the "role_id" field.
-func RoleIDGT(v uint64) predicate.User {
-	return predicate.User(sql.FieldGT(FieldRoleID, v))
+// RoleIDIsNil applies the IsNil predicate on the "role_id" field.
+func RoleIDIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldRoleID))
 }
 
-// RoleIDGTE applies the GTE predicate on the "role_id" field.
-func RoleIDGTE(v uint64) predicate.User {
-	return predicate.User(sql.FieldGTE(FieldRoleID, v))
-}
-
-// RoleIDLT applies the LT predicate on the "role_id" field.
-func RoleIDLT(v uint64) predicate.User {
-	return predicate.User(sql.FieldLT(FieldRoleID, v))
-}
-
-// RoleIDLTE applies the LTE predicate on the "role_id" field.
-func RoleIDLTE(v uint64) predicate.User {
-	return predicate.User(sql.FieldLTE(FieldRoleID, v))
+// RoleIDNotNil applies the NotNil predicate on the "role_id" field.
+func RoleIDNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldRoleID))
 }
 
 // StatusEQ applies the EQ predicate on the "status" field.
-func StatusEQ(v Status) predicate.User {
+func StatusEQ(v bool) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldStatus, v))
 }
 
 // StatusNEQ applies the NEQ predicate on the "status" field.
-func StatusNEQ(v Status) predicate.User {
+func StatusNEQ(v bool) predicate.User {
 	return predicate.User(sql.FieldNEQ(FieldStatus, v))
-}
-
-// StatusIn applies the In predicate on the "status" field.
-func StatusIn(vs ...Status) predicate.User {
-	return predicate.User(sql.FieldIn(FieldStatus, vs...))
-}
-
-// StatusNotIn applies the NotIn predicate on the "status" field.
-func StatusNotIn(vs ...Status) predicate.User {
-	return predicate.User(sql.FieldNotIn(FieldStatus, vs...))
 }
 
 // DescriptionEQ applies the EQ predicate on the "description" field.
@@ -723,7 +708,7 @@ func HasRoles() predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, RolesTable, RolesPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, false, RolesTable, RolesColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})

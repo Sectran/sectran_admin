@@ -5,6 +5,7 @@ package ent
 import (
 	"fmt"
 	"sectran_admin/ent/department"
+	"sectran_admin/ent/role"
 	"sectran_admin/ent/user"
 	"strings"
 	"time"
@@ -32,8 +33,8 @@ type User struct {
 	DepartmentID uint64 `json:"department_id,omitempty"`
 	// ID of the user's role.
 	RoleID uint64 `json:"role_id,omitempty"`
-	// User status (enabled or disabled).
-	Status user.Status `json:"status,omitempty"`
+	// User status (enabled(true) or disabled(false)).
+	Status bool `json:"status,omitempty"`
 	// User description.
 	Description string `json:"description,omitempty"`
 	// User email.
@@ -51,7 +52,7 @@ type UserEdges struct {
 	// Departments holds the value of the departments edge.
 	Departments *Department `json:"departments,omitempty"`
 	// Roles holds the value of the roles edge.
-	Roles []*Role `json:"roles,omitempty"`
+	Roles *Role `json:"roles,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [2]bool
@@ -69,10 +70,12 @@ func (e UserEdges) DepartmentsOrErr() (*Department, error) {
 }
 
 // RolesOrErr returns the Roles value or an error if the edge
-// was not loaded in eager-loading.
-func (e UserEdges) RolesOrErr() ([]*Role, error) {
-	if e.loadedTypes[1] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e UserEdges) RolesOrErr() (*Role, error) {
+	if e.Roles != nil {
 		return e.Roles, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: role.Label}
 	}
 	return nil, &NotLoadedError{edge: "roles"}
 }
@@ -82,9 +85,11 @@ func (*User) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case user.FieldStatus:
+			values[i] = new(sql.NullBool)
 		case user.FieldID, user.FieldDepartmentID, user.FieldRoleID:
 			values[i] = new(sql.NullInt64)
-		case user.FieldAccount, user.FieldName, user.FieldPassword, user.FieldStatus, user.FieldDescription, user.FieldEmail, user.FieldPhoneNumber:
+		case user.FieldAccount, user.FieldName, user.FieldPassword, user.FieldDescription, user.FieldEmail, user.FieldPhoneNumber:
 			values[i] = new(sql.NullString)
 		case user.FieldCreatedAt, user.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -152,10 +157,10 @@ func (u *User) assignValues(columns []string, values []any) error {
 				u.RoleID = uint64(value.Int64)
 			}
 		case user.FieldStatus:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				u.Status = user.Status(value.String)
+				u.Status = value.Bool
 			}
 		case user.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {

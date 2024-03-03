@@ -100,7 +100,6 @@ func (uu *UserUpdate) ClearDepartmentID() *UserUpdate {
 
 // SetRoleID sets the "role_id" field.
 func (uu *UserUpdate) SetRoleID(u uint64) *UserUpdate {
-	uu.mutation.ResetRoleID()
 	uu.mutation.SetRoleID(u)
 	return uu
 }
@@ -113,22 +112,22 @@ func (uu *UserUpdate) SetNillableRoleID(u *uint64) *UserUpdate {
 	return uu
 }
 
-// AddRoleID adds u to the "role_id" field.
-func (uu *UserUpdate) AddRoleID(u int64) *UserUpdate {
-	uu.mutation.AddRoleID(u)
+// ClearRoleID clears the value of the "role_id" field.
+func (uu *UserUpdate) ClearRoleID() *UserUpdate {
+	uu.mutation.ClearRoleID()
 	return uu
 }
 
 // SetStatus sets the "status" field.
-func (uu *UserUpdate) SetStatus(u user.Status) *UserUpdate {
-	uu.mutation.SetStatus(u)
+func (uu *UserUpdate) SetStatus(b bool) *UserUpdate {
+	uu.mutation.SetStatus(b)
 	return uu
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (uu *UserUpdate) SetNillableStatus(u *user.Status) *UserUpdate {
-	if u != nil {
-		uu.SetStatus(*u)
+func (uu *UserUpdate) SetNillableStatus(b *bool) *UserUpdate {
+	if b != nil {
+		uu.SetStatus(*b)
 	}
 	return uu
 }
@@ -212,19 +211,23 @@ func (uu *UserUpdate) SetDepartments(d *Department) *UserUpdate {
 	return uu.SetDepartmentsID(d.ID)
 }
 
-// AddRoleIDs adds the "roles" edge to the Role entity by IDs.
-func (uu *UserUpdate) AddRoleIDs(ids ...uint64) *UserUpdate {
-	uu.mutation.AddRoleIDs(ids...)
+// SetRolesID sets the "roles" edge to the Role entity by ID.
+func (uu *UserUpdate) SetRolesID(id uint64) *UserUpdate {
+	uu.mutation.SetRolesID(id)
 	return uu
 }
 
-// AddRoles adds the "roles" edges to the Role entity.
-func (uu *UserUpdate) AddRoles(r ...*Role) *UserUpdate {
-	ids := make([]uint64, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+// SetNillableRolesID sets the "roles" edge to the Role entity by ID if the given value is not nil.
+func (uu *UserUpdate) SetNillableRolesID(id *uint64) *UserUpdate {
+	if id != nil {
+		uu = uu.SetRolesID(*id)
 	}
-	return uu.AddRoleIDs(ids...)
+	return uu
+}
+
+// SetRoles sets the "roles" edge to the Role entity.
+func (uu *UserUpdate) SetRoles(r *Role) *UserUpdate {
+	return uu.SetRolesID(r.ID)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -238,25 +241,10 @@ func (uu *UserUpdate) ClearDepartments() *UserUpdate {
 	return uu
 }
 
-// ClearRoles clears all "roles" edges to the Role entity.
+// ClearRoles clears the "roles" edge to the Role entity.
 func (uu *UserUpdate) ClearRoles() *UserUpdate {
 	uu.mutation.ClearRoles()
 	return uu
-}
-
-// RemoveRoleIDs removes the "roles" edge to Role entities by IDs.
-func (uu *UserUpdate) RemoveRoleIDs(ids ...uint64) *UserUpdate {
-	uu.mutation.RemoveRoleIDs(ids...)
-	return uu
-}
-
-// RemoveRoles removes "roles" edges to Role entities.
-func (uu *UserUpdate) RemoveRoles(r ...*Role) *UserUpdate {
-	ids := make([]uint64, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
-	}
-	return uu.RemoveRoleIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -317,11 +305,6 @@ func (uu *UserUpdate) check() error {
 			return &ValidationError{Name: "role_id", err: fmt.Errorf(`ent: validator failed for field "User.role_id": %w`, err)}
 		}
 	}
-	if v, ok := uu.mutation.Status(); ok {
-		if err := user.StatusValidator(v); err != nil {
-			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "User.status": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -349,14 +332,8 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := uu.mutation.Password(); ok {
 		_spec.SetField(user.FieldPassword, field.TypeString, value)
 	}
-	if value, ok := uu.mutation.RoleID(); ok {
-		_spec.SetField(user.FieldRoleID, field.TypeUint64, value)
-	}
-	if value, ok := uu.mutation.AddedRoleID(); ok {
-		_spec.AddField(user.FieldRoleID, field.TypeUint64, value)
-	}
 	if value, ok := uu.mutation.Status(); ok {
-		_spec.SetField(user.FieldStatus, field.TypeEnum, value)
+		_spec.SetField(user.FieldStatus, field.TypeBool, value)
 	}
 	if value, ok := uu.mutation.Description(); ok {
 		_spec.SetField(user.FieldDescription, field.TypeString, value)
@@ -407,39 +384,23 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if uu.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   user.RolesTable,
-			Columns: user.RolesPrimaryKey,
+			Columns: []string{user.RolesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uu.mutation.RemovedRolesIDs(); len(nodes) > 0 && !uu.mutation.RolesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   user.RolesTable,
-			Columns: user.RolesPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := uu.mutation.RolesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   user.RolesTable,
-			Columns: user.RolesPrimaryKey,
+			Columns: []string{user.RolesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),
@@ -540,7 +501,6 @@ func (uuo *UserUpdateOne) ClearDepartmentID() *UserUpdateOne {
 
 // SetRoleID sets the "role_id" field.
 func (uuo *UserUpdateOne) SetRoleID(u uint64) *UserUpdateOne {
-	uuo.mutation.ResetRoleID()
 	uuo.mutation.SetRoleID(u)
 	return uuo
 }
@@ -553,22 +513,22 @@ func (uuo *UserUpdateOne) SetNillableRoleID(u *uint64) *UserUpdateOne {
 	return uuo
 }
 
-// AddRoleID adds u to the "role_id" field.
-func (uuo *UserUpdateOne) AddRoleID(u int64) *UserUpdateOne {
-	uuo.mutation.AddRoleID(u)
+// ClearRoleID clears the value of the "role_id" field.
+func (uuo *UserUpdateOne) ClearRoleID() *UserUpdateOne {
+	uuo.mutation.ClearRoleID()
 	return uuo
 }
 
 // SetStatus sets the "status" field.
-func (uuo *UserUpdateOne) SetStatus(u user.Status) *UserUpdateOne {
-	uuo.mutation.SetStatus(u)
+func (uuo *UserUpdateOne) SetStatus(b bool) *UserUpdateOne {
+	uuo.mutation.SetStatus(b)
 	return uuo
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableStatus(u *user.Status) *UserUpdateOne {
-	if u != nil {
-		uuo.SetStatus(*u)
+func (uuo *UserUpdateOne) SetNillableStatus(b *bool) *UserUpdateOne {
+	if b != nil {
+		uuo.SetStatus(*b)
 	}
 	return uuo
 }
@@ -652,19 +612,23 @@ func (uuo *UserUpdateOne) SetDepartments(d *Department) *UserUpdateOne {
 	return uuo.SetDepartmentsID(d.ID)
 }
 
-// AddRoleIDs adds the "roles" edge to the Role entity by IDs.
-func (uuo *UserUpdateOne) AddRoleIDs(ids ...uint64) *UserUpdateOne {
-	uuo.mutation.AddRoleIDs(ids...)
+// SetRolesID sets the "roles" edge to the Role entity by ID.
+func (uuo *UserUpdateOne) SetRolesID(id uint64) *UserUpdateOne {
+	uuo.mutation.SetRolesID(id)
 	return uuo
 }
 
-// AddRoles adds the "roles" edges to the Role entity.
-func (uuo *UserUpdateOne) AddRoles(r ...*Role) *UserUpdateOne {
-	ids := make([]uint64, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+// SetNillableRolesID sets the "roles" edge to the Role entity by ID if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableRolesID(id *uint64) *UserUpdateOne {
+	if id != nil {
+		uuo = uuo.SetRolesID(*id)
 	}
-	return uuo.AddRoleIDs(ids...)
+	return uuo
+}
+
+// SetRoles sets the "roles" edge to the Role entity.
+func (uuo *UserUpdateOne) SetRoles(r *Role) *UserUpdateOne {
+	return uuo.SetRolesID(r.ID)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -678,25 +642,10 @@ func (uuo *UserUpdateOne) ClearDepartments() *UserUpdateOne {
 	return uuo
 }
 
-// ClearRoles clears all "roles" edges to the Role entity.
+// ClearRoles clears the "roles" edge to the Role entity.
 func (uuo *UserUpdateOne) ClearRoles() *UserUpdateOne {
 	uuo.mutation.ClearRoles()
 	return uuo
-}
-
-// RemoveRoleIDs removes the "roles" edge to Role entities by IDs.
-func (uuo *UserUpdateOne) RemoveRoleIDs(ids ...uint64) *UserUpdateOne {
-	uuo.mutation.RemoveRoleIDs(ids...)
-	return uuo
-}
-
-// RemoveRoles removes "roles" edges to Role entities.
-func (uuo *UserUpdateOne) RemoveRoles(r ...*Role) *UserUpdateOne {
-	ids := make([]uint64, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
-	}
-	return uuo.RemoveRoleIDs(ids...)
 }
 
 // Where appends a list predicates to the UserUpdate builder.
@@ -770,11 +719,6 @@ func (uuo *UserUpdateOne) check() error {
 			return &ValidationError{Name: "role_id", err: fmt.Errorf(`ent: validator failed for field "User.role_id": %w`, err)}
 		}
 	}
-	if v, ok := uuo.mutation.Status(); ok {
-		if err := user.StatusValidator(v); err != nil {
-			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "User.status": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -819,14 +763,8 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	if value, ok := uuo.mutation.Password(); ok {
 		_spec.SetField(user.FieldPassword, field.TypeString, value)
 	}
-	if value, ok := uuo.mutation.RoleID(); ok {
-		_spec.SetField(user.FieldRoleID, field.TypeUint64, value)
-	}
-	if value, ok := uuo.mutation.AddedRoleID(); ok {
-		_spec.AddField(user.FieldRoleID, field.TypeUint64, value)
-	}
 	if value, ok := uuo.mutation.Status(); ok {
-		_spec.SetField(user.FieldStatus, field.TypeEnum, value)
+		_spec.SetField(user.FieldStatus, field.TypeBool, value)
 	}
 	if value, ok := uuo.mutation.Description(); ok {
 		_spec.SetField(user.FieldDescription, field.TypeString, value)
@@ -877,39 +815,23 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if uuo.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   user.RolesTable,
-			Columns: user.RolesPrimaryKey,
+			Columns: []string{user.RolesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uuo.mutation.RemovedRolesIDs(); len(nodes) > 0 && !uuo.mutation.RolesCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   user.RolesTable,
-			Columns: user.RolesPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := uuo.mutation.RolesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   user.RolesTable,
-			Columns: user.RolesPrimaryKey,
+			Columns: []string{user.RolesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),

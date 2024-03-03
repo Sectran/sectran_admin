@@ -20,8 +20,8 @@ type (
         // ID of the user's role. 
         RoleId  *uint64 `json:"roleId,optional"`
 
-        // User status (enabled or disabled). 
-        Status  *string `json:"status,optional"`
+        // User status (enabled(true) or disabled(false)). 
+        Status  *bool `json:"status,optional"`
 
         // User description. 
         Description  *string `json:"description,optional"`

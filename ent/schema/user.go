@@ -34,13 +34,13 @@ func (User) Fields() []ent.Field {
 			Comment("ID of the user's department.").
 			Annotations(entsql.WithComments(true)),
 		field.Uint64("role_id").
+			Optional().
 			Min(0).
 			Comment("ID of the user's role.").
 			Annotations(entsql.WithComments(true)),
-		field.Enum("status").
-			Values("disabled", "enabled").
-			Default("enabled").
-			Comment("User status (enabled or disabled).").
+		field.Bool("status").
+			Default(true).
+			Comment("User status (enabled(true) or disabled(false)).").
 			Annotations(entsql.WithComments(true)),
 		field.String("description").
 			Optional().
@@ -60,7 +60,7 @@ func (User) Fields() []ent.Field {
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("departments", Department.Type).Unique().Field("department_id"),
-		edge.To("roles", Role.Type),
+		edge.To("roles", Role.Type).Unique().Field("role_id"),
 	}
 }
 

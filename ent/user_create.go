@@ -88,16 +88,24 @@ func (uc *UserCreate) SetRoleID(u uint64) *UserCreate {
 	return uc
 }
 
+// SetNillableRoleID sets the "role_id" field if the given value is not nil.
+func (uc *UserCreate) SetNillableRoleID(u *uint64) *UserCreate {
+	if u != nil {
+		uc.SetRoleID(*u)
+	}
+	return uc
+}
+
 // SetStatus sets the "status" field.
-func (uc *UserCreate) SetStatus(u user.Status) *UserCreate {
-	uc.mutation.SetStatus(u)
+func (uc *UserCreate) SetStatus(b bool) *UserCreate {
+	uc.mutation.SetStatus(b)
 	return uc
 }
 
 // SetNillableStatus sets the "status" field if the given value is not nil.
-func (uc *UserCreate) SetNillableStatus(u *user.Status) *UserCreate {
-	if u != nil {
-		uc.SetStatus(*u)
+func (uc *UserCreate) SetNillableStatus(b *bool) *UserCreate {
+	if b != nil {
+		uc.SetStatus(*b)
 	}
 	return uc
 }
@@ -169,19 +177,23 @@ func (uc *UserCreate) SetDepartments(d *Department) *UserCreate {
 	return uc.SetDepartmentsID(d.ID)
 }
 
-// AddRoleIDs adds the "roles" edge to the Role entity by IDs.
-func (uc *UserCreate) AddRoleIDs(ids ...uint64) *UserCreate {
-	uc.mutation.AddRoleIDs(ids...)
+// SetRolesID sets the "roles" edge to the Role entity by ID.
+func (uc *UserCreate) SetRolesID(id uint64) *UserCreate {
+	uc.mutation.SetRolesID(id)
 	return uc
 }
 
-// AddRoles adds the "roles" edges to the Role entity.
-func (uc *UserCreate) AddRoles(r ...*Role) *UserCreate {
-	ids := make([]uint64, len(r))
-	for i := range r {
-		ids[i] = r[i].ID
+// SetNillableRolesID sets the "roles" edge to the Role entity by ID if the given value is not nil.
+func (uc *UserCreate) SetNillableRolesID(id *uint64) *UserCreate {
+	if id != nil {
+		uc = uc.SetRolesID(*id)
 	}
-	return uc.AddRoleIDs(ids...)
+	return uc
+}
+
+// SetRoles sets the "roles" edge to the Role entity.
+func (uc *UserCreate) SetRoles(r *Role) *UserCreate {
+	return uc.SetRolesID(r.ID)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -265,9 +277,6 @@ func (uc *UserCreate) check() error {
 			return &ValidationError{Name: "department_id", err: fmt.Errorf(`ent: validator failed for field "User.department_id": %w`, err)}
 		}
 	}
-	if _, ok := uc.mutation.RoleID(); !ok {
-		return &ValidationError{Name: "role_id", err: errors.New(`ent: missing required field "User.role_id"`)}
-	}
 	if v, ok := uc.mutation.RoleID(); ok {
 		if err := user.RoleIDValidator(v); err != nil {
 			return &ValidationError{Name: "role_id", err: fmt.Errorf(`ent: validator failed for field "User.role_id": %w`, err)}
@@ -275,11 +284,6 @@ func (uc *UserCreate) check() error {
 	}
 	if _, ok := uc.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "User.status"`)}
-	}
-	if v, ok := uc.mutation.Status(); ok {
-		if err := user.StatusValidator(v); err != nil {
-			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "User.status": %w`, err)}
-		}
 	}
 	return nil
 }
@@ -333,12 +337,8 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		_spec.SetField(user.FieldPassword, field.TypeString, value)
 		_node.Password = value
 	}
-	if value, ok := uc.mutation.RoleID(); ok {
-		_spec.SetField(user.FieldRoleID, field.TypeUint64, value)
-		_node.RoleID = value
-	}
 	if value, ok := uc.mutation.Status(); ok {
-		_spec.SetField(user.FieldStatus, field.TypeEnum, value)
+		_spec.SetField(user.FieldStatus, field.TypeBool, value)
 		_node.Status = value
 	}
 	if value, ok := uc.mutation.Description(); ok {
@@ -372,10 +372,10 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	}
 	if nodes := uc.mutation.RolesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.M2O,
 			Inverse: false,
 			Table:   user.RolesTable,
-			Columns: user.RolesPrimaryKey,
+			Columns: []string{user.RolesColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(role.FieldID, field.TypeUint64),
@@ -384,6 +384,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.RoleID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

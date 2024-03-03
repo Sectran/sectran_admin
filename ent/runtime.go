@@ -91,4 +91,8 @@ func init() {
 	userDescRoleID := userFields[4].Descriptor()
 	// user.RoleIDValidator is a validator for the "role_id" field. It is called by the builders before save.
 	user.RoleIDValidator = userDescRoleID.Validators[0].(func(uint64) error)
+	// userDescStatus is the schema descriptor for status field.
+	userDescStatus := userFields[5].Descriptor()
+	// user.DefaultStatus holds the default value on creation for the status field.
+	user.DefaultStatus = userDescStatus.Default.(bool)
 }

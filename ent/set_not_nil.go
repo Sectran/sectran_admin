@@ -2,10 +2,7 @@
 
 package ent
 
-import (
-	"sectran_admin/ent/user"
-	"time"
-)
+import "time"
 
 // set field if value's pointer is not nil.
 func (d *DepartmentUpdate) SetNotNilUpdatedAt(value *time.Time) *DepartmentUpdate {
@@ -344,7 +341,7 @@ func (u *UserCreate) SetNotNilRoleID(value *uint64) *UserCreate {
 }
 
 // set field if value's pointer is not nil.
-func (u *UserUpdate) SetNotNilStatus(value *user.Status) *UserUpdate {
+func (u *UserUpdate) SetNotNilStatus(value *bool) *UserUpdate {
 	if value != nil {
 		return u.SetStatus(*value)
 	}
@@ -352,7 +349,7 @@ func (u *UserUpdate) SetNotNilStatus(value *user.Status) *UserUpdate {
 }
 
 // set field if value's pointer is not nil.
-func (u *UserUpdateOne) SetNotNilStatus(value *user.Status) *UserUpdateOne {
+func (u *UserUpdateOne) SetNotNilStatus(value *bool) *UserUpdateOne {
 	if value != nil {
 		return u.SetStatus(*value)
 	}
@@ -360,7 +357,7 @@ func (u *UserUpdateOne) SetNotNilStatus(value *user.Status) *UserUpdateOne {
 }
 
 // set field if value's pointer is not nil.
-func (u *UserCreate) SetNotNilStatus(value *user.Status) *UserCreate {
+func (u *UserCreate) SetNotNilStatus(value *bool) *UserCreate {
 	if value != nil {
 		return u.SetStatus(*value)
 	}

@@ -29,7 +29,7 @@ SWAGGER_TYPE=json
 ENT_FEATURE=sql/execquery
 
 # Auto generate API data for initialization | 自动生成 API 初始化数据
-AUTO_API_INIT_DATA=true
+AUTO_API_INIT_DATA=false
 
 # The arch of the build | 构建的架构
 GOARCH=amd64
@@ -58,6 +58,11 @@ tools: # Install the necessary tools | 安装必要的工具
 	$(GO) install github.com/golangci/golangci-lint/cmd/golangci-lint@latest;
 	$(GO) install github.com/go-swagger/go-swagger/cmd/swagger@latest
 
+.PHONY: gen
+gen: 
+	make gen-ent
+	make gen-api-ent-logic model=all group=all
+	make gen-api
 
 .PHONY: docker
 docker: # Build the docker image | 构建 docker 镜像

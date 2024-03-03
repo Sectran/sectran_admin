@@ -61,7 +61,7 @@ func (l *GetDepartmentListLogic) GetDepartmentList(req *types.DepartmentListReq)
 			Name:	&v.Name,
 			Area:	&v.Area,
 			Description:	&v.Description,
-			ParentDepartmentsIds:	&v.ParentDepartmentsIDs,
+			ParentDepartmentsIds:	&v.ParentDepartmentsIds,
 		})
 	}
 

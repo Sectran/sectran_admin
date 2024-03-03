@@ -46,12 +46,12 @@ var (
 		{Name: "account", Type: field.TypeString, Unique: true, Comment: "User account."},
 		{Name: "name", Type: field.TypeString, Comment: "User name."},
 		{Name: "password", Type: field.TypeString, Comment: "User password."},
-		{Name: "role_id", Type: field.TypeUint64, Comment: "ID of the user's role."},
-		{Name: "status", Type: field.TypeEnum, Comment: "User status (enabled or disabled).", Enums: []string{"disabled", "enabled"}, Default: "enabled"},
+		{Name: "status", Type: field.TypeBool, Comment: "User status (enabled(true) or disabled(false)).", Default: true},
 		{Name: "description", Type: field.TypeString, Nullable: true, Comment: "User description."},
 		{Name: "email", Type: field.TypeString, Nullable: true, Comment: "User email."},
 		{Name: "phone_number", Type: field.TypeString, Nullable: true, Comment: "User phone number."},
 		{Name: "department_id", Type: field.TypeUint64, Nullable: true, Comment: "ID of the user's department."},
+		{Name: "role_id", Type: field.TypeUint64, Nullable: true, Comment: "ID of the user's role."},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
@@ -61,34 +61,15 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "users_departments_departments",
-				Columns:    []*schema.Column{UsersColumns[11]},
+				Columns:    []*schema.Column{UsersColumns[10]},
 				RefColumns: []*schema.Column{DepartmentsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
-		},
-	}
-	// UserRolesColumns holds the columns for the "user_roles" table.
-	UserRolesColumns = []*schema.Column{
-		{Name: "user_id", Type: field.TypeUint64},
-		{Name: "role_id", Type: field.TypeUint64},
-	}
-	// UserRolesTable holds the schema information for the "user_roles" table.
-	UserRolesTable = &schema.Table{
-		Name:       "user_roles",
-		Columns:    UserRolesColumns,
-		PrimaryKey: []*schema.Column{UserRolesColumns[0], UserRolesColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "user_roles_user_id",
-				Columns:    []*schema.Column{UserRolesColumns[0]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "user_roles_role_id",
-				Columns:    []*schema.Column{UserRolesColumns[1]},
+				Symbol:     "users_roles_roles",
+				Columns:    []*schema.Column{UsersColumns[11]},
 				RefColumns: []*schema.Column{RolesColumns[0]},
-				OnDelete:   schema.Cascade,
+				OnDelete:   schema.SetNull,
 			},
 		},
 	}
@@ -97,12 +78,10 @@ var (
 		DepartmentsTable,
 		RolesTable,
 		UsersTable,
-		UserRolesTable,
 	}
 )
 
 func init() {
 	UsersTable.ForeignKeys[0].RefTable = DepartmentsTable
-	UserRolesTable.ForeignKeys[0].RefTable = UsersTable
-	UserRolesTable.ForeignKeys[1].RefTable = RolesTable
+	UsersTable.ForeignKeys[1].RefTable = RolesTable
 }

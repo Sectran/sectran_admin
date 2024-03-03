@@ -114,3 +114,155 @@ type BaseUUIDInfo struct {
 	// Update date | 更新日期
 	UpdatedAt *int64 `json:"updatedAt,optional"`
 }
+
+// The response data of department information | Department信息
+// swagger:model DepartmentInfo
+type DepartmentInfo struct {
+	BaseIDInfo
+	// The name of the department.
+	Name *string `json:"name,optional"`
+	// The area where the department is located.
+	Area *string `json:"area,optional"`
+	// Description of the department.
+	Description *string `json:"description,optional"`
+	// Comma-separated list of parent department IDs in ascending order.
+	ParentDepartmentsIds *string `json:"parentDepartmentsIds,optional"`
+}
+
+// The response data of department list | Department列表数据
+// swagger:model DepartmentListResp
+type DepartmentListResp struct {
+	BaseDataInfo
+	// Department list data | Department列表数据
+	Data DepartmentListInfo `json:"data"`
+}
+
+// Department list data | Department列表数据
+// swagger:model DepartmentListInfo
+type DepartmentListInfo struct {
+	BaseListInfo
+	// The API list data | Department列表数据
+	Data []DepartmentInfo `json:"data"`
+}
+
+// Get department list request params | Department列表请求参数
+// swagger:model DepartmentListReq
+type DepartmentListReq struct {
+	PageInfo
+	// The name of the department.
+	Name *string `json:"name,optional"`
+	// The area where the department is located.
+	Area *string `json:"area,optional"`
+	// Description of the department.
+	Description *string `json:"description,optional"`
+}
+
+// Department information response | Department信息返回体
+// swagger:model DepartmentInfoResp
+type DepartmentInfoResp struct {
+	BaseDataInfo
+	// Department information | Department数据
+	Data DepartmentInfo `json:"data"`
+}
+
+// The response data of role information | Role信息
+// swagger:model RoleInfo
+type RoleInfo struct {
+	BaseIDInfo
+	// The name of the role.
+	Name *string `json:"name,optional"`
+	// The weight of the role. Smaller values indicate higher priority.
+	Weight *int `json:"weight,optional"`
+}
+
+// The response data of role list | Role列表数据
+// swagger:model RoleListResp
+type RoleListResp struct {
+	BaseDataInfo
+	// Role list data | Role列表数据
+	Data RoleListInfo `json:"data"`
+}
+
+// Role list data | Role列表数据
+// swagger:model RoleListInfo
+type RoleListInfo struct {
+	BaseListInfo
+	// The API list data | Role列表数据
+	Data []RoleInfo `json:"data"`
+}
+
+// Get role list request params | Role列表请求参数
+// swagger:model RoleListReq
+type RoleListReq struct {
+	PageInfo
+	// The name of the role.
+	Name *string `json:"name,optional"`
+}
+
+// Role information response | Role信息返回体
+// swagger:model RoleInfoResp
+type RoleInfoResp struct {
+	BaseDataInfo
+	// Role information | Role数据
+	Data RoleInfo `json:"data"`
+}
+
+// The response data of user information | User信息
+// swagger:model UserInfo
+type UserInfo struct {
+	BaseIDInfo
+	// User account.
+	Account *string `json:"account,optional"`
+	// User name.
+	Name *string `json:"name,optional"`
+	// User password.
+	Password *string `json:"password,optional"`
+	// ID of the user's department.
+	DepartmentId *uint64 `json:"departmentId,optional"`
+	// ID of the user's role.
+	RoleId *uint64 `json:"roleId,optional"`
+	// User status (enabled(true) or disabled(false)).
+	Status *bool `json:"status,optional"`
+	// User description.
+	Description *string `json:"description,optional"`
+	// User email.
+	Email *string `json:"email,optional"`
+	// User phone number.
+	PhoneNumber *string `json:"phoneNumber,optional"`
+}
+
+// The response data of user list | User列表数据
+// swagger:model UserListResp
+type UserListResp struct {
+	BaseDataInfo
+	// User list data | User列表数据
+	Data UserListInfo `json:"data"`
+}
+
+// User list data | User列表数据
+// swagger:model UserListInfo
+type UserListInfo struct {
+	BaseListInfo
+	// The API list data | User列表数据
+	Data []UserInfo `json:"data"`
+}
+
+// Get user list request params | User列表请求参数
+// swagger:model UserListReq
+type UserListReq struct {
+	PageInfo
+	// User account.
+	Account *string `json:"account,optional"`
+	// User name.
+	Name *string `json:"name,optional"`
+	// User password.
+	Password *string `json:"password,optional"`
+}
+
+// User information response | User信息返回体
+// swagger:model UserInfoResp
+type UserInfoResp struct {
+	BaseDataInfo
+	// User information | User数据
+	Data UserInfo `json:"data"`
+}

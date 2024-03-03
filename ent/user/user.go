@@ -3,7 +3,6 @@
 package user
 
 import (
-	"fmt"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -50,11 +49,13 @@ const (
 	DepartmentsInverseTable = "departments"
 	// DepartmentsColumn is the table column denoting the departments relation/edge.
 	DepartmentsColumn = "department_id"
-	// RolesTable is the table that holds the roles relation/edge. The primary key declared below.
-	RolesTable = "user_roles"
+	// RolesTable is the table that holds the roles relation/edge.
+	RolesTable = "users"
 	// RolesInverseTable is the table name for the Role entity.
 	// It exists in this package in order to avoid circular dependency with the "role" package.
 	RolesInverseTable = "roles"
+	// RolesColumn is the table column denoting the roles relation/edge.
+	RolesColumn = "role_id"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -72,12 +73,6 @@ var Columns = []string{
 	FieldEmail,
 	FieldPhoneNumber,
 }
-
-var (
-	// RolesPrimaryKey and RolesColumn2 are the table columns denoting the
-	// primary key for the roles relation (M2M).
-	RolesPrimaryKey = []string{"user_id", "role_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -104,33 +99,9 @@ var (
 	DepartmentIDValidator func(uint64) error
 	// RoleIDValidator is a validator for the "role_id" field. It is called by the builders before save.
 	RoleIDValidator func(uint64) error
+	// DefaultStatus holds the default value on creation for the "status" field.
+	DefaultStatus bool
 )
-
-// Status defines the type for the "status" enum field.
-type Status string
-
-// StatusEnabled is the default value of the Status enum.
-const DefaultStatus = StatusEnabled
-
-// Status values.
-const (
-	StatusDisabled Status = "disabled"
-	StatusEnabled  Status = "enabled"
-)
-
-func (s Status) String() string {
-	return string(s)
-}
-
-// StatusValidator is a validator for the "status" field enum values. It is called by the builders before save.
-func StatusValidator(s Status) error {
-	switch s {
-	case StatusDisabled, StatusEnabled:
-		return nil
-	default:
-		return fmt.Errorf("user: invalid enum value for status field: %q", s)
-	}
-}
 
 // OrderOption defines the ordering options for the User queries.
 type OrderOption func(*sql.Selector)
@@ -202,17 +173,10 @@ func ByDepartmentsField(field string, opts ...sql.OrderTermOption) OrderOption {
 	}
 }
 
-// ByRolesCount orders the results by roles count.
-func ByRolesCount(opts ...sql.OrderTermOption) OrderOption {
+// ByRolesField orders the results by roles field.
+func ByRolesField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newRolesStep(), opts...)
-	}
-}
-
-// ByRoles orders the results by roles terms.
-func ByRoles(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newRolesStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newRolesStep(), sql.OrderByField(field, opts...))
 	}
 }
 func newDepartmentsStep() *sqlgraph.Step {
@@ -226,6 +190,6 @@ func newRolesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(RolesInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, RolesTable, RolesPrimaryKey...),
+		sqlgraph.Edge(sqlgraph.M2O, false, RolesTable, RolesColumn),
 	)
 }
