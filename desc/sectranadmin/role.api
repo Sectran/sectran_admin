@@ -5,10 +5,10 @@ type (
     RoleInfo {
         BaseIDInfo
 
-        // The name of the role. 
+        // The name of the role.|角色名称 
         Name  *string `json:"name,optional"`
 
-        // The weight of the role. Smaller values indicate higher priority. 
+        // The weight of the role. Smaller values indicate higher priority.|角色优先级，值越小优先级越高 
         Weight  *int `json:"weight,optional"`
     }
 
@@ -32,7 +32,7 @@ type (
     RoleListReq {
         PageInfo
 
-        // The name of the role. 
+        // The name of the role.|角色名称 
         Name  *string `json:"name,optional"`
     }
 

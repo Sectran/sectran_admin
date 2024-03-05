@@ -6,6 +6,7 @@ import (
 	"sectran_admin/ent/account"
 	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
+	"sectran_admin/ent/policyauth"
 	"sectran_admin/ent/role"
 	"sectran_admin/ent/schema"
 	"sectran_admin/ent/user"
@@ -99,10 +100,49 @@ func init() {
 	deviceDescName := deviceFields[0].Descriptor()
 	// device.NameValidator is a validator for the "name" field. It is called by the builders before save.
 	device.NameValidator = deviceDescName.Validators[0].(func(string) error)
+	// deviceDescDepartmentID is the schema descriptor for department_id field.
+	deviceDescDepartmentID := deviceFields[1].Descriptor()
+	// device.DepartmentIDValidator is a validator for the "department_id" field. It is called by the builders before save.
+	device.DepartmentIDValidator = deviceDescDepartmentID.Validators[0].(func(uint64) error)
 	// deviceDescHost is the schema descriptor for host field.
-	deviceDescHost := deviceFields[1].Descriptor()
+	deviceDescHost := deviceFields[2].Descriptor()
 	// device.HostValidator is a validator for the "host" field. It is called by the builders before save.
 	device.HostValidator = deviceDescHost.Validators[0].(func(string) error)
+	policyauthMixin := schema.PolicyAuth{}.Mixin()
+	policyauthMixinFields0 := policyauthMixin[0].Fields()
+	_ = policyauthMixinFields0
+	policyauthFields := schema.PolicyAuth{}.Fields()
+	_ = policyauthFields
+	// policyauthDescCreatedAt is the schema descriptor for created_at field.
+	policyauthDescCreatedAt := policyauthMixinFields0[1].Descriptor()
+	// policyauth.DefaultCreatedAt holds the default value on creation for the created_at field.
+	policyauth.DefaultCreatedAt = policyauthDescCreatedAt.Default.(func() time.Time)
+	// policyauthDescUpdatedAt is the schema descriptor for updated_at field.
+	policyauthDescUpdatedAt := policyauthMixinFields0[2].Descriptor()
+	// policyauth.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	policyauth.DefaultUpdatedAt = policyauthDescUpdatedAt.Default.(func() time.Time)
+	// policyauth.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	policyauth.UpdateDefaultUpdatedAt = policyauthDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// policyauthDescName is the schema descriptor for name field.
+	policyauthDescName := policyauthFields[0].Descriptor()
+	// policyauth.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	policyauth.NameValidator = policyauthDescName.Validators[0].(func(string) error)
+	// policyauthDescPower is the schema descriptor for power field.
+	policyauthDescPower := policyauthFields[1].Descriptor()
+	// policyauth.PowerValidator is a validator for the "power" field. It is called by the builders before save.
+	policyauth.PowerValidator = policyauthDescPower.Validators[0].(func(int32) error)
+	// policyauthDescDepartmentID is the schema descriptor for department_id field.
+	policyauthDescDepartmentID := policyauthFields[2].Descriptor()
+	// policyauth.DepartmentIDValidator is a validator for the "department_id" field. It is called by the builders before save.
+	policyauth.DepartmentIDValidator = policyauthDescDepartmentID.Validators[0].(func(uint64) error)
+	// policyauthDescUsers is the schema descriptor for users field.
+	policyauthDescUsers := policyauthFields[3].Descriptor()
+	// policyauth.UsersValidator is a validator for the "users" field. It is called by the builders before save.
+	policyauth.UsersValidator = policyauthDescUsers.Validators[0].(func(string) error)
+	// policyauthDescAccounts is the schema descriptor for accounts field.
+	policyauthDescAccounts := policyauthFields[4].Descriptor()
+	// policyauth.AccountsValidator is a validator for the "accounts" field. It is called by the builders before save.
+	policyauth.AccountsValidator = policyauthDescAccounts.Validators[0].(func(string) error)
 	roleMixin := schema.Role{}.Mixin()
 	roleMixinFields0 := roleMixin[0].Fields()
 	_ = roleMixinFields0

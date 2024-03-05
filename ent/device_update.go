@@ -49,6 +49,33 @@ func (du *DeviceUpdate) SetNillableName(s *string) *DeviceUpdate {
 	return du
 }
 
+// SetDepartmentID sets the "department_id" field.
+func (du *DeviceUpdate) SetDepartmentID(u uint64) *DeviceUpdate {
+	du.mutation.ResetDepartmentID()
+	du.mutation.SetDepartmentID(u)
+	return du
+}
+
+// SetNillableDepartmentID sets the "department_id" field if the given value is not nil.
+func (du *DeviceUpdate) SetNillableDepartmentID(u *uint64) *DeviceUpdate {
+	if u != nil {
+		du.SetDepartmentID(*u)
+	}
+	return du
+}
+
+// AddDepartmentID adds u to the "department_id" field.
+func (du *DeviceUpdate) AddDepartmentID(u int64) *DeviceUpdate {
+	du.mutation.AddDepartmentID(u)
+	return du
+}
+
+// ClearDepartmentID clears the value of the "department_id" field.
+func (du *DeviceUpdate) ClearDepartmentID() *DeviceUpdate {
+	du.mutation.ClearDepartmentID()
+	return du
+}
+
 // SetHost sets the "host" field.
 func (du *DeviceUpdate) SetHost(s string) *DeviceUpdate {
 	du.mutation.SetHost(s)
@@ -161,6 +188,11 @@ func (du *DeviceUpdate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Device.name": %w`, err)}
 		}
 	}
+	if v, ok := du.mutation.DepartmentID(); ok {
+		if err := device.DepartmentIDValidator(v); err != nil {
+			return &ValidationError{Name: "department_id", err: fmt.Errorf(`ent: validator failed for field "Device.department_id": %w`, err)}
+		}
+	}
 	if v, ok := du.mutation.Host(); ok {
 		if err := device.HostValidator(v); err != nil {
 			return &ValidationError{Name: "host", err: fmt.Errorf(`ent: validator failed for field "Device.host": %w`, err)}
@@ -186,6 +218,15 @@ func (du *DeviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := du.mutation.Name(); ok {
 		_spec.SetField(device.FieldName, field.TypeString, value)
+	}
+	if value, ok := du.mutation.DepartmentID(); ok {
+		_spec.SetField(device.FieldDepartmentID, field.TypeUint64, value)
+	}
+	if value, ok := du.mutation.AddedDepartmentID(); ok {
+		_spec.AddField(device.FieldDepartmentID, field.TypeUint64, value)
+	}
+	if du.mutation.DepartmentIDCleared() {
+		_spec.ClearField(device.FieldDepartmentID, field.TypeUint64)
 	}
 	if value, ok := du.mutation.Host(); ok {
 		_spec.SetField(device.FieldHost, field.TypeString, value)
@@ -275,6 +316,33 @@ func (duo *DeviceUpdateOne) SetNillableName(s *string) *DeviceUpdateOne {
 	if s != nil {
 		duo.SetName(*s)
 	}
+	return duo
+}
+
+// SetDepartmentID sets the "department_id" field.
+func (duo *DeviceUpdateOne) SetDepartmentID(u uint64) *DeviceUpdateOne {
+	duo.mutation.ResetDepartmentID()
+	duo.mutation.SetDepartmentID(u)
+	return duo
+}
+
+// SetNillableDepartmentID sets the "department_id" field if the given value is not nil.
+func (duo *DeviceUpdateOne) SetNillableDepartmentID(u *uint64) *DeviceUpdateOne {
+	if u != nil {
+		duo.SetDepartmentID(*u)
+	}
+	return duo
+}
+
+// AddDepartmentID adds u to the "department_id" field.
+func (duo *DeviceUpdateOne) AddDepartmentID(u int64) *DeviceUpdateOne {
+	duo.mutation.AddDepartmentID(u)
+	return duo
+}
+
+// ClearDepartmentID clears the value of the "department_id" field.
+func (duo *DeviceUpdateOne) ClearDepartmentID() *DeviceUpdateOne {
+	duo.mutation.ClearDepartmentID()
 	return duo
 }
 
@@ -403,6 +471,11 @@ func (duo *DeviceUpdateOne) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Device.name": %w`, err)}
 		}
 	}
+	if v, ok := duo.mutation.DepartmentID(); ok {
+		if err := device.DepartmentIDValidator(v); err != nil {
+			return &ValidationError{Name: "department_id", err: fmt.Errorf(`ent: validator failed for field "Device.department_id": %w`, err)}
+		}
+	}
 	if v, ok := duo.mutation.Host(); ok {
 		if err := device.HostValidator(v); err != nil {
 			return &ValidationError{Name: "host", err: fmt.Errorf(`ent: validator failed for field "Device.host": %w`, err)}
@@ -445,6 +518,15 @@ func (duo *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err err
 	}
 	if value, ok := duo.mutation.Name(); ok {
 		_spec.SetField(device.FieldName, field.TypeString, value)
+	}
+	if value, ok := duo.mutation.DepartmentID(); ok {
+		_spec.SetField(device.FieldDepartmentID, field.TypeUint64, value)
+	}
+	if value, ok := duo.mutation.AddedDepartmentID(); ok {
+		_spec.AddField(device.FieldDepartmentID, field.TypeUint64, value)
+	}
+	if duo.mutation.DepartmentIDCleared() {
+		_spec.ClearField(device.FieldDepartmentID, field.TypeUint64)
 	}
 	if value, ok := duo.mutation.Host(); ok {
 		_spec.SetField(device.FieldHost, field.TypeString, value)

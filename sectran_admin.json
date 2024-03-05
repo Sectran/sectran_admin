@@ -456,6 +456,146 @@
         }
       }
     },
+    "/policy_auth": {
+      "post": {
+        "description": "Get policy auth by ID | 通过ID获取PolicyAuth",
+        "tags": [
+          "policyauth"
+        ],
+        "summary": "Get policy auth by ID | 通过ID获取PolicyAuth",
+        "operationId": "GetPolicyAuthById",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/IDReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "PolicyAuthInfoResp",
+            "schema": {
+              "$ref": "#/definitions/PolicyAuthInfoResp"
+            }
+          }
+        }
+      }
+    },
+    "/policy_auth/create": {
+      "post": {
+        "description": "Create policy auth information | 创建PolicyAuth",
+        "tags": [
+          "policyauth"
+        ],
+        "summary": "Create policy auth information | 创建PolicyAuth",
+        "operationId": "CreatePolicyAuth",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/PolicyAuthInfo"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "BaseMsgResp",
+            "schema": {
+              "$ref": "#/definitions/BaseMsgResp"
+            }
+          }
+        }
+      }
+    },
+    "/policy_auth/delete": {
+      "post": {
+        "description": "Delete policy auth information | 删除PolicyAuth信息",
+        "tags": [
+          "policyauth"
+        ],
+        "summary": "Delete policy auth information | 删除PolicyAuth信息",
+        "operationId": "DeletePolicyAuth",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/IDsReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "BaseMsgResp",
+            "schema": {
+              "$ref": "#/definitions/BaseMsgResp"
+            }
+          }
+        }
+      }
+    },
+    "/policy_auth/list": {
+      "post": {
+        "description": "Get policy auth list | 获取PolicyAuth列表",
+        "tags": [
+          "policyauth"
+        ],
+        "summary": "Get policy auth list | 获取PolicyAuth列表",
+        "operationId": "GetPolicyAuthList",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/PolicyAuthListReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "PolicyAuthListResp",
+            "schema": {
+              "$ref": "#/definitions/PolicyAuthListResp"
+            }
+          }
+        }
+      }
+    },
+    "/policy_auth/update": {
+      "post": {
+        "description": "Update policy auth information | 更新PolicyAuth",
+        "tags": [
+          "policyauth"
+        ],
+        "summary": "Update policy auth information | 更新PolicyAuth",
+        "operationId": "UpdatePolicyAuth",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/PolicyAuthInfo"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "BaseMsgResp",
+            "schema": {
+              "$ref": "#/definitions/BaseMsgResp"
+            }
+          }
+        }
+      }
+    },
     "/role": {
       "post": {
         "description": "Get role by ID | 通过ID获取Role",
@@ -749,7 +889,7 @@
           "x-go-name": "CreatedAt"
         },
         "deviceId": {
-          "description": "account belong to",
+          "description": "account belong to|账号所属设备",
           "type": "integer",
           "format": "uint64",
           "x-go-name": "DeviceId"
@@ -761,23 +901,23 @@
           "x-go-name": "Id"
         },
         "password": {
-          "description": "account password",
+          "description": "account password|账号密码",
           "type": "string",
           "x-go-name": "Password"
         },
         "port": {
-          "description": "account port",
+          "description": "account port|端口",
           "type": "integer",
           "format": "uint32",
           "x-go-name": "Port"
         },
         "privateKey": {
-          "description": "private_key of the this account.",
+          "description": "private_key of the this account.|账号私钥",
           "type": "string",
           "x-go-name": "PrivateKey"
         },
         "protocol": {
-          "description": "protocol of the this account.",
+          "description": "protocol of the this account.|账号协议",
           "type": "integer",
           "format": "uint8",
           "x-go-name": "Protocol"
@@ -789,7 +929,7 @@
           "x-go-name": "UpdatedAt"
         },
         "username": {
-          "description": "account username",
+          "description": "account username|账号名称",
           "type": "string",
           "x-go-name": "Username"
         }
@@ -864,17 +1004,17 @@
           "x-go-name": "PageSize"
         },
         "password": {
-          "description": "account password",
+          "description": "account password|账号密码",
           "type": "string",
           "x-go-name": "Password"
         },
         "privateKey": {
-          "description": "private_key of the this account.",
+          "description": "private_key of the this account.|账号私钥",
           "type": "string",
           "x-go-name": "PrivateKey"
         },
         "username": {
-          "description": "account username",
+          "description": "account username|账号名称",
           "type": "string",
           "x-go-name": "Username"
         }
@@ -1018,7 +1158,7 @@
       "type": "object",
       "properties": {
         "area": {
-          "description": "The area where the department is located.",
+          "description": "The area where the department is located.|部门所在地区",
           "type": "string",
           "x-go-name": "Area"
         },
@@ -1029,7 +1169,7 @@
           "x-go-name": "CreatedAt"
         },
         "description": {
-          "description": "Description of the department.",
+          "description": "Description of the department.|部门描述",
           "type": "string",
           "x-go-name": "Description"
         },
@@ -1040,12 +1180,12 @@
           "x-go-name": "Id"
         },
         "name": {
-          "description": "The name of the department.",
+          "description": "The name of the department.|部门名称",
           "type": "string",
           "x-go-name": "Name"
         },
         "parentDepartments": {
-          "description": "Comma-separated list of parent department IDs in ascending order.",
+          "description": "Comma-separated list of parent department IDs in ascending order.|上级部门集合逗号分隔升序排列",
           "type": "string",
           "x-go-name": "ParentDepartments"
         },
@@ -1112,17 +1252,17 @@
       ],
       "properties": {
         "area": {
-          "description": "The area where the department is located.",
+          "description": "The area where the department is located.|部门所在地区",
           "type": "string",
           "x-go-name": "Area"
         },
         "description": {
-          "description": "Description of the department.",
+          "description": "Description of the department.|部门描述",
           "type": "string",
           "x-go-name": "Description"
         },
         "name": {
-          "description": "The name of the department.",
+          "description": "The name of the department.|部门名称",
           "type": "string",
           "x-go-name": "Name"
         },
@@ -1177,13 +1317,19 @@
           "format": "int64",
           "x-go-name": "CreatedAt"
         },
+        "departmentId": {
+          "description": "ID of the device's department.|设备所属部门",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "DepartmentId"
+        },
         "description": {
-          "description": "Description of the device.",
+          "description": "Description of the device.|设备描述",
           "type": "string",
           "x-go-name": "Description"
         },
         "host": {
-          "description": "login host",
+          "description": "login host|设备地址",
           "type": "string",
           "x-go-name": "Host"
         },
@@ -1194,7 +1340,7 @@
           "x-go-name": "Id"
         },
         "name": {
-          "description": "The name of the device.",
+          "description": "The name of the device.|设备名称",
           "type": "string",
           "x-go-name": "Name"
         },
@@ -1261,17 +1407,17 @@
       ],
       "properties": {
         "description": {
-          "description": "Description of the device.",
+          "description": "Description of the device.|设备描述",
           "type": "string",
           "x-go-name": "Description"
         },
         "host": {
-          "description": "login host",
+          "description": "login host|设备地址",
           "type": "string",
           "x-go-name": "Host"
         },
         "name": {
-          "description": "The name of the device.",
+          "description": "The name of the device.|设备名称",
           "type": "string",
           "x-go-name": "Name"
         },
@@ -1391,6 +1537,167 @@
       },
       "x-go-package": "sectran_admin/internal/types"
     },
+    "PolicyAuthInfo": {
+      "description": "The response data of policy auth information | PolicyAuth信息",
+      "type": "object",
+      "properties": {
+        "accounts": {
+          "description": "策略关联账号",
+          "type": "string",
+          "x-go-name": "Accounts"
+        },
+        "createdAt": {
+          "description": "Create date | 创建日期",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "CreatedAt"
+        },
+        "departmentId": {
+          "description": "ID of the policy's department.|策略所属部门",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "DepartmentId"
+        },
+        "id": {
+          "description": "ID",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "Id"
+        },
+        "name": {
+          "description": "policy name|策略名称",
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "power": {
+          "description": "policy power|策略优先级",
+          "type": "integer",
+          "format": "int32",
+          "x-go-name": "Power"
+        },
+        "updatedAt": {
+          "description": "Update date | 更新日期",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "UpdatedAt"
+        },
+        "users": {
+          "description": "策略关联用户",
+          "type": "string",
+          "x-go-name": "Users"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "PolicyAuthInfoResp": {
+      "description": "PolicyAuth information response | PolicyAuth信息返回体",
+      "type": "object",
+      "properties": {
+        "code": {
+          "description": "Error code | 错误代码",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Code"
+        },
+        "data": {
+          "description": "Data | 数据",
+          "type": "string",
+          "x-go-name": "Data",
+          "$ref": "#/definitions/PolicyAuthInfo"
+        },
+        "msg": {
+          "description": "Message | 提示信息",
+          "type": "string",
+          "x-go-name": "Msg"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "PolicyAuthListInfo": {
+      "description": "PolicyAuth list data | PolicyAuth列表数据",
+      "type": "object",
+      "properties": {
+        "data": {
+          "description": "The API list data | PolicyAuth列表数据",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PolicyAuthInfo"
+          },
+          "x-go-name": "Data"
+        },
+        "total": {
+          "description": "The total number of data | 数据总数",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "Total"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "PolicyAuthListReq": {
+      "description": "Get policy auth list request params | PolicyAuth列表请求参数",
+      "type": "object",
+      "required": [
+        "page",
+        "pageSize"
+      ],
+      "properties": {
+        "accounts": {
+          "description": "策略关联账号",
+          "type": "string",
+          "x-go-name": "Accounts"
+        },
+        "name": {
+          "description": "policy name|策略名称",
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "page": {
+          "description": "Page number | 第几页",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0,
+          "x-go-name": "Page"
+        },
+        "pageSize": {
+          "description": "Page size | 单页数据行数",
+          "type": "integer",
+          "format": "uint64",
+          "maximum": 100000,
+          "x-go-name": "PageSize"
+        },
+        "users": {
+          "description": "策略关联用户",
+          "type": "string",
+          "x-go-name": "Users"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "PolicyAuthListResp": {
+      "description": "The response data of policy auth list | PolicyAuth列表数据",
+      "type": "object",
+      "properties": {
+        "code": {
+          "description": "Error code | 错误代码",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Code"
+        },
+        "data": {
+          "description": "Data | 数据",
+          "type": "string",
+          "x-go-name": "Data",
+          "$ref": "#/definitions/PolicyAuthListInfo"
+        },
+        "msg": {
+          "description": "Message | 提示信息",
+          "type": "string",
+          "x-go-name": "Msg"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
     "RoleInfo": {
       "description": "The response data of role information | Role信息",
       "type": "object",
@@ -1408,7 +1715,7 @@
           "x-go-name": "Id"
         },
         "name": {
-          "description": "The name of the role.",
+          "description": "The name of the role.|角色名称",
           "type": "string",
           "x-go-name": "Name"
         },
@@ -1419,7 +1726,7 @@
           "x-go-name": "UpdatedAt"
         },
         "weight": {
-          "description": "The weight of the role. Smaller values indicate higher priority.",
+          "description": "The weight of the role. Smaller values indicate higher priority.|角色优先级，值越小优先级越高",
           "type": "integer",
           "format": "int64",
           "x-go-name": "Weight"
@@ -1481,7 +1788,7 @@
       ],
       "properties": {
         "name": {
-          "description": "The name of the role.",
+          "description": "The name of the role.|角色名称",
           "type": "string",
           "x-go-name": "Name"
         },
@@ -1580,7 +1887,7 @@
       "type": "object",
       "properties": {
         "account": {
-          "description": "User account.",
+          "description": "User account.|用户账号",
           "type": "string",
           "x-go-name": "Account"
         },
@@ -1591,18 +1898,18 @@
           "x-go-name": "CreatedAt"
         },
         "departmentId": {
-          "description": "ID of the user's department.",
+          "description": "ID of the user's department.|用户所属部门",
           "type": "integer",
           "format": "uint64",
           "x-go-name": "DepartmentId"
         },
         "description": {
-          "description": "User description.",
+          "description": "User description.|用户账号描述",
           "type": "string",
           "x-go-name": "Description"
         },
         "email": {
-          "description": "User email.",
+          "description": "User email.|用户邮箱",
           "type": "string",
           "x-go-name": "Email"
         },
@@ -1613,28 +1920,28 @@
           "x-go-name": "Id"
         },
         "name": {
-          "description": "User name.",
+          "description": "User name.|用户姓名",
           "type": "string",
           "x-go-name": "Name"
         },
         "password": {
-          "description": "User password.",
+          "description": "User password.|用户密码",
           "type": "string",
           "x-go-name": "Password"
         },
         "phoneNumber": {
-          "description": "User phone number.",
+          "description": "User phone number.|用户手机号码",
           "type": "string",
           "x-go-name": "PhoneNumber"
         },
         "roleId": {
-          "description": "ID of the user's role.",
+          "description": "ID of the user's role.|用户所属角色",
           "type": "integer",
           "format": "uint64",
           "x-go-name": "RoleId"
         },
         "status": {
-          "description": "User status (enabled(true) or disabled(false)).",
+          "description": "User status (enabled(true) or disabled(false)).|用户账号状态",
           "type": "boolean",
           "x-go-name": "Status"
         },
@@ -1701,12 +2008,12 @@
       ],
       "properties": {
         "account": {
-          "description": "User account.",
+          "description": "User account.|用户账号",
           "type": "string",
           "x-go-name": "Account"
         },
         "name": {
-          "description": "User name.",
+          "description": "User name.|用户姓名",
           "type": "string",
           "x-go-name": "Name"
         },
@@ -1725,7 +2032,7 @@
           "x-go-name": "PageSize"
         },
         "password": {
-          "description": "User password.",
+          "description": "User password.|用户密码",
           "type": "string",
           "x-go-name": "Password"
         }

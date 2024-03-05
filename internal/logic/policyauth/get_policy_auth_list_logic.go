@@ -1,9 +1,9 @@
-package device
+package policyauth
 
 import (
 	"context"
 
-	"sectran_admin/ent/device"
+	"sectran_admin/ent/policyauth"
 	"sectran_admin/ent/predicate"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
@@ -15,53 +15,54 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type GetDeviceListLogic struct {
+type GetPolicyAuthListLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewGetDeviceListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetDeviceListLogic {
-	return &GetDeviceListLogic{
+func NewGetPolicyAuthListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetPolicyAuthListLogic {
+	return &GetPolicyAuthListLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *GetDeviceListLogic) GetDeviceList(req *types.DeviceListReq) (*types.DeviceListResp, error) {
-	var predicates []predicate.Device
+func (l *GetPolicyAuthListLogic) GetPolicyAuthList(req *types.PolicyAuthListReq) (*types.PolicyAuthListResp, error) {
+	var predicates []predicate.PolicyAuth
 	if req.Name != nil {
-		predicates = append(predicates, device.NameContains(*req.Name))
+		predicates = append(predicates, policyauth.NameContains(*req.Name))
 	}
-	if req.Host != nil {
-		predicates = append(predicates, device.HostContains(*req.Host))
+	if req.Users != nil {
+		predicates = append(predicates, policyauth.UsersContains(*req.Users))
 	}
-	if req.Description != nil {
-		predicates = append(predicates, device.DescriptionContains(*req.Description))
+	if req.Accounts != nil {
+		predicates = append(predicates, policyauth.AccountsContains(*req.Accounts))
 	}
-	data, err := l.svcCtx.DB.Device.Query().Where(predicates...).Page(l.ctx, req.Page, req.PageSize)
+	data, err := l.svcCtx.DB.PolicyAuth.Query().Where(predicates...).Page(l.ctx, req.Page, req.PageSize)
 
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
 
-	resp := &types.DeviceListResp{}
+	resp := &types.PolicyAuthListResp{}
 	resp.Msg = l.svcCtx.Trans.Trans(l.ctx, i18n.Success)
 	resp.Data.Total = data.PageDetails.Total
 
 	for _, v := range data.List {
 		resp.Data.Data = append(resp.Data.Data,
-		types.DeviceInfo{
+		types.PolicyAuthInfo{
             BaseIDInfo:    types.BaseIDInfo{
 				Id:          &v.ID,
 				CreatedAt:    pointy.GetPointer(v.CreatedAt.UnixMilli()),
 				UpdatedAt:    pointy.GetPointer(v.UpdatedAt.UnixMilli()),
             },
 			Name:	&v.Name,
+			Power:	&v.Power,
 			DepartmentId:	&v.DepartmentID,
-			Host:	&v.Host,
-			Description:	&v.Description,
+			Users:	&v.Users,
+			Accounts:	&v.Accounts,
 		})
 	}
 

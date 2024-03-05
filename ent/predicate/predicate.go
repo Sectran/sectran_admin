@@ -15,6 +15,9 @@ type Department func(*sql.Selector)
 // Device is the predicate function for device builders.
 type Device func(*sql.Selector)
 
+// PolicyAuth is the predicate function for policyauth builders.
+type PolicyAuth func(*sql.Selector)
+
 // Role is the predicate function for role builders.
 type Role func(*sql.Selector)
 

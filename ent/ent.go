@@ -10,6 +10,7 @@ import (
 	"sectran_admin/ent/account"
 	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
+	"sectran_admin/ent/policyauth"
 	"sectran_admin/ent/role"
 	"sectran_admin/ent/user"
 	"sync"
@@ -80,6 +81,7 @@ func checkColumn(table, column string) error {
 			account.Table:    account.ValidColumn,
 			department.Table: department.ValidColumn,
 			device.Table:     device.ValidColumn,
+			policyauth.Table: policyauth.ValidColumn,
 			role.Table:       role.ValidColumn,
 			user.Table:       user.ValidColumn,
 		})

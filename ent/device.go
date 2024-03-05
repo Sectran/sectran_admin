@@ -21,11 +21,13 @@ type Device struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Update Time | 修改日期
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// The name of the device.
+	// The name of the device.|设备名称
 	Name string `json:"name,omitempty"`
-	// login host
+	// ID of the device's department.|设备所属部门
+	DepartmentID uint64 `json:"department_id,omitempty"`
+	// login host|设备地址
 	Host string `json:"host,omitempty"`
-	// Description of the device.
+	// Description of the device.|设备描述
 	Description string `json:"description,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the DeviceQuery when eager-loading is set.
@@ -56,7 +58,7 @@ func (*Device) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case device.FieldID:
+		case device.FieldID, device.FieldDepartmentID:
 			values[i] = new(sql.NullInt64)
 		case device.FieldName, device.FieldHost, device.FieldDescription:
 			values[i] = new(sql.NullString)
@@ -100,6 +102,12 @@ func (d *Device) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				d.Name = value.String
+			}
+		case device.FieldDepartmentID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field department_id", values[i])
+			} else if value.Valid {
+				d.DepartmentID = uint64(value.Int64)
 			}
 		case device.FieldHost:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -162,6 +170,9 @@ func (d *Device) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(d.Name)
+	builder.WriteString(", ")
+	builder.WriteString("department_id=")
+	builder.WriteString(fmt.Sprintf("%v", d.DepartmentID))
 	builder.WriteString(", ")
 	builder.WriteString("host=")
 	builder.WriteString(d.Host)

@@ -13,12 +13,12 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
-		{Name: "username", Type: field.TypeString, Comment: "account username"},
-		{Name: "port", Type: field.TypeUint32, Comment: "account port"},
-		{Name: "protocol", Type: field.TypeUint8, Comment: "protocol of the this account."},
-		{Name: "password", Type: field.TypeString, Comment: "account password"},
-		{Name: "private_key", Type: field.TypeString, Comment: "private_key of the this account."},
-		{Name: "device_id", Type: field.TypeUint64, Nullable: true, Comment: "account belong to"},
+		{Name: "username", Type: field.TypeString, Comment: "account username|账号名称"},
+		{Name: "port", Type: field.TypeUint32, Comment: "account port|端口"},
+		{Name: "protocol", Type: field.TypeUint8, Comment: "protocol of the this account.|账号协议"},
+		{Name: "password", Type: field.TypeString, Comment: "account password|账号密码"},
+		{Name: "private_key", Type: field.TypeString, Comment: "private_key of the this account.|账号私钥"},
+		{Name: "device_id", Type: field.TypeUint64, Nullable: true, Comment: "account belong to|账号所属设备"},
 	}
 	// AccountsTable holds the schema information for the "accounts" table.
 	AccountsTable = &schema.Table{
@@ -39,10 +39,10 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
-		{Name: "name", Type: field.TypeString, Unique: true, Comment: "The name of the department."},
-		{Name: "area", Type: field.TypeString, Comment: "The area where the department is located."},
-		{Name: "description", Type: field.TypeString, Comment: "Description of the department."},
-		{Name: "parent_departments", Type: field.TypeString, Comment: "Comma-separated list of parent department IDs in ascending order."},
+		{Name: "name", Type: field.TypeString, Unique: true, Comment: "The name of the department.|部门名称"},
+		{Name: "area", Type: field.TypeString, Comment: "The area where the department is located.|部门所在地区"},
+		{Name: "description", Type: field.TypeString, Comment: "Description of the department.|部门描述"},
+		{Name: "parent_departments", Type: field.TypeString, Comment: "Comma-separated list of parent department IDs in ascending order.|上级部门集合逗号分隔升序排列"},
 	}
 	// DepartmentsTable holds the schema information for the "departments" table.
 	DepartmentsTable = &schema.Table{
@@ -55,9 +55,10 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
-		{Name: "name", Type: field.TypeString, Comment: "The name of the device."},
-		{Name: "host", Type: field.TypeString, Unique: true, Comment: "login host"},
-		{Name: "description", Type: field.TypeString, Comment: "Description of the device."},
+		{Name: "name", Type: field.TypeString, Comment: "The name of the device.|设备名称"},
+		{Name: "department_id", Type: field.TypeUint64, Nullable: true, Comment: "ID of the device's department.|设备所属部门"},
+		{Name: "host", Type: field.TypeString, Unique: true, Comment: "login host|设备地址"},
+		{Name: "description", Type: field.TypeString, Comment: "Description of the device.|设备描述"},
 	}
 	// DevicesTable holds the schema information for the "devices" table.
 	DevicesTable = &schema.Table{
@@ -65,13 +66,30 @@ var (
 		Columns:    DevicesColumns,
 		PrimaryKey: []*schema.Column{DevicesColumns[0]},
 	}
+	// PolicyAuthsColumns holds the columns for the "policy_auths" table.
+	PolicyAuthsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
+		{Name: "name", Type: field.TypeString, Comment: "policy name|策略名称"},
+		{Name: "power", Type: field.TypeInt32, Comment: "policy power|策略优先级"},
+		{Name: "department_id", Type: field.TypeUint64, Nullable: true, Comment: "ID of the policy's department.|策略所属部门"},
+		{Name: "users", Type: field.TypeString, Comment: "策略关联用户"},
+		{Name: "accounts", Type: field.TypeString, Comment: "策略关联账号"},
+	}
+	// PolicyAuthsTable holds the schema information for the "policy_auths" table.
+	PolicyAuthsTable = &schema.Table{
+		Name:       "policy_auths",
+		Columns:    PolicyAuthsColumns,
+		PrimaryKey: []*schema.Column{PolicyAuthsColumns[0]},
+	}
 	// RolesColumns holds the columns for the "roles" table.
 	RolesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
-		{Name: "name", Type: field.TypeString, Unique: true, Comment: "The name of the role."},
-		{Name: "weight", Type: field.TypeInt, Comment: "The weight of the role. Smaller values indicate higher priority."},
+		{Name: "name", Type: field.TypeString, Unique: true, Comment: "The name of the role.|角色名称"},
+		{Name: "weight", Type: field.TypeInt, Comment: "The weight of the role. Smaller values indicate higher priority.|角色优先级，值越小优先级越高"},
 	}
 	// RolesTable holds the schema information for the "roles" table.
 	RolesTable = &schema.Table{
@@ -84,15 +102,15 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
-		{Name: "account", Type: field.TypeString, Unique: true, Comment: "User account."},
-		{Name: "name", Type: field.TypeString, Comment: "User name."},
-		{Name: "password", Type: field.TypeString, Comment: "User password."},
-		{Name: "status", Type: field.TypeBool, Comment: "User status (enabled(true) or disabled(false)).", Default: true},
-		{Name: "description", Type: field.TypeString, Nullable: true, Comment: "User description."},
-		{Name: "email", Type: field.TypeString, Nullable: true, Comment: "User email."},
-		{Name: "phone_number", Type: field.TypeString, Nullable: true, Comment: "User phone number."},
-		{Name: "department_id", Type: field.TypeUint64, Nullable: true, Comment: "ID of the user's department."},
-		{Name: "role_id", Type: field.TypeUint64, Nullable: true, Comment: "ID of the user's role."},
+		{Name: "account", Type: field.TypeString, Unique: true, Comment: "User account.|用户账号"},
+		{Name: "name", Type: field.TypeString, Comment: "User name.|用户姓名"},
+		{Name: "password", Type: field.TypeString, Comment: "User password.|用户密码"},
+		{Name: "status", Type: field.TypeBool, Comment: "User status (enabled(true) or disabled(false)).|用户账号状态", Default: true},
+		{Name: "description", Type: field.TypeString, Nullable: true, Comment: "User description.|用户账号描述"},
+		{Name: "email", Type: field.TypeString, Nullable: true, Comment: "User email.|用户邮箱"},
+		{Name: "phone_number", Type: field.TypeString, Nullable: true, Comment: "User phone number.|用户手机号码"},
+		{Name: "department_id", Type: field.TypeUint64, Nullable: true, Comment: "ID of the user's department.|用户所属部门"},
+		{Name: "role_id", Type: field.TypeUint64, Nullable: true, Comment: "ID of the user's role.|用户所属角色"},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
@@ -119,6 +137,7 @@ var (
 		AccountsTable,
 		DepartmentsTable,
 		DevicesTable,
+		PolicyAuthsTable,
 		RolesTable,
 		UsersTable,
 	}

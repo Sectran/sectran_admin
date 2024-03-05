@@ -21,9 +21,9 @@ type Role struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Update Time | 修改日期
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// The name of the role.
+	// The name of the role.|角色名称
 	Name string `json:"name,omitempty"`
-	// The weight of the role. Smaller values indicate higher priority.
+	// The weight of the role. Smaller values indicate higher priority.|角色优先级，值越小优先级越高
 	Weight int `json:"weight,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the RoleQuery when eager-loading is set.

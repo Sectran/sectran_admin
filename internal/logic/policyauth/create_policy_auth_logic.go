@@ -1,4 +1,4 @@
-package device
+package policyauth
 
 import (
 	"context"
@@ -12,26 +12,27 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type CreateDeviceLogic struct {
+type CreatePolicyAuthLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewCreateDeviceLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateDeviceLogic {
-	return &CreateDeviceLogic{
+func NewCreatePolicyAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreatePolicyAuthLogic {
+	return &CreatePolicyAuthLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *CreateDeviceLogic) CreateDevice(req *types.DeviceInfo) (*types.BaseMsgResp, error) {
-    _, err := l.svcCtx.DB.Device.Create().
+func (l *CreatePolicyAuthLogic) CreatePolicyAuth(req *types.PolicyAuthInfo) (*types.BaseMsgResp, error) {
+    _, err := l.svcCtx.DB.PolicyAuth.Create().
 			SetNotNilName(req.Name).
+			SetNotNilPower(req.Power).
 			SetNotNilDepartmentID(req.DepartmentId).
-			SetNotNilHost(req.Host).
-			SetNotNilDescription(req.Description).
+			SetNotNilUsers(req.Users).
+			SetNotNilAccounts(req.Accounts).
 			Save(l.ctx)
 
     if err != nil {

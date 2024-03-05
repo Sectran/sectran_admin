@@ -5,22 +5,22 @@ type (
     AccountInfo {
         BaseIDInfo
 
-        // account username 
+        // account username|账号名称 
         Username  *string `json:"username,optional"`
 
-        // account port 
+        // account port|端口 
         Port  *uint32 `json:"port,optional"`
 
-        // protocol of the this account. 
+        // protocol of the this account.|账号协议 
         Protocol  *uint8 `json:"protocol,optional"`
 
-        // account password 
+        // account password|账号密码 
         Password  *string `json:"password,optional"`
 
-        // private_key of the this account. 
+        // private_key of the this account.|账号私钥 
         PrivateKey  *string `json:"privateKey,optional"`
 
-        // account belong to 
+        // account belong to|账号所属设备 
         DeviceId  *uint64 `json:"deviceId,optional"`
     }
 
@@ -44,13 +44,13 @@ type (
     AccountListReq {
         PageInfo
 
-        // account username 
+        // account username|账号名称 
         Username  *string `json:"username,optional"`
 
-        // account password 
+        // account password|账号密码 
         Password  *string `json:"password,optional"`
 
-        // private_key of the this account. 
+        // private_key of the this account.|账号私钥 
         PrivateKey  *string `json:"privateKey,optional"`
     }
 

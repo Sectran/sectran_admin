@@ -341,6 +341,30 @@ func (d *DeviceCreate) SetNotNilName(value *string) *DeviceCreate {
 }
 
 // set field if value's pointer is not nil.
+func (d *DeviceUpdate) SetNotNilDepartmentID(value *uint64) *DeviceUpdate {
+	if value != nil {
+		return d.SetDepartmentID(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DeviceUpdateOne) SetNotNilDepartmentID(value *uint64) *DeviceUpdateOne {
+	if value != nil {
+		return d.SetDepartmentID(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DeviceCreate) SetNotNilDepartmentID(value *uint64) *DeviceCreate {
+	if value != nil {
+		return d.SetDepartmentID(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
 func (d *DeviceUpdate) SetNotNilHost(value *string) *DeviceUpdate {
 	if value != nil {
 		return d.SetHost(*value)
@@ -386,6 +410,150 @@ func (d *DeviceCreate) SetNotNilDescription(value *string) *DeviceCreate {
 		return d.SetDescription(*value)
 	}
 	return d
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthUpdate) SetNotNilUpdatedAt(value *time.Time) *PolicyAuthUpdate {
+	if value != nil {
+		return pa.SetUpdatedAt(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthUpdateOne) SetNotNilUpdatedAt(value *time.Time) *PolicyAuthUpdateOne {
+	if value != nil {
+		return pa.SetUpdatedAt(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthCreate) SetNotNilUpdatedAt(value *time.Time) *PolicyAuthCreate {
+	if value != nil {
+		return pa.SetUpdatedAt(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthUpdate) SetNotNilName(value *string) *PolicyAuthUpdate {
+	if value != nil {
+		return pa.SetName(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthUpdateOne) SetNotNilName(value *string) *PolicyAuthUpdateOne {
+	if value != nil {
+		return pa.SetName(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthCreate) SetNotNilName(value *string) *PolicyAuthCreate {
+	if value != nil {
+		return pa.SetName(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthUpdate) SetNotNilPower(value *int32) *PolicyAuthUpdate {
+	if value != nil {
+		return pa.SetPower(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthUpdateOne) SetNotNilPower(value *int32) *PolicyAuthUpdateOne {
+	if value != nil {
+		return pa.SetPower(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthCreate) SetNotNilPower(value *int32) *PolicyAuthCreate {
+	if value != nil {
+		return pa.SetPower(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthUpdate) SetNotNilDepartmentID(value *uint64) *PolicyAuthUpdate {
+	if value != nil {
+		return pa.SetDepartmentID(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthUpdateOne) SetNotNilDepartmentID(value *uint64) *PolicyAuthUpdateOne {
+	if value != nil {
+		return pa.SetDepartmentID(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthCreate) SetNotNilDepartmentID(value *uint64) *PolicyAuthCreate {
+	if value != nil {
+		return pa.SetDepartmentID(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthUpdate) SetNotNilUsers(value *string) *PolicyAuthUpdate {
+	if value != nil {
+		return pa.SetUsers(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthUpdateOne) SetNotNilUsers(value *string) *PolicyAuthUpdateOne {
+	if value != nil {
+		return pa.SetUsers(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthCreate) SetNotNilUsers(value *string) *PolicyAuthCreate {
+	if value != nil {
+		return pa.SetUsers(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthUpdate) SetNotNilAccounts(value *string) *PolicyAuthUpdate {
+	if value != nil {
+		return pa.SetAccounts(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthUpdateOne) SetNotNilAccounts(value *string) *PolicyAuthUpdateOne {
+	if value != nil {
+		return pa.SetAccounts(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthCreate) SetNotNilAccounts(value *string) *PolicyAuthCreate {
+	if value != nil {
+		return pa.SetAccounts(*value)
+	}
+	return pa
 }
 
 // set field if value's pointer is not nil.

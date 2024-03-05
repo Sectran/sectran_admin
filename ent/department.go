@@ -21,13 +21,13 @@ type Department struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Update Time | 修改日期
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// The name of the department.
+	// The name of the department.|部门名称
 	Name string `json:"name,omitempty"`
-	// The area where the department is located.
+	// The area where the department is located.|部门所在地区
 	Area string `json:"area,omitempty"`
-	// Description of the department.
+	// Description of the department.|部门描述
 	Description string `json:"description,omitempty"`
-	// Comma-separated list of parent department IDs in ascending order.
+	// Comma-separated list of parent department IDs in ascending order.|上级部门集合逗号分隔升序排列
 	ParentDepartments string `json:"parent_departments,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the DepartmentQuery when eager-loading is set.

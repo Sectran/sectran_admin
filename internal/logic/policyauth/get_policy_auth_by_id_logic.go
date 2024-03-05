@@ -1,4 +1,4 @@
-package device
+package policyauth
 
 import (
 	"context"
@@ -13,41 +13,42 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type GetDeviceByIdLogic struct {
+type GetPolicyAuthByIdLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewGetDeviceByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetDeviceByIdLogic {
-	return &GetDeviceByIdLogic{
+func NewGetPolicyAuthByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetPolicyAuthByIdLogic {
+	return &GetPolicyAuthByIdLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *GetDeviceByIdLogic) GetDeviceById(req *types.IDReq) (*types.DeviceInfoResp, error) {
-	data, err := l.svcCtx.DB.Device.Get(l.ctx, req.Id)
+func (l *GetPolicyAuthByIdLogic) GetPolicyAuthById(req *types.IDReq) (*types.PolicyAuthInfoResp, error) {
+	data, err := l.svcCtx.DB.PolicyAuth.Get(l.ctx, req.Id)
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
 
-	return &types.DeviceInfoResp{
+	return &types.PolicyAuthInfoResp{
 	    BaseDataInfo: types.BaseDataInfo{
             Code: 0,
             Msg:  l.svcCtx.Trans.Trans(l.ctx, i18n.Success),
         },
-        Data: types.DeviceInfo{
+        Data: types.PolicyAuthInfo{
             BaseIDInfo:    types.BaseIDInfo{
 				Id:          &data.ID,
 				CreatedAt:    pointy.GetPointer(data.CreatedAt.UnixMilli()),
 				UpdatedAt:    pointy.GetPointer(data.UpdatedAt.UnixMilli()),
             },
 			Name:	&data.Name,
+			Power:	&data.Power,
 			DepartmentId:	&data.DepartmentID,
-			Host:	&data.Host,
-			Description:	&data.Description,
+			Users:	&data.Users,
+			Accounts:	&data.Accounts,
         },
 	}, nil
 }

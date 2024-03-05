@@ -70,6 +70,11 @@ func Name(v string) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldName, v))
 }
 
+// DepartmentID applies equality check predicate on the "department_id" field. It's identical to DepartmentIDEQ.
+func DepartmentID(v uint64) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldDepartmentID, v))
+}
+
 // Host applies equality check predicate on the "host" field. It's identical to HostEQ.
 func Host(v string) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldHost, v))
@@ -223,6 +228,56 @@ func NameEqualFold(v string) predicate.Device {
 // NameContainsFold applies the ContainsFold predicate on the "name" field.
 func NameContainsFold(v string) predicate.Device {
 	return predicate.Device(sql.FieldContainsFold(FieldName, v))
+}
+
+// DepartmentIDEQ applies the EQ predicate on the "department_id" field.
+func DepartmentIDEQ(v uint64) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldDepartmentID, v))
+}
+
+// DepartmentIDNEQ applies the NEQ predicate on the "department_id" field.
+func DepartmentIDNEQ(v uint64) predicate.Device {
+	return predicate.Device(sql.FieldNEQ(FieldDepartmentID, v))
+}
+
+// DepartmentIDIn applies the In predicate on the "department_id" field.
+func DepartmentIDIn(vs ...uint64) predicate.Device {
+	return predicate.Device(sql.FieldIn(FieldDepartmentID, vs...))
+}
+
+// DepartmentIDNotIn applies the NotIn predicate on the "department_id" field.
+func DepartmentIDNotIn(vs ...uint64) predicate.Device {
+	return predicate.Device(sql.FieldNotIn(FieldDepartmentID, vs...))
+}
+
+// DepartmentIDGT applies the GT predicate on the "department_id" field.
+func DepartmentIDGT(v uint64) predicate.Device {
+	return predicate.Device(sql.FieldGT(FieldDepartmentID, v))
+}
+
+// DepartmentIDGTE applies the GTE predicate on the "department_id" field.
+func DepartmentIDGTE(v uint64) predicate.Device {
+	return predicate.Device(sql.FieldGTE(FieldDepartmentID, v))
+}
+
+// DepartmentIDLT applies the LT predicate on the "department_id" field.
+func DepartmentIDLT(v uint64) predicate.Device {
+	return predicate.Device(sql.FieldLT(FieldDepartmentID, v))
+}
+
+// DepartmentIDLTE applies the LTE predicate on the "department_id" field.
+func DepartmentIDLTE(v uint64) predicate.Device {
+	return predicate.Device(sql.FieldLTE(FieldDepartmentID, v))
+}
+
+// DepartmentIDIsNil applies the IsNil predicate on the "department_id" field.
+func DepartmentIDIsNil() predicate.Device {
+	return predicate.Device(sql.FieldIsNull(FieldDepartmentID))
+}
+
+// DepartmentIDNotNil applies the NotNil predicate on the "department_id" field.
+func DepartmentIDNotNil() predicate.Device {
+	return predicate.Device(sql.FieldNotNull(FieldDepartmentID))
 }
 
 // HostEQ applies the EQ predicate on the "host" field.

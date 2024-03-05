@@ -28,11 +28,11 @@ func (PolicyAuth) Fields() []ent.Field {
 			Min(0).
 			Comment("ID of the policy's department.|策略所属部门").
 			Annotations(entsql.WithComments(true)),
-		field.String("user_ids").
+		field.String("users").
 			NotEmpty().
 			Comment("策略关联用户").
 			Annotations(entsql.WithComments(true)),
-		field.String("acc_ids").
+		field.String("accounts").
 			NotEmpty().
 			Comment("策略关联账号").
 			Annotations(entsql.WithComments(true)),

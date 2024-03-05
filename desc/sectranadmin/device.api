@@ -5,13 +5,16 @@ type (
     DeviceInfo {
         BaseIDInfo
 
-        // The name of the device. 
+        // The name of the device.|设备名称 
         Name  *string `json:"name,optional"`
 
-        // login host 
+        // ID of the device's department.|设备所属部门 
+        DepartmentId  *uint64 `json:"departmentId,optional"`
+
+        // login host|设备地址 
         Host  *string `json:"host,optional"`
 
-        // Description of the device. 
+        // Description of the device.|设备描述 
         Description  *string `json:"description,optional"`
     }
 
@@ -35,13 +38,13 @@ type (
     DeviceListReq {
         PageInfo
 
-        // The name of the device. 
+        // The name of the device.|设备名称 
         Name  *string `json:"name,optional"`
 
-        // login host 
+        // login host|设备地址 
         Host  *string `json:"host,optional"`
 
-        // Description of the device. 
+        // Description of the device.|设备描述 
         Description  *string `json:"description,optional"`
     }
 

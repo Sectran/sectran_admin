@@ -28,10 +28,10 @@ func randStr(str_len int) string {
 func GenerateTokenUsingHs256(key string, expTime time.Duration, user *ent.User) (string, error) {
 	claim := MyCustomClaims{
 		UserID:   int(user.ID),
-		Username: user.Unwrap().Name,
+		Username: user.Name,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "sectran_admin",                                 // 签发者
-			Subject:   user.Unwrap().Account,                           // 签发对象
+			Subject:   user.Account,                                    // 签发对象
 			Audience:  jwt.ClaimStrings{"SECTRAN"},                     //签发受众
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expTime)),     //过期时间
 			NotBefore: jwt.NewNumericDate(time.Now().Add(time.Second)), //最早使用时间

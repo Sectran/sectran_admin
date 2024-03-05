@@ -5,16 +5,16 @@ type (
     DepartmentInfo {
         BaseIDInfo
 
-        // The name of the department. 
+        // The name of the department.|部门名称 
         Name  *string `json:"name,optional"`
 
-        // The area where the department is located. 
+        // The area where the department is located.|部门所在地区 
         Area  *string `json:"area,optional"`
 
-        // Description of the department. 
+        // Description of the department.|部门描述 
         Description  *string `json:"description,optional"`
 
-        // Comma-separated list of parent department IDs in ascending order. 
+        // Comma-separated list of parent department IDs in ascending order.|上级部门集合逗号分隔升序排列 
         ParentDepartments  *string `json:"parentDepartments,optional"`
     }
 
@@ -38,13 +38,13 @@ type (
     DepartmentListReq {
         PageInfo
 
-        // The name of the department. 
+        // The name of the department.|部门名称 
         Name  *string `json:"name,optional"`
 
-        // The area where the department is located. 
+        // The area where the department is located.|部门所在地区 
         Area  *string `json:"area,optional"`
 
-        // Description of the department. 
+        // Description of the department.|部门描述 
         Description  *string `json:"description,optional"`
     }
 

@@ -115,22 +115,17 @@ type BaseUUIDInfo struct {
 	UpdatedAt *int64 `json:"updatedAt,optional"`
 }
 
-type LoginInfo struct{
-	Username *string `json:"username"`
-	Password *string `json:"password"`
-}
-
 // The response data of department information | Department信息
 // swagger:model DepartmentInfo
 type DepartmentInfo struct {
 	BaseIDInfo
-	// The name of the department.
+	// The name of the department.|部门名称
 	Name *string `json:"name,optional"`
-	// The area where the department is located.
+	// The area where the department is located.|部门所在地区
 	Area *string `json:"area,optional"`
-	// Description of the department.
+	// Description of the department.|部门描述
 	Description *string `json:"description,optional"`
-	// Comma-separated list of parent department IDs in ascending order.
+	// Comma-separated list of parent department IDs in ascending order.|上级部门集合逗号分隔升序排列
 	ParentDepartments *string `json:"parentDepartments,optional"`
 }
 
@@ -154,11 +149,11 @@ type DepartmentListInfo struct {
 // swagger:model DepartmentListReq
 type DepartmentListReq struct {
 	PageInfo
-	// The name of the department.
+	// The name of the department.|部门名称
 	Name *string `json:"name,optional"`
-	// The area where the department is located.
+	// The area where the department is located.|部门所在地区
 	Area *string `json:"area,optional"`
-	// Description of the department.
+	// Description of the department.|部门描述
 	Description *string `json:"description,optional"`
 }
 
@@ -174,9 +169,9 @@ type DepartmentInfoResp struct {
 // swagger:model RoleInfo
 type RoleInfo struct {
 	BaseIDInfo
-	// The name of the role.
+	// The name of the role.|角色名称
 	Name *string `json:"name,optional"`
-	// The weight of the role. Smaller values indicate higher priority.
+	// The weight of the role. Smaller values indicate higher priority.|角色优先级，值越小优先级越高
 	Weight *int `json:"weight,optional"`
 }
 
@@ -200,7 +195,7 @@ type RoleListInfo struct {
 // swagger:model RoleListReq
 type RoleListReq struct {
 	PageInfo
-	// The name of the role.
+	// The name of the role.|角色名称
 	Name *string `json:"name,optional"`
 }
 
@@ -216,23 +211,23 @@ type RoleInfoResp struct {
 // swagger:model UserInfo
 type UserInfo struct {
 	BaseIDInfo
-	// User account.
+	// User account.|用户账号
 	Account *string `json:"account,optional"`
-	// User name.
+	// User name.|用户姓名
 	Name *string `json:"name,optional"`
-	// User password.
+	// User password.|用户密码
 	Password *string `json:"password,optional"`
-	// ID of the user's department.
+	// ID of the user's department.|用户所属部门
 	DepartmentId *uint64 `json:"departmentId,optional"`
-	// ID of the user's role.
+	// ID of the user's role.|用户所属角色
 	RoleId *uint64 `json:"roleId,optional"`
-	// User status (enabled(true) or disabled(false)).
+	// User status (enabled(true) or disabled(false)).|用户账号状态
 	Status *bool `json:"status,optional"`
-	// User description.
+	// User description.|用户账号描述
 	Description *string `json:"description,optional"`
-	// User email.
+	// User email.|用户邮箱
 	Email *string `json:"email,optional"`
-	// User phone number.
+	// User phone number.|用户手机号码
 	PhoneNumber *string `json:"phoneNumber,optional"`
 }
 
@@ -256,11 +251,11 @@ type UserListInfo struct {
 // swagger:model UserListReq
 type UserListReq struct {
 	PageInfo
-	// User account.
+	// User account.|用户账号
 	Account *string `json:"account,optional"`
-	// User name.
+	// User name.|用户姓名
 	Name *string `json:"name,optional"`
-	// User password.
+	// User password.|用户密码
 	Password *string `json:"password,optional"`
 }
 
@@ -276,17 +271,17 @@ type UserInfoResp struct {
 // swagger:model AccountInfo
 type AccountInfo struct {
 	BaseIDInfo
-	// account username
+	// account username|账号名称
 	Username *string `json:"username,optional"`
-	// account port
+	// account port|端口
 	Port *uint32 `json:"port,optional"`
-	// protocol of the this account.
+	// protocol of the this account.|账号协议
 	Protocol *uint8 `json:"protocol,optional"`
-	// account password
+	// account password|账号密码
 	Password *string `json:"password,optional"`
-	// private_key of the this account.
+	// private_key of the this account.|账号私钥
 	PrivateKey *string `json:"privateKey,optional"`
-	// account belong to
+	// account belong to|账号所属设备
 	DeviceId *uint64 `json:"deviceId,optional"`
 }
 
@@ -310,11 +305,11 @@ type AccountListInfo struct {
 // swagger:model AccountListReq
 type AccountListReq struct {
 	PageInfo
-	// account username
+	// account username|账号名称
 	Username *string `json:"username,optional"`
-	// account password
+	// account password|账号密码
 	Password *string `json:"password,optional"`
-	// private_key of the this account.
+	// private_key of the this account.|账号私钥
 	PrivateKey *string `json:"privateKey,optional"`
 }
 
@@ -330,13 +325,16 @@ type AccountInfoResp struct {
 // swagger:model DeviceInfo
 type DeviceInfo struct {
 	BaseIDInfo
-	// The name of the device.
+	// The name of the device.|设备名称
 	Name *string `json:"name,optional"`
-	// login host
+	// ID of the device's department.|设备所属部门
+	DepartmentId *uint64 `json:"departmentId,optional"`
+	// login host|设备地址
 	Host *string `json:"host,optional"`
-	// Description of the device.
+	// Description of the device.|设备描述
 	Description *string `json:"description,optional"`
 }
+
 
 // The response data of device list | Device列表数据
 // swagger:model DeviceListResp
@@ -358,11 +356,11 @@ type DeviceListInfo struct {
 // swagger:model DeviceListReq
 type DeviceListReq struct {
 	PageInfo
-	// The name of the device.
+	// The name of the device.|设备名称
 	Name *string `json:"name,optional"`
-	// login host
+	// login host|设备地址
 	Host *string `json:"host,optional"`
-	// Description of the device.
+	// Description of the device.|设备描述
 	Description *string `json:"description,optional"`
 }
 
@@ -372,4 +370,56 @@ type DeviceInfoResp struct {
 	BaseDataInfo
 	// Device information | Device数据
 	Data DeviceInfo `json:"data"`
+}
+
+// The response data of policy auth information | PolicyAuth信息
+// swagger:model PolicyAuthInfo
+type PolicyAuthInfo struct {
+	BaseIDInfo
+	// policy name|策略名称
+	Name *string `json:"name,optional"`
+	// policy power|策略优先级
+	Power *int32 `json:"power,optional"`
+	// ID of the policy's department.|策略所属部门
+	DepartmentId *uint64 `json:"departmentId,optional"`
+	// 策略关联用户
+	Users *string `json:"users,optional"`
+	// 策略关联账号
+	Accounts *string `json:"accounts,optional"`
+}
+
+// The response data of policy auth list | PolicyAuth列表数据
+// swagger:model PolicyAuthListResp
+type PolicyAuthListResp struct {
+	BaseDataInfo
+	// PolicyAuth list data | PolicyAuth列表数据
+	Data PolicyAuthListInfo `json:"data"`
+}
+
+// PolicyAuth list data | PolicyAuth列表数据
+// swagger:model PolicyAuthListInfo
+type PolicyAuthListInfo struct {
+	BaseListInfo
+	// The API list data | PolicyAuth列表数据
+	Data []PolicyAuthInfo `json:"data"`
+}
+
+// Get policy auth list request params | PolicyAuth列表请求参数
+// swagger:model PolicyAuthListReq
+type PolicyAuthListReq struct {
+	PageInfo
+	// policy name|策略名称
+	Name *string `json:"name,optional"`
+	// 策略关联用户
+	Users *string `json:"users,optional"`
+	// 策略关联账号
+	Accounts *string `json:"accounts,optional"`
+}
+
+// PolicyAuth information response | PolicyAuth信息返回体
+// swagger:model PolicyAuthInfoResp
+type PolicyAuthInfoResp struct {
+	BaseDataInfo
+	// PolicyAuth information | PolicyAuth数据
+	Data PolicyAuthInfo `json:"data"`
 }

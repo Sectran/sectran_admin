@@ -22,17 +22,17 @@ type Account struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Update Time | 修改日期
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// account username
+	// account username|账号名称
 	Username string `json:"username,omitempty"`
-	// account port
+	// account port|端口
 	Port uint32 `json:"port,omitempty"`
-	// protocol of the this account.
+	// protocol of the this account.|账号协议
 	Protocol uint8 `json:"protocol,omitempty"`
-	// account password
+	// account password|账号密码
 	Password string `json:"password,omitempty"`
-	// private_key of the this account.
+	// private_key of the this account.|账号私钥
 	PrivateKey string `json:"private_key,omitempty"`
-	// account belong to
+	// account belong to|账号所属设备
 	DeviceID uint64 `json:"device_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AccountQuery when eager-loading is set.

@@ -2,6 +2,7 @@ package base
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"sectran_admin/ent/predicate"
 	"sectran_admin/internal/svc"
@@ -32,10 +33,10 @@ func (l *LoginLogic) Login(req *types.LoginInfo) (resp *types.BaseDataInfo, err 
 	var predicates []predicate.User
 
 	if req.Username != nil {
-		predicates = append(predicates, sql.FieldEQ("username", req.Username))
+		predicates = append(predicates, sql.FieldEQ("account", req.Username))
 	}
 
-	user, err := l.svcCtx.DB.User.Query().Where(predicates...).First(l.ctx)
+	user, err := l.svcCtx.DB.User.Query().Where(predicates...).Only(l.ctx)
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
@@ -45,11 +46,16 @@ func (l *LoginLogic) Login(req *types.LoginInfo) (resp *types.BaseDataInfo, err 
 	}
 
 	token, err := jwt.GenerateTokenUsingHs256(l.svcCtx.Config.Auth.AccessSecret, time.Hour*time.Duration(l.svcCtx.Config.Auth.AccessExpire), user)
-	if err == nil {
+	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, fmt.Errorf("无法为该用户正确授权"), req)
 	}
 
-	status := l.svcCtx.Authority.Rds.Set(l.ctx, token, user, l.svcCtx.Config.Signature.Expiry)
+	userM, err := json.Marshal(user)
+	if err != nil {
+		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
+	}
+
+	status := l.svcCtx.Authority.Rds.Set(l.ctx, token, userM, time.Second*5)
 	if status.Err() != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, status.Err(), req)
 	}

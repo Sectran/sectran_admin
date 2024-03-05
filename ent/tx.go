@@ -20,6 +20,8 @@ type Tx struct {
 	Department *DepartmentClient
 	// Device is the client for interacting with the Device builders.
 	Device *DeviceClient
+	// PolicyAuth is the client for interacting with the PolicyAuth builders.
+	PolicyAuth *PolicyAuthClient
 	// Role is the client for interacting with the Role builders.
 	Role *RoleClient
 	// User is the client for interacting with the User builders.
@@ -158,6 +160,7 @@ func (tx *Tx) init() {
 	tx.Account = NewAccountClient(tx.config)
 	tx.Department = NewDepartmentClient(tx.config)
 	tx.Device = NewDeviceClient(tx.config)
+	tx.PolicyAuth = NewPolicyAuthClient(tx.config)
 	tx.Role = NewRoleClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }

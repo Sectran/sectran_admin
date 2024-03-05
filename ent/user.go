@@ -23,23 +23,23 @@ type User struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Update Time | 修改日期
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// User account.
+	// User account.|用户账号
 	Account string `json:"account,omitempty"`
-	// User name.
+	// User name.|用户姓名
 	Name string `json:"name,omitempty"`
-	// User password.
+	// User password.|用户密码
 	Password string `json:"-"`
-	// ID of the user's department.
+	// ID of the user's department.|用户所属部门
 	DepartmentID uint64 `json:"department_id,omitempty"`
-	// ID of the user's role.
+	// ID of the user's role.|用户所属角色
 	RoleID uint64 `json:"role_id,omitempty"`
-	// User status (enabled(true) or disabled(false)).
+	// User status (enabled(true) or disabled(false)).|用户账号状态
 	Status bool `json:"status,omitempty"`
-	// User description.
+	// User description.|用户账号描述
 	Description string `json:"description,omitempty"`
-	// User email.
+	// User email.|用户邮箱
 	Email string `json:"email,omitempty"`
-	// User phone number.
+	// User phone number.|用户手机号码
 	PhoneNumber string `json:"phone_number,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.

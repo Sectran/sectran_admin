@@ -55,6 +55,20 @@ func (dc *DeviceCreate) SetName(s string) *DeviceCreate {
 	return dc
 }
 
+// SetDepartmentID sets the "department_id" field.
+func (dc *DeviceCreate) SetDepartmentID(u uint64) *DeviceCreate {
+	dc.mutation.SetDepartmentID(u)
+	return dc
+}
+
+// SetNillableDepartmentID sets the "department_id" field if the given value is not nil.
+func (dc *DeviceCreate) SetNillableDepartmentID(u *uint64) *DeviceCreate {
+	if u != nil {
+		dc.SetDepartmentID(*u)
+	}
+	return dc
+}
+
 // SetHost sets the "host" field.
 func (dc *DeviceCreate) SetHost(s string) *DeviceCreate {
 	dc.mutation.SetHost(s)
@@ -149,6 +163,11 @@ func (dc *DeviceCreate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Device.name": %w`, err)}
 		}
 	}
+	if v, ok := dc.mutation.DepartmentID(); ok {
+		if err := device.DepartmentIDValidator(v); err != nil {
+			return &ValidationError{Name: "department_id", err: fmt.Errorf(`ent: validator failed for field "Device.department_id": %w`, err)}
+		}
+	}
 	if _, ok := dc.mutation.Host(); !ok {
 		return &ValidationError{Name: "host", err: errors.New(`ent: missing required field "Device.host"`)}
 	}
@@ -203,6 +222,10 @@ func (dc *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 	if value, ok := dc.mutation.Name(); ok {
 		_spec.SetField(device.FieldName, field.TypeString, value)
 		_node.Name = value
+	}
+	if value, ok := dc.mutation.DepartmentID(); ok {
+		_spec.SetField(device.FieldDepartmentID, field.TypeUint64, value)
+		_node.DepartmentID = value
 	}
 	if value, ok := dc.mutation.Host(); ok {
 		_spec.SetField(device.FieldHost, field.TypeString, value)
