@@ -18,15 +18,20 @@ func (Device) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").
 			NotEmpty().
-			Comment("The name of the device.").
+			Comment("The name of the device.|设备名称").
+			Annotations(entsql.WithComments(true)),
+		field.Uint64("department_id").
+			Optional().
+			Min(0).
+			Comment("ID of the device's department.|设备所属部门").
 			Annotations(entsql.WithComments(true)),
 		field.String("host").
 			Unique().
 			NotEmpty().
-			Comment("login host").
+			Comment("login host|设备地址").
 			Annotations(entsql.WithComments(true)),
 		field.String("description").
-			Comment("Description of the device.").
+			Comment("Description of the device.|设备描述").
 			Annotations(entsql.WithComments(true)),
 	}
 }

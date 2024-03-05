@@ -3,15 +3,15 @@ package jwt
 import (
 	"errors"
 	"math/rand"
+	"sectran_admin/ent"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
 )
 
 type MyCustomClaims struct {
-	UserID     int
-	Username   string
-	GrantScope string
+	UserID   int
+	Username string
 	jwt.RegisteredClaims
 }
 
@@ -25,15 +25,14 @@ func randStr(str_len int) string {
 	return string(rand_bytes)
 }
 
-func GenerateTokenUsingHs256(key string, expTime time.Duration) (string, error) {
+func GenerateTokenUsingHs256(key string, expTime time.Duration, user *ent.User) (string, error) {
 	claim := MyCustomClaims{
-		UserID:     000001,
-		Username:   "Tom",
-		GrantScope: "read_user_info",
+		UserID:   int(user.ID),
+		Username: user.Unwrap().Name,
 		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    "Auth_Server",                                   // 签发者
-			Subject:   "Tom",                                           // 签发对象
-			Audience:  jwt.ClaimStrings{"Android_APP", "IOS_APP"},      //签发受众
+			Issuer:    "sectran_admin",                                 // 签发者
+			Subject:   user.Unwrap().Account,                           // 签发对象
+			Audience:  jwt.ClaimStrings{"SECTRAN"},                     //签发受众
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expTime)),     //过期时间
 			NotBefore: jwt.NewNumericDate(time.Now().Add(time.Second)), //最早使用时间
 			IssuedAt:  jwt.NewNumericDate(time.Now()),                  //签发时间

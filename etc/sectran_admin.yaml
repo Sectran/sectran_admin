@@ -28,7 +28,7 @@ DatabaseConf:
   Password: root
   MaxOpenConn: 100
   SSLMode: disable
-  CacheTime: 5
+  CacheTime: 1
 
 CoreRpc:
   Target: k8s://default/core-rpc-svc:9101

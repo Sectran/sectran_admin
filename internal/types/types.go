@@ -115,6 +115,11 @@ type BaseUUIDInfo struct {
 	UpdatedAt *int64 `json:"updatedAt,optional"`
 }
 
+type LoginInfo struct{
+	Username *string `json:"username"`
+	Password *string `json:"password"`
+}
+
 // The response data of department information | Department信息
 // swagger:model DepartmentInfo
 type DepartmentInfo struct {
