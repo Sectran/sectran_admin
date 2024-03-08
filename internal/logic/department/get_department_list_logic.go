@@ -9,7 +9,7 @@ import (
 	"sectran_admin/internal/types"
 	"sectran_admin/internal/utils/dberrorhandler"
 
-    "github.com/suyuan32/simple-admin-common/i18n"
+	"github.com/suyuan32/simple-admin-common/i18n"
 
 	"github.com/suyuan32/simple-admin-common/utils/pointy"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -40,7 +40,11 @@ func (l *GetDepartmentListLogic) GetDepartmentList(req *types.DepartmentListReq)
 	if req.Description != nil {
 		predicates = append(predicates, department.DescriptionContains(*req.Description))
 	}
-	data, err := l.svcCtx.DB.Department.Query().Where(predicates...).Page(l.ctx, req.Page, req.PageSize)
+
+	data, err := l.svcCtx.DB.Department.Query().Where(predicates...).Order(department.ByParentDepartments()).Page(l.ctx, req.Page, req.PageSize)
+	if err != nil {
+		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
+	}
 
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
@@ -52,17 +56,17 @@ func (l *GetDepartmentListLogic) GetDepartmentList(req *types.DepartmentListReq)
 
 	for _, v := range data.List {
 		resp.Data.Data = append(resp.Data.Data,
-		types.DepartmentInfo{
-            BaseIDInfo:    types.BaseIDInfo{
-				Id:          &v.ID,
-				CreatedAt:    pointy.GetPointer(v.CreatedAt.UnixMilli()),
-				UpdatedAt:    pointy.GetPointer(v.UpdatedAt.UnixMilli()),
-            },
-			Name:	&v.Name,
-			Area:	&v.Area,
-			Description:	&v.Description,
-			ParentDepartments:	&v.ParentDepartments,
-		})
+			types.DepartmentInfo{
+				BaseIDInfo: types.BaseIDInfo{
+					Id:        &v.ID,
+					CreatedAt: pointy.GetPointer(v.CreatedAt.UnixMilli()),
+					UpdatedAt: pointy.GetPointer(v.UpdatedAt.UnixMilli()),
+				},
+				Name:              &v.Name,
+				Area:              &v.Area,
+				Description:       &v.Description,
+				ParentDepartments: &v.ParentDepartments,
+			})
 	}
 
 	return resp, nil
