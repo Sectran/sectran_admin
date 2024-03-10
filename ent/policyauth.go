@@ -30,7 +30,9 @@ type PolicyAuth struct {
 	// 策略关联用户
 	Users string `json:"users,omitempty"`
 	// 策略关联账号
-	Accounts     string `json:"accounts,omitempty"`
+	Accounts string `json:"accounts,omitempty"`
+	// 策略相关性方向,默认正向，即断言正向用户与账号
+	Direction    bool `json:"direction,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -39,6 +41,8 @@ func (*PolicyAuth) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case policyauth.FieldDirection:
+			values[i] = new(sql.NullBool)
 		case policyauth.FieldID, policyauth.FieldPower, policyauth.FieldDepartmentID:
 			values[i] = new(sql.NullInt64)
 		case policyauth.FieldName, policyauth.FieldUsers, policyauth.FieldAccounts:
@@ -108,6 +112,12 @@ func (pa *PolicyAuth) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				pa.Accounts = value.String
 			}
+		case policyauth.FieldDirection:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field direction", values[i])
+			} else if value.Valid {
+				pa.Direction = value.Bool
+			}
 		default:
 			pa.selectValues.Set(columns[i], values[i])
 		}
@@ -164,6 +174,9 @@ func (pa *PolicyAuth) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("accounts=")
 	builder.WriteString(pa.Accounts)
+	builder.WriteString(", ")
+	builder.WriteString("direction=")
+	builder.WriteString(fmt.Sprintf("%v", pa.Direction))
 	builder.WriteByte(')')
 	return builder.String()
 }

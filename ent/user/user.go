@@ -95,12 +95,20 @@ var (
 	AccountValidator func(string) error
 	// NameValidator is a validator for the "name" field. It is called by the builders before save.
 	NameValidator func(string) error
+	// PasswordValidator is a validator for the "password" field. It is called by the builders before save.
+	PasswordValidator func(string) error
 	// DepartmentIDValidator is a validator for the "department_id" field. It is called by the builders before save.
 	DepartmentIDValidator func(uint64) error
 	// RoleIDValidator is a validator for the "role_id" field. It is called by the builders before save.
 	RoleIDValidator func(uint64) error
 	// DefaultStatus holds the default value on creation for the "status" field.
 	DefaultStatus bool
+	// DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
+	DescriptionValidator func(string) error
+	// EmailValidator is a validator for the "email" field. It is called by the builders before save.
+	EmailValidator func(string) error
+	// PhoneNumberValidator is a validator for the "phone_number" field. It is called by the builders before save.
+	PhoneNumberValidator func(string) error
 )
 
 // OrderOption defines the ordering options for the User queries.

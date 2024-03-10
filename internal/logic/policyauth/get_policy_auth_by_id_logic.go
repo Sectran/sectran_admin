@@ -49,6 +49,7 @@ func (l *GetPolicyAuthByIdLogic) GetPolicyAuthById(req *types.IDReq) (*types.Pol
 			DepartmentId:	&data.DepartmentID,
 			Users:	&data.Users,
 			Accounts:	&data.Accounts,
+			Direction:	&data.Direction,
         },
 	}, nil
 }

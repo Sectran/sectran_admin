@@ -146,6 +146,11 @@ func (rc *RoleCreate) check() error {
 	if _, ok := rc.mutation.Weight(); !ok {
 		return &ValidationError{Name: "weight", err: errors.New(`ent: missing required field "Role.weight"`)}
 	}
+	if v, ok := rc.mutation.Weight(); ok {
+		if err := role.WeightValidator(v); err != nil {
+			return &ValidationError{Name: "weight", err: fmt.Errorf(`ent: validator failed for field "Role.weight": %w`, err)}
+		}
+	}
 	return nil
 }
 

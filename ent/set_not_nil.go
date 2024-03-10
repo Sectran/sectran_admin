@@ -557,6 +557,30 @@ func (pa *PolicyAuthCreate) SetNotNilAccounts(value *string) *PolicyAuthCreate {
 }
 
 // set field if value's pointer is not nil.
+func (pa *PolicyAuthUpdate) SetNotNilDirection(value *bool) *PolicyAuthUpdate {
+	if value != nil {
+		return pa.SetDirection(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthUpdateOne) SetNotNilDirection(value *bool) *PolicyAuthUpdateOne {
+	if value != nil {
+		return pa.SetDirection(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
+func (pa *PolicyAuthCreate) SetNotNilDirection(value *bool) *PolicyAuthCreate {
+	if value != nil {
+		return pa.SetDirection(*value)
+	}
+	return pa
+}
+
+// set field if value's pointer is not nil.
 func (r *RoleUpdate) SetNotNilUpdatedAt(value *time.Time) *RoleUpdate {
 	if value != nil {
 		return r.SetUpdatedAt(*value)

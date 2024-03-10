@@ -166,6 +166,11 @@ func (dc *DepartmentCreate) check() error {
 	if _, ok := dc.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "Department.description"`)}
 	}
+	if v, ok := dc.mutation.Description(); ok {
+		if err := department.DescriptionValidator(v); err != nil {
+			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Department.description": %w`, err)}
+		}
+	}
 	if _, ok := dc.mutation.ParentDepartments(); !ok {
 		return &ValidationError{Name: "parent_departments", err: errors.New(`ent: missing required field "Department.parent_departments"`)}
 	}

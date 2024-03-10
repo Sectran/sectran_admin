@@ -182,6 +182,11 @@ func (ac *AccountCreate) check() error {
 	if _, ok := ac.mutation.Port(); !ok {
 		return &ValidationError{Name: "port", err: errors.New(`ent: missing required field "Account.port"`)}
 	}
+	if v, ok := ac.mutation.Port(); ok {
+		if err := account.PortValidator(v); err != nil {
+			return &ValidationError{Name: "port", err: fmt.Errorf(`ent: validator failed for field "Account.port": %w`, err)}
+		}
+	}
 	if _, ok := ac.mutation.Protocol(); !ok {
 		return &ValidationError{Name: "protocol", err: errors.New(`ent: missing required field "Account.protocol"`)}
 	}
@@ -193,8 +198,23 @@ func (ac *AccountCreate) check() error {
 	if _, ok := ac.mutation.Password(); !ok {
 		return &ValidationError{Name: "password", err: errors.New(`ent: missing required field "Account.password"`)}
 	}
+	if v, ok := ac.mutation.Password(); ok {
+		if err := account.PasswordValidator(v); err != nil {
+			return &ValidationError{Name: "password", err: fmt.Errorf(`ent: validator failed for field "Account.password": %w`, err)}
+		}
+	}
 	if _, ok := ac.mutation.PrivateKey(); !ok {
 		return &ValidationError{Name: "private_key", err: errors.New(`ent: missing required field "Account.private_key"`)}
+	}
+	if v, ok := ac.mutation.PrivateKey(); ok {
+		if err := account.PrivateKeyValidator(v); err != nil {
+			return &ValidationError{Name: "private_key", err: fmt.Errorf(`ent: validator failed for field "Account.private_key": %w`, err)}
+		}
+	}
+	if v, ok := ac.mutation.DeviceID(); ok {
+		if err := account.DeviceIDValidator(v); err != nil {
+			return &ValidationError{Name: "device_id", err: fmt.Errorf(`ent: validator failed for field "Account.device_id": %w`, err)}
+		}
 	}
 	return nil
 }

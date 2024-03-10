@@ -63,6 +63,8 @@ var (
 	UpdateDefaultUpdatedAt func() time.Time
 	// NameValidator is a validator for the "name" field. It is called by the builders before save.
 	NameValidator func(string) error
+	// WeightValidator is a validator for the "weight" field. It is called by the builders before save.
+	WeightValidator func(int) error
 )
 
 // OrderOption defines the ordering options for the Role queries.

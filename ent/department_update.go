@@ -180,6 +180,11 @@ func (du *DepartmentUpdate) check() error {
 			return &ValidationError{Name: "area", err: fmt.Errorf(`ent: validator failed for field "Department.area": %w`, err)}
 		}
 	}
+	if v, ok := du.mutation.Description(); ok {
+		if err := department.DescriptionValidator(v); err != nil {
+			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Department.description": %w`, err)}
+		}
+	}
 	if v, ok := du.mutation.ParentDepartments(); ok {
 		if err := department.ParentDepartmentsValidator(v); err != nil {
 			return &ValidationError{Name: "parent_departments", err: fmt.Errorf(`ent: validator failed for field "Department.parent_departments": %w`, err)}
@@ -442,6 +447,11 @@ func (duo *DepartmentUpdateOne) check() error {
 	if v, ok := duo.mutation.Area(); ok {
 		if err := department.AreaValidator(v); err != nil {
 			return &ValidationError{Name: "area", err: fmt.Errorf(`ent: validator failed for field "Department.area": %w`, err)}
+		}
+	}
+	if v, ok := duo.mutation.Description(); ok {
+		if err := department.DescriptionValidator(v); err != nil {
+			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Department.description": %w`, err)}
 		}
 	}
 	if v, ok := duo.mutation.ParentDepartments(); ok {

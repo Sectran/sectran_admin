@@ -2,9 +2,9 @@ package department
 
 import (
 	"context"
+	"fmt"
 
 	"sectran_admin/ent/department"
-	"sectran_admin/ent/predicate"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 	"sectran_admin/internal/utils/dberrorhandler"
@@ -16,34 +16,36 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type GetDepartmentListLogic struct {
+type GetChildrenDepartmentByIdLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewGetDepartmentListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetDepartmentListLogic {
-	return &GetDepartmentListLogic{
+func NewChildrenDepartmentByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetChildrenDepartmentByIdLogic {
+	return &GetChildrenDepartmentByIdLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *GetDepartmentListLogic) GetDepartmentList(req *types.DepartmentListReq) (*types.DepartmentListResp, error) {
-	var predicates []predicate.Department
-	if req.Name != nil {
-		predicates = append(predicates, department.NameContains(*req.Name))
+func (l *GetChildrenDepartmentByIdLogic) GetChildrenDepartmentById(req *types.ChildrenReq) (*types.DepartmentListResp, error) {
+	var prefix string
+
+	dept, err := l.svcCtx.DB.Department.Get(l.ctx, req.Id)
+	if err != nil {
+		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
-	if req.Area != nil {
-		predicates = append(predicates, department.AreaContains(*req.Area))
-	}
-	if req.Description != nil {
-		predicates = append(predicates, department.DescriptionContains(*req.Description))
+
+	if dept.ParentDepartments != "" {
+		prefix = fmt.Sprintf("%s,%d", dept.ParentDepartments, dept.ID)
+	} else {
+		prefix = fmt.Sprint(dept.ID)
 	}
 
 	data, err := l.svcCtx.DB.Department.Query().
-		Where(predicates...).
+		Where(department.ParentDepartmentsHasPrefix(prefix)).
 		Order(department.ByParentDepartments()).
 		Order(department.ByID(sql.OrderAsc())).
 		Page(l.ctx, req.Page, req.PageSize)

@@ -198,6 +198,11 @@ func (du *DeviceUpdate) check() error {
 			return &ValidationError{Name: "host", err: fmt.Errorf(`ent: validator failed for field "Device.host": %w`, err)}
 		}
 	}
+	if v, ok := du.mutation.Description(); ok {
+		if err := device.DescriptionValidator(v); err != nil {
+			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Device.description": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -479,6 +484,11 @@ func (duo *DeviceUpdateOne) check() error {
 	if v, ok := duo.mutation.Host(); ok {
 		if err := device.HostValidator(v); err != nil {
 			return &ValidationError{Name: "host", err: fmt.Errorf(`ent: validator failed for field "Device.host": %w`, err)}
+		}
+	}
+	if v, ok := duo.mutation.Description(); ok {
+		if err := device.DescriptionValidator(v); err != nil {
+			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Device.description": %w`, err)}
 		}
 	}
 	return nil

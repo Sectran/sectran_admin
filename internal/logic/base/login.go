@@ -65,7 +65,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
 
-	status := l.svcCtx.Authority.Rds.Set(l.ctx, token, userM, time.Second*5)
+	status := l.svcCtx.AuthorityMiddleware.Rds.Set(l.ctx, token, userM, time.Second*5)
 	if status.Err() != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, status.Err(), req)
 	}

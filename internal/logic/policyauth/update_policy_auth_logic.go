@@ -32,6 +32,7 @@ func (l *UpdatePolicyAuthLogic) UpdatePolicyAuth(req *types.PolicyAuthInfo) (*ty
 			SetNotNilDepartmentID(req.DepartmentId).
 			SetNotNilUsers(req.Users).
 			SetNotNilAccounts(req.Accounts).
+			SetNotNilDirection(req.Direction).
 			Exec(l.ctx)
 
     if err != nil {

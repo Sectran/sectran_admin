@@ -89,6 +89,11 @@ func Accounts(v string) predicate.PolicyAuth {
 	return predicate.PolicyAuth(sql.FieldEQ(FieldAccounts, v))
 }
 
+// Direction applies equality check predicate on the "direction" field. It's identical to DirectionEQ.
+func Direction(v bool) predicate.PolicyAuth {
+	return predicate.PolicyAuth(sql.FieldEQ(FieldDirection, v))
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.PolicyAuth {
 	return predicate.PolicyAuth(sql.FieldEQ(FieldCreatedAt, v))
@@ -452,6 +457,16 @@ func AccountsEqualFold(v string) predicate.PolicyAuth {
 // AccountsContainsFold applies the ContainsFold predicate on the "accounts" field.
 func AccountsContainsFold(v string) predicate.PolicyAuth {
 	return predicate.PolicyAuth(sql.FieldContainsFold(FieldAccounts, v))
+}
+
+// DirectionEQ applies the EQ predicate on the "direction" field.
+func DirectionEQ(v bool) predicate.PolicyAuth {
+	return predicate.PolicyAuth(sql.FieldEQ(FieldDirection, v))
+}
+
+// DirectionNEQ applies the NEQ predicate on the "direction" field.
+func DirectionNEQ(v bool) predicate.PolicyAuth {
+	return predicate.PolicyAuth(sql.FieldNEQ(FieldDirection, v))
 }
 
 // And groups predicates with the AND operator between them.

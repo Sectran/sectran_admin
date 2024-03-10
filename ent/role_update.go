@@ -154,6 +154,11 @@ func (ru *RoleUpdate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Role.name": %w`, err)}
 		}
 	}
+	if v, ok := ru.mutation.Weight(); ok {
+		if err := role.WeightValidator(v); err != nil {
+			return &ValidationError{Name: "weight", err: fmt.Errorf(`ent: validator failed for field "Role.weight": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -382,6 +387,11 @@ func (ruo *RoleUpdateOne) check() error {
 	if v, ok := ruo.mutation.Name(); ok {
 		if err := role.NameValidator(v); err != nil {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Role.name": %w`, err)}
+		}
+	}
+	if v, ok := ruo.mutation.Weight(); ok {
+		if err := role.WeightValidator(v); err != nil {
+			return &ValidationError{Name: "weight", err: fmt.Errorf(`ent: validator failed for field "Role.weight": %w`, err)}
 		}
 	}
 	return nil

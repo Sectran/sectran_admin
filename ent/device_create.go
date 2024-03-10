@@ -179,6 +179,11 @@ func (dc *DeviceCreate) check() error {
 	if _, ok := dc.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "Device.description"`)}
 	}
+	if v, ok := dc.mutation.Description(); ok {
+		if err := device.DescriptionValidator(v); err != nil {
+			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Device.description": %w`, err)}
+		}
+	}
 	return nil
 }
 

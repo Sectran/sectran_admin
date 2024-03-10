@@ -71,6 +71,8 @@ var (
 	NameValidator func(string) error
 	// AreaValidator is a validator for the "area" field. It is called by the builders before save.
 	AreaValidator func(string) error
+	// DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
+	DescriptionValidator func(string) error
 	// ParentDepartmentsValidator is a validator for the "parent_departments" field. It is called by the builders before save.
 	ParentDepartmentsValidator func(string) error
 )

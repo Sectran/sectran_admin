@@ -19,6 +19,9 @@ type (
 
         // 策略关联账号 
         Accounts  *string `json:"accounts,optional"`
+
+        // 策略相关性方向,默认正向，即断言正向用户与账号 
+        Direction  *bool `json:"direction,optional"`
     }
 
     // The response data of policy auth list | PolicyAuth列表数据

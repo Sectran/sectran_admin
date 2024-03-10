@@ -28,18 +28,8 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	)
 
 	server.AddRoutes(
-		[]rest.Route{
-			{
-				Method:  http.MethodPost,
-				Path:    "/login",
-				Handler: base.LoginHandler(serverCtx),
-			},
-		},
-	)
-
-	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.Authority.Handle},
+			[]rest.Middleware{serverCtx.Authority},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -63,6 +53,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
+					Path:    "/department/children",
+					Handler: department.GetChDepartmentListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
 					Path:    "/department",
 					Handler: department.GetDepartmentByIdHandler(serverCtx),
 				},
@@ -73,7 +68,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.Authority.Handle},
+			[]rest.Middleware{serverCtx.Authority},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -107,7 +102,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.Authority.Handle},
+			[]rest.Middleware{serverCtx.Authority},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -141,7 +136,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.Authority.Handle},
+			[]rest.Middleware{serverCtx.Authority},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -175,7 +170,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.Authority.Handle},
+			[]rest.Middleware{serverCtx.Authority},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
@@ -209,7 +204,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.Authority.Handle},
+			[]rest.Middleware{serverCtx.Authority},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,

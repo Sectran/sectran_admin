@@ -35,7 +35,39 @@ func init() {
 	// accountDescUsername is the schema descriptor for username field.
 	accountDescUsername := accountFields[0].Descriptor()
 	// account.UsernameValidator is a validator for the "username" field. It is called by the builders before save.
-	account.UsernameValidator = accountDescUsername.Validators[0].(func(string) error)
+	account.UsernameValidator = func() func(string) error {
+		validators := accountDescUsername.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(username string) error {
+			for _, fn := range fns {
+				if err := fn(username); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// accountDescPort is the schema descriptor for port field.
+	accountDescPort := accountFields[1].Descriptor()
+	// account.PortValidator is a validator for the "port" field. It is called by the builders before save.
+	account.PortValidator = func() func(uint32) error {
+		validators := accountDescPort.Validators
+		fns := [...]func(uint32) error{
+			validators[0].(func(uint32) error),
+			validators[1].(func(uint32) error),
+		}
+		return func(port uint32) error {
+			for _, fn := range fns {
+				if err := fn(port); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// accountDescProtocol is the schema descriptor for protocol field.
 	accountDescProtocol := accountFields[2].Descriptor()
 	// account.ProtocolValidator is a validator for the "protocol" field. It is called by the builders before save.
@@ -54,6 +86,18 @@ func init() {
 			return nil
 		}
 	}()
+	// accountDescPassword is the schema descriptor for password field.
+	accountDescPassword := accountFields[3].Descriptor()
+	// account.PasswordValidator is a validator for the "password" field. It is called by the builders before save.
+	account.PasswordValidator = accountDescPassword.Validators[0].(func(string) error)
+	// accountDescPrivateKey is the schema descriptor for private_key field.
+	accountDescPrivateKey := accountFields[4].Descriptor()
+	// account.PrivateKeyValidator is a validator for the "private_key" field. It is called by the builders before save.
+	account.PrivateKeyValidator = accountDescPrivateKey.Validators[0].(func(string) error)
+	// accountDescDeviceID is the schema descriptor for device_id field.
+	accountDescDeviceID := accountFields[5].Descriptor()
+	// account.DeviceIDValidator is a validator for the "device_id" field. It is called by the builders before save.
+	account.DeviceIDValidator = accountDescDeviceID.Validators[0].(func(uint64) error)
 	departmentMixin := schema.Department{}.Mixin()
 	departmentMixinFields0 := departmentMixin[0].Fields()
 	_ = departmentMixinFields0
@@ -72,11 +116,43 @@ func init() {
 	// departmentDescName is the schema descriptor for name field.
 	departmentDescName := departmentFields[0].Descriptor()
 	// department.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	department.NameValidator = departmentDescName.Validators[0].(func(string) error)
+	department.NameValidator = func() func(string) error {
+		validators := departmentDescName.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(name string) error {
+			for _, fn := range fns {
+				if err := fn(name); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// departmentDescArea is the schema descriptor for area field.
 	departmentDescArea := departmentFields[1].Descriptor()
 	// department.AreaValidator is a validator for the "area" field. It is called by the builders before save.
-	department.AreaValidator = departmentDescArea.Validators[0].(func(string) error)
+	department.AreaValidator = func() func(string) error {
+		validators := departmentDescArea.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(area string) error {
+			for _, fn := range fns {
+				if err := fn(area); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// departmentDescDescription is the schema descriptor for description field.
+	departmentDescDescription := departmentFields[2].Descriptor()
+	// department.DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
+	department.DescriptionValidator = departmentDescDescription.Validators[0].(func(string) error)
 	// departmentDescParentDepartments is the schema descriptor for parent_departments field.
 	departmentDescParentDepartments := departmentFields[3].Descriptor()
 	// department.ParentDepartmentsValidator is a validator for the "parent_departments" field. It is called by the builders before save.
@@ -99,7 +175,21 @@ func init() {
 	// deviceDescName is the schema descriptor for name field.
 	deviceDescName := deviceFields[0].Descriptor()
 	// device.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	device.NameValidator = deviceDescName.Validators[0].(func(string) error)
+	device.NameValidator = func() func(string) error {
+		validators := deviceDescName.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(name string) error {
+			for _, fn := range fns {
+				if err := fn(name); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// deviceDescDepartmentID is the schema descriptor for department_id field.
 	deviceDescDepartmentID := deviceFields[1].Descriptor()
 	// device.DepartmentIDValidator is a validator for the "department_id" field. It is called by the builders before save.
@@ -107,7 +197,25 @@ func init() {
 	// deviceDescHost is the schema descriptor for host field.
 	deviceDescHost := deviceFields[2].Descriptor()
 	// device.HostValidator is a validator for the "host" field. It is called by the builders before save.
-	device.HostValidator = deviceDescHost.Validators[0].(func(string) error)
+	device.HostValidator = func() func(string) error {
+		validators := deviceDescHost.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(host string) error {
+			for _, fn := range fns {
+				if err := fn(host); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// deviceDescDescription is the schema descriptor for description field.
+	deviceDescDescription := deviceFields[3].Descriptor()
+	// device.DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
+	device.DescriptionValidator = deviceDescDescription.Validators[0].(func(string) error)
 	policyauthMixin := schema.PolicyAuth{}.Mixin()
 	policyauthMixinFields0 := policyauthMixin[0].Fields()
 	_ = policyauthMixinFields0
@@ -126,7 +234,21 @@ func init() {
 	// policyauthDescName is the schema descriptor for name field.
 	policyauthDescName := policyauthFields[0].Descriptor()
 	// policyauth.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	policyauth.NameValidator = policyauthDescName.Validators[0].(func(string) error)
+	policyauth.NameValidator = func() func(string) error {
+		validators := policyauthDescName.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(name string) error {
+			for _, fn := range fns {
+				if err := fn(name); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// policyauthDescPower is the schema descriptor for power field.
 	policyauthDescPower := policyauthFields[1].Descriptor()
 	// policyauth.PowerValidator is a validator for the "power" field. It is called by the builders before save.
@@ -143,6 +265,10 @@ func init() {
 	policyauthDescAccounts := policyauthFields[4].Descriptor()
 	// policyauth.AccountsValidator is a validator for the "accounts" field. It is called by the builders before save.
 	policyauth.AccountsValidator = policyauthDescAccounts.Validators[0].(func(string) error)
+	// policyauthDescDirection is the schema descriptor for direction field.
+	policyauthDescDirection := policyauthFields[5].Descriptor()
+	// policyauth.DefaultDirection holds the default value on creation for the direction field.
+	policyauth.DefaultDirection = policyauthDescDirection.Default.(bool)
 	roleMixin := schema.Role{}.Mixin()
 	roleMixinFields0 := roleMixin[0].Fields()
 	_ = roleMixinFields0
@@ -161,7 +287,25 @@ func init() {
 	// roleDescName is the schema descriptor for name field.
 	roleDescName := roleFields[0].Descriptor()
 	// role.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	role.NameValidator = roleDescName.Validators[0].(func(string) error)
+	role.NameValidator = func() func(string) error {
+		validators := roleDescName.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(name string) error {
+			for _, fn := range fns {
+				if err := fn(name); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// roleDescWeight is the schema descriptor for weight field.
+	roleDescWeight := roleFields[1].Descriptor()
+	// role.WeightValidator is a validator for the "weight" field. It is called by the builders before save.
+	role.WeightValidator = roleDescWeight.Validators[0].(func(int) error)
 	userMixin := schema.User{}.Mixin()
 	userMixinFields0 := userMixin[0].Fields()
 	_ = userMixinFields0
@@ -180,11 +324,43 @@ func init() {
 	// userDescAccount is the schema descriptor for account field.
 	userDescAccount := userFields[0].Descriptor()
 	// user.AccountValidator is a validator for the "account" field. It is called by the builders before save.
-	user.AccountValidator = userDescAccount.Validators[0].(func(string) error)
+	user.AccountValidator = func() func(string) error {
+		validators := userDescAccount.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(account string) error {
+			for _, fn := range fns {
+				if err := fn(account); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// userDescName is the schema descriptor for name field.
 	userDescName := userFields[1].Descriptor()
 	// user.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	user.NameValidator = userDescName.Validators[0].(func(string) error)
+	user.NameValidator = func() func(string) error {
+		validators := userDescName.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(name string) error {
+			for _, fn := range fns {
+				if err := fn(name); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// userDescPassword is the schema descriptor for password field.
+	userDescPassword := userFields[2].Descriptor()
+	// user.PasswordValidator is a validator for the "password" field. It is called by the builders before save.
+	user.PasswordValidator = userDescPassword.Validators[0].(func(string) error)
 	// userDescDepartmentID is the schema descriptor for department_id field.
 	userDescDepartmentID := userFields[3].Descriptor()
 	// user.DepartmentIDValidator is a validator for the "department_id" field. It is called by the builders before save.
@@ -197,4 +373,16 @@ func init() {
 	userDescStatus := userFields[5].Descriptor()
 	// user.DefaultStatus holds the default value on creation for the status field.
 	user.DefaultStatus = userDescStatus.Default.(bool)
+	// userDescDescription is the schema descriptor for description field.
+	userDescDescription := userFields[6].Descriptor()
+	// user.DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
+	user.DescriptionValidator = userDescDescription.Validators[0].(func(string) error)
+	// userDescEmail is the schema descriptor for email field.
+	userDescEmail := userFields[7].Descriptor()
+	// user.EmailValidator is a validator for the "email" field. It is called by the builders before save.
+	user.EmailValidator = userDescEmail.Validators[0].(func(string) error)
+	// userDescPhoneNumber is the schema descriptor for phone_number field.
+	userDescPhoneNumber := userFields[8].Descriptor()
+	// user.PhoneNumberValidator is a validator for the "phone_number" field. It is called by the builders before save.
+	user.PhoneNumberValidator = userDescPhoneNumber.Validators[0].(func(string) error)
 }

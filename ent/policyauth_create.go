@@ -86,6 +86,20 @@ func (pac *PolicyAuthCreate) SetAccounts(s string) *PolicyAuthCreate {
 	return pac
 }
 
+// SetDirection sets the "direction" field.
+func (pac *PolicyAuthCreate) SetDirection(b bool) *PolicyAuthCreate {
+	pac.mutation.SetDirection(b)
+	return pac
+}
+
+// SetNillableDirection sets the "direction" field if the given value is not nil.
+func (pac *PolicyAuthCreate) SetNillableDirection(b *bool) *PolicyAuthCreate {
+	if b != nil {
+		pac.SetDirection(*b)
+	}
+	return pac
+}
+
 // SetID sets the "id" field.
 func (pac *PolicyAuthCreate) SetID(u uint64) *PolicyAuthCreate {
 	pac.mutation.SetID(u)
@@ -135,6 +149,10 @@ func (pac *PolicyAuthCreate) defaults() {
 		v := policyauth.DefaultUpdatedAt()
 		pac.mutation.SetUpdatedAt(v)
 	}
+	if _, ok := pac.mutation.Direction(); !ok {
+		v := policyauth.DefaultDirection
+		pac.mutation.SetDirection(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -181,6 +199,9 @@ func (pac *PolicyAuthCreate) check() error {
 		if err := policyauth.AccountsValidator(v); err != nil {
 			return &ValidationError{Name: "accounts", err: fmt.Errorf(`ent: validator failed for field "PolicyAuth.accounts": %w`, err)}
 		}
+	}
+	if _, ok := pac.mutation.Direction(); !ok {
+		return &ValidationError{Name: "direction", err: errors.New(`ent: missing required field "PolicyAuth.direction"`)}
 	}
 	return nil
 }
@@ -241,6 +262,10 @@ func (pac *PolicyAuthCreate) createSpec() (*PolicyAuth, *sqlgraph.CreateSpec) {
 	if value, ok := pac.mutation.Accounts(); ok {
 		_spec.SetField(policyauth.FieldAccounts, field.TypeString, value)
 		_node.Accounts = value
+	}
+	if value, ok := pac.mutation.Direction(); ok {
+		_spec.SetField(policyauth.FieldDirection, field.TypeBool, value)
+		_node.Direction = value
 	}
 	return _node, _spec
 }

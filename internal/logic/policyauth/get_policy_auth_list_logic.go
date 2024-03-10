@@ -63,6 +63,7 @@ func (l *GetPolicyAuthListLogic) GetPolicyAuthList(req *types.PolicyAuthListReq)
 			DepartmentId:	&v.DepartmentID,
 			Users:	&v.Users,
 			Accounts:	&v.Accounts,
+			Direction:	&v.Direction,
 		})
 	}
 

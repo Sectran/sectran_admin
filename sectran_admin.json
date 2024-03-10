@@ -1558,6 +1558,11 @@
           "format": "uint64",
           "x-go-name": "DepartmentId"
         },
+        "direction": {
+          "description": "策略相关性方向,默认正向，即断言正向用户与账号",
+          "type": "boolean",
+          "x-go-name": "Direction"
+        },
         "id": {
           "description": "ID",
           "type": "integer",

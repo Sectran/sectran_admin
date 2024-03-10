@@ -212,9 +212,29 @@ func (au *AccountUpdate) check() error {
 			return &ValidationError{Name: "username", err: fmt.Errorf(`ent: validator failed for field "Account.username": %w`, err)}
 		}
 	}
+	if v, ok := au.mutation.Port(); ok {
+		if err := account.PortValidator(v); err != nil {
+			return &ValidationError{Name: "port", err: fmt.Errorf(`ent: validator failed for field "Account.port": %w`, err)}
+		}
+	}
 	if v, ok := au.mutation.Protocol(); ok {
 		if err := account.ProtocolValidator(v); err != nil {
 			return &ValidationError{Name: "protocol", err: fmt.Errorf(`ent: validator failed for field "Account.protocol": %w`, err)}
+		}
+	}
+	if v, ok := au.mutation.Password(); ok {
+		if err := account.PasswordValidator(v); err != nil {
+			return &ValidationError{Name: "password", err: fmt.Errorf(`ent: validator failed for field "Account.password": %w`, err)}
+		}
+	}
+	if v, ok := au.mutation.PrivateKey(); ok {
+		if err := account.PrivateKeyValidator(v); err != nil {
+			return &ValidationError{Name: "private_key", err: fmt.Errorf(`ent: validator failed for field "Account.private_key": %w`, err)}
+		}
+	}
+	if v, ok := au.mutation.DeviceID(); ok {
+		if err := account.DeviceIDValidator(v); err != nil {
+			return &ValidationError{Name: "device_id", err: fmt.Errorf(`ent: validator failed for field "Account.device_id": %w`, err)}
 		}
 	}
 	return nil
@@ -501,9 +521,29 @@ func (auo *AccountUpdateOne) check() error {
 			return &ValidationError{Name: "username", err: fmt.Errorf(`ent: validator failed for field "Account.username": %w`, err)}
 		}
 	}
+	if v, ok := auo.mutation.Port(); ok {
+		if err := account.PortValidator(v); err != nil {
+			return &ValidationError{Name: "port", err: fmt.Errorf(`ent: validator failed for field "Account.port": %w`, err)}
+		}
+	}
 	if v, ok := auo.mutation.Protocol(); ok {
 		if err := account.ProtocolValidator(v); err != nil {
 			return &ValidationError{Name: "protocol", err: fmt.Errorf(`ent: validator failed for field "Account.protocol": %w`, err)}
+		}
+	}
+	if v, ok := auo.mutation.Password(); ok {
+		if err := account.PasswordValidator(v); err != nil {
+			return &ValidationError{Name: "password", err: fmt.Errorf(`ent: validator failed for field "Account.password": %w`, err)}
+		}
+	}
+	if v, ok := auo.mutation.PrivateKey(); ok {
+		if err := account.PrivateKeyValidator(v); err != nil {
+			return &ValidationError{Name: "private_key", err: fmt.Errorf(`ent: validator failed for field "Account.private_key": %w`, err)}
+		}
+	}
+	if v, ok := auo.mutation.DeviceID(); ok {
+		if err := account.DeviceIDValidator(v); err != nil {
+			return &ValidationError{Name: "device_id", err: fmt.Errorf(`ent: validator failed for field "Account.device_id": %w`, err)}
 		}
 	}
 	return nil

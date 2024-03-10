@@ -27,6 +27,8 @@ const (
 	FieldUsers = "users"
 	// FieldAccounts holds the string denoting the accounts field in the database.
 	FieldAccounts = "accounts"
+	// FieldDirection holds the string denoting the direction field in the database.
+	FieldDirection = "direction"
 	// Table holds the table name of the policyauth in the database.
 	Table = "policy_auths"
 )
@@ -41,6 +43,7 @@ var Columns = []string{
 	FieldDepartmentID,
 	FieldUsers,
 	FieldAccounts,
+	FieldDirection,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -70,6 +73,8 @@ var (
 	UsersValidator func(string) error
 	// AccountsValidator is a validator for the "accounts" field. It is called by the builders before save.
 	AccountsValidator func(string) error
+	// DefaultDirection holds the default value on creation for the "direction" field.
+	DefaultDirection bool
 )
 
 // OrderOption defines the ordering options for the PolicyAuth queries.
@@ -113,4 +118,9 @@ func ByUsers(opts ...sql.OrderTermOption) OrderOption {
 // ByAccounts orders the results by the accounts field.
 func ByAccounts(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAccounts, opts...).ToFunc()
+}
+
+// ByDirection orders the results by the direction field.
+func ByDirection(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDirection, opts...).ToFunc()
 }

@@ -124,6 +124,20 @@ func (pau *PolicyAuthUpdate) SetNillableAccounts(s *string) *PolicyAuthUpdate {
 	return pau
 }
 
+// SetDirection sets the "direction" field.
+func (pau *PolicyAuthUpdate) SetDirection(b bool) *PolicyAuthUpdate {
+	pau.mutation.SetDirection(b)
+	return pau
+}
+
+// SetNillableDirection sets the "direction" field if the given value is not nil.
+func (pau *PolicyAuthUpdate) SetNillableDirection(b *bool) *PolicyAuthUpdate {
+	if b != nil {
+		pau.SetDirection(*b)
+	}
+	return pau
+}
+
 // Mutation returns the PolicyAuthMutation object of the builder.
 func (pau *PolicyAuthUpdate) Mutation() *PolicyAuthMutation {
 	return pau.mutation
@@ -233,6 +247,9 @@ func (pau *PolicyAuthUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := pau.mutation.Accounts(); ok {
 		_spec.SetField(policyauth.FieldAccounts, field.TypeString, value)
+	}
+	if value, ok := pau.mutation.Direction(); ok {
+		_spec.SetField(policyauth.FieldDirection, field.TypeBool, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, pau.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -346,6 +363,20 @@ func (pauo *PolicyAuthUpdateOne) SetAccounts(s string) *PolicyAuthUpdateOne {
 func (pauo *PolicyAuthUpdateOne) SetNillableAccounts(s *string) *PolicyAuthUpdateOne {
 	if s != nil {
 		pauo.SetAccounts(*s)
+	}
+	return pauo
+}
+
+// SetDirection sets the "direction" field.
+func (pauo *PolicyAuthUpdateOne) SetDirection(b bool) *PolicyAuthUpdateOne {
+	pauo.mutation.SetDirection(b)
+	return pauo
+}
+
+// SetNillableDirection sets the "direction" field if the given value is not nil.
+func (pauo *PolicyAuthUpdateOne) SetNillableDirection(b *bool) *PolicyAuthUpdateOne {
+	if b != nil {
+		pauo.SetDirection(*b)
 	}
 	return pauo
 }
@@ -489,6 +520,9 @@ func (pauo *PolicyAuthUpdateOne) sqlSave(ctx context.Context) (_node *PolicyAuth
 	}
 	if value, ok := pauo.mutation.Accounts(); ok {
 		_spec.SetField(policyauth.FieldAccounts, field.TypeString, value)
+	}
+	if value, ok := pauo.mutation.Direction(); ok {
+		_spec.SetField(policyauth.FieldDirection, field.TypeBool, value)
 	}
 	_node = &PolicyAuth{config: pauo.config}
 	_spec.Assign = _node.assignValues

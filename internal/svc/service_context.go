@@ -10,16 +10,18 @@ import (
 
 	"github.com/suyuan32/simple-admin-common/i18n"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/rest"
 
 	"github.com/casbin/casbin/v2"
 )
 
 type ServiceContext struct {
-	Config    config.Config
-	Casbin    *casbin.Enforcer
-	Authority *middleware.AuthorityMiddleware
-	DB        *ent.Client
-	Trans     *i18n.Translator
+	Config              config.Config
+	Casbin              *casbin.Enforcer
+	Authority           rest.Middleware
+	AuthorityMiddleware *middleware.AuthorityMiddleware
+	DB                  *ent.Client
+	Trans               *i18n.Translator
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -36,11 +38,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ent.Debug(), // debug mode
 	)
 
+	AuthorityMiddleware := middleware.NewAuthorityMiddleware(cbn, rds, trans)
 	return &ServiceContext{
-		Config:    c,
-		Authority: middleware.NewAuthorityMiddleware(cbn, rds, trans),
-		Trans:     trans,
-		DB:        db,
+		Config:              c,
+		AuthorityMiddleware: AuthorityMiddleware,
+		Authority:           AuthorityMiddleware.Handle,
+		Trans:               trans,
+		DB:                  db,
 	}
 
 }

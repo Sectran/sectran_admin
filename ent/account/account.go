@@ -75,8 +75,16 @@ var (
 	UpdateDefaultUpdatedAt func() time.Time
 	// UsernameValidator is a validator for the "username" field. It is called by the builders before save.
 	UsernameValidator func(string) error
+	// PortValidator is a validator for the "port" field. It is called by the builders before save.
+	PortValidator func(uint32) error
 	// ProtocolValidator is a validator for the "protocol" field. It is called by the builders before save.
 	ProtocolValidator func(uint8) error
+	// PasswordValidator is a validator for the "password" field. It is called by the builders before save.
+	PasswordValidator func(string) error
+	// PrivateKeyValidator is a validator for the "private_key" field. It is called by the builders before save.
+	PrivateKeyValidator func(string) error
+	// DeviceIDValidator is a validator for the "device_id" field. It is called by the builders before save.
+	DeviceIDValidator func(uint64) error
 )
 
 // OrderOption defines the ordering options for the Account queries.

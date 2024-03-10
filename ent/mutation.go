@@ -2369,6 +2369,7 @@ type PolicyAuthMutation struct {
 	adddepartment_id *int64
 	users            *string
 	accounts         *string
+	direction        *bool
 	clearedFields    map[string]struct{}
 	done             bool
 	oldValue         func(context.Context) (*PolicyAuth, error)
@@ -2785,6 +2786,42 @@ func (m *PolicyAuthMutation) ResetAccounts() {
 	m.accounts = nil
 }
 
+// SetDirection sets the "direction" field.
+func (m *PolicyAuthMutation) SetDirection(b bool) {
+	m.direction = &b
+}
+
+// Direction returns the value of the "direction" field in the mutation.
+func (m *PolicyAuthMutation) Direction() (r bool, exists bool) {
+	v := m.direction
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDirection returns the old "direction" field's value of the PolicyAuth entity.
+// If the PolicyAuth object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PolicyAuthMutation) OldDirection(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDirection is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDirection requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDirection: %w", err)
+	}
+	return oldValue.Direction, nil
+}
+
+// ResetDirection resets all changes to the "direction" field.
+func (m *PolicyAuthMutation) ResetDirection() {
+	m.direction = nil
+}
+
 // Where appends a list predicates to the PolicyAuthMutation builder.
 func (m *PolicyAuthMutation) Where(ps ...predicate.PolicyAuth) {
 	m.predicates = append(m.predicates, ps...)
@@ -2819,7 +2856,7 @@ func (m *PolicyAuthMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *PolicyAuthMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 8)
 	if m.created_at != nil {
 		fields = append(fields, policyauth.FieldCreatedAt)
 	}
@@ -2840,6 +2877,9 @@ func (m *PolicyAuthMutation) Fields() []string {
 	}
 	if m.accounts != nil {
 		fields = append(fields, policyauth.FieldAccounts)
+	}
+	if m.direction != nil {
+		fields = append(fields, policyauth.FieldDirection)
 	}
 	return fields
 }
@@ -2863,6 +2903,8 @@ func (m *PolicyAuthMutation) Field(name string) (ent.Value, bool) {
 		return m.Users()
 	case policyauth.FieldAccounts:
 		return m.Accounts()
+	case policyauth.FieldDirection:
+		return m.Direction()
 	}
 	return nil, false
 }
@@ -2886,6 +2928,8 @@ func (m *PolicyAuthMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldUsers(ctx)
 	case policyauth.FieldAccounts:
 		return m.OldAccounts(ctx)
+	case policyauth.FieldDirection:
+		return m.OldDirection(ctx)
 	}
 	return nil, fmt.Errorf("unknown PolicyAuth field %s", name)
 }
@@ -2943,6 +2987,13 @@ func (m *PolicyAuthMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetAccounts(v)
+		return nil
+	case policyauth.FieldDirection:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDirection(v)
 		return nil
 	}
 	return fmt.Errorf("unknown PolicyAuth field %s", name)
@@ -3049,6 +3100,9 @@ func (m *PolicyAuthMutation) ResetField(name string) error {
 		return nil
 	case policyauth.FieldAccounts:
 		m.ResetAccounts()
+		return nil
+	case policyauth.FieldDirection:
+		m.ResetDirection()
 		return nil
 	}
 	return fmt.Errorf("unknown PolicyAuth field %s", name)
