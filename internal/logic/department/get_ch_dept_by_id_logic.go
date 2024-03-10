@@ -3,7 +3,9 @@ package department
 import (
 	"context"
 	"fmt"
+	"strings"
 
+	"sectran_admin/ent"
 	"sectran_admin/ent/department"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
@@ -49,7 +51,6 @@ func (l *GetChildrenDepartmentByIdLogic) GetChildrenDepartmentById(req *types.Ch
 		Order(department.ByParentDepartments()).
 		Order(department.ByID(sql.OrderAsc())).
 		Page(l.ctx, req.Page, req.PageSize)
-
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
@@ -58,7 +59,28 @@ func (l *GetChildrenDepartmentByIdLogic) GetChildrenDepartmentById(req *types.Ch
 	resp.Msg = l.svcCtx.Trans.Trans(l.ctx, i18n.Success)
 	resp.Data.Total = data.PageDetails.Total
 
-	for _, v := range data.List {
+	//des当前遍历结构
+	//from遍历开始索引
+	//depID当前部门id
+	//deep当前部门树深
+	hasCh := func(des []*ent.Department, from int, deptID int, deep int) bool {
+		var deps string
+		for i := from; i < len(des); i++ {
+			deps = des[i].ParentDepartments
+			//如果当前🌲深已经跨过可能的子部门，那么直接返回
+			if (len(deps)+1)/2 > deep+1 {
+				return false
+			}
+
+			if strings.HasSuffix(des[i].ParentDepartments, fmt.Sprint(deptID)) {
+				return true
+			}
+		}
+
+		return false
+	}
+
+	for i, v := range data.List {
 		resp.Data.Data = append(resp.Data.Data,
 			types.DepartmentInfo{
 				BaseIDInfo: types.BaseIDInfo{
@@ -70,6 +92,7 @@ func (l *GetChildrenDepartmentByIdLogic) GetChildrenDepartmentById(req *types.Ch
 				Area:              &v.Area,
 				Description:       &v.Description,
 				ParentDepartments: &v.ParentDepartments,
+				HasChildren:       hasCh(data.List, i+1, int(v.ID), (len(v.ParentDepartments)+1)/2),
 			})
 	}
 
