@@ -53,7 +53,7 @@ func main() {
 	server.AddRoutes(
 		[]rest.Route{
 			{
-				Method:  http.MethodGet,
+				Method:  http.MethodPost,
 				Path:    "/login",
 				Handler: base.LoginHandler(ctx),
 			},
