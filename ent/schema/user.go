@@ -18,24 +18,27 @@ func (User) Fields() []ent.Field {
 		field.String("account").
 			Unique().
 			NotEmpty().
+			MaxLen(64).
 			Comment("User account.|用户账号").
 			Annotations(entsql.WithComments(true)),
 		field.String("name").
 			NotEmpty().
+			MaxLen(64).
 			Comment("User name.|用户姓名").
 			Annotations(entsql.WithComments(true)),
 		field.String("password").
 			Sensitive().
+			MaxLen(128).
 			Comment("User password.|用户密码").
 			Annotations(entsql.WithComments(true)),
 		field.Uint64("department_id").
 			Optional().
-			Min(0).
+			Min(1).
 			Comment("ID of the user's department.|用户所属部门").
 			Annotations(entsql.WithComments(true)),
 		field.Uint64("role_id").
 			Optional().
-			Min(0).
+			Min(1).
 			Comment("ID of the user's role.|用户所属角色").
 			Annotations(entsql.WithComments(true)),
 		field.Bool("status").
@@ -44,14 +47,17 @@ func (User) Fields() []ent.Field {
 			Annotations(entsql.WithComments(true)),
 		field.String("description").
 			Optional().
+			MaxLen(128).
 			Comment("User description.|用户账号描述").
 			Annotations(entsql.WithComments(true)),
 		field.String("email").
 			Optional().
+			MaxLen(64).
 			Comment("User email.|用户邮箱").
 			Annotations(entsql.WithComments(true)),
 		field.String("phone_number").
 			Optional().
+			MaxLen(32).
 			Comment("User phone number.|用户手机号码").
 			Annotations(entsql.WithComments(true)),
 	}

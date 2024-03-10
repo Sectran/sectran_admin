@@ -2,7 +2,10 @@ package department
 
 import (
 	"context"
+	"fmt"
+	"sort"
 
+	"sectran_admin/ent"
 	"sectran_admin/ent/department"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
@@ -27,9 +30,40 @@ func NewDeleteDepartmentLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *DeleteDepartmentLogic) DeleteDepartment(req *types.IDsReq) (*types.BaseMsgResp, error) {
-	_, err := l.svcCtx.DB.Department.Delete().Where(department.IDIn(req.Ids...)).Exec(l.ctx)
+	var (
+		dept   *ent.Department
+		err    error
+		prefix string
+	)
 
-	//TODO:删除子部门、是否删除子部门的资源、是否删除子部门的策略
+	//因为id是递增的、我们从后往前删除，并且删除所有当前部门的子部门
+	//首先将部门id数组降序排列
+	sort.Slice(req.Ids, func(i, j int) bool {
+		return req.Ids[i] > req.Ids[j]
+	})
+
+	for _, d := range req.Ids {
+		//依次查询他的父亲集合
+		dept, err = l.svcCtx.DB.Department.Get(l.ctx, d)
+		if err != nil {
+			return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
+		}
+
+		//按照ParentDepartments前缀匹配删除当前部门的所有子部门(会走索引)
+		prefix = fmt.Sprintf("%s,%d", dept.ParentDepartments, dept.ID)
+		_, err = l.svcCtx.DB.Department.Delete().Where(department.ParentDepartmentsHasPrefix(prefix)).Exec(l.ctx)
+		if err != nil {
+			return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
+		}
+
+		//删除当前部门
+		_, err = l.svcCtx.DB.Department.Delete().Where(department.IDEQ(d)).Exec(l.ctx)
+		if err != nil {
+			return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
+		}
+	}
+
+	//TODO:是否删除部门下的资源、是否删除部门下的策略
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}

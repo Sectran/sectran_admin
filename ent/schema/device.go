@@ -19,19 +19,22 @@ func (Device) Fields() []ent.Field {
 		field.String("name").
 			NotEmpty().
 			Comment("The name of the device.|设备名称").
+			MaxLen(128).
 			Annotations(entsql.WithComments(true)),
 		field.Uint64("department_id").
 			Optional().
-			Min(0).
+			Min(1).
 			Comment("ID of the device's department.|设备所属部门").
 			Annotations(entsql.WithComments(true)),
 		field.String("host").
 			Unique().
 			NotEmpty().
 			Comment("login host|设备地址").
+			MinLen(64).
 			Annotations(entsql.WithComments(true)),
 		field.String("description").
 			Comment("Description of the device.|设备描述").
+			MinLen(128).
 			Annotations(entsql.WithComments(true)),
 	}
 }

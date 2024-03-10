@@ -19,8 +19,10 @@ func (Role) Fields() []ent.Field {
 			NotEmpty().
 			Unique().
 			Comment("The name of the role.|角色名称").
+			MaxLen(32).
 			Annotations(entsql.WithComments(true)),
 		field.Int("weight").
+			Min(0).
 			Comment("The weight of the role. Smaller values indicate higher priority.|角色优先级，值越小优先级越高").
 			Annotations(entsql.WithComments(true)),
 	}

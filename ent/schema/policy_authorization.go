@@ -17,6 +17,7 @@ func (PolicyAuth) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").
 			NotEmpty().
+			MaxLen(64).
 			Comment("policy name|策略名称").
 			Annotations(entsql.WithComments(true)),
 		field.Int32("power").
@@ -25,7 +26,7 @@ func (PolicyAuth) Fields() []ent.Field {
 			Annotations(entsql.WithComments(true)),
 		field.Uint64("department_id").
 			Optional().
-			Min(0).
+			Min(1).
 			Comment("ID of the policy's department.|策略所属部门").
 			Annotations(entsql.WithComments(true)),
 		field.String("users").
@@ -35,6 +36,10 @@ func (PolicyAuth) Fields() []ent.Field {
 		field.String("accounts").
 			NotEmpty().
 			Comment("策略关联账号").
+			Annotations(entsql.WithComments(true)),
+		field.Bool("direction").
+			Comment("策略相关性方向,默认正向，即断言正向用户与账号").
+			Default(true).
 			Annotations(entsql.WithComments(true)),
 	}
 }

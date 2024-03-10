@@ -19,16 +19,19 @@ func (Department) Fields() []ent.Field {
 		field.String("name").
 			NotEmpty().
 			Unique().
+			MaxLen(32).
 			Comment("The name of the department.|部门名称").
 			Annotations(entsql.WithComments(true)),
 
 		field.String("area").
 			NotEmpty().
 			Comment("The area where the department is located.|部门所在地区").
+			MaxLen(128).
 			Annotations(entsql.WithComments(true)),
 
 		field.String("description").
 			Comment("Description of the department.|部门描述").
+			MaxLen(128).
 			Annotations(entsql.WithComments(true)),
 
 		field.String("parent_departments").

@@ -29,7 +29,7 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 		svcCtx: svcCtx}
 }
 
-func (l *LoginLogic) Login(req *types.LoginInfo) (resp *types.BaseDataInfo, err error) {
+func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error) {
 	var predicates []predicate.User
 
 	if req.Username != nil {
@@ -37,6 +37,16 @@ func (l *LoginLogic) Login(req *types.LoginInfo) (resp *types.BaseDataInfo, err 
 	}
 
 	user, err := l.svcCtx.DB.User.Query().Where(predicates...).Only(l.ctx)
+	if err != nil {
+		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
+	}
+
+	dept, err := l.svcCtx.DB.Department.Get(l.ctx, user.DepartmentID)
+	if err != nil {
+		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
+	}
+
+	role, err := l.svcCtx.DB.Role.Get(l.ctx, user.RoleID)
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
@@ -60,9 +70,14 @@ func (l *LoginLogic) Login(req *types.LoginInfo) (resp *types.BaseDataInfo, err 
 		return nil, dberrorhandler.DefaultEntError(l.Logger, status.Err(), req)
 	}
 
-	return &types.BaseDataInfo{
-		Msg:  l.svcCtx.Trans.Trans(l.ctx, i18n.Success),
-		Code: 0,
-		Data: token,
+	return &types.LoginRes{
+		Base: &types.BaseMsgResp{
+			Msg:  l.svcCtx.Trans.Trans(l.ctx, i18n.Success),
+			Code: 0,
+		},
+		User:     user,
+		Token:    token,
+		DeptName: dept.Name,
+		RoleName: role.Name,
 	}, nil
 }

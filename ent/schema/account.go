@@ -31,24 +31,28 @@ func (Account) Fields() []ent.Field {
 		field.String("username").
 			NotEmpty().
 			Comment("account username|账号名称").
+			MaxLen(16).
 			Annotations(entsql.WithComments(true)),
 		field.Uint32("port").
 			Comment("account port|端口").
+			Min(1).Max(65534).
 			Annotations(entsql.WithComments(true)),
 		field.Uint8("protocol").
-			Min(ProtocolSsh).
-			Max(ProtocolMax).
+			Min(ProtocolSsh).Max(ProtocolMax).
 			Comment("protocol of the this account.|账号协议").
 			Annotations(entsql.WithComments(true)),
 		field.String("password").
 			Comment("account password|账号密码").
+			MaxLen(128).
 			Annotations(entsql.WithComments(true)),
 		field.String("private_key").
 			Comment("private_key of the this account.|账号私钥").
+			MaxLen(4096).
 			Annotations(entsql.WithComments(true)),
 		field.Uint64("device_id").
 			Optional().
 			Comment("account belong to|账号所属设备").
+			Min(1).
 			Annotations(entsql.WithComments(true)),
 	}
 }
