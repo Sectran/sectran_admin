@@ -216,7 +216,7 @@ type UserInfo struct {
 	// User name.|用户姓名
 	Name *string `json:"name,optional"`
 	// User password.|用户密码
-	Password *string `json:"password,optional"`
+	Password *string `json:"-"`
 	// ID of the user's department.|用户所属部门
 	DepartmentId *uint64 `json:"departmentId,optional"`
 	// ID of the user's role.|用户所属角色
