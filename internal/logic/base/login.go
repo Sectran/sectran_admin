@@ -55,17 +55,19 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 		return nil, dberrorhandler.DefaultEntError(l.Logger, fmt.Errorf("密码错误"), req)
 	}
 
-	token, err := jwt.GenerateTokenUsingHs256(l.svcCtx.Config.Auth.AccessSecret, time.Hour*time.Duration(l.svcCtx.Config.Auth.AccessExpire), user)
+	exp := time.Hour * time.Duration(l.svcCtx.Config.Auth.AccessExpire)
+	token, err := jwt.GenerateTokenUsingHs256(l.svcCtx.Config.Auth.AccessSecret, exp, user)
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, fmt.Errorf("无法为该用户正确授权"), req)
 	}
 
-	userM, err := json.Marshal(user)
+	userJson, err := json.Marshal(user)
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
 
-	status := l.svcCtx.AuthorityMiddleware.Rds.Set(l.ctx, token, userM, time.Second*5)
+	//set timeout 5 secends
+	status := l.svcCtx.AuthorityMiddleware.Rds.Set(context.Background(), token, userJson, exp)
 	if status.Err() != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, status.Err(), req)
 	}
