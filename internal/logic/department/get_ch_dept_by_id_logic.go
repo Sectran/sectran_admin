@@ -76,11 +76,12 @@ func (l *GetChildrenDepartmentByIdLogic) GetChildrenDepartmentById(req *types.Ch
 					CreatedAt: pointy.GetPointer(v.CreatedAt.UnixMilli()),
 					UpdatedAt: pointy.GetPointer(v.UpdatedAt.UnixMilli()),
 				},
-				Name:              &v.Name,
-				Area:              &v.Area,
-				Description:       &v.Description,
-				ParentDepartments: &v.ParentDepartments,
-				HasChildren:       HasChildren(v.ID),
+				Name:               &v.Name,
+				Area:               &v.Area,
+				Description:        &v.Description,
+				ParentDepartments:  &v.ParentDepartments,
+				ParentDepartmentId: &v.ParentDepartmentID,
+				HasChildren:        HasChildren(v.ID),
 			})
 	}
 
