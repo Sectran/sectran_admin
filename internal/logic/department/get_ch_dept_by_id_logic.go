@@ -65,7 +65,7 @@ func (l *GetChildrenDepartmentByIdLogic) GetChildrenDepartmentById(req *types.Ch
 
 	HasChildren := func(id uint64) bool {
 		c, err := l.svcCtx.DB.Department.Query().Where(department.ParentDepartmentID(id)).Count(l.ctx)
-		return (err == nil) && c > 1
+		return (err == nil) && c > 0
 	}
 
 	for _, v := range data.List {
