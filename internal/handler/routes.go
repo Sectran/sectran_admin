@@ -53,11 +53,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/department/children",
-					Handler: department.GetChDepartmentListHandler(serverCtx),
-				},
-				{
-					Method:  http.MethodPost,
 					Path:    "/department",
 					Handler: department.GetDepartmentByIdHandler(serverCtx),
 				},

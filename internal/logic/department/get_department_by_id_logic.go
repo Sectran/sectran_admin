@@ -47,6 +47,7 @@ func (l *GetDepartmentByIdLogic) GetDepartmentById(req *types.IDReq) (*types.Dep
 			Name:	&data.Name,
 			Area:	&data.Area,
 			Description:	&data.Description,
+			ParentDepartmentId:	&data.ParentDepartmentID,
 			ParentDepartments:	&data.ParentDepartments,
         },
 	}, nil

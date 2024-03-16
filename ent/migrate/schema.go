@@ -42,6 +42,7 @@ var (
 		{Name: "name", Type: field.TypeString, Unique: true, Size: 32, Comment: "The name of the department.|部门名称"},
 		{Name: "area", Type: field.TypeString, Size: 128, Comment: "The area where the department is located.|部门所在地区"},
 		{Name: "description", Type: field.TypeString, Size: 128, Comment: "Description of the department.|部门描述"},
+		{Name: "parent_department_id", Type: field.TypeUint64, Nullable: true, Comment: "parent department ID.|父亲部门id"},
 		{Name: "parent_departments", Type: field.TypeString, Comment: "Comma-separated list of parent department IDs in ascending order.|上级部门集合逗号分隔升序排列"},
 	}
 	// DepartmentsTable holds the schema information for the "departments" table.

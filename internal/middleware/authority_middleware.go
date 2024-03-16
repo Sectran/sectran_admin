@@ -6,6 +6,7 @@ import (
 	"errors"
 	"net/http"
 	"sectran_admin/ent"
+	"strconv"
 
 	"github.com/casbin/casbin/v2"
 	"github.com/redis/go-redis/v9"
@@ -67,7 +68,7 @@ func (m *AuthorityMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		logx.Infow("HTTP/HTTPS Request", logx.Field("UUID", r.Context().Value("userId").(string)),
+		logx.Infow("HTTP/HTTPS Request", logx.Field("UUID", user.ID),
 			logx.Field("path", obj), logx.Field("method", act))
 		next(w, r)
 	}
@@ -76,7 +77,7 @@ func (m *AuthorityMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 func batchCheck(cbn *casbin.Enforcer, roleIds []uint64, act, obj string) bool {
 	var checkReq [][]any
 	for _, v := range roleIds {
-		checkReq = append(checkReq, []any{v, obj, act})
+		checkReq = append(checkReq, []any{strconv.FormatUint(v, 10), obj, act})
 	}
 
 	result, err := cbn.BatchEnforce(checkReq)

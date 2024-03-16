@@ -125,9 +125,10 @@ type DepartmentInfo struct {
 	Area *string `json:"area,optional"`
 	// Description of the department.|部门描述
 	Description *string `json:"description,optional"`
+	// parent department ID.|父亲部门id
+	ParentDepartmentId *uint64 `json:"parentDepartmentId,optional"`
 	// Comma-separated list of parent department IDs in ascending order.|上级部门集合逗号分隔升序排列
 	ParentDepartments *string `json:"parentDepartments,optional"`
-	// 是否存在子部门
 	HasChildren bool `json:"hasChildren,optional"`
 }
 
@@ -218,7 +219,7 @@ type UserInfo struct {
 	// User name.|用户姓名
 	Name *string `json:"name,optional"`
 	// User password.|用户密码
-	Password *string `json:"-"`
+	Password *string `json:"password,optional"`
 	// ID of the user's department.|用户所属部门
 	DepartmentId *uint64 `json:"departmentId,optional"`
 	// ID of the user's role.|用户所属角色

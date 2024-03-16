@@ -30,6 +30,7 @@ func (l *UpdateDepartmentLogic) UpdateDepartment(req *types.DepartmentInfo) (*ty
 			SetNotNilName(req.Name).
 			SetNotNilArea(req.Area).
 			SetNotNilDescription(req.Description).
+			SetNotNilParentDepartmentID(req.ParentDepartmentId).
 			SetNotNilParentDepartments(req.ParentDepartments).
 			Exec(l.ctx)
 

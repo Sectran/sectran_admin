@@ -77,6 +77,33 @@ func (du *DepartmentUpdate) SetNillableDescription(s *string) *DepartmentUpdate 
 	return du
 }
 
+// SetParentDepartmentID sets the "parent_department_id" field.
+func (du *DepartmentUpdate) SetParentDepartmentID(u uint64) *DepartmentUpdate {
+	du.mutation.ResetParentDepartmentID()
+	du.mutation.SetParentDepartmentID(u)
+	return du
+}
+
+// SetNillableParentDepartmentID sets the "parent_department_id" field if the given value is not nil.
+func (du *DepartmentUpdate) SetNillableParentDepartmentID(u *uint64) *DepartmentUpdate {
+	if u != nil {
+		du.SetParentDepartmentID(*u)
+	}
+	return du
+}
+
+// AddParentDepartmentID adds u to the "parent_department_id" field.
+func (du *DepartmentUpdate) AddParentDepartmentID(u int64) *DepartmentUpdate {
+	du.mutation.AddParentDepartmentID(u)
+	return du
+}
+
+// ClearParentDepartmentID clears the value of the "parent_department_id" field.
+func (du *DepartmentUpdate) ClearParentDepartmentID() *DepartmentUpdate {
+	du.mutation.ClearParentDepartmentID()
+	return du
+}
+
 // SetParentDepartments sets the "parent_departments" field.
 func (du *DepartmentUpdate) SetParentDepartments(s string) *DepartmentUpdate {
 	du.mutation.SetParentDepartments(s)
@@ -185,6 +212,11 @@ func (du *DepartmentUpdate) check() error {
 			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Department.description": %w`, err)}
 		}
 	}
+	if v, ok := du.mutation.ParentDepartmentID(); ok {
+		if err := department.ParentDepartmentIDValidator(v); err != nil {
+			return &ValidationError{Name: "parent_department_id", err: fmt.Errorf(`ent: validator failed for field "Department.parent_department_id": %w`, err)}
+		}
+	}
 	if v, ok := du.mutation.ParentDepartments(); ok {
 		if err := department.ParentDepartmentsValidator(v); err != nil {
 			return &ValidationError{Name: "parent_departments", err: fmt.Errorf(`ent: validator failed for field "Department.parent_departments": %w`, err)}
@@ -216,6 +248,15 @@ func (du *DepartmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := du.mutation.Description(); ok {
 		_spec.SetField(department.FieldDescription, field.TypeString, value)
+	}
+	if value, ok := du.mutation.ParentDepartmentID(); ok {
+		_spec.SetField(department.FieldParentDepartmentID, field.TypeUint64, value)
+	}
+	if value, ok := du.mutation.AddedParentDepartmentID(); ok {
+		_spec.AddField(department.FieldParentDepartmentID, field.TypeUint64, value)
+	}
+	if du.mutation.ParentDepartmentIDCleared() {
+		_spec.ClearField(department.FieldParentDepartmentID, field.TypeUint64)
 	}
 	if value, ok := du.mutation.ParentDepartments(); ok {
 		_spec.SetField(department.FieldParentDepartments, field.TypeString, value)
@@ -330,6 +371,33 @@ func (duo *DepartmentUpdateOne) SetNillableDescription(s *string) *DepartmentUpd
 	if s != nil {
 		duo.SetDescription(*s)
 	}
+	return duo
+}
+
+// SetParentDepartmentID sets the "parent_department_id" field.
+func (duo *DepartmentUpdateOne) SetParentDepartmentID(u uint64) *DepartmentUpdateOne {
+	duo.mutation.ResetParentDepartmentID()
+	duo.mutation.SetParentDepartmentID(u)
+	return duo
+}
+
+// SetNillableParentDepartmentID sets the "parent_department_id" field if the given value is not nil.
+func (duo *DepartmentUpdateOne) SetNillableParentDepartmentID(u *uint64) *DepartmentUpdateOne {
+	if u != nil {
+		duo.SetParentDepartmentID(*u)
+	}
+	return duo
+}
+
+// AddParentDepartmentID adds u to the "parent_department_id" field.
+func (duo *DepartmentUpdateOne) AddParentDepartmentID(u int64) *DepartmentUpdateOne {
+	duo.mutation.AddParentDepartmentID(u)
+	return duo
+}
+
+// ClearParentDepartmentID clears the value of the "parent_department_id" field.
+func (duo *DepartmentUpdateOne) ClearParentDepartmentID() *DepartmentUpdateOne {
+	duo.mutation.ClearParentDepartmentID()
 	return duo
 }
 
@@ -454,6 +522,11 @@ func (duo *DepartmentUpdateOne) check() error {
 			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Department.description": %w`, err)}
 		}
 	}
+	if v, ok := duo.mutation.ParentDepartmentID(); ok {
+		if err := department.ParentDepartmentIDValidator(v); err != nil {
+			return &ValidationError{Name: "parent_department_id", err: fmt.Errorf(`ent: validator failed for field "Department.parent_department_id": %w`, err)}
+		}
+	}
 	if v, ok := duo.mutation.ParentDepartments(); ok {
 		if err := department.ParentDepartmentsValidator(v); err != nil {
 			return &ValidationError{Name: "parent_departments", err: fmt.Errorf(`ent: validator failed for field "Department.parent_departments": %w`, err)}
@@ -502,6 +575,15 @@ func (duo *DepartmentUpdateOne) sqlSave(ctx context.Context) (_node *Department,
 	}
 	if value, ok := duo.mutation.Description(); ok {
 		_spec.SetField(department.FieldDescription, field.TypeString, value)
+	}
+	if value, ok := duo.mutation.ParentDepartmentID(); ok {
+		_spec.SetField(department.FieldParentDepartmentID, field.TypeUint64, value)
+	}
+	if value, ok := duo.mutation.AddedParentDepartmentID(); ok {
+		_spec.AddField(department.FieldParentDepartmentID, field.TypeUint64, value)
+	}
+	if duo.mutation.ParentDepartmentIDCleared() {
+		_spec.ClearField(department.FieldParentDepartmentID, field.TypeUint64)
 	}
 	if value, ok := duo.mutation.ParentDepartments(); ok {
 		_spec.SetField(department.FieldParentDepartments, field.TypeString, value)

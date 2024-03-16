@@ -80,6 +80,11 @@ func Description(v string) predicate.Department {
 	return predicate.Department(sql.FieldEQ(FieldDescription, v))
 }
 
+// ParentDepartmentID applies equality check predicate on the "parent_department_id" field. It's identical to ParentDepartmentIDEQ.
+func ParentDepartmentID(v uint64) predicate.Department {
+	return predicate.Department(sql.FieldEQ(FieldParentDepartmentID, v))
+}
+
 // ParentDepartments applies equality check predicate on the "parent_departments" field. It's identical to ParentDepartmentsEQ.
 func ParentDepartments(v string) predicate.Department {
 	return predicate.Department(sql.FieldEQ(FieldParentDepartments, v))
@@ -358,6 +363,56 @@ func DescriptionEqualFold(v string) predicate.Department {
 // DescriptionContainsFold applies the ContainsFold predicate on the "description" field.
 func DescriptionContainsFold(v string) predicate.Department {
 	return predicate.Department(sql.FieldContainsFold(FieldDescription, v))
+}
+
+// ParentDepartmentIDEQ applies the EQ predicate on the "parent_department_id" field.
+func ParentDepartmentIDEQ(v uint64) predicate.Department {
+	return predicate.Department(sql.FieldEQ(FieldParentDepartmentID, v))
+}
+
+// ParentDepartmentIDNEQ applies the NEQ predicate on the "parent_department_id" field.
+func ParentDepartmentIDNEQ(v uint64) predicate.Department {
+	return predicate.Department(sql.FieldNEQ(FieldParentDepartmentID, v))
+}
+
+// ParentDepartmentIDIn applies the In predicate on the "parent_department_id" field.
+func ParentDepartmentIDIn(vs ...uint64) predicate.Department {
+	return predicate.Department(sql.FieldIn(FieldParentDepartmentID, vs...))
+}
+
+// ParentDepartmentIDNotIn applies the NotIn predicate on the "parent_department_id" field.
+func ParentDepartmentIDNotIn(vs ...uint64) predicate.Department {
+	return predicate.Department(sql.FieldNotIn(FieldParentDepartmentID, vs...))
+}
+
+// ParentDepartmentIDGT applies the GT predicate on the "parent_department_id" field.
+func ParentDepartmentIDGT(v uint64) predicate.Department {
+	return predicate.Department(sql.FieldGT(FieldParentDepartmentID, v))
+}
+
+// ParentDepartmentIDGTE applies the GTE predicate on the "parent_department_id" field.
+func ParentDepartmentIDGTE(v uint64) predicate.Department {
+	return predicate.Department(sql.FieldGTE(FieldParentDepartmentID, v))
+}
+
+// ParentDepartmentIDLT applies the LT predicate on the "parent_department_id" field.
+func ParentDepartmentIDLT(v uint64) predicate.Department {
+	return predicate.Department(sql.FieldLT(FieldParentDepartmentID, v))
+}
+
+// ParentDepartmentIDLTE applies the LTE predicate on the "parent_department_id" field.
+func ParentDepartmentIDLTE(v uint64) predicate.Department {
+	return predicate.Department(sql.FieldLTE(FieldParentDepartmentID, v))
+}
+
+// ParentDepartmentIDIsNil applies the IsNil predicate on the "parent_department_id" field.
+func ParentDepartmentIDIsNil() predicate.Department {
+	return predicate.Department(sql.FieldIsNull(FieldParentDepartmentID))
+}
+
+// ParentDepartmentIDNotNil applies the NotNil predicate on the "parent_department_id" field.
+func ParentDepartmentIDNotNil() predicate.Department {
+	return predicate.Department(sql.FieldNotNull(FieldParentDepartmentID))
 }
 
 // ParentDepartmentsEQ applies the EQ predicate on the "parent_departments" field.

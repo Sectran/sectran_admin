@@ -24,6 +24,8 @@ const (
 	FieldArea = "area"
 	// FieldDescription holds the string denoting the description field in the database.
 	FieldDescription = "description"
+	// FieldParentDepartmentID holds the string denoting the parent_department_id field in the database.
+	FieldParentDepartmentID = "parent_department_id"
 	// FieldParentDepartments holds the string denoting the parent_departments field in the database.
 	FieldParentDepartments = "parent_departments"
 	// EdgeUsers holds the string denoting the users edge name in mutations.
@@ -47,6 +49,7 @@ var Columns = []string{
 	FieldName,
 	FieldArea,
 	FieldDescription,
+	FieldParentDepartmentID,
 	FieldParentDepartments,
 }
 
@@ -73,6 +76,8 @@ var (
 	AreaValidator func(string) error
 	// DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
 	DescriptionValidator func(string) error
+	// ParentDepartmentIDValidator is a validator for the "parent_department_id" field. It is called by the builders before save.
+	ParentDepartmentIDValidator func(uint64) error
 	// ParentDepartmentsValidator is a validator for the "parent_departments" field. It is called by the builders before save.
 	ParentDepartmentsValidator func(string) error
 )
@@ -108,6 +113,11 @@ func ByArea(opts ...sql.OrderTermOption) OrderOption {
 // ByDescription orders the results by the description field.
 func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDescription, opts...).ToFunc()
+}
+
+// ByParentDepartmentID orders the results by the parent_department_id field.
+func ByParentDepartmentID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldParentDepartmentID, opts...).ToFunc()
 }
 
 // ByParentDepartments orders the results by the parent_departments field.

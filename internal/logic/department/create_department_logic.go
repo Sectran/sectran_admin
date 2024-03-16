@@ -31,6 +31,7 @@ func (l *CreateDepartmentLogic) CreateDepartment(req *types.DepartmentInfo) (*ty
 			SetNotNilName(req.Name).
 			SetNotNilArea(req.Area).
 			SetNotNilDescription(req.Description).
+			SetNotNilParentDepartmentID(req.ParentDepartmentId).
 			SetNotNilParentDepartments(req.ParentDepartments).
 			Save(l.ctx)
 

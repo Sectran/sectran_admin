@@ -908,22 +908,24 @@ func (m *AccountMutation) ResetEdge(name string) error {
 // DepartmentMutation represents an operation that mutates the Department nodes in the graph.
 type DepartmentMutation struct {
 	config
-	op                 Op
-	typ                string
-	id                 *uint64
-	created_at         *time.Time
-	updated_at         *time.Time
-	name               *string
-	area               *string
-	description        *string
-	parent_departments *string
-	clearedFields      map[string]struct{}
-	users              map[uint64]struct{}
-	removedusers       map[uint64]struct{}
-	clearedusers       bool
-	done               bool
-	oldValue           func(context.Context) (*Department, error)
-	predicates         []predicate.Department
+	op                      Op
+	typ                     string
+	id                      *uint64
+	created_at              *time.Time
+	updated_at              *time.Time
+	name                    *string
+	area                    *string
+	description             *string
+	parent_department_id    *uint64
+	addparent_department_id *int64
+	parent_departments      *string
+	clearedFields           map[string]struct{}
+	users                   map[uint64]struct{}
+	removedusers            map[uint64]struct{}
+	clearedusers            bool
+	done                    bool
+	oldValue                func(context.Context) (*Department, error)
+	predicates              []predicate.Department
 }
 
 var _ ent.Mutation = (*DepartmentMutation)(nil)
@@ -1210,6 +1212,76 @@ func (m *DepartmentMutation) ResetDescription() {
 	m.description = nil
 }
 
+// SetParentDepartmentID sets the "parent_department_id" field.
+func (m *DepartmentMutation) SetParentDepartmentID(u uint64) {
+	m.parent_department_id = &u
+	m.addparent_department_id = nil
+}
+
+// ParentDepartmentID returns the value of the "parent_department_id" field in the mutation.
+func (m *DepartmentMutation) ParentDepartmentID() (r uint64, exists bool) {
+	v := m.parent_department_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldParentDepartmentID returns the old "parent_department_id" field's value of the Department entity.
+// If the Department object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DepartmentMutation) OldParentDepartmentID(ctx context.Context) (v uint64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldParentDepartmentID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldParentDepartmentID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldParentDepartmentID: %w", err)
+	}
+	return oldValue.ParentDepartmentID, nil
+}
+
+// AddParentDepartmentID adds u to the "parent_department_id" field.
+func (m *DepartmentMutation) AddParentDepartmentID(u int64) {
+	if m.addparent_department_id != nil {
+		*m.addparent_department_id += u
+	} else {
+		m.addparent_department_id = &u
+	}
+}
+
+// AddedParentDepartmentID returns the value that was added to the "parent_department_id" field in this mutation.
+func (m *DepartmentMutation) AddedParentDepartmentID() (r int64, exists bool) {
+	v := m.addparent_department_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearParentDepartmentID clears the value of the "parent_department_id" field.
+func (m *DepartmentMutation) ClearParentDepartmentID() {
+	m.parent_department_id = nil
+	m.addparent_department_id = nil
+	m.clearedFields[department.FieldParentDepartmentID] = struct{}{}
+}
+
+// ParentDepartmentIDCleared returns if the "parent_department_id" field was cleared in this mutation.
+func (m *DepartmentMutation) ParentDepartmentIDCleared() bool {
+	_, ok := m.clearedFields[department.FieldParentDepartmentID]
+	return ok
+}
+
+// ResetParentDepartmentID resets all changes to the "parent_department_id" field.
+func (m *DepartmentMutation) ResetParentDepartmentID() {
+	m.parent_department_id = nil
+	m.addparent_department_id = nil
+	delete(m.clearedFields, department.FieldParentDepartmentID)
+}
+
 // SetParentDepartments sets the "parent_departments" field.
 func (m *DepartmentMutation) SetParentDepartments(s string) {
 	m.parent_departments = &s
@@ -1334,7 +1406,7 @@ func (m *DepartmentMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DepartmentMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 7)
 	if m.created_at != nil {
 		fields = append(fields, department.FieldCreatedAt)
 	}
@@ -1349,6 +1421,9 @@ func (m *DepartmentMutation) Fields() []string {
 	}
 	if m.description != nil {
 		fields = append(fields, department.FieldDescription)
+	}
+	if m.parent_department_id != nil {
+		fields = append(fields, department.FieldParentDepartmentID)
 	}
 	if m.parent_departments != nil {
 		fields = append(fields, department.FieldParentDepartments)
@@ -1371,6 +1446,8 @@ func (m *DepartmentMutation) Field(name string) (ent.Value, bool) {
 		return m.Area()
 	case department.FieldDescription:
 		return m.Description()
+	case department.FieldParentDepartmentID:
+		return m.ParentDepartmentID()
 	case department.FieldParentDepartments:
 		return m.ParentDepartments()
 	}
@@ -1392,6 +1469,8 @@ func (m *DepartmentMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldArea(ctx)
 	case department.FieldDescription:
 		return m.OldDescription(ctx)
+	case department.FieldParentDepartmentID:
+		return m.OldParentDepartmentID(ctx)
 	case department.FieldParentDepartments:
 		return m.OldParentDepartments(ctx)
 	}
@@ -1438,6 +1517,13 @@ func (m *DepartmentMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDescription(v)
 		return nil
+	case department.FieldParentDepartmentID:
+		v, ok := value.(uint64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetParentDepartmentID(v)
+		return nil
 	case department.FieldParentDepartments:
 		v, ok := value.(string)
 		if !ok {
@@ -1452,13 +1538,21 @@ func (m *DepartmentMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *DepartmentMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addparent_department_id != nil {
+		fields = append(fields, department.FieldParentDepartmentID)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *DepartmentMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case department.FieldParentDepartmentID:
+		return m.AddedParentDepartmentID()
+	}
 	return nil, false
 }
 
@@ -1467,6 +1561,13 @@ func (m *DepartmentMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *DepartmentMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case department.FieldParentDepartmentID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddParentDepartmentID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Department numeric field %s", name)
 }
@@ -1474,7 +1575,11 @@ func (m *DepartmentMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *DepartmentMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(department.FieldParentDepartmentID) {
+		fields = append(fields, department.FieldParentDepartmentID)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -1487,6 +1592,11 @@ func (m *DepartmentMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *DepartmentMutation) ClearField(name string) error {
+	switch name {
+	case department.FieldParentDepartmentID:
+		m.ClearParentDepartmentID()
+		return nil
+	}
 	return fmt.Errorf("unknown Department nullable field %s", name)
 }
 
@@ -1508,6 +1618,9 @@ func (m *DepartmentMutation) ResetField(name string) error {
 		return nil
 	case department.FieldDescription:
 		m.ResetDescription()
+		return nil
+	case department.FieldParentDepartmentID:
+		m.ResetParentDepartmentID()
 		return nil
 	case department.FieldParentDepartments:
 		m.ResetParentDepartments()

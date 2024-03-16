@@ -1045,6 +1045,75 @@
       },
       "x-go-package": "sectran_admin/internal/types"
     },
+    "ApiAuthorityInfo": {
+      "description": "The response data of api authorization | API授权数据",
+      "type": "object",
+      "required": [
+        "path",
+        "method"
+      ],
+      "properties": {
+        "method": {
+          "description": "API method | API请求方法",
+          "type": "string",
+          "maxLength": 4,
+          "minLength": 3,
+          "x-go-name": "Method"
+        },
+        "path": {
+          "description": "API path | API 路径",
+          "type": "string",
+          "maxLength": 80,
+          "x-go-name": "Path"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "ApiAuthorityListInfo": {
+      "description": "The  data of api authorization list | API授权列表数据",
+      "type": "object",
+      "properties": {
+        "data": {
+          "description": "The api authorization list data | API授权列表数据",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ApiAuthorityInfo"
+          },
+          "x-go-name": "Data"
+        },
+        "total": {
+          "description": "The total number of data | 数据总数",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "Total"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "ApiAuthorityListResp": {
+      "description": "The response data of api authorization list | API授权列表返回数据",
+      "type": "object",
+      "properties": {
+        "code": {
+          "description": "Error code | 错误代码",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Code"
+        },
+        "data": {
+          "description": "Data | 数据",
+          "type": "string",
+          "x-go-name": "Data",
+          "$ref": "#/definitions/ApiAuthorityListInfo"
+        },
+        "msg": {
+          "description": "Message | 提示信息",
+          "type": "string",
+          "x-go-name": "Msg"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
     "BaseDataInfo": {
       "description": "The basic response with data | 基础带数据信息",
       "type": "object",
@@ -1183,6 +1252,12 @@
           "description": "The name of the department.|部门名称",
           "type": "string",
           "x-go-name": "Name"
+        },
+        "parentDepartmentId": {
+          "description": "parent department ID.|父亲部门id",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "ParentDepartmentId"
         },
         "parentDepartments": {
           "description": "Comma-separated list of parent department IDs in ascending order.|上级部门集合逗号分隔升序排列",
@@ -1883,6 +1958,32 @@
             "type": "string"
           },
           "x-go-name": "Ids"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "UpdateApiAuthorityReq": {
+      "description": "Create or update api authorization information request | 创建或更新API授权信息",
+      "type": "object",
+      "required": [
+        "roleId",
+        "data"
+      ],
+      "properties": {
+        "data": {
+          "description": "API authorization list | API授权列表数据",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ApiAuthorityInfo"
+          },
+          "x-go-name": "Data"
+        },
+        "roleId": {
+          "description": "Role ID | 角色ID",
+          "type": "integer",
+          "format": "uint64",
+          "maximum": 1000,
+          "x-go-name": "RoleId"
         }
       },
       "x-go-package": "sectran_admin/internal/types"

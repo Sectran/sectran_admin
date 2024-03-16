@@ -67,6 +67,20 @@ func (dc *DepartmentCreate) SetDescription(s string) *DepartmentCreate {
 	return dc
 }
 
+// SetParentDepartmentID sets the "parent_department_id" field.
+func (dc *DepartmentCreate) SetParentDepartmentID(u uint64) *DepartmentCreate {
+	dc.mutation.SetParentDepartmentID(u)
+	return dc
+}
+
+// SetNillableParentDepartmentID sets the "parent_department_id" field if the given value is not nil.
+func (dc *DepartmentCreate) SetNillableParentDepartmentID(u *uint64) *DepartmentCreate {
+	if u != nil {
+		dc.SetParentDepartmentID(*u)
+	}
+	return dc
+}
+
 // SetParentDepartments sets the "parent_departments" field.
 func (dc *DepartmentCreate) SetParentDepartments(s string) *DepartmentCreate {
 	dc.mutation.SetParentDepartments(s)
@@ -171,6 +185,11 @@ func (dc *DepartmentCreate) check() error {
 			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Department.description": %w`, err)}
 		}
 	}
+	if v, ok := dc.mutation.ParentDepartmentID(); ok {
+		if err := department.ParentDepartmentIDValidator(v); err != nil {
+			return &ValidationError{Name: "parent_department_id", err: fmt.Errorf(`ent: validator failed for field "Department.parent_department_id": %w`, err)}
+		}
+	}
 	if _, ok := dc.mutation.ParentDepartments(); !ok {
 		return &ValidationError{Name: "parent_departments", err: errors.New(`ent: missing required field "Department.parent_departments"`)}
 	}
@@ -230,6 +249,10 @@ func (dc *DepartmentCreate) createSpec() (*Department, *sqlgraph.CreateSpec) {
 	if value, ok := dc.mutation.Description(); ok {
 		_spec.SetField(department.FieldDescription, field.TypeString, value)
 		_node.Description = value
+	}
+	if value, ok := dc.mutation.ParentDepartmentID(); ok {
+		_spec.SetField(department.FieldParentDepartmentID, field.TypeUint64, value)
+		_node.ParentDepartmentID = value
 	}
 	if value, ok := dc.mutation.ParentDepartments(); ok {
 		_spec.SetField(department.FieldParentDepartments, field.TypeString, value)

@@ -45,6 +45,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Authority:           AuthorityMiddleware.Handle,
 		Trans:               trans,
 		DB:                  db,
+		Casbin:              cbn,
 	}
 
 }

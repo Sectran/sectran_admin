@@ -27,6 +27,8 @@ type Department struct {
 	Area string `json:"area,omitempty"`
 	// Description of the department.|部门描述
 	Description string `json:"description,omitempty"`
+	// parent department ID.|父亲部门id
+	ParentDepartmentID uint64 `json:"parent_department_id,omitempty"`
 	// Comma-separated list of parent department IDs in ascending order.|上级部门集合逗号分隔升序排列
 	ParentDepartments string `json:"parent_departments,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -58,7 +60,7 @@ func (*Department) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case department.FieldID:
+		case department.FieldID, department.FieldParentDepartmentID:
 			values[i] = new(sql.NullInt64)
 		case department.FieldName, department.FieldArea, department.FieldDescription, department.FieldParentDepartments:
 			values[i] = new(sql.NullString)
@@ -114,6 +116,12 @@ func (d *Department) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
 				d.Description = value.String
+			}
+		case department.FieldParentDepartmentID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field parent_department_id", values[i])
+			} else if value.Valid {
+				d.ParentDepartmentID = uint64(value.Int64)
 			}
 		case department.FieldParentDepartments:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -176,6 +184,9 @@ func (d *Department) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("description=")
 	builder.WriteString(d.Description)
+	builder.WriteString(", ")
+	builder.WriteString("parent_department_id=")
+	builder.WriteString(fmt.Sprintf("%v", d.ParentDepartmentID))
 	builder.WriteString(", ")
 	builder.WriteString("parent_departments=")
 	builder.WriteString(d.ParentDepartments)

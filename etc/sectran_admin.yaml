@@ -1,7 +1,7 @@
 Name: SectranAdmin.api
 Host: 0.0.0.0
 Port: 8081
-Timeout: 2000
+Timeout: 20000
 
 Auth:
   AccessSecret: sectran@199212121

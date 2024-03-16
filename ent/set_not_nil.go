@@ -269,6 +269,30 @@ func (d *DepartmentCreate) SetNotNilDescription(value *string) *DepartmentCreate
 }
 
 // set field if value's pointer is not nil.
+func (d *DepartmentUpdate) SetNotNilParentDepartmentID(value *uint64) *DepartmentUpdate {
+	if value != nil {
+		return d.SetParentDepartmentID(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DepartmentUpdateOne) SetNotNilParentDepartmentID(value *uint64) *DepartmentUpdateOne {
+	if value != nil {
+		return d.SetParentDepartmentID(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DepartmentCreate) SetNotNilParentDepartmentID(value *uint64) *DepartmentCreate {
+	if value != nil {
+		return d.SetParentDepartmentID(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
 func (d *DepartmentUpdate) SetNotNilParentDepartments(value *string) *DepartmentUpdate {
 	if value != nil {
 		return d.SetParentDepartments(*value)
