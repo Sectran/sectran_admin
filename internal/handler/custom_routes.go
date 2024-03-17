@@ -24,6 +24,11 @@ func RegisterHandlersCustom(server *rest.Server, serverCtx *svc.ServiceContext) 
 			},
 			{
 				Method:  http.MethodPost,
+				Path:    "/get_menu_authority_list",
+				Handler: base.GetMenuAuthorityHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/department/children",
 				Handler: department.GetChDepartmentListHandler(serverCtx),
 			},

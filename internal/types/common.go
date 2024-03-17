@@ -1,6 +1,8 @@
 package types
 
-import "sectran_admin/ent"
+import (
+	"sectran_admin/ent"
+)
 
 // 登录请求
 type LoginReq struct {
@@ -50,25 +52,15 @@ type UpdateApiAuthorityReq struct {
 	Data []ApiAuthorityInfo `json:"data"`
 }
 
-// The response data of api authorization list | API授权列表返回数据
-// swagger:model ApiAuthorityListResp
-type ApiAuthorityListResp struct {
-	BaseDataInfo
-	// The api authorization list data | API授权列表数据
-	Data ApiAuthorityListInfo `json:"data"`
+type MenuListInfo struct {
+	// Error code | 错误代码
+	Code int `json:"code"`
+	// Message | 提示信息
+	Msg  string   `json:"msg"`
+	Data []string `json:"data"`
 }
 
-// The  data of api authorization list | API授权列表数据
-// swagger:model ApiAuthorityListInfo
-type ApiAuthorityListInfo struct {
-	BaseListInfo
-	// The api authorization list data | API授权列表数据
-	Data []ApiAuthorityInfo `json:"data"`
-}
-
-// The response data of department information | Department信息
-// swagger:model DepartmentInfo
-type DepartmentInfoDTO struct {
-	DepartmentInfo
-	HasChildren bool `json:"hasChildren,optional"`
+type AuthorityRequestInfo struct {
+	Id   uint64 `json:"id"`
+	Type uint8  `json:"type"` //0 mune 1 api 2 all
 }
