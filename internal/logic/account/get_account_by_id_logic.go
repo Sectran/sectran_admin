@@ -7,7 +7,7 @@ import (
 	"sectran_admin/internal/types"
 	"sectran_admin/internal/utils/dberrorhandler"
 
-    "github.com/suyuan32/simple-admin-common/i18n"
+	"github.com/suyuan32/simple-admin-common/i18n"
 
 	"github.com/suyuan32/simple-admin-common/utils/pointy"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -34,23 +34,21 @@ func (l *GetAccountByIdLogic) GetAccountById(req *types.IDReq) (*types.AccountIn
 	}
 
 	return &types.AccountInfoResp{
-	    BaseDataInfo: types.BaseDataInfo{
-            Code: 0,
-            Msg:  l.svcCtx.Trans.Trans(l.ctx, i18n.Success),
-        },
-        Data: types.AccountInfo{
-            BaseIDInfo:    types.BaseIDInfo{
-				Id:          &data.ID,
-				CreatedAt:    pointy.GetPointer(data.CreatedAt.UnixMilli()),
-				UpdatedAt:    pointy.GetPointer(data.UpdatedAt.UnixMilli()),
-            },
-			Username:	&data.Username,
-			Port:	&data.Port,
-			Protocol:	&data.Protocol,
-			Password:	&data.Password,
-			PrivateKey:	&data.PrivateKey,
-			DeviceId:	&data.DeviceID,
-        },
+		BaseDataInfo: types.BaseDataInfo{
+			Code: 0,
+			Msg:  l.svcCtx.Trans.Trans(l.ctx, i18n.Success),
+		},
+		Data: types.AccountInfo{
+			BaseIDInfo: types.BaseIDInfo{
+				Id:        &data.ID,
+				CreatedAt: pointy.GetPointer(data.CreatedAt.UnixMilli()),
+				UpdatedAt: pointy.GetPointer(data.UpdatedAt.UnixMilli()),
+			},
+			Username:   &data.Username,
+			Port:       &data.Port,
+			Protocol:   &data.Protocol,
+			PrivateKey: &data.PrivateKey,
+			DeviceId:   &data.DeviceID,
+		},
 	}, nil
 }
-

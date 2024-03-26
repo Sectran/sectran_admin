@@ -24,6 +24,12 @@ type ChildrenReq struct {
 	PageInfo
 	Deep int    `json:"deep" validate:"number"`
 	Id   uint64 `json:"id" validate:"number"`
+	// The name of the department.|部门名称
+	Name *string `json:"name,optional"`
+	// The area where the department is located.|部门所在地区
+	Area *string `json:"area,optional"`
+	// Description of the department.|部门描述
+	Description *string `json:"description,optional"`
 }
 
 // The response data of api authorization | API授权数据

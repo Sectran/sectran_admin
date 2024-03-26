@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"sectran_admin/ent/department"
+	"sectran_admin/ent/predicate"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 	"sectran_admin/internal/utils/dberrorhandler"
@@ -32,25 +33,44 @@ func NewChildrenDepartmentByIdLogic(ctx context.Context, svcCtx *svc.ServiceCont
 
 func (l *GetChildrenDepartmentByIdLogic) GetChildrenDepartmentById(req *types.ChildrenReq) (*types.DepartmentListResp, error) {
 	var prefix string
-
 	dept, err := l.svcCtx.DB.Department.Get(l.ctx, req.Id)
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
 
-	if dept.ParentDepartments != "" {
+	var predicates []predicate.Department
+
+	//部门名称条件查询
+	if req.Name != nil {
+		predicates = append(predicates, department.NameContains(*req.Name))
+	}
+
+	//部门地区条件查询
+	if req.Area != nil {
+		predicates = append(predicates, department.AreaContains(*req.Area))
+	}
+
+	//部门描述条件查询
+	if req.Description != nil {
+		predicates = append(predicates, department.DescriptionContains(*req.Description))
+	}
+
+	//部门🌲深度，如果是1只查询一级子部门、否则查询所有子部门
+	if req.Deep == 1 {
+		predicates = append(predicates, department.ParentDepartmentID(req.Id))
+	}
+
+	//拼接部门层级
+	if len(dept.ParentDepartments) > 0 {
 		prefix = fmt.Sprintf("%s,%d", dept.ParentDepartments, dept.ID)
 	} else {
 		prefix = fmt.Sprint(dept.ID)
 	}
 
-	deptQuery := l.svcCtx.DB.Department.Query().
-		Where(department.ParentDepartmentsHasPrefix(prefix))
+	//查询当前部门的子部门
+	predicates = append(predicates, department.ParentDepartmentsHasPrefix(prefix))
 
-	if req.Deep == 1 {
-		deptQuery.Where(department.ParentDepartmentID(req.Id))
-	}
-
+	deptQuery := l.svcCtx.DB.Department.Query().Where(predicates...)
 	data, err := deptQuery.
 		Order(department.ByParentDepartments()).
 		Order(department.ByID(sql.OrderAsc())).
