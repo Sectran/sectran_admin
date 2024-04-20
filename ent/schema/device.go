@@ -30,11 +30,11 @@ func (Device) Fields() []ent.Field {
 			Unique().
 			NotEmpty().
 			Comment("login host|设备地址").
-			MinLen(64).
+			MaxLen(64).
 			Annotations(entsql.WithComments(true)),
 		field.String("description").
 			Comment("Description of the device.|设备描述").
-			MinLen(128).
+			MaxLen(128).
 			Annotations(entsql.WithComments(true)),
 	}
 }
