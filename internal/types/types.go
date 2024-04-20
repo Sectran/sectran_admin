@@ -129,6 +129,7 @@ type DepartmentInfo struct {
 	ParentDepartmentId *uint64 `json:"parentDepartmentId,optional"`
 	// Comma-separated list of parent department IDs in ascending order.|上级部门集合逗号分隔升序排列
 	ParentDepartments *string `json:"parentDepartments,optional"`
+	HasChildren bool `hasChildren`//是否存在下级部门
 }
 
 // The response data of department list | Department列表数据
