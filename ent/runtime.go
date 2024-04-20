@@ -216,8 +216,12 @@ func init() {
 			return nil
 		}
 	}()
+	// deviceDescType is the schema descriptor for type field.
+	deviceDescType := deviceFields[3].Descriptor()
+	// device.TypeValidator is a validator for the "type" field. It is called by the builders before save.
+	device.TypeValidator = deviceDescType.Validators[0].(func(string) error)
 	// deviceDescDescription is the schema descriptor for description field.
-	deviceDescDescription := deviceFields[3].Descriptor()
+	deviceDescDescription := deviceFields[4].Descriptor()
 	// device.DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
 	device.DescriptionValidator = deviceDescDescription.Validators[0].(func(string) error)
 	policyauthMixin := schema.PolicyAuth{}.Mixin()

@@ -47,6 +47,7 @@ func (l *GetDeviceByIdLogic) GetDeviceById(req *types.IDReq) (*types.DeviceInfoR
 			Name:	&data.Name,
 			DepartmentId:	&data.DepartmentID,
 			Host:	&data.Host,
+			Type:	&data.Type,
 			Description:	&data.Description,
         },
 	}, nil

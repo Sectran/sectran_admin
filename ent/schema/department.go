@@ -19,7 +19,7 @@ func (Department) Fields() []ent.Field {
 		field.String("name").
 			NotEmpty().
 			Unique().
-			MaxLen(32).
+			MaxLen(64).
 			Comment("The name of the department.|部门名称").
 			Annotations(entsql.WithComments(true)),
 

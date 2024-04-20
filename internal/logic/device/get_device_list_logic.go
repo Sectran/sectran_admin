@@ -37,8 +37,8 @@ func (l *GetDeviceListLogic) GetDeviceList(req *types.DeviceListReq) (*types.Dev
 	if req.Host != nil {
 		predicates = append(predicates, device.HostContains(*req.Host))
 	}
-	if req.Description != nil {
-		predicates = append(predicates, device.DescriptionContains(*req.Description))
+	if req.Type != nil {
+		predicates = append(predicates, device.TypeContains(*req.Type))
 	}
 	data, err := l.svcCtx.DB.Device.Query().Where(predicates...).Page(l.ctx, req.Page, req.PageSize)
 
@@ -61,6 +61,7 @@ func (l *GetDeviceListLogic) GetDeviceList(req *types.DeviceListReq) (*types.Dev
 			Name:	&v.Name,
 			DepartmentId:	&v.DepartmentID,
 			Host:	&v.Host,
+			Type:	&v.Type,
 			Description:	&v.Description,
 		})
 	}

@@ -75,6 +75,12 @@ func (dc *DeviceCreate) SetHost(s string) *DeviceCreate {
 	return dc
 }
 
+// SetType sets the "type" field.
+func (dc *DeviceCreate) SetType(s string) *DeviceCreate {
+	dc.mutation.SetType(s)
+	return dc
+}
+
 // SetDescription sets the "description" field.
 func (dc *DeviceCreate) SetDescription(s string) *DeviceCreate {
 	dc.mutation.SetDescription(s)
@@ -176,6 +182,14 @@ func (dc *DeviceCreate) check() error {
 			return &ValidationError{Name: "host", err: fmt.Errorf(`ent: validator failed for field "Device.host": %w`, err)}
 		}
 	}
+	if _, ok := dc.mutation.GetType(); !ok {
+		return &ValidationError{Name: "type", err: errors.New(`ent: missing required field "Device.type"`)}
+	}
+	if v, ok := dc.mutation.GetType(); ok {
+		if err := device.TypeValidator(v); err != nil {
+			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Device.type": %w`, err)}
+		}
+	}
 	if _, ok := dc.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "Device.description"`)}
 	}
@@ -235,6 +249,10 @@ func (dc *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 	if value, ok := dc.mutation.Host(); ok {
 		_spec.SetField(device.FieldHost, field.TypeString, value)
 		_node.Host = value
+	}
+	if value, ok := dc.mutation.GetType(); ok {
+		_spec.SetField(device.FieldType, field.TypeString, value)
+		_node.Type = value
 	}
 	if value, ok := dc.mutation.Description(); ok {
 		_spec.SetField(device.FieldDescription, field.TypeString, value)

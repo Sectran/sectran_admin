@@ -413,6 +413,30 @@ func (d *DeviceCreate) SetNotNilHost(value *string) *DeviceCreate {
 }
 
 // set field if value's pointer is not nil.
+func (d *DeviceUpdate) SetNotNilType(value *string) *DeviceUpdate {
+	if value != nil {
+		return d.SetType(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DeviceUpdateOne) SetNotNilType(value *string) *DeviceUpdateOne {
+	if value != nil {
+		return d.SetType(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DeviceCreate) SetNotNilType(value *string) *DeviceCreate {
+	if value != nil {
+		return d.SetType(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
 func (d *DeviceUpdate) SetNotNilDescription(value *string) *DeviceUpdate {
 	if value != nil {
 		return d.SetDescription(*value)

@@ -39,7 +39,7 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
-		{Name: "name", Type: field.TypeString, Unique: true, Size: 32, Comment: "The name of the department.|部门名称"},
+		{Name: "name", Type: field.TypeString, Unique: true, Size: 64, Comment: "The name of the department.|部门名称"},
 		{Name: "area", Type: field.TypeString, Size: 128, Comment: "The area where the department is located.|部门所在地区"},
 		{Name: "description", Type: field.TypeString, Size: 128, Comment: "Description of the department.|部门描述"},
 		{Name: "parent_department_id", Type: field.TypeUint64, Nullable: true, Comment: "parent department ID.|父亲部门id"},
@@ -59,6 +59,7 @@ var (
 		{Name: "name", Type: field.TypeString, Size: 128, Comment: "The name of the device.|设备名称"},
 		{Name: "department_id", Type: field.TypeUint64, Nullable: true, Comment: "ID of the device's department.|设备所属部门"},
 		{Name: "host", Type: field.TypeString, Unique: true, Size: 64, Comment: "login host|设备地址"},
+		{Name: "type", Type: field.TypeString, Size: 64, Comment: "type of the device.|设备类型"},
 		{Name: "description", Type: field.TypeString, Size: 128, Comment: "Description of the device.|设备描述"},
 	}
 	// DevicesTable holds the schema information for the "devices" table.

@@ -24,6 +24,8 @@ const (
 	FieldDepartmentID = "department_id"
 	// FieldHost holds the string denoting the host field in the database.
 	FieldHost = "host"
+	// FieldType holds the string denoting the type field in the database.
+	FieldType = "type"
 	// FieldDescription holds the string denoting the description field in the database.
 	FieldDescription = "description"
 	// EdgeAccounts holds the string denoting the accounts edge name in mutations.
@@ -47,6 +49,7 @@ var Columns = []string{
 	FieldName,
 	FieldDepartmentID,
 	FieldHost,
+	FieldType,
 	FieldDescription,
 }
 
@@ -73,6 +76,8 @@ var (
 	DepartmentIDValidator func(uint64) error
 	// HostValidator is a validator for the "host" field. It is called by the builders before save.
 	HostValidator func(string) error
+	// TypeValidator is a validator for the "type" field. It is called by the builders before save.
+	TypeValidator func(string) error
 	// DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
 	DescriptionValidator func(string) error
 )
@@ -108,6 +113,11 @@ func ByDepartmentID(opts ...sql.OrderTermOption) OrderOption {
 // ByHost orders the results by the host field.
 func ByHost(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldHost, opts...).ToFunc()
+}
+
+// ByType orders the results by the type field.
+func ByType(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldType, opts...).ToFunc()
 }
 
 // ByDescription orders the results by the description field.

@@ -32,6 +32,10 @@ func (Device) Fields() []ent.Field {
 			Comment("login host|设备地址").
 			MaxLen(64).
 			Annotations(entsql.WithComments(true)),
+		field.String("type").
+			Comment("type of the device.|设备类型").
+			MaxLen(64).
+			Annotations(entsql.WithComments(true)),
 		field.String("description").
 			Comment("Description of the device.|设备描述").
 			MaxLen(128).

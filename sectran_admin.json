@@ -1069,51 +1069,6 @@
       },
       "x-go-package": "sectran_admin/internal/types"
     },
-    "ApiAuthorityListInfo": {
-      "description": "The  data of api authorization list | API授权列表数据",
-      "type": "object",
-      "properties": {
-        "data": {
-          "description": "The api authorization list data | API授权列表数据",
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ApiAuthorityInfo"
-          },
-          "x-go-name": "Data"
-        },
-        "total": {
-          "description": "The total number of data | 数据总数",
-          "type": "integer",
-          "format": "uint64",
-          "x-go-name": "Total"
-        }
-      },
-      "x-go-package": "sectran_admin/internal/types"
-    },
-    "ApiAuthorityListResp": {
-      "description": "The response data of api authorization list | API授权列表返回数据",
-      "type": "object",
-      "properties": {
-        "code": {
-          "description": "Error code | 错误代码",
-          "type": "integer",
-          "format": "int64",
-          "x-go-name": "Code"
-        },
-        "data": {
-          "description": "Data | 数据",
-          "type": "string",
-          "x-go-name": "Data",
-          "$ref": "#/definitions/ApiAuthorityListInfo"
-        },
-        "msg": {
-          "description": "Message | 提示信息",
-          "type": "string",
-          "x-go-name": "Msg"
-        }
-      },
-      "x-go-package": "sectran_admin/internal/types"
-    },
     "BaseDataInfo": {
       "description": "The basic response with data | 基础带数据信息",
       "type": "object",
@@ -1419,6 +1374,11 @@
           "type": "string",
           "x-go-name": "Name"
         },
+        "type": {
+          "description": "type of the device.|设备类型",
+          "type": "string",
+          "x-go-name": "Type"
+        },
         "updatedAt": {
           "description": "Update date | 更新日期",
           "type": "integer",
@@ -1481,11 +1441,6 @@
         "pageSize"
       ],
       "properties": {
-        "description": {
-          "description": "Description of the device.|设备描述",
-          "type": "string",
-          "x-go-name": "Description"
-        },
         "host": {
           "description": "login host|设备地址",
           "type": "string",
@@ -1509,6 +1464,11 @@
           "format": "uint64",
           "maximum": 100000,
           "x-go-name": "PageSize"
+        },
+        "type": {
+          "description": "type of the device.|设备类型",
+          "type": "string",
+          "x-go-name": "Type"
         }
       },
       "x-go-package": "sectran_admin/internal/types"

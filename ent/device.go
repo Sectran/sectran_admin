@@ -27,6 +27,8 @@ type Device struct {
 	DepartmentID uint64 `json:"department_id,omitempty"`
 	// login host|设备地址
 	Host string `json:"host,omitempty"`
+	// type of the device.|设备类型
+	Type string `json:"type,omitempty"`
 	// Description of the device.|设备描述
 	Description string `json:"description,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -60,7 +62,7 @@ func (*Device) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case device.FieldID, device.FieldDepartmentID:
 			values[i] = new(sql.NullInt64)
-		case device.FieldName, device.FieldHost, device.FieldDescription:
+		case device.FieldName, device.FieldHost, device.FieldType, device.FieldDescription:
 			values[i] = new(sql.NullString)
 		case device.FieldCreatedAt, device.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -114,6 +116,12 @@ func (d *Device) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field host", values[i])
 			} else if value.Valid {
 				d.Host = value.String
+			}
+		case device.FieldType:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field type", values[i])
+			} else if value.Valid {
+				d.Type = value.String
 			}
 		case device.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -176,6 +184,9 @@ func (d *Device) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("host=")
 	builder.WriteString(d.Host)
+	builder.WriteString(", ")
+	builder.WriteString("type=")
+	builder.WriteString(d.Type)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
 	builder.WriteString(d.Description)

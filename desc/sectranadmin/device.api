@@ -14,6 +14,9 @@ type (
         // login host|设备地址 
         Host  *string `json:"host,optional"`
 
+        // type of the device.|设备类型 
+        Type  *string `json:"type,optional"`
+
         // Description of the device.|设备描述 
         Description  *string `json:"description,optional"`
     }
@@ -44,8 +47,8 @@ type (
         // login host|设备地址 
         Host  *string `json:"host,optional"`
 
-        // Description of the device.|设备描述 
-        Description  *string `json:"description,optional"`
+        // type of the device.|设备类型 
+        Type  *string `json:"type,optional"`
     }
 
     // Device information response | Device信息返回体

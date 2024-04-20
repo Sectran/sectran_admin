@@ -80,6 +80,11 @@ func Host(v string) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldHost, v))
 }
 
+// Type applies equality check predicate on the "type" field. It's identical to TypeEQ.
+func Type(v string) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldType, v))
+}
+
 // Description applies equality check predicate on the "description" field. It's identical to DescriptionEQ.
 func Description(v string) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldDescription, v))
@@ -343,6 +348,71 @@ func HostEqualFold(v string) predicate.Device {
 // HostContainsFold applies the ContainsFold predicate on the "host" field.
 func HostContainsFold(v string) predicate.Device {
 	return predicate.Device(sql.FieldContainsFold(FieldHost, v))
+}
+
+// TypeEQ applies the EQ predicate on the "type" field.
+func TypeEQ(v string) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldType, v))
+}
+
+// TypeNEQ applies the NEQ predicate on the "type" field.
+func TypeNEQ(v string) predicate.Device {
+	return predicate.Device(sql.FieldNEQ(FieldType, v))
+}
+
+// TypeIn applies the In predicate on the "type" field.
+func TypeIn(vs ...string) predicate.Device {
+	return predicate.Device(sql.FieldIn(FieldType, vs...))
+}
+
+// TypeNotIn applies the NotIn predicate on the "type" field.
+func TypeNotIn(vs ...string) predicate.Device {
+	return predicate.Device(sql.FieldNotIn(FieldType, vs...))
+}
+
+// TypeGT applies the GT predicate on the "type" field.
+func TypeGT(v string) predicate.Device {
+	return predicate.Device(sql.FieldGT(FieldType, v))
+}
+
+// TypeGTE applies the GTE predicate on the "type" field.
+func TypeGTE(v string) predicate.Device {
+	return predicate.Device(sql.FieldGTE(FieldType, v))
+}
+
+// TypeLT applies the LT predicate on the "type" field.
+func TypeLT(v string) predicate.Device {
+	return predicate.Device(sql.FieldLT(FieldType, v))
+}
+
+// TypeLTE applies the LTE predicate on the "type" field.
+func TypeLTE(v string) predicate.Device {
+	return predicate.Device(sql.FieldLTE(FieldType, v))
+}
+
+// TypeContains applies the Contains predicate on the "type" field.
+func TypeContains(v string) predicate.Device {
+	return predicate.Device(sql.FieldContains(FieldType, v))
+}
+
+// TypeHasPrefix applies the HasPrefix predicate on the "type" field.
+func TypeHasPrefix(v string) predicate.Device {
+	return predicate.Device(sql.FieldHasPrefix(FieldType, v))
+}
+
+// TypeHasSuffix applies the HasSuffix predicate on the "type" field.
+func TypeHasSuffix(v string) predicate.Device {
+	return predicate.Device(sql.FieldHasSuffix(FieldType, v))
+}
+
+// TypeEqualFold applies the EqualFold predicate on the "type" field.
+func TypeEqualFold(v string) predicate.Device {
+	return predicate.Device(sql.FieldEqualFold(FieldType, v))
+}
+
+// TypeContainsFold applies the ContainsFold predicate on the "type" field.
+func TypeContainsFold(v string) predicate.Device {
+	return predicate.Device(sql.FieldContainsFold(FieldType, v))
 }
 
 // DescriptionEQ applies the EQ predicate on the "description" field.

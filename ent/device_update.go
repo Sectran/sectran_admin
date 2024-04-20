@@ -90,6 +90,20 @@ func (du *DeviceUpdate) SetNillableHost(s *string) *DeviceUpdate {
 	return du
 }
 
+// SetType sets the "type" field.
+func (du *DeviceUpdate) SetType(s string) *DeviceUpdate {
+	du.mutation.SetType(s)
+	return du
+}
+
+// SetNillableType sets the "type" field if the given value is not nil.
+func (du *DeviceUpdate) SetNillableType(s *string) *DeviceUpdate {
+	if s != nil {
+		du.SetType(*s)
+	}
+	return du
+}
+
 // SetDescription sets the "description" field.
 func (du *DeviceUpdate) SetDescription(s string) *DeviceUpdate {
 	du.mutation.SetDescription(s)
@@ -198,6 +212,11 @@ func (du *DeviceUpdate) check() error {
 			return &ValidationError{Name: "host", err: fmt.Errorf(`ent: validator failed for field "Device.host": %w`, err)}
 		}
 	}
+	if v, ok := du.mutation.GetType(); ok {
+		if err := device.TypeValidator(v); err != nil {
+			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Device.type": %w`, err)}
+		}
+	}
 	if v, ok := du.mutation.Description(); ok {
 		if err := device.DescriptionValidator(v); err != nil {
 			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Device.description": %w`, err)}
@@ -235,6 +254,9 @@ func (du *DeviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := du.mutation.Host(); ok {
 		_spec.SetField(device.FieldHost, field.TypeString, value)
+	}
+	if value, ok := du.mutation.GetType(); ok {
+		_spec.SetField(device.FieldType, field.TypeString, value)
 	}
 	if value, ok := du.mutation.Description(); ok {
 		_spec.SetField(device.FieldDescription, field.TypeString, value)
@@ -365,6 +387,20 @@ func (duo *DeviceUpdateOne) SetNillableHost(s *string) *DeviceUpdateOne {
 	return duo
 }
 
+// SetType sets the "type" field.
+func (duo *DeviceUpdateOne) SetType(s string) *DeviceUpdateOne {
+	duo.mutation.SetType(s)
+	return duo
+}
+
+// SetNillableType sets the "type" field if the given value is not nil.
+func (duo *DeviceUpdateOne) SetNillableType(s *string) *DeviceUpdateOne {
+	if s != nil {
+		duo.SetType(*s)
+	}
+	return duo
+}
+
 // SetDescription sets the "description" field.
 func (duo *DeviceUpdateOne) SetDescription(s string) *DeviceUpdateOne {
 	duo.mutation.SetDescription(s)
@@ -486,6 +522,11 @@ func (duo *DeviceUpdateOne) check() error {
 			return &ValidationError{Name: "host", err: fmt.Errorf(`ent: validator failed for field "Device.host": %w`, err)}
 		}
 	}
+	if v, ok := duo.mutation.GetType(); ok {
+		if err := device.TypeValidator(v); err != nil {
+			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Device.type": %w`, err)}
+		}
+	}
 	if v, ok := duo.mutation.Description(); ok {
 		if err := device.DescriptionValidator(v); err != nil {
 			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Device.description": %w`, err)}
@@ -540,6 +581,9 @@ func (duo *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err err
 	}
 	if value, ok := duo.mutation.Host(); ok {
 		_spec.SetField(device.FieldHost, field.TypeString, value)
+	}
+	if value, ok := duo.mutation.GetType(); ok {
+		_spec.SetField(device.FieldType, field.TypeString, value)
 	}
 	if value, ok := duo.mutation.Description(); ok {
 		_spec.SetField(device.FieldDescription, field.TypeString, value)

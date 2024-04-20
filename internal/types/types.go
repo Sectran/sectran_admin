@@ -129,7 +129,6 @@ type DepartmentInfo struct {
 	ParentDepartmentId *uint64 `json:"parentDepartmentId,optional"`
 	// Comma-separated list of parent department IDs in ascending order.|上级部门集合逗号分隔升序排列
 	ParentDepartments *string `json:"parentDepartments,optional"`
-	HasChildren bool `json:"hasChildren,optional"`
 }
 
 // The response data of department list | Department列表数据
@@ -334,6 +333,8 @@ type DeviceInfo struct {
 	DepartmentId *uint64 `json:"departmentId,optional"`
 	// login host|设备地址
 	Host *string `json:"host,optional"`
+	// type of the device.|设备类型
+	Type *string `json:"type,optional"`
 	// Description of the device.|设备描述
 	Description *string `json:"description,optional"`
 }
@@ -362,8 +363,8 @@ type DeviceListReq struct {
 	Name *string `json:"name,optional"`
 	// login host|设备地址
 	Host *string `json:"host,optional"`
-	// Description of the device.|设备描述
-	Description *string `json:"description,optional"`
+	// type of the device.|设备类型
+	Type *string `json:"type,optional"`
 }
 
 // Device information response | Device信息返回体

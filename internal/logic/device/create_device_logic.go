@@ -31,6 +31,7 @@ func (l *CreateDeviceLogic) CreateDevice(req *types.DeviceInfo) (*types.BaseMsgR
 			SetNotNilName(req.Name).
 			SetNotNilDepartmentID(req.DepartmentId).
 			SetNotNilHost(req.Host).
+			SetNotNilType(req.Type).
 			SetNotNilDescription(req.Description).
 			Save(l.ctx)
 

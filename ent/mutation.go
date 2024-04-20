@@ -1725,6 +1725,7 @@ type DeviceMutation struct {
 	department_id    *uint64
 	adddepartment_id *int64
 	host             *string
+	_type            *string
 	description      *string
 	clearedFields    map[string]struct{}
 	accounts         map[uint64]struct{}
@@ -2053,6 +2054,42 @@ func (m *DeviceMutation) ResetHost() {
 	m.host = nil
 }
 
+// SetType sets the "type" field.
+func (m *DeviceMutation) SetType(s string) {
+	m._type = &s
+}
+
+// GetType returns the value of the "type" field in the mutation.
+func (m *DeviceMutation) GetType() (r string, exists bool) {
+	v := m._type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldType returns the old "type" field's value of the Device entity.
+// If the Device object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DeviceMutation) OldType(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldType: %w", err)
+	}
+	return oldValue.Type, nil
+}
+
+// ResetType resets all changes to the "type" field.
+func (m *DeviceMutation) ResetType() {
+	m._type = nil
+}
+
 // SetDescription sets the "description" field.
 func (m *DeviceMutation) SetDescription(s string) {
 	m.description = &s
@@ -2177,7 +2214,7 @@ func (m *DeviceMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DeviceMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 7)
 	if m.created_at != nil {
 		fields = append(fields, device.FieldCreatedAt)
 	}
@@ -2192,6 +2229,9 @@ func (m *DeviceMutation) Fields() []string {
 	}
 	if m.host != nil {
 		fields = append(fields, device.FieldHost)
+	}
+	if m._type != nil {
+		fields = append(fields, device.FieldType)
 	}
 	if m.description != nil {
 		fields = append(fields, device.FieldDescription)
@@ -2214,6 +2254,8 @@ func (m *DeviceMutation) Field(name string) (ent.Value, bool) {
 		return m.DepartmentID()
 	case device.FieldHost:
 		return m.Host()
+	case device.FieldType:
+		return m.GetType()
 	case device.FieldDescription:
 		return m.Description()
 	}
@@ -2235,6 +2277,8 @@ func (m *DeviceMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldDepartmentID(ctx)
 	case device.FieldHost:
 		return m.OldHost(ctx)
+	case device.FieldType:
+		return m.OldType(ctx)
 	case device.FieldDescription:
 		return m.OldDescription(ctx)
 	}
@@ -2280,6 +2324,13 @@ func (m *DeviceMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetHost(v)
+		return nil
+	case device.FieldType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetType(v)
 		return nil
 	case device.FieldDescription:
 		v, ok := value.(string)
@@ -2375,6 +2426,9 @@ func (m *DeviceMutation) ResetField(name string) error {
 		return nil
 	case device.FieldHost:
 		m.ResetHost()
+		return nil
+	case device.FieldType:
+		m.ResetType()
 		return nil
 	case device.FieldDescription:
 		m.ResetDescription()
