@@ -34,9 +34,19 @@ func (l *GetAccountListLogic) GetAccountList(req *types.AccountListReq) (*types.
 	if req.Username != nil {
 		predicates = append(predicates, account.UsernameContains(*req.Username))
 	}
-	if req.PrivateKey != nil {
-		predicates = append(predicates, account.PrivateKeyContains(*req.PrivateKey))
+
+	if req.Port != nil {
+		predicates = append(predicates, account.Port(*req.Port))
 	}
+
+	if req.DeviceId != nil {
+		predicates = append(predicates, account.DeviceID(*req.DeviceId))
+	}
+
+	if req.Protocol != nil {
+		predicates = append(predicates, account.Protocol(*req.Protocol))
+	}
+
 	data, err := l.svcCtx.DB.Account.Query().Where(predicates...).Page(l.ctx, req.Page, req.PageSize)
 
 	if err != nil {

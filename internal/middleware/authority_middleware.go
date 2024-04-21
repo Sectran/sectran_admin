@@ -70,6 +70,7 @@ func (m *AuthorityMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 
 		logx.Infow("HTTP/HTTPS Request", logx.Field("UUID", user.ID),
 			logx.Field("path", obj), logx.Field("method", act))
+		r = r.WithContext(context.WithValue(r.Context(), "request_domain", user))
 		next(w, r)
 	}
 }

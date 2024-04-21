@@ -152,6 +152,10 @@ type DepartmentListInfo struct {
 // swagger:model DepartmentListReq
 type DepartmentListReq struct {
 	PageInfo
+	// the parent departmenr id |父部门id
+	ParentDeptId *uint64 `json:"parentDeptId,optional" validate:"number"`
+	// 查询一级子部门或者ParentDeptId部门下所有数据
+	Flag *uint8 `json:"flag,optional" validate:"number"`
 	// The name of the department.|部门名称
 	Name *string `json:"name,optional"`
 	// The area where the department is located.|部门所在地区
@@ -310,10 +314,12 @@ type AccountListReq struct {
 	PageInfo
 	// account username|账号名称
 	Username *string `json:"username,optional"`
-	// account password|账号密码
-	Password *string `json:"password,optional"`
-	// private_key of the this account.|账号私钥
-	PrivateKey *string `json:"privateKey,optional"`
+	//所属设备id
+	DeviceId *uint64 `json:"deviceId,optional"`
+	//账号协议
+	Protocol *uint8 `json:"protocol,optional"`
+	//账号端口
+	Port *uint32 `json:"port,optional"`
 }
 
 // Account information response | Account信息返回体

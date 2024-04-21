@@ -3,7 +3,6 @@ package handler
 import (
 	"net/http"
 	base "sectran_admin/internal/handler/base"
-	department "sectran_admin/internal/handler/department"
 	"sectran_admin/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -26,11 +25,6 @@ func RegisterHandlersCustom(server *rest.Server, serverCtx *svc.ServiceContext) 
 				Method:  http.MethodPost,
 				Path:    "/get_menu_authority_list",
 				Handler: base.GetMenuAuthorityHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
-				Path:    "/department/children",
-				Handler: department.GetChDepartmentListHandler(serverCtx),
 			},
 		},
 	)
