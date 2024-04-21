@@ -12,6 +12,7 @@ import (
 	"sectran_admin/internal/utils/dberrorhandler"
 
 	"github.com/suyuan32/simple-admin-common/i18n"
+	"github.com/zeromicro/go-zero/core/errorx"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -41,6 +42,10 @@ func (l *DeleteDepartmentLogic) DeleteDepartment(req *types.IDsReq) (*types.Base
 	sort.Slice(req.Ids, func(i, j int) bool {
 		return req.Ids[i] > req.Ids[j]
 	})
+
+	if req.Ids[len(req.Ids)-1] == 1 {
+		return nil, errorx.NewCodeAbortedError("不允许删除根部门")
+	}
 
 	for _, d := range req.Ids {
 		//依次查询他的父亲集合

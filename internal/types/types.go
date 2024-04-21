@@ -153,9 +153,9 @@ type DepartmentListInfo struct {
 type DepartmentListReq struct {
 	PageInfo
 	// the parent departmenr id |父部门id
-	ParentDeptId *uint64 `json:"parentDeptId,optional" validate:"number"`
+	ParentDeptId *uint64 `json:"parentDeptId,optional"`
 	// 查询一级子部门或者ParentDeptId部门下所有数据
-	Flag *uint8 `json:"flag,optional" validate:"number"`
+	Flag *uint8 `json:"flag,optional"`
 	// The name of the department.|部门名称
 	Name *string `json:"name,optional"`
 	// The area where the department is located.|部门所在地区

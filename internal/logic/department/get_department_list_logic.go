@@ -45,6 +45,11 @@ func (l *GetDepartmentListLogic) GetDepartmentList(req *types.DepartmentListReq)
 	}
 
 	if req.ParentDeptId != nil {
+		//子集查询必须传递flag
+		if req.Flag == nil {
+			return nil, errorx.NewNotFoundError("flag字段缺失")
+		}
+
 		//判断当前账号是否有权限查询这个部门下的数据
 		cDept, err := l.svcCtx.DB.Department.Get(l.ctx, *req.ParentDeptId)
 		if err != nil {
@@ -53,7 +58,24 @@ func (l *GetDepartmentListLogic) GetDepartmentList(req *types.DepartmentListReq)
 
 		//如果当前主体部门的上级部门集合是所请求的部门上级集合的前缀、那么当前账号有权限，否则没有权限
 		if !bytes.HasPrefix([]byte(cDept.ParentDepartments), []byte(dDept.ParentDepartments)) {
-			return nil, errorx.NewApiForbiddenError("该账号权限不足")
+			return nil, types.ErrAccountHasNoRights
+		}
+
+		switch *req.Flag {
+		case 0:
+			//查询部门一级子部门
+			predicates = append(predicates, department.ParentDepartmentID(*req.ParentDeptId))
+		case 1:
+			//模糊查询这个部门下的所有部门
+			prefix := fmt.Sprintf("%s%s%d", dDept.ParentDepartments, func() string {
+				if dDept.ParentDepartments == "" {
+					return ""
+				}
+				return ","
+			}(), dDept.ID)
+			predicates = append(predicates, department.ParentDepartmentsHasPrefix(prefix))
+		default:
+			return nil, errorx.NewInvalidArgumentError("flag只能是0或者1")
 		}
 	}
 
@@ -73,23 +95,6 @@ func (l *GetDepartmentListLogic) GetDepartmentList(req *types.DepartmentListReq)
 	//模糊查询部门描述
 	if req.Description != nil {
 		predicates = append(predicates, department.DescriptionContains(*req.Description))
-	}
-
-	switch *req.Flag {
-	case 0:
-		//查询部门一级子部门
-		if req.ParentDeptId != nil {
-			predicates = append(predicates, department.ParentDepartmentID(*req.ParentDeptId))
-		}
-	case 1:
-		//模糊查询这个部门下的所有部门
-		prefix := fmt.Sprintf("%s%s%d", dDept.ParentDepartments, func() string {
-			if dDept.ParentDepartments == "" {
-				return ""
-			}
-			return ","
-		}(), dDept.ID)
-		predicates = append(predicates, department.ParentDepartmentsHasPrefix(prefix))
 	}
 
 	//排序
