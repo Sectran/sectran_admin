@@ -10,6 +10,7 @@ import (
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 	"sectran_admin/internal/utils/dberrorhandler"
+	"sectran_admin/internal/utils/entx"
 
 	"github.com/suyuan32/simple-admin-common/i18n"
 	"github.com/zeromicro/go-zero/core/errorx"
@@ -32,46 +33,70 @@ func NewDeleteDepartmentLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 
 func (l *DeleteDepartmentLogic) DeleteDepartment(req *types.IDsReq) (*types.BaseMsgResp, error) {
 	var (
-		dept   *ent.Department
-		err    error
-		prefix string
+		err               error
+		prefix            string
+		currParentDeptIds string
 	)
 
-	//因为id是递增的、我们从后往前删除，并且删除所有当前部门的子部门
-	//首先将部门id数组降序排列
-	sort.Slice(req.Ids, func(i, j int) bool {
-		return req.Ids[i] > req.Ids[j]
-	})
-
-	if req.Ids[len(req.Ids)-1] == 1 {
-		return nil, errorx.NewCodeAbortedError("不允许删除根部门")
-	}
-
-	for _, d := range req.Ids {
-		//依次查询他的父亲集合
-		dept, err = l.svcCtx.DB.Department.Get(l.ctx, d)
-		if err != nil {
-			return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
-		}
-
-		//按照ParentDepartments前缀匹配删除当前部门的所有子部门(会走索引)
-		prefix = fmt.Sprintf("%s,%d", dept.ParentDepartments, dept.ID)
-		_, err = l.svcCtx.DB.Department.Delete().Where(department.ParentDepartmentsHasPrefix(prefix)).Exec(l.ctx)
-		if err != nil {
-			return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
-		}
-
-		//删除当前部门
-		_, err = l.svcCtx.DB.Department.Delete().Where(department.IDEQ(d)).Exec(l.ctx)
-		if err != nil {
-			return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
-		}
-	}
-
-	//TODO:是否删除部门下的资源、是否删除部门下的策略
+	//查询当前主体的部门、获取到他父亲部门的部门前缀
+	domain := l.ctx.Value("request_domain").((*ent.User))
+	domainParentDepartments, err := l.svcCtx.DB.Department.Query().
+		Where(department.ID(domain.DepartmentID)).
+		Select(department.FieldParentDepartments).String(l.ctx)
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
 
+	//因为创建的id是递增的、我们从后往前删除，并且删除所有当前部门的子部门
+	//首先将部门id数组降序排列、即id递减
+	sort.Slice(req.Ids, func(i, j int) bool {
+		return req.Ids[i] > req.Ids[j]
+	})
+
+	//如果最小的id是1、说明是根部门、不允许删除
+	if req.Ids[len(req.Ids)-1] == 1 {
+		return nil, errorx.NewCodeAbortedError("不允许删除根部门")
+	}
+
+	//在事务模块中删除
+	if err = entx.WithTx(l.ctx, l.svcCtx.DB, func(tx *ent.Tx) error {
+		for _, d := range req.Ids {
+			currParentDeptIds, err = l.svcCtx.DB.Department.
+				Query().
+				Where(department.ID(d)).
+				Select(department.FieldParentDepartments).String(l.ctx)
+			if err != nil {
+				if _, ok := err.(*ent.NotFoundError); ok {
+					continue
+				}
+
+				return dberrorhandler.DefaultEntError(l.Logger, err, req)
+			}
+
+			//校验是否有操作权限
+			if _, err = DomainDeptAccessed(l.ctx, l.svcCtx, domainParentDepartments, currParentDeptIds); err != nil {
+				return err
+			}
+
+			//按照ParentDepartments前缀匹配删除当前部门的所有子部门(会走索引)
+			prefix = fmt.Sprintf("%s,%d", currParentDeptIds, d)
+			_, err = tx.Department.Delete().Where(department.ParentDepartmentsHasPrefix(prefix)).Exec(l.ctx)
+			if err != nil {
+				return dberrorhandler.DefaultEntError(l.Logger, err, req)
+			}
+
+			//删除当前部门
+			_, err = tx.Department.Delete().Where(department.IDEQ(d)).Exec(l.ctx)
+			if err != nil {
+				return dberrorhandler.DefaultEntError(l.Logger, err, req)
+			}
+		}
+
+		return nil
+	}); err != nil {
+		return nil, err
+	}
+
+	//TODO:是否一并删除部门下的各种资源
 	return &types.BaseMsgResp{Msg: l.svcCtx.Trans.Trans(l.ctx, i18n.DeleteSuccess)}, nil
 }

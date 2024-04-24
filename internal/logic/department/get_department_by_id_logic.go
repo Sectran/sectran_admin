@@ -1,10 +1,10 @@
 package department
 
 import (
-	"bytes"
 	"context"
 
 	"sectran_admin/ent"
+	"sectran_admin/ent/department"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 	"sectran_admin/internal/utils/dberrorhandler"
@@ -30,22 +30,24 @@ func NewGetDepartmentByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 func (l *GetDepartmentByIdLogic) GetDepartmentById(req *types.IDReq) (*types.DepartmentInfoResp, error) {
+	//查询当前主体的部门、获取到他父亲部门的部门前缀
 	domain := l.ctx.Value("request_domain").((*ent.User))
+	domainParentDepartments, err := l.svcCtx.DB.Department.Query().
+		Where(department.ID(domain.DepartmentID)).
+		Select(department.FieldParentDepartments).String(l.ctx)
+	if err != nil {
+		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
+	}
 
+	//查询目标的部门
 	data, err := l.svcCtx.DB.Department.Get(l.ctx, req.Id)
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
 
-	//首先查询当前主体的部门、获取到他父亲部门的部门前缀
-	dDept, err := l.svcCtx.DB.Department.Get(l.ctx, domain.DepartmentID)
-	if err != nil {
-		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
-	}
-
-	//如果当前主体部门的上级部门集合是所请求的部门上级集合的前缀、那么当前账号有权限，否则没有权限
-	if !bytes.HasPrefix([]byte(data.ParentDepartments), []byte(dDept.ParentDepartments)) {
-		return nil, types.ErrAccountHasNoRights
+	//判断当前账号是否对待操作部门存在访问权限
+	if _, err := DomainDeptAccessed(l.ctx, l.svcCtx, domainParentDepartments, data.ParentDepartments); err != nil {
+		return nil, err
 	}
 
 	return &types.DepartmentInfoResp{

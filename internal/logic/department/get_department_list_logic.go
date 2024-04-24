@@ -112,8 +112,13 @@ func (l *GetDepartmentListLogic) GetDepartmentList(req *types.DepartmentListReq)
 	resp.Data.Total = data.PageDetails.Total
 
 	HasChildren := func(id uint64) bool {
-		c, err := l.svcCtx.DB.Department.Query().Where(department.ParentDepartmentID(id)).Limit(1).Count(l.ctx)
-		return (err == nil) && c > 0
+		//树形结构构建只在一级层级中触发
+		if req.ParentDeptId != nil && *req.Flag == 0 {
+			c, err := l.svcCtx.DB.Department.Query().Where(department.ParentDepartmentID(id)).Limit(1).Count(l.ctx)
+			return (err == nil) && c > 0
+		}
+
+		return false
 	}
 
 	for _, v := range data.List {
