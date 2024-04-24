@@ -1,40 +1,40 @@
-package policyauth
+package access_policy
 
 import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
 
-	"sectran_admin/internal/logic/policyauth"
+	"sectran_admin/internal/logic/access_policy"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 )
 
-// swagger:route post /policy_auth/create policyauth CreatePolicyAuth
+// swagger:route post /access_policy access_policy GetAccessPolicyById
 //
-// Create policy auth information | 创建PolicyAuth
+// Get access policy by ID | 通过ID获取AccessPolicy
 //
-// Create policy auth information | 创建PolicyAuth
+// Get access policy by ID | 通过ID获取AccessPolicy
 //
 // Parameters:
 //  + name: body
 //    require: true
 //    in: body
-//    type: PolicyAuthInfo
+//    type: IDReq
 //
 // Responses:
-//  200: BaseMsgResp
+//  200: AccessPolicyInfoResp
 
-func CreatePolicyAuthHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func GetAccessPolicyByIdHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.PolicyAuthInfo
+		var req types.IDReq
 		if err := httpx.Parse(r, &req, true); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := policyauth.NewCreatePolicyAuthLogic(r.Context(), svcCtx)
-		resp, err := l.CreatePolicyAuth(&req)
+		l := access_policy.NewGetAccessPolicyByIdLogic(r.Context(), svcCtx)
+		resp, err := l.GetAccessPolicyById(&req)
 		if err != nil {
 			err = svcCtx.Trans.TransError(r.Context(), err)
 			httpx.ErrorCtx(r.Context(), w, err)

@@ -1,40 +1,40 @@
-package policyauth
+package access_policy
 
 import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
 
-	"sectran_admin/internal/logic/policyauth"
+	"sectran_admin/internal/logic/access_policy"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 )
 
-// swagger:route post /policy_auth/delete policyauth DeletePolicyAuth
+// swagger:route post /access_policy/create access_policy CreateAccessPolicy
 //
-// Delete policy auth information | 删除PolicyAuth信息
+// Create access policy information | 创建AccessPolicy
 //
-// Delete policy auth information | 删除PolicyAuth信息
+// Create access policy information | 创建AccessPolicy
 //
 // Parameters:
 //  + name: body
 //    require: true
 //    in: body
-//    type: IDsReq
+//    type: AccessPolicyInfo
 //
 // Responses:
 //  200: BaseMsgResp
 
-func DeletePolicyAuthHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func CreateAccessPolicyHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.IDsReq
+		var req types.AccessPolicyInfo
 		if err := httpx.Parse(r, &req, true); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := policyauth.NewDeletePolicyAuthLogic(r.Context(), svcCtx)
-		resp, err := l.DeletePolicyAuth(&req)
+		l := access_policy.NewCreateAccessPolicyLogic(r.Context(), svcCtx)
+		resp, err := l.CreateAccessPolicy(&req)
 		if err != nil {
 			err = svcCtx.Trans.TransError(r.Context(), err)
 			httpx.ErrorCtx(r.Context(), w, err)

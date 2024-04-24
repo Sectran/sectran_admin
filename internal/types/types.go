@@ -129,7 +129,6 @@ type DepartmentInfo struct {
 	ParentDepartmentId *uint64 `json:"parentDepartmentId,optional"`
 	// Comma-separated list of parent department IDs in ascending order.|上级部门集合逗号分隔升序排列
 	ParentDepartments *string `json:"parentDepartments,optional"`
-	HasChildren bool `json:"hasChildren,optional"`//是否存在下级部门
 }
 
 // The response data of department list | Department列表数据
@@ -152,10 +151,6 @@ type DepartmentListInfo struct {
 // swagger:model DepartmentListReq
 type DepartmentListReq struct {
 	PageInfo
-	// the parent departmenr id |父部门id
-	ParentDeptId *uint64 `json:"parentDeptId,optional"`
-	// 查询一级子部门或者ParentDeptId部门下所有数据
-	Flag *uint8 `json:"flag,optional"`
 	// The name of the department.|部门名称
 	Name *string `json:"name,optional"`
 	// The area where the department is located.|部门所在地区
@@ -314,12 +309,10 @@ type AccountListReq struct {
 	PageInfo
 	// account username|账号名称
 	Username *string `json:"username,optional"`
-	//所属设备id
-	DeviceId *uint64 `json:"deviceId,optional"`
-	//账号协议
-	Protocol *uint8 `json:"protocol,optional"`
-	//账号端口
-	Port *uint32 `json:"port,optional"`
+	// account password|账号密码
+	Password *string `json:"password,optional"`
+	// private_key of the this account.|账号私钥
+	PrivateKey *string `json:"privateKey,optional"`
 }
 
 // Account information response | Account信息返回体
@@ -434,4 +427,60 @@ type PolicyAuthInfoResp struct {
 	BaseDataInfo
 	// PolicyAuth information | PolicyAuth数据
 	Data PolicyAuthInfo `json:"data"`
+}
+
+// The response data of access policy information | AccessPolicy信息
+// swagger:model AccessPolicyInfo
+type AccessPolicyInfo struct {
+	BaseIDInfo
+	// AccessPolicy name|策略名称
+	Name *string `json:"name,optional"`
+	// AccessPolicy power|策略优先级、值越小优先级约高
+	Power *int32 `json:"power,optional"`
+	// ID of the AccessPolicy's department.|策略所属部门
+	DepartmentId *uint64 `json:"departmentId,optional"`
+	// 策略关联用户
+	Users *string `json:"users,optional"`
+	// 策略关联账号
+	Accounts *string `json:"accounts,optional"`
+	// AccessPolicy effective time rangw start|策略生效时间开始
+	EffecteTimeStart *int64 `json:"effecteTimeStart,optional"`
+	// AccessPolicy effective time rangw end|策略生效时间结束
+	EffecteTimeEnd *int64 `json:"effecteTimeEnd,optional"`
+}
+
+// The response data of access policy list | AccessPolicy列表数据
+// swagger:model AccessPolicyListResp
+type AccessPolicyListResp struct {
+	BaseDataInfo
+	// AccessPolicy list data | AccessPolicy列表数据
+	Data AccessPolicyListInfo `json:"data"`
+}
+
+// AccessPolicy list data | AccessPolicy列表数据
+// swagger:model AccessPolicyListInfo
+type AccessPolicyListInfo struct {
+	BaseListInfo
+	// The API list data | AccessPolicy列表数据
+	Data []AccessPolicyInfo `json:"data"`
+}
+
+// Get access policy list request params | AccessPolicy列表请求参数
+// swagger:model AccessPolicyListReq
+type AccessPolicyListReq struct {
+	PageInfo
+	// AccessPolicy name|策略名称
+	Name *string `json:"name,optional"`
+	// 策略关联用户
+	Users *string `json:"users,optional"`
+	// 策略关联账号
+	Accounts *string `json:"accounts,optional"`
+}
+
+// AccessPolicy information response | AccessPolicy信息返回体
+// swagger:model AccessPolicyInfoResp
+type AccessPolicyInfoResp struct {
+	BaseDataInfo
+	// AccessPolicy information | AccessPolicy数据
+	Data AccessPolicyInfo `json:"data"`
 }

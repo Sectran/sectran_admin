@@ -8,6 +8,25 @@ import (
 )
 
 var (
+	// AccessPoliciesColumns holds the columns for the "access_policies" table.
+	AccessPoliciesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
+		{Name: "name", Type: field.TypeString, Size: 64, Comment: "AccessPolicy name|策略名称"},
+		{Name: "power", Type: field.TypeInt32, Nullable: true, Comment: "AccessPolicy power|策略优先级、值越小优先级约高", Default: 0},
+		{Name: "department_id", Type: field.TypeUint64, Comment: "ID of the AccessPolicy's department.|策略所属部门"},
+		{Name: "users", Type: field.TypeString, Comment: "策略关联用户"},
+		{Name: "accounts", Type: field.TypeString, Comment: "策略关联账号"},
+		{Name: "effecte_time_start", Type: field.TypeTime, Nullable: true, Comment: "AccessPolicy effective time rangw start|策略生效时间开始"},
+		{Name: "effecte_time_end", Type: field.TypeTime, Nullable: true, Comment: "AccessPolicy effective time rangw end|策略生效时间结束"},
+	}
+	// AccessPoliciesTable holds the schema information for the "access_policies" table.
+	AccessPoliciesTable = &schema.Table{
+		Name:       "access_policies",
+		Columns:    AccessPoliciesColumns,
+		PrimaryKey: []*schema.Column{AccessPoliciesColumns[0]},
+	}
 	// AccountsColumns holds the columns for the "accounts" table.
 	AccountsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
@@ -68,24 +87,6 @@ var (
 		Columns:    DevicesColumns,
 		PrimaryKey: []*schema.Column{DevicesColumns[0]},
 	}
-	// PolicyAuthsColumns holds the columns for the "policy_auths" table.
-	PolicyAuthsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeUint64, Increment: true},
-		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
-		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
-		{Name: "name", Type: field.TypeString, Size: 64, Comment: "policy name|策略名称"},
-		{Name: "power", Type: field.TypeInt32, Comment: "policy power|策略优先级"},
-		{Name: "department_id", Type: field.TypeUint64, Nullable: true, Comment: "ID of the policy's department.|策略所属部门"},
-		{Name: "users", Type: field.TypeString, Comment: "策略关联用户"},
-		{Name: "accounts", Type: field.TypeString, Comment: "策略关联账号"},
-		{Name: "direction", Type: field.TypeBool, Comment: "策略相关性方向,默认正向，即断言正向用户与账号", Default: true},
-	}
-	// PolicyAuthsTable holds the schema information for the "policy_auths" table.
-	PolicyAuthsTable = &schema.Table{
-		Name:       "policy_auths",
-		Columns:    PolicyAuthsColumns,
-		PrimaryKey: []*schema.Column{PolicyAuthsColumns[0]},
-	}
 	// RolesColumns holds the columns for the "roles" table.
 	RolesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
@@ -137,10 +138,10 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		AccessPoliciesTable,
 		AccountsTable,
 		DepartmentsTable,
 		DevicesTable,
-		PolicyAuthsTable,
 		RolesTable,
 		UsersTable,
 	}

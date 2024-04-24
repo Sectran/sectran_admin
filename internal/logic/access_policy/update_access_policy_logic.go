@@ -1,4 +1,4 @@
-package policyauth
+package access_policy
 
 import (
 	"context"
@@ -8,31 +8,33 @@ import (
 	"sectran_admin/internal/utils/dberrorhandler"
 
     "github.com/suyuan32/simple-admin-common/i18n"
+	"github.com/suyuan32/simple-admin-common/utils/pointy"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type UpdatePolicyAuthLogic struct {
+type UpdateAccessPolicyLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewUpdatePolicyAuthLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdatePolicyAuthLogic {
-	return &UpdatePolicyAuthLogic{
+func NewUpdateAccessPolicyLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateAccessPolicyLogic {
+	return &UpdateAccessPolicyLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *UpdatePolicyAuthLogic) UpdatePolicyAuth(req *types.PolicyAuthInfo) (*types.BaseMsgResp, error) {
-    err := l.svcCtx.DB.PolicyAuth.UpdateOneID(*req.Id).
+func (l *UpdateAccessPolicyLogic) UpdateAccessPolicy(req *types.AccessPolicyInfo) (*types.BaseMsgResp, error) {
+    err := l.svcCtx.DB.AccessPolicy.UpdateOneID(*req.Id).
 			SetNotNilName(req.Name).
 			SetNotNilPower(req.Power).
 			SetNotNilDepartmentID(req.DepartmentId).
 			SetNotNilUsers(req.Users).
 			SetNotNilAccounts(req.Accounts).
-			SetNotNilDirection(req.Direction).
+			SetNotNilEffecteTimeStart(pointy.GetTimeMilliPointer(req.EffecteTimeStart)).
+			SetNotNilEffecteTimeEnd(pointy.GetTimeMilliPointer(req.EffecteTimeEnd)).
 			Exec(l.ctx)
 
     if err != nil {

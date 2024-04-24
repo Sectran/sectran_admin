@@ -18,6 +18,146 @@
   "host": "localhost:8081",
   "basePath": "/",
   "paths": {
+    "/access_policy": {
+      "post": {
+        "description": "Get access policy by ID | 通过ID获取AccessPolicy",
+        "tags": [
+          "access_policy"
+        ],
+        "summary": "Get access policy by ID | 通过ID获取AccessPolicy",
+        "operationId": "GetAccessPolicyById",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/IDReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "AccessPolicyInfoResp",
+            "schema": {
+              "$ref": "#/definitions/AccessPolicyInfoResp"
+            }
+          }
+        }
+      }
+    },
+    "/access_policy/create": {
+      "post": {
+        "description": "Create access policy information | 创建AccessPolicy",
+        "tags": [
+          "access_policy"
+        ],
+        "summary": "Create access policy information | 创建AccessPolicy",
+        "operationId": "CreateAccessPolicy",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/AccessPolicyInfo"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "BaseMsgResp",
+            "schema": {
+              "$ref": "#/definitions/BaseMsgResp"
+            }
+          }
+        }
+      }
+    },
+    "/access_policy/delete": {
+      "post": {
+        "description": "Delete access policy information | 删除AccessPolicy信息",
+        "tags": [
+          "access_policy"
+        ],
+        "summary": "Delete access policy information | 删除AccessPolicy信息",
+        "operationId": "DeleteAccessPolicy",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/IDsReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "BaseMsgResp",
+            "schema": {
+              "$ref": "#/definitions/BaseMsgResp"
+            }
+          }
+        }
+      }
+    },
+    "/access_policy/list": {
+      "post": {
+        "description": "Get access policy list | 获取AccessPolicy列表",
+        "tags": [
+          "access_policy"
+        ],
+        "summary": "Get access policy list | 获取AccessPolicy列表",
+        "operationId": "GetAccessPolicyList",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/AccessPolicyListReq"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "AccessPolicyListResp",
+            "schema": {
+              "$ref": "#/definitions/AccessPolicyListResp"
+            }
+          }
+        }
+      }
+    },
+    "/access_policy/update": {
+      "post": {
+        "description": "Update access policy information | 更新AccessPolicy",
+        "tags": [
+          "access_policy"
+        ],
+        "summary": "Update access policy information | 更新AccessPolicy",
+        "operationId": "UpdateAccessPolicy",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/AccessPolicyInfo"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "BaseMsgResp",
+            "schema": {
+              "$ref": "#/definitions/BaseMsgResp"
+            }
+          }
+        }
+      }
+    },
     "/account": {
       "post": {
         "description": "Get account by ID | 通过ID获取Account",
@@ -878,6 +1018,179 @@
     }
   },
   "definitions": {
+    "AccessPolicyInfo": {
+      "description": "The response data of access policy information | AccessPolicy信息",
+      "type": "object",
+      "properties": {
+        "accounts": {
+          "description": "策略关联账号",
+          "type": "string",
+          "x-go-name": "Accounts"
+        },
+        "createdAt": {
+          "description": "Create date | 创建日期",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "CreatedAt"
+        },
+        "departmentId": {
+          "description": "ID of the AccessPolicy's department.|策略所属部门",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "DepartmentId"
+        },
+        "effecteTimeEnd": {
+          "description": "AccessPolicy effective time rangw end|策略生效时间结束",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "EffecteTimeEnd"
+        },
+        "effecteTimeStart": {
+          "description": "AccessPolicy effective time rangw start|策略生效时间开始",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "EffecteTimeStart"
+        },
+        "id": {
+          "description": "ID",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "Id"
+        },
+        "name": {
+          "description": "AccessPolicy name|策略名称",
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "power": {
+          "description": "AccessPolicy power|策略优先级、值越小优先级约高",
+          "type": "integer",
+          "format": "int32",
+          "x-go-name": "Power"
+        },
+        "updatedAt": {
+          "description": "Update date | 更新日期",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "UpdatedAt"
+        },
+        "users": {
+          "description": "策略关联用户",
+          "type": "string",
+          "x-go-name": "Users"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "AccessPolicyInfoResp": {
+      "description": "AccessPolicy information response | AccessPolicy信息返回体",
+      "type": "object",
+      "properties": {
+        "code": {
+          "description": "Error code | 错误代码",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Code"
+        },
+        "data": {
+          "description": "Data | 数据",
+          "type": "string",
+          "x-go-name": "Data",
+          "$ref": "#/definitions/AccessPolicyInfo"
+        },
+        "msg": {
+          "description": "Message | 提示信息",
+          "type": "string",
+          "x-go-name": "Msg"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "AccessPolicyListInfo": {
+      "description": "AccessPolicy list data | AccessPolicy列表数据",
+      "type": "object",
+      "properties": {
+        "data": {
+          "description": "The API list data | AccessPolicy列表数据",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AccessPolicyInfo"
+          },
+          "x-go-name": "Data"
+        },
+        "total": {
+          "description": "The total number of data | 数据总数",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "Total"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "AccessPolicyListReq": {
+      "description": "Get access policy list request params | AccessPolicy列表请求参数",
+      "type": "object",
+      "required": [
+        "page",
+        "pageSize"
+      ],
+      "properties": {
+        "accounts": {
+          "description": "策略关联账号",
+          "type": "string",
+          "x-go-name": "Accounts"
+        },
+        "name": {
+          "description": "AccessPolicy name|策略名称",
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "page": {
+          "description": "Page number | 第几页",
+          "type": "integer",
+          "format": "uint64",
+          "minimum": 0,
+          "x-go-name": "Page"
+        },
+        "pageSize": {
+          "description": "Page size | 单页数据行数",
+          "type": "integer",
+          "format": "uint64",
+          "maximum": 100000,
+          "x-go-name": "PageSize"
+        },
+        "users": {
+          "description": "策略关联用户",
+          "type": "string",
+          "x-go-name": "Users"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
+    "AccessPolicyListResp": {
+      "description": "The response data of access policy list | AccessPolicy列表数据",
+      "type": "object",
+      "properties": {
+        "code": {
+          "description": "Error code | 错误代码",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Code"
+        },
+        "data": {
+          "description": "Data | 数据",
+          "type": "string",
+          "x-go-name": "Data",
+          "$ref": "#/definitions/AccessPolicyListInfo"
+        },
+        "msg": {
+          "description": "Message | 提示信息",
+          "type": "string",
+          "x-go-name": "Msg"
+        }
+      },
+      "x-go-package": "sectran_admin/internal/types"
+    },
     "AccountInfo": {
       "description": "The response data of account information | Account信息",
       "type": "object",
@@ -1019,6 +1332,7 @@
           "x-go-name": "Username"
         }
       },
+      "x-go-name": "AccountListReqRefer",
       "x-go-package": "sectran_admin/internal/types"
     },
     "AccountListResp": {
@@ -1178,7 +1492,7 @@
       "x-go-package": "sectran_admin/internal/types"
     },
     "DepartmentInfo": {
-      "description": "The response data of department information | Department信息",
+      "description": "部门----------------------------\nThe response data of department information | Department信息",
       "type": "object",
       "properties": {
         "area": {
@@ -1196,6 +1510,10 @@
           "description": "Description of the department.|部门描述",
           "type": "string",
           "x-go-name": "Description"
+        },
+        "hasChildren": {
+          "type": "boolean",
+          "x-go-name": "HasChildren"
         },
         "id": {
           "description": "ID",
@@ -1226,6 +1544,7 @@
           "x-go-name": "UpdatedAt"
         }
       },
+      "x-go-name": "DepartmentInfoRefer",
       "x-go-package": "sectran_admin/internal/types"
     },
     "DepartmentInfoResp": {
@@ -1271,6 +1590,7 @@
           "x-go-name": "Total"
         }
       },
+      "x-go-name": "DepartmentListInfoRefer",
       "x-go-package": "sectran_admin/internal/types"
     },
     "DepartmentListReq": {
@@ -1311,6 +1631,7 @@
           "x-go-name": "PageSize"
         }
       },
+      "x-go-name": "DepartmentListReqRefer",
       "x-go-package": "sectran_admin/internal/types"
     },
     "DepartmentListResp": {
@@ -1335,6 +1656,7 @@
           "x-go-name": "Msg"
         }
       },
+      "x-go-name": "DepartmentListRespRefer",
       "x-go-package": "sectran_admin/internal/types"
     },
     "DeviceInfo": {

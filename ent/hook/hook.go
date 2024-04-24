@@ -8,6 +8,18 @@ import (
 	"sectran_admin/ent"
 )
 
+// The AccessPolicyFunc type is an adapter to allow the use of ordinary
+// function as AccessPolicy mutator.
+type AccessPolicyFunc func(context.Context, *ent.AccessPolicyMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AccessPolicyFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AccessPolicyMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AccessPolicyMutation", m)
+}
+
 // The AccountFunc type is an adapter to allow the use of ordinary
 // function as Account mutator.
 type AccountFunc func(context.Context, *ent.AccountMutation) (ent.Value, error)
@@ -42,18 +54,6 @@ func (f DeviceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, erro
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DeviceMutation", m)
-}
-
-// The PolicyAuthFunc type is an adapter to allow the use of ordinary
-// function as PolicyAuth mutator.
-type PolicyAuthFunc func(context.Context, *ent.PolicyAuthMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f PolicyAuthFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.PolicyAuthMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PolicyAuthMutation", m)
 }
 
 // The RoleFunc type is an adapter to allow the use of ordinary

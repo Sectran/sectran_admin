@@ -1,9 +1,9 @@
-package policyauth
+package access_policy
 
 import (
 	"context"
 
-	"sectran_admin/ent/policyauth"
+	"sectran_admin/ent/accesspolicy"
 	"sectran_admin/ent/predicate"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
@@ -15,44 +15,44 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type GetPolicyAuthListLogic struct {
+type GetAccessPolicyListLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewGetPolicyAuthListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetPolicyAuthListLogic {
-	return &GetPolicyAuthListLogic{
+func NewGetAccessPolicyListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetAccessPolicyListLogic {
+	return &GetAccessPolicyListLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *GetPolicyAuthListLogic) GetPolicyAuthList(req *types.PolicyAuthListReq) (*types.PolicyAuthListResp, error) {
-	var predicates []predicate.PolicyAuth
+func (l *GetAccessPolicyListLogic) GetAccessPolicyList(req *types.AccessPolicyListReq) (*types.AccessPolicyListResp, error) {
+	var predicates []predicate.AccessPolicy
 	if req.Name != nil {
-		predicates = append(predicates, policyauth.NameContains(*req.Name))
+		predicates = append(predicates, accesspolicy.NameContains(*req.Name))
 	}
 	if req.Users != nil {
-		predicates = append(predicates, policyauth.UsersContains(*req.Users))
+		predicates = append(predicates, accesspolicy.UsersContains(*req.Users))
 	}
 	if req.Accounts != nil {
-		predicates = append(predicates, policyauth.AccountsContains(*req.Accounts))
+		predicates = append(predicates, accesspolicy.AccountsContains(*req.Accounts))
 	}
-	data, err := l.svcCtx.DB.PolicyAuth.Query().Where(predicates...).Page(l.ctx, req.Page, req.PageSize)
+	data, err := l.svcCtx.DB.AccessPolicy.Query().Where(predicates...).Page(l.ctx, req.Page, req.PageSize)
 
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
 
-	resp := &types.PolicyAuthListResp{}
+	resp := &types.AccessPolicyListResp{}
 	resp.Msg = l.svcCtx.Trans.Trans(l.ctx, i18n.Success)
 	resp.Data.Total = data.PageDetails.Total
 
 	for _, v := range data.List {
 		resp.Data.Data = append(resp.Data.Data,
-		types.PolicyAuthInfo{
+		types.AccessPolicyInfo{
             BaseIDInfo:    types.BaseIDInfo{
 				Id:          &v.ID,
 				CreatedAt:    pointy.GetPointer(v.CreatedAt.UnixMilli()),
@@ -63,7 +63,8 @@ func (l *GetPolicyAuthListLogic) GetPolicyAuthList(req *types.PolicyAuthListReq)
 			DepartmentId:	&v.DepartmentID,
 			Users:	&v.Users,
 			Accounts:	&v.Accounts,
-			Direction:	&v.Direction,
+			EffecteTimeStart:	pointy.GetUnixMilliPointer(v.EffecteTimeStart.UnixMilli()),
+			EffecteTimeEnd:	pointy.GetUnixMilliPointer(v.EffecteTimeEnd.UnixMilli()),
 		})
 	}
 

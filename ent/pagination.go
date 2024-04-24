@@ -5,10 +5,10 @@ package ent
 import (
 	"context"
 	"fmt"
+	"sectran_admin/ent/accesspolicy"
 	"sectran_admin/ent/account"
 	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
-	"sectran_admin/ent/policyauth"
 	"sectran_admin/ent/role"
 	"sectran_admin/ent/user"
 )
@@ -58,6 +58,85 @@ func (o OrderDirection) reverse() OrderDirection {
 }
 
 const errInvalidPagination = "INVALID_PAGINATION"
+
+type AccessPolicyPager struct {
+	Order  accesspolicy.OrderOption
+	Filter func(*AccessPolicyQuery) (*AccessPolicyQuery, error)
+}
+
+// AccessPolicyPaginateOption enables pagination customization.
+type AccessPolicyPaginateOption func(*AccessPolicyPager)
+
+// DefaultAccessPolicyOrder is the default ordering of AccessPolicy.
+var DefaultAccessPolicyOrder = Desc(accesspolicy.FieldID)
+
+func newAccessPolicyPager(opts []AccessPolicyPaginateOption) (*AccessPolicyPager, error) {
+	pager := &AccessPolicyPager{}
+	for _, opt := range opts {
+		opt(pager)
+	}
+	if pager.Order == nil {
+		pager.Order = DefaultAccessPolicyOrder
+	}
+	return pager, nil
+}
+
+func (p *AccessPolicyPager) ApplyFilter(query *AccessPolicyQuery) (*AccessPolicyQuery, error) {
+	if p.Filter != nil {
+		return p.Filter(query)
+	}
+	return query, nil
+}
+
+// AccessPolicyPageList is AccessPolicy PageList result.
+type AccessPolicyPageList struct {
+	List        []*AccessPolicy `json:"list"`
+	PageDetails *PageDetails    `json:"pageDetails"`
+}
+
+func (ap *AccessPolicyQuery) Page(
+	ctx context.Context, pageNum uint64, pageSize uint64, opts ...AccessPolicyPaginateOption,
+) (*AccessPolicyPageList, error) {
+
+	pager, err := newAccessPolicyPager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if ap, err = pager.ApplyFilter(ap); err != nil {
+		return nil, err
+	}
+
+	ret := &AccessPolicyPageList{}
+
+	ret.PageDetails = &PageDetails{
+		Page: pageNum,
+		Size: pageSize,
+	}
+
+	count, err := ap.Clone().Count(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ret.PageDetails.Total = uint64(count)
+
+	if pager.Order != nil {
+		ap = ap.Order(pager.Order)
+	} else {
+		ap = ap.Order(DefaultAccessPolicyOrder)
+	}
+
+	ap = ap.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
+	list, err := ap.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ret.List = list
+
+	return ret, nil
+}
 
 type AccountPager struct {
 	Order  account.OrderOption
@@ -288,85 +367,6 @@ func (d *DeviceQuery) Page(
 
 	d = d.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
 	list, err := d.All(ctx)
-	if err != nil {
-		return nil, err
-	}
-	ret.List = list
-
-	return ret, nil
-}
-
-type PolicyAuthPager struct {
-	Order  policyauth.OrderOption
-	Filter func(*PolicyAuthQuery) (*PolicyAuthQuery, error)
-}
-
-// PolicyAuthPaginateOption enables pagination customization.
-type PolicyAuthPaginateOption func(*PolicyAuthPager)
-
-// DefaultPolicyAuthOrder is the default ordering of PolicyAuth.
-var DefaultPolicyAuthOrder = Desc(policyauth.FieldID)
-
-func newPolicyAuthPager(opts []PolicyAuthPaginateOption) (*PolicyAuthPager, error) {
-	pager := &PolicyAuthPager{}
-	for _, opt := range opts {
-		opt(pager)
-	}
-	if pager.Order == nil {
-		pager.Order = DefaultPolicyAuthOrder
-	}
-	return pager, nil
-}
-
-func (p *PolicyAuthPager) ApplyFilter(query *PolicyAuthQuery) (*PolicyAuthQuery, error) {
-	if p.Filter != nil {
-		return p.Filter(query)
-	}
-	return query, nil
-}
-
-// PolicyAuthPageList is PolicyAuth PageList result.
-type PolicyAuthPageList struct {
-	List        []*PolicyAuth `json:"list"`
-	PageDetails *PageDetails  `json:"pageDetails"`
-}
-
-func (pa *PolicyAuthQuery) Page(
-	ctx context.Context, pageNum uint64, pageSize uint64, opts ...PolicyAuthPaginateOption,
-) (*PolicyAuthPageList, error) {
-
-	pager, err := newPolicyAuthPager(opts)
-	if err != nil {
-		return nil, err
-	}
-
-	if pa, err = pager.ApplyFilter(pa); err != nil {
-		return nil, err
-	}
-
-	ret := &PolicyAuthPageList{}
-
-	ret.PageDetails = &PageDetails{
-		Page: pageNum,
-		Size: pageSize,
-	}
-
-	count, err := pa.Clone().Count(ctx)
-
-	if err != nil {
-		return nil, err
-	}
-
-	ret.PageDetails.Total = uint64(count)
-
-	if pager.Order != nil {
-		pa = pa.Order(pager.Order)
-	} else {
-		pa = pa.Order(DefaultPolicyAuthOrder)
-	}
-
-	pa = pa.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
-	list, err := pa.All(ctx)
 	if err != nil {
 		return nil, err
 	}

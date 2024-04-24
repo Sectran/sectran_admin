@@ -4,11 +4,11 @@ package handler
 import (
 	"net/http"
 
+	access_policy "sectran_admin/internal/handler/access_policy"
 	account "sectran_admin/internal/handler/account"
 	base "sectran_admin/internal/handler/base"
 	department "sectran_admin/internal/handler/department"
 	device "sectran_admin/internal/handler/device"
-	policyauth "sectran_admin/internal/handler/policyauth"
 	role "sectran_admin/internal/handler/role"
 	user "sectran_admin/internal/handler/user"
 	"sectran_admin/internal/svc"
@@ -197,34 +197,35 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 	)
 
+
 	server.AddRoutes(
 		rest.WithMiddlewares(
 			[]rest.Middleware{serverCtx.Authority},
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/policy_auth/create",
-					Handler: policyauth.CreatePolicyAuthHandler(serverCtx),
+					Path:    "/access_policy/create",
+					Handler: access_policy.CreateAccessPolicyHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/policy_auth/update",
-					Handler: policyauth.UpdatePolicyAuthHandler(serverCtx),
+					Path:    "/access_policy/update",
+					Handler: access_policy.UpdateAccessPolicyHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/policy_auth/delete",
-					Handler: policyauth.DeletePolicyAuthHandler(serverCtx),
+					Path:    "/access_policy/delete",
+					Handler: access_policy.DeleteAccessPolicyHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/policy_auth/list",
-					Handler: policyauth.GetPolicyAuthListHandler(serverCtx),
+					Path:    "/access_policy/list",
+					Handler: access_policy.GetAccessPolicyListHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/policy_auth",
-					Handler: policyauth.GetPolicyAuthByIdHandler(serverCtx),
+					Path:    "/access_policy",
+					Handler: access_policy.GetAccessPolicyByIdHandler(serverCtx),
 				},
 			}...,
 		),

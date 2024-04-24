@@ -1,4 +1,4 @@
-package policyauth
+package access_policy
 
 import (
 	"context"
@@ -13,32 +13,32 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type GetPolicyAuthByIdLogic struct {
+type GetAccessPolicyByIdLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewGetPolicyAuthByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetPolicyAuthByIdLogic {
-	return &GetPolicyAuthByIdLogic{
+func NewGetAccessPolicyByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetAccessPolicyByIdLogic {
+	return &GetAccessPolicyByIdLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *GetPolicyAuthByIdLogic) GetPolicyAuthById(req *types.IDReq) (*types.PolicyAuthInfoResp, error) {
-	data, err := l.svcCtx.DB.PolicyAuth.Get(l.ctx, req.Id)
+func (l *GetAccessPolicyByIdLogic) GetAccessPolicyById(req *types.IDReq) (*types.AccessPolicyInfoResp, error) {
+	data, err := l.svcCtx.DB.AccessPolicy.Get(l.ctx, req.Id)
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
 
-	return &types.PolicyAuthInfoResp{
+	return &types.AccessPolicyInfoResp{
 	    BaseDataInfo: types.BaseDataInfo{
             Code: 0,
             Msg:  l.svcCtx.Trans.Trans(l.ctx, i18n.Success),
         },
-        Data: types.PolicyAuthInfo{
+        Data: types.AccessPolicyInfo{
             BaseIDInfo:    types.BaseIDInfo{
 				Id:          &data.ID,
 				CreatedAt:    pointy.GetPointer(data.CreatedAt.UnixMilli()),
@@ -49,7 +49,8 @@ func (l *GetPolicyAuthByIdLogic) GetPolicyAuthById(req *types.IDReq) (*types.Pol
 			DepartmentId:	&data.DepartmentID,
 			Users:	&data.Users,
 			Accounts:	&data.Accounts,
-			Direction:	&data.Direction,
+			EffecteTimeStart:	pointy.GetUnixMilliPointer(data.EffecteTimeStart.UnixMilli()),
+			EffecteTimeEnd:	pointy.GetUnixMilliPointer(data.EffecteTimeEnd.UnixMilli()),
         },
 	}, nil
 }
