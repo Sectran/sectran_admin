@@ -34,7 +34,7 @@ func NewGetDepartmentListLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 	}
 }
 
-func (l *GetDepartmentListLogic) GetDepartmentList(req *types.DepartmentListReq) (*types.DepartmentListRespRefer, error) {
+func (l *GetDepartmentListLogic) GetDepartmentList(req *types.DepartmentListReqRefer) (*types.DepartmentListRespRefer, error) {
 	domain := l.ctx.Value("request_domain").((*ent.User))
 	var predicates []predicate.Department
 

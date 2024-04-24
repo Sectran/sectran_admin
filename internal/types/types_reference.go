@@ -22,3 +22,13 @@ type DepartmentListRespRefer struct {
 	// Department list data | Department列表数据
 	Data DepartmentListInfoRefer `json:"data"`
 }
+
+// Get department list request params | Department列表请求参数
+// swagger:model DepartmentListReq
+type DepartmentListReqRefer struct {
+	DepartmentListReq
+	// the parent departmenr id |父部门id
+	ParentDeptId *uint64 `json:"parentDeptId,optional"`
+	// 查询一级子部门或者ParentDeptId部门下所有数据
+	Flag *uint8 `json:"flag,optional"`
+}
