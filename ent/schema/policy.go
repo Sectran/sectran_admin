@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"time"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/field"
@@ -21,11 +23,12 @@ func (PolicyAuth) Fields() []ent.Field {
 			Comment("policy name|策略名称").
 			Annotations(entsql.WithComments(true)),
 		field.Int32("power").
+			Optional().
 			Min(0).
-			Comment("policy power|策略优先级").
+			Default(0).
+			Comment("policy power|策略优先级、值越小优先级约高").
 			Annotations(entsql.WithComments(true)),
 		field.Uint64("department_id").
-			Optional().
 			Min(1).
 			Comment("ID of the policy's department.|策略所属部门").
 			Annotations(entsql.WithComments(true)),
@@ -37,9 +40,17 @@ func (PolicyAuth) Fields() []ent.Field {
 			NotEmpty().
 			Comment("策略关联账号").
 			Annotations(entsql.WithComments(true)),
-		field.Bool("direction").
-			Comment("策略相关性方向,默认正向，即断言正向用户与账号").
-			Default(true).
+		field.Time("effecte_time_start").
+			Optional().
+			Default(time.Now).
+			UpdateDefault(time.Now).
+			Comment("Policy effective time rangw start|策略生效时间开始").
+			Annotations(entsql.WithComments(true)),
+		field.Time("effecte_time_end").
+			Optional().
+			Default(time.Time{}.AddDate(9999, 0, 0)).
+			UpdateDefault(time.Now).
+			Comment("Policy effective time rangw end|策略生效时间结束").
 			Annotations(entsql.WithComments(true)),
 	}
 }

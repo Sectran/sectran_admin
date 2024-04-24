@@ -66,6 +66,7 @@ func (l *DeleteDepartmentLogic) DeleteDepartment(req *types.IDsReq) (*types.Base
 				Where(department.ID(d)).
 				Select(department.FieldParentDepartments).String(l.ctx)
 			if err != nil {
+				//如果目标不存在、跳过
 				if _, ok := err.(*ent.NotFoundError); ok {
 					continue
 				}
