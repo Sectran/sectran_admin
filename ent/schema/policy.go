@@ -9,13 +9,13 @@ import (
 	"github.com/suyuan32/simple-admin-common/orm/ent/mixins"
 )
 
-// PolicyAuth holds the schema definition for the PolicyAuth entity.
-type PolicyAuth struct {
+// Policy holds the schema definition for the Policy entity.
+type Policy struct {
 	ent.Schema
 }
 
-// Fields of the PolicyAuth.
-func (PolicyAuth) Fields() []ent.Field {
+// Fields of the Policy.
+func (Policy) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").
 			NotEmpty().
@@ -55,13 +55,13 @@ func (PolicyAuth) Fields() []ent.Field {
 	}
 }
 
-// Edges of the PolicyAuth.
-func (PolicyAuth) Edges() []ent.Edge {
+// Edges of the Policy.
+func (Policy) Edges() []ent.Edge {
 	return nil
 }
 
-// Mixin of the PolicyAuth.
-func (PolicyAuth) Mixin() []ent.Mixin {
+// Mixin of the Policy.
+func (Policy) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixins.IDMixin{},
 	}
