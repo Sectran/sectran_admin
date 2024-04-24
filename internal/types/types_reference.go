@@ -1,5 +1,6 @@
 package types
 
+// ----------------------------部门----------------------------
 // The response data of department information | Department信息
 // swagger:model DepartmentInfo
 type DepartmentInfoRefer struct {
@@ -31,4 +32,20 @@ type DepartmentListReqRefer struct {
 	ParentDeptId *uint64 `json:"parentDeptId,optional"`
 	// 查询一级子部门或者ParentDeptId部门下所有数据
 	Flag *uint8 `json:"flag,optional"`
+}
+
+//----------------------------账号----------------------------
+
+// Get account list request params | Account列表请求参数
+// swagger:model AccountListReq
+type AccountListReqRefer struct {
+	PageInfo
+	// account username|账号名称
+	Username *string `json:"username,optional"`
+	//所属设备id
+	DeviceId *uint64 `json:"deviceId,optional"`
+	//账号协议
+	Protocol *uint8 `json:"protocol,optional"`
+	//账号端口
+	Port *uint32 `json:"port,optional"`
 }

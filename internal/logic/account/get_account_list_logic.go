@@ -29,7 +29,7 @@ func NewGetAccountListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 	}
 }
 
-func (l *GetAccountListLogic) GetAccountList(req *types.AccountListReq) (*types.AccountListResp, error) {
+func (l *GetAccountListLogic) GetAccountList(req *types.AccountListReqRefer) (*types.AccountListResp, error) {
 	var predicates []predicate.Account
 	if req.Username != nil {
 		predicates = append(predicates, account.UsernameContains(*req.Username))
