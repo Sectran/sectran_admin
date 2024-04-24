@@ -14,8 +14,8 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/suyuan32/simple-admin-common/i18n"
-
 	"github.com/suyuan32/simple-admin-common/utils/pointy"
+
 	"github.com/zeromicro/go-zero/core/errorx"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -34,7 +34,7 @@ func NewGetDepartmentListLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 	}
 }
 
-func (l *GetDepartmentListLogic) GetDepartmentList(req *types.DepartmentListReq) (*types.DepartmentListResp, error) {
+func (l *GetDepartmentListLogic) GetDepartmentList(req *types.DepartmentListReq) (*types.DepartmentListRespRefer, error) {
 	domain := l.ctx.Value("request_domain").((*ent.User))
 	var predicates []predicate.Department
 
@@ -107,7 +107,7 @@ func (l *GetDepartmentListLogic) GetDepartmentList(req *types.DepartmentListReq)
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
 
-	resp := &types.DepartmentListResp{}
+	resp := &types.DepartmentListRespRefer{}
 	resp.Msg = l.svcCtx.Trans.Trans(l.ctx, i18n.Success)
 	resp.Data.Total = data.PageDetails.Total
 
@@ -123,18 +123,20 @@ func (l *GetDepartmentListLogic) GetDepartmentList(req *types.DepartmentListReq)
 
 	for _, v := range data.List {
 		resp.Data.Data = append(resp.Data.Data,
-			types.DepartmentInfo{
-				BaseIDInfo: types.BaseIDInfo{
-					Id:        &v.ID,
-					CreatedAt: pointy.GetPointer(v.CreatedAt.UnixMilli()),
-					UpdatedAt: pointy.GetPointer(v.UpdatedAt.UnixMilli()),
+			types.DepartmentInfoRefer{
+				DepartmentInfo: types.DepartmentInfo{
+					BaseIDInfo: types.BaseIDInfo{
+						Id:        &v.ID,
+						CreatedAt: pointy.GetPointer(v.CreatedAt.UnixMilli()),
+						UpdatedAt: pointy.GetPointer(v.UpdatedAt.UnixMilli()),
+					},
+					Name:               &v.Name,
+					Area:               &v.Area,
+					Description:        &v.Description,
+					ParentDepartmentId: &v.ParentDepartmentID,
+					ParentDepartments:  &v.ParentDepartments,
 				},
-				Name:               &v.Name,
-				Area:               &v.Area,
-				Description:        &v.Description,
-				ParentDepartmentId: &v.ParentDepartmentID,
-				ParentDepartments:  &v.ParentDepartments,
-				HasChildren:        HasChildren(v.ID),
+				HasChildren: HasChildren(v.ID),
 			})
 	}
 
