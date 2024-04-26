@@ -73,14 +73,6 @@ func (dc *DepartmentCreate) SetParentDepartmentID(u uint64) *DepartmentCreate {
 	return dc
 }
 
-// SetNillableParentDepartmentID sets the "parent_department_id" field if the given value is not nil.
-func (dc *DepartmentCreate) SetNillableParentDepartmentID(u *uint64) *DepartmentCreate {
-	if u != nil {
-		dc.SetParentDepartmentID(*u)
-	}
-	return dc
-}
-
 // SetParentDepartments sets the "parent_departments" field.
 func (dc *DepartmentCreate) SetParentDepartments(s string) *DepartmentCreate {
 	dc.mutation.SetParentDepartments(s)
@@ -185,6 +177,9 @@ func (dc *DepartmentCreate) check() error {
 			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Department.description": %w`, err)}
 		}
 	}
+	if _, ok := dc.mutation.ParentDepartmentID(); !ok {
+		return &ValidationError{Name: "parent_department_id", err: errors.New(`ent: missing required field "Department.parent_department_id"`)}
+	}
 	if v, ok := dc.mutation.ParentDepartmentID(); ok {
 		if err := department.ParentDepartmentIDValidator(v); err != nil {
 			return &ValidationError{Name: "parent_department_id", err: fmt.Errorf(`ent: validator failed for field "Department.parent_department_id": %w`, err)}
@@ -192,11 +187,6 @@ func (dc *DepartmentCreate) check() error {
 	}
 	if _, ok := dc.mutation.ParentDepartments(); !ok {
 		return &ValidationError{Name: "parent_departments", err: errors.New(`ent: missing required field "Department.parent_departments"`)}
-	}
-	if v, ok := dc.mutation.ParentDepartments(); ok {
-		if err := department.ParentDepartmentsValidator(v); err != nil {
-			return &ValidationError{Name: "parent_departments", err: fmt.Errorf(`ent: validator failed for field "Department.parent_departments": %w`, err)}
-		}
 	}
 	return nil
 }

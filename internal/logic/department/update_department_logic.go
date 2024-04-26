@@ -52,8 +52,9 @@ func (l *UpdateDepartmentLogic) UpdateDepartment(req *types.DepartmentInfo) (*ty
 		SetNotNilName(req.Name).
 		SetNotNilArea(req.Area).
 		SetNotNilDescription(req.Description).
-		SetNotNilParentDepartmentID(req.ParentDepartmentId).
-		SetNotNilParentDepartments(req.ParentDepartments).
+		// 不允许修改部门的上级部门
+		// SetNotNilParentDepartmentID(req.ParentDepartmentId).
+		// SetNotNilParentDepartments(req.ParentDepartments).
 		Exec(l.ctx)
 
 	if err != nil {

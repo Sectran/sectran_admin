@@ -2156,24 +2156,10 @@ func (m *DepartmentMutation) AddedParentDepartmentID() (r int64, exists bool) {
 	return *v, true
 }
 
-// ClearParentDepartmentID clears the value of the "parent_department_id" field.
-func (m *DepartmentMutation) ClearParentDepartmentID() {
-	m.parent_department_id = nil
-	m.addparent_department_id = nil
-	m.clearedFields[department.FieldParentDepartmentID] = struct{}{}
-}
-
-// ParentDepartmentIDCleared returns if the "parent_department_id" field was cleared in this mutation.
-func (m *DepartmentMutation) ParentDepartmentIDCleared() bool {
-	_, ok := m.clearedFields[department.FieldParentDepartmentID]
-	return ok
-}
-
 // ResetParentDepartmentID resets all changes to the "parent_department_id" field.
 func (m *DepartmentMutation) ResetParentDepartmentID() {
 	m.parent_department_id = nil
 	m.addparent_department_id = nil
-	delete(m.clearedFields, department.FieldParentDepartmentID)
 }
 
 // SetParentDepartments sets the "parent_departments" field.
@@ -2469,11 +2455,7 @@ func (m *DepartmentMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *DepartmentMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(department.FieldParentDepartmentID) {
-		fields = append(fields, department.FieldParentDepartmentID)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -2486,11 +2468,6 @@ func (m *DepartmentMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *DepartmentMutation) ClearField(name string) error {
-	switch name {
-	case department.FieldParentDepartmentID:
-		m.ClearParentDepartmentID()
-		return nil
-	}
 	return fmt.Errorf("unknown Department nullable field %s", name)
 }
 

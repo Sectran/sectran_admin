@@ -78,8 +78,6 @@ var (
 	DescriptionValidator func(string) error
 	// ParentDepartmentIDValidator is a validator for the "parent_department_id" field. It is called by the builders before save.
 	ParentDepartmentIDValidator func(uint64) error
-	// ParentDepartmentsValidator is a validator for the "parent_departments" field. It is called by the builders before save.
-	ParentDepartmentsValidator func(string) error
 )
 
 // OrderOption defines the ordering options for the Department queries.

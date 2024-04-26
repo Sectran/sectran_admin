@@ -405,16 +405,6 @@ func ParentDepartmentIDLTE(v uint64) predicate.Department {
 	return predicate.Department(sql.FieldLTE(FieldParentDepartmentID, v))
 }
 
-// ParentDepartmentIDIsNil applies the IsNil predicate on the "parent_department_id" field.
-func ParentDepartmentIDIsNil() predicate.Department {
-	return predicate.Department(sql.FieldIsNull(FieldParentDepartmentID))
-}
-
-// ParentDepartmentIDNotNil applies the NotNil predicate on the "parent_department_id" field.
-func ParentDepartmentIDNotNil() predicate.Department {
-	return predicate.Department(sql.FieldNotNull(FieldParentDepartmentID))
-}
-
 // ParentDepartmentsEQ applies the EQ predicate on the "parent_departments" field.
 func ParentDepartmentsEQ(v string) predicate.Department {
 	return predicate.Department(sql.FieldEQ(FieldParentDepartments, v))

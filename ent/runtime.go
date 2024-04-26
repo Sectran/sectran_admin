@@ -220,10 +220,6 @@ func init() {
 	departmentDescParentDepartmentID := departmentFields[3].Descriptor()
 	// department.ParentDepartmentIDValidator is a validator for the "parent_department_id" field. It is called by the builders before save.
 	department.ParentDepartmentIDValidator = departmentDescParentDepartmentID.Validators[0].(func(uint64) error)
-	// departmentDescParentDepartments is the schema descriptor for parent_departments field.
-	departmentDescParentDepartments := departmentFields[4].Descriptor()
-	// department.ParentDepartmentsValidator is a validator for the "parent_departments" field. It is called by the builders before save.
-	department.ParentDepartmentsValidator = departmentDescParentDepartments.Validators[0].(func(string) error)
 	deviceMixin := schema.Device{}.Mixin()
 	deviceMixinFields0 := deviceMixin[0].Fields()
 	_ = deviceMixinFields0

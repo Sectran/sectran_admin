@@ -2,7 +2,11 @@ package department
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
+	"sectran_admin/ent"
+	"sectran_admin/ent/department"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 	"sectran_admin/internal/utils/dberrorhandler"
@@ -28,6 +32,45 @@ func NewCreateDepartmentLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *CreateDepartmentLogic) CreateDepartment(req *types.DepartmentInfo) (*types.DepartmentInfoResp, error) {
+	//部门名称不能和同层级的部门名称重复
+
+	//查询父部门信息
+	pDept, err := l.svcCtx.DB.Department.Get(l.ctx, *req.ParentDepartmentId)
+	if err != nil {
+		if _, ok := err.(*ent.NotFoundError); ok {
+			return nil, types.CustomError("父部门不存在，可能已被删除")
+		}
+		return nil, types.ErrInternalError
+	}
+
+	//赋值拼接ParentDepartments
+	prefix := fmt.Sprintf("%s%s%d", pDept.ParentDepartments, func() string {
+		if pDept.ParentDepartments == "" {
+			return ""
+		}
+		return ","
+	}(), pDept.ID)
+	req.ParentDepartments = &prefix
+
+	var sameLevelDeptNames []struct {
+		Name string `json:"name"`
+	}
+
+	err = l.svcCtx.DB.Department.Query().
+		Where(department.ParentDepartmentsHasPrefix(prefix)).
+		Select(department.FieldName).
+		Scan(l.ctx, &sameLevelDeptNames)
+	if err != nil {
+		logx.Errorw("query error", logx.Field("err", err))
+		return nil, types.ErrInternalError
+	}
+
+	for _, v := range sameLevelDeptNames {
+		if strings.EqualFold(v.Name, *req.Name) {
+			return nil, types.CustomError("当前部门层级已经存在相同名称的部门")
+		}
+	}
+
 	data, err := l.svcCtx.DB.Department.Create().
 		SetNotNilName(req.Name).
 		SetNotNilArea(req.Area).
@@ -55,7 +98,6 @@ func (l *CreateDepartmentLogic) CreateDepartment(req *types.DepartmentInfo) (*ty
 			Area:               &data.Area,
 			Description:        &data.Description,
 			ParentDepartmentId: &data.ParentDepartmentID,
-			ParentDepartments:  &data.ParentDepartments,
 		},
 	}, nil
 }
