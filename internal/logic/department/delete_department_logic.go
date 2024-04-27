@@ -9,7 +9,6 @@ import (
 	"sectran_admin/ent/department"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
-	"sectran_admin/internal/utils/dberrorhandler"
 	"sectran_admin/internal/utils/entx"
 
 	"github.com/suyuan32/simple-admin-common/i18n"
@@ -38,13 +37,22 @@ func (l *DeleteDepartmentLogic) DeleteDepartment(req *types.IDsReq) (*types.Base
 		currParentDeptIds string
 	)
 
+	defer func(e *error) {
+		if *e != nil {
+			logx.Errorw("there's an error while deleting departments", logx.Field("err", *e))
+		}
+	}(&err)
+
 	//查询当前主体的部门、获取到他父亲部门的部门前缀
 	domain := l.ctx.Value("request_domain").((*ent.User))
 	domainParentDepartments, err := l.svcCtx.DB.Department.Query().
 		Where(department.ID(domain.DepartmentID)).
 		Select(department.FieldParentDepartments).String(l.ctx)
 	if err != nil {
-		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
+		if _, ok := err.(*ent.NotFoundError); ok {
+			return nil, types.ErrForceLoginOut
+		}
+		return nil, types.ErrInternalError
 	}
 
 	//因为创建的id是递增的、我们从后往前删除，并且删除所有当前部门的子部门
@@ -71,7 +79,7 @@ func (l *DeleteDepartmentLogic) DeleteDepartment(req *types.IDsReq) (*types.Base
 					continue
 				}
 
-				return dberrorhandler.DefaultEntError(l.Logger, err, req)
+				return types.ErrInternalError
 			}
 
 			//校验是否有操作权限
@@ -83,13 +91,13 @@ func (l *DeleteDepartmentLogic) DeleteDepartment(req *types.IDsReq) (*types.Base
 			prefix = fmt.Sprintf("%s,%d", currParentDeptIds, d)
 			_, err = tx.Department.Delete().Where(department.ParentDepartmentsHasPrefix(prefix)).Exec(l.ctx)
 			if err != nil {
-				return dberrorhandler.DefaultEntError(l.Logger, err, req)
+				return types.ErrInternalError
 			}
 
 			//删除当前部门
 			_, err = tx.Department.Delete().Where(department.IDEQ(d)).Exec(l.ctx)
 			if err != nil {
-				return dberrorhandler.DefaultEntError(l.Logger, err, req)
+				return types.ErrInternalError
 			}
 		}
 

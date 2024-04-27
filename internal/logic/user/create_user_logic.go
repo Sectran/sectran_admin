@@ -3,10 +3,13 @@ package user
 import (
 	"context"
 
+	"sectran_admin/ent/department"
+	"sectran_admin/ent/role"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 	"sectran_admin/internal/utils/dberrorhandler"
 
+	"github.com/dlclark/regexp2"
 	"github.com/suyuan32/simple-admin-common/i18n"
 	"github.com/suyuan32/simple-admin-common/utils/pointy"
 
@@ -27,14 +30,48 @@ func NewCreateUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Create
 	}
 }
 
+func isValidPassword(password string) bool {
+	// 密码规则：至少包含一个大写字母、一个小写字母、一个数字，且长度在8到20之间
+	regex := regexp2.MustCompile(`^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,20}$`, 0)
+	match, _ := regex.MatchString(password)
+	return match
+}
+
 func (l *CreateUserLogic) CreateUser(req *types.UserInfo) (*types.UserInfoResp, error) {
+	var (
+		err       error
+		deptExist int
+		roleExist int
+		status    bool = true
+	)
+
+	deptExist, err = l.svcCtx.DB.Department.Query().Where(department.ID(*req.DepartmentId)).Count(l.ctx)
+	if err != nil {
+		return nil, types.ErrInternalError
+	}
+	if deptExist == 0 {
+		return nil, types.CustomError("所创建用户的部门不存在")
+	}
+
+	roleExist, err = l.svcCtx.DB.Role.Query().Where(role.ID(*req.RoleId)).Count(l.ctx)
+	if err != nil {
+		return nil, types.ErrInternalError
+	}
+	if roleExist == 0 {
+		return nil, types.CustomError("所创建用户的角色不存在")
+	}
+
+	if !isValidPassword(*req.Password) {
+		return nil, types.CustomError("密码必须至少包含一个大写字母、一个小写字母、一个数字,并且长度在8-20之间")
+	}
+
 	data, err := l.svcCtx.DB.User.Create().
 		SetNotNilAccount(req.Account).
 		SetNotNilName(req.Name).
 		SetNotNilPassword(req.Password).
 		SetNotNilDepartmentID(req.DepartmentId).
 		SetNotNilRoleID(req.RoleId).
-		SetNotNilStatus(req.Status).
+		SetNotNilStatus(&status).
 		SetNotNilDescription(req.Description).
 		SetNotNilEmail(req.Email).
 		SetNotNilPhoneNumber(req.PhoneNumber).
