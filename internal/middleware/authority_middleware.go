@@ -33,17 +33,13 @@ func NewAuthorityMiddleware(cbn *casbin.Enforcer, rds redis.UniversalClient, tra
 
 func (m *AuthorityMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// get the path
 		obj := r.URL.Path
-		// get the method
 		act := r.Method
-
 		token := r.Header.Get("Authorization")
 
 		userJson, err := m.Rds.Get(context.Background(), token).Result()
 		if err != nil && !errors.Is(err, redis.Nil) {
-			logx.Errorw("get user by token from redis error ", logx.Field("err", err))
-			httpx.Error(w, types.ErrInternalError)
+			httpx.Error(w, types.ErrRedis)
 			return
 		}
 
@@ -55,7 +51,6 @@ func (m *AuthorityMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		user := &ent.User{}
 		err = json.Unmarshal([]byte(userJson), user)
 		if err != nil {
-			logx.Errorw("cannot unmarshal user", logx.Field("err", err))
 			httpx.Error(w, types.ErrInternalError)
 			return
 		}
