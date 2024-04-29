@@ -26,17 +26,18 @@ func randStr(str_len int) string {
 }
 
 func GenerateTokenUsingHs256(key string, expTime time.Duration, user *ent.User) (string, error) {
+	now := time.Now()
 	claim := MyCustomClaims{
 		UserID:   int(user.ID),
 		Username: user.Name,
 		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    "sectran_admin",                                 // 签发者
-			Subject:   user.Account,                                    // 签发对象
-			Audience:  jwt.ClaimStrings{"SECTRAN"},                     //签发受众
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expTime)),     //过期时间
-			NotBefore: jwt.NewNumericDate(time.Now().Add(time.Second)), //最早使用时间
-			IssuedAt:  jwt.NewNumericDate(time.Now()),                  //签发时间
-			ID:        randStr(10),                                     // wt ID, 类似于盐值
+			Issuer:    "sectran_admin",                      // 签发者
+			Subject:   user.Account,                         // 签发对象
+			Audience:  jwt.ClaimStrings{"SECTRAN"},          //签发受众
+			ExpiresAt: jwt.NewNumericDate(now.Add(expTime)), //过期时间
+			NotBefore: jwt.NewNumericDate(now),              //最早使用时间
+			IssuedAt:  jwt.NewNumericDate(now),              //签发时间
+			ID:        randStr(10),                          // wt ID, 类似于盐值
 		},
 	}
 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claim).SignedString([]byte(key))
