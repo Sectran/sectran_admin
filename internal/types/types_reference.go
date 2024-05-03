@@ -49,3 +49,12 @@ type AccountListReqRefer struct {
 	//账号端口
 	Port *uint32 `json:"port,optional"`
 }
+
+// ----------------------------用户----------------------------
+// User information response | User信息返回体
+// swagger:model UserInfoResp
+type UserInfoRespRefer struct {
+	UserInfoResp
+	RoleName       string `json:"roleName"`
+	DepartmentName string `json:"departmentName"`
+}

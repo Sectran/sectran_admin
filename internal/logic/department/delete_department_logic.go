@@ -7,6 +7,7 @@ import (
 
 	"sectran_admin/ent"
 	"sectran_admin/ent/department"
+	"sectran_admin/ent/user"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 	"sectran_admin/internal/utils/entx"
@@ -45,15 +46,6 @@ func (l *DeleteDepartmentLogic) DeleteDepartment(req *types.IDsReq) (*types.Base
 
 	//查询当前主体的部门、获取到他父亲部门的部门前缀
 	domain := l.ctx.Value("request_domain").((*ent.User))
-	domainParentDepartments, err := l.svcCtx.DB.Department.Query().
-		Where(department.ID(domain.DepartmentID)).
-		Select(department.FieldParentDepartments).String(l.ctx)
-	if err != nil {
-		if _, ok := err.(*ent.NotFoundError); ok {
-			return nil, types.ErrForceLoginOut
-		}
-		return nil, types.ErrInternalError
-	}
 
 	//因为创建的id是递增的、我们从后往前删除，并且删除所有当前部门的子部门
 	//首先将部门id数组降序排列、即id递减
@@ -83,8 +75,26 @@ func (l *DeleteDepartmentLogic) DeleteDepartment(req *types.IDsReq) (*types.Base
 			}
 
 			//校验是否有操作权限
-			if _, err = DomainDeptAccessed(l.ctx, l.svcCtx, domainParentDepartments, currParentDeptIds); err != nil {
+			if _, err = DomainDeptAccessed(int(domain.DepartmentID), currParentDeptIds); err != nil {
 				return err
+			}
+
+			var count int
+			//如果当前部门下存在关联用户、资源，不允许删除
+			count, err = l.svcCtx.DB.User.Query().Where(user.DepartmentIDEQ(d)).Count(l.ctx)
+			if err != nil {
+				return types.ErrInternalError
+			}
+			if count > 0 {
+				//查询部门名称
+				var deptName string
+				deptName, err = l.svcCtx.DB.Department.
+					Query().
+					Select(department.FieldName).String(l.ctx)
+				if err != nil {
+					return types.ErrInternalError
+				}
+				return types.CustomError(fmt.Sprintf("部门%s下存在未删除的用户,不允许删除", deptName))
 			}
 
 			//按照ParentDepartments前缀匹配删除当前部门的所有子部门(会走索引)

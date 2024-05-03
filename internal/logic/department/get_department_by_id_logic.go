@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"sectran_admin/ent"
-	"sectran_admin/ent/department"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 
@@ -30,10 +29,8 @@ func NewGetDepartmentByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 
 func (l *GetDepartmentByIdLogic) GetDepartmentById(req *types.IDReq) (*types.DepartmentInfoResp, error) {
 	var (
-		err                     error
-		domain                  *ent.User
-		domainParentDepartments string
-		data                    *ent.Department
+		err  error
+		data *ent.Department
 	)
 
 	defer func(e *error) {
@@ -43,16 +40,7 @@ func (l *GetDepartmentByIdLogic) GetDepartmentById(req *types.IDReq) (*types.Dep
 	}(&err)
 
 	//查询当前主体的部门、获取到他父亲部门的部门前缀
-	domain = l.ctx.Value("request_domain").((*ent.User))
-	domainParentDepartments, err = l.svcCtx.DB.Department.Query().
-		Where(department.ID(domain.DepartmentID)).
-		Select(department.FieldParentDepartments).String(l.ctx)
-	if err != nil {
-		if _, ok := err.(*ent.NotFoundError); ok {
-			return nil, types.ErrForceLoginOut
-		}
-		return nil, types.ErrInternalError
-	}
+	domain := l.ctx.Value("request_domain").((*ent.User))
 
 	//查询目标的部门
 	data, err = l.svcCtx.DB.Department.Get(l.ctx, req.Id)
@@ -64,7 +52,7 @@ func (l *GetDepartmentByIdLogic) GetDepartmentById(req *types.IDReq) (*types.Dep
 	}
 
 	//判断当前账号是否对待操作部门存在访问权限
-	if _, err = DomainDeptAccessed(l.ctx, l.svcCtx, domainParentDepartments, data.ParentDepartments); err != nil {
+	if _, err = DomainDeptAccessed((int(domain.DepartmentID)), data.ParentDepartments); err != nil {
 		return nil, err
 	}
 

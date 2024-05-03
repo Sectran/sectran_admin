@@ -55,12 +55,15 @@ func (m *AuthorityMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		result := batchCheck(m.Cbn, []uint64{user.RoleID}, act, obj)
-		if !result {
-			logx.Errorw("the role is not permitted to access the API", logx.Field("roleId", user.RoleID),
-				logx.Field("path", obj), logx.Field("method", act))
-			httpx.Error(w, types.ErrAccountHasNoRights)
-			return
+		//开发者管理员
+		if user.ID != 1 {
+			result := batchCheck(m.Cbn, []uint64{user.RoleID}, act, obj)
+			if !result {
+				logx.Errorw("the role is not permitted to access the API", logx.Field("roleId", user.RoleID),
+					logx.Field("path", obj), logx.Field("method", act))
+				httpx.Error(w, types.ErrAccountHasNoRights)
+				return
+			}
 		}
 
 		logx.Infow("HTTP/HTTPS Request", logx.Field("UUID", user.ID),
