@@ -5,14 +5,15 @@ import (
 
 	"sectran_admin/ent"
 	"sectran_admin/ent/department"
+	"sectran_admin/ent/user"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 
 	"github.com/suyuan32/simple-admin-common/i18n"
+	"github.com/suyuan32/simple-admin-common/utils/pointy"
 
 	dept "sectran_admin/internal/logic/department"
 
-	"github.com/suyuan32/simple-admin-common/utils/pointy"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -30,11 +31,11 @@ func NewGetUserByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 	}
 }
 
-func (l *GetUserByIdLogic) GetUserById(req *types.IDReq) (*types.UserInfoResp, error) {
+func (l *GetUserByIdLogic) GetUserById(req *types.IDReq) (*types.UserInfoRespRefer, error) {
 	//获取当前主体
 	domain := l.ctx.Value("request_domain").((*ent.User))
 
-	data, err := l.svcCtx.DB.User.Get(l.ctx, req.Id)
+	data, err := l.svcCtx.DB.User.Query().Where(user.ID(req.Id)).WithDepartments().WithRoles().Only(l.ctx)
 	if err != nil {
 		return nil, types.ErrInternalError
 	}
@@ -52,26 +53,28 @@ func (l *GetUserByIdLogic) GetUserById(req *types.IDReq) (*types.UserInfoResp, e
 		return nil, err
 	}
 
-	return &types.UserInfoResp{
+	return &types.UserInfoRespRefer{
 		BaseDataInfo: types.BaseDataInfo{
 			Code: 0,
 			Msg:  l.svcCtx.Trans.Trans(l.ctx, i18n.Success),
 		},
-		Data: types.UserInfo{
+		Data: types.UserInfoRefer{
 			BaseIDInfo: types.BaseIDInfo{
 				Id:        &data.ID,
 				CreatedAt: pointy.GetPointer(data.CreatedAt.UnixMilli()),
 				UpdatedAt: pointy.GetPointer(data.UpdatedAt.UnixMilli()),
 			},
-			Account:      &data.Account,
-			Name:         &data.Name,
-			Password:     &data.Password,
-			DepartmentId: &data.DepartmentID,
-			RoleId:       &data.RoleID,
-			Status:       &data.Status,
-			Description:  &data.Description,
-			Email:        &data.Email,
-			PhoneNumber:  &data.PhoneNumber,
+			Account:        &data.Account,
+			Name:           &data.Name,
+			Password:       &data.Password,
+			DepartmentId:   &data.DepartmentID,
+			RoleId:         &data.RoleID,
+			Status:         &data.Status,
+			Description:    &data.Description,
+			Email:          &data.Email,
+			PhoneNumber:    &data.PhoneNumber,
+			RoleName:       data.Edges.Departments.Name,
+			DepartmentName: data.Edges.Departments.Name,
 		},
 	}, nil
 }

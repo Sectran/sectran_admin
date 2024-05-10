@@ -52,9 +52,73 @@ type AccountListReqRefer struct {
 
 // ----------------------------用户----------------------------
 // User information response | User信息返回体
+
+// User information response | User信息返回体
 // swagger:model UserInfoResp
 type UserInfoRespRefer struct {
-	UserInfoResp
-	RoleName       string `json:"roleName"`
-	DepartmentName string `json:"departmentName"`
+	BaseDataInfo
+	// User information | User数据
+	Data UserInfoRefer `json:"data"`
+}
+
+// The response data of user information | User信息
+// swagger:model UserInfo
+type UserInfoRefer struct {
+	BaseIDInfo
+	// User account.|用户账号
+	Account *string `json:"account,optional"`
+	// User name.|用户姓名
+	Name *string `json:"name,optional"`
+	// User password.|用户密码
+	Password *string `json:"password,optional"`
+	// ID of the user's department.|用户所属部门
+	DepartmentId *uint64 `json:"departmentId,optional"`
+	// ID of the user's role.|用户所属角色
+	RoleId *uint64 `json:"roleId,optional"`
+	// User status (enabled(true) or disabled(false)).|用户账号状态
+	Status *bool `json:"status,optional"`
+	// User description.|用户账号描述
+	Description *string `json:"description,optional"`
+	// User email.|用户邮箱
+	Email *string `json:"email,optional"`
+	// User phone number.|用户手机号码
+	PhoneNumber    *string `json:"phoneNumber,optional"`
+	RoleName       string  `json:"roleName"`
+	DepartmentName string  `json:"departmentName"`
+}
+
+// User list data | User列表数据
+// swagger:model UserListInfo
+type UserListInfoRefer struct {
+	BaseListInfo
+	// The API list data | User列表数据
+	Data []UserInfoRefer `json:"data"`
+}
+
+// The response data of user list | User列表数据
+// swagger:model UserListResp
+type UserListRespRefer struct {
+	BaseDataInfo
+	// User list data | User列表数据
+	Data UserListInfoRefer `json:"data"`
+}
+
+// Get user list request params | User列表请求参数
+// swagger:model UserListReq
+type UserListReqRefer struct {
+	PageInfo
+	// User account.|用户账号
+	Account *string `json:"account,optional"`
+	// User name.|用户姓名
+	Name *string `json:"name,optional"`
+	// User status (enabled(true) or disabled(false)).|用户账号状态
+	Status *bool `json:"status,optional"`
+	// User description.|用户账号描述
+	Description *string `json:"description,optional"`
+	// User email.|用户邮箱
+	Email *string `json:"email,optional"`
+	// User phone number.|用户手机号码
+	PhoneNumber    *string `json:"phoneNumber,optional"`
+	RoleName       *string `json:"roleName"`
+	DepartmentName *string `json:"departmentName"`
 }

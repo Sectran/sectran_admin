@@ -2,8 +2,12 @@ package user
 
 import (
 	"context"
+	"fmt"
 
+	"sectran_admin/ent"
+	"sectran_admin/ent/department"
 	"sectran_admin/ent/predicate"
+	"sectran_admin/ent/role"
 	"sectran_admin/ent/user"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
@@ -29,14 +33,53 @@ func NewGetUserListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 	}
 }
 
-func (l *GetUserListLogic) GetUserList(req *types.UserListReq) (*types.UserListResp, error) {
+func (l *GetUserListLogic) GetUserList(req *types.UserListReqRefer) (*types.UserListRespRefer, error) {
+	domain := l.ctx.Value("request_domain").((*ent.User))
+
+	dDept, _ := l.svcCtx.DB.Department.Get(l.ctx, domain.DepartmentID)
 	var predicates []predicate.User
+
+	//赋值拼接ParentDepartments
+	prefix := fmt.Sprintf("%s%s%d", dDept.ParentDepartments, func() string {
+		if dDept.ParentDepartments == "" {
+			return ""
+		}
+		return ","
+	}(), dDept.ID)
+
+	//查询所有子部门下的用户
+	predicates = append(predicates, user.HasDepartmentsWith(department.ParentDepartmentsHasPrefix(prefix)))
 
 	if req.Account != nil {
 		predicates = append(predicates, user.AccountContains(*req.Account))
 	}
+
 	if req.Name != nil {
 		predicates = append(predicates, user.NameContains(*req.Name))
+	}
+
+	if req.DepartmentName != nil {
+		predicates = append(predicates, user.HasDepartmentsWith(department.NameContains(*req.DepartmentName)))
+	}
+
+	if req.RoleName != nil {
+		predicates = append(predicates, user.HasRolesWith(role.NameContains(*req.RoleName)))
+	}
+
+	if req.Status != nil {
+		predicates = append(predicates, user.Status(*req.Status))
+	}
+
+	if req.Description != nil {
+		predicates = append(predicates, user.DescriptionContains(*req.Description))
+	}
+
+	if req.Email != nil {
+		predicates = append(predicates, user.EmailContains(*req.Email))
+	}
+
+	if req.PhoneNumber != nil {
+		predicates = append(predicates, user.PasswordContains(*req.PhoneNumber))
 	}
 
 	data, err := l.svcCtx.DB.User.Query().Where(predicates...).Page(l.ctx, req.Page, req.PageSize)
@@ -44,13 +87,13 @@ func (l *GetUserListLogic) GetUserList(req *types.UserListReq) (*types.UserListR
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
 
-	resp := &types.UserListResp{}
+	resp := &types.UserListRespRefer{}
 	resp.Msg = l.svcCtx.Trans.Trans(l.ctx, i18n.Success)
 	resp.Data.Total = data.PageDetails.Total
 
 	for _, v := range data.List {
 		resp.Data.Data = append(resp.Data.Data,
-			types.UserInfo{
+			types.UserInfoRefer{
 				BaseIDInfo: types.BaseIDInfo{
 					Id:        &v.ID,
 					CreatedAt: pointy.GetPointer(v.CreatedAt.UnixMilli()),

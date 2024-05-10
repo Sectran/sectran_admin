@@ -16,6 +16,7 @@ Log:
   Path: ./logs/SectranAdmin/api
   Level: info
   Compress: false
+  Encoding: plain 
   KeepDays: 7
   StackCoolDownMillis: 100
 
