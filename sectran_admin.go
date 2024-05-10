@@ -48,7 +48,6 @@ func initDept(ctx *svc.ServiceContext) {
 	}
 
 	if c == 0 {
-
 		_, err := ctx.DB.Department.Create().
 			SetName("山川科技").
 			SetArea("北京").
