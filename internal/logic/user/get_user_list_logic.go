@@ -82,7 +82,7 @@ func (l *GetUserListLogic) GetUserList(req *types.UserListReqRefer) (*types.User
 		predicates = append(predicates, user.PasswordContains(*req.PhoneNumber))
 	}
 
-	data, err := l.svcCtx.DB.User.Query().Where(predicates...).Page(l.ctx, req.Page, req.PageSize)
+	data, err := l.svcCtx.DB.User.Query().WithRoles().WithDepartments().Where(predicates...).Page(l.ctx, req.Page, req.PageSize)
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
