@@ -83,8 +83,8 @@ type UserInfoRefer struct {
 	Email *string `json:"email,optional"`
 	// User phone number.|用户手机号码
 	PhoneNumber    *string `json:"phoneNumber,optional"`
-	RoleName       string  `json:"roleName"`
-	DepartmentName string  `json:"departmentName"`
+	RoleName       *string `json:"roleName"`
+	DepartmentName *string `json:"departmentName"`
 }
 
 // User list data | User列表数据

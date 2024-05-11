@@ -3,11 +3,14 @@ package user
 import (
 	"context"
 
+	"sectran_admin/ent"
+	"sectran_admin/ent/user"
+	"sectran_admin/internal/logic/department"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 	"sectran_admin/internal/utils/dberrorhandler"
 
-    "github.com/suyuan32/simple-admin-common/i18n"
+	"github.com/suyuan32/simple-admin-common/i18n"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -26,21 +29,32 @@ func NewUpdateUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Update
 }
 
 func (l *UpdateUserLogic) UpdateUser(req *types.UserInfo) (*types.BaseMsgResp, error) {
-    err := l.svcCtx.DB.User.UpdateOneID(*req.Id).
-			SetNotNilAccount(req.Account).
-			SetNotNilName(req.Name).
-			SetNotNilPassword(req.Password).
-			SetNotNilDepartmentID(req.DepartmentId).
-			SetNotNilRoleID(req.RoleId).
-			SetNotNilStatus(req.Status).
-			SetNotNilDescription(req.Description).
-			SetNotNilEmail(req.Email).
-			SetNotNilPhoneNumber(req.PhoneNumber).
-			Exec(l.ctx)
+	domain := l.ctx.Value("request_domain").((*ent.User))
 
-    if err != nil {
+	targetUser, err := l.svcCtx.DB.User.Query().Where(user.ID(*req.Id)).WithDepartments().Only(l.ctx)
+	if err != nil {
+		return nil, types.ErrInternalError
+	}
+
+	if _, err = department.DomainDeptAccessed(int(domain.DepartmentID), targetUser.Edges.Departments.ParentDepartments); err != nil {
+		return nil, err
+	}
+
+	err = l.svcCtx.DB.User.UpdateOneID(*req.Id).
+		SetNotNilAccount(req.Account).
+		SetNotNilName(req.Name).
+		SetNotNilPassword(req.Password).
+		SetNotNilDepartmentID(req.DepartmentId).
+		SetNotNilRoleID(req.RoleId).
+		SetNotNilStatus(req.Status).
+		SetNotNilDescription(req.Description).
+		SetNotNilEmail(req.Email).
+		SetNotNilPhoneNumber(req.PhoneNumber).
+		Exec(l.ctx)
+
+	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
 
-    return &types.BaseMsgResp{Msg: l.svcCtx.Trans.Trans(l.ctx, i18n.UpdateSuccess)}, nil
+	return &types.BaseMsgResp{Msg: l.svcCtx.Trans.Trans(l.ctx, i18n.UpdateSuccess)}, nil
 }

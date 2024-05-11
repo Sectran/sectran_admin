@@ -73,8 +73,8 @@ func (l *GetUserByIdLogic) GetUserById(req *types.IDReq) (*types.UserInfoRespRef
 			Description:    &data.Description,
 			Email:          &data.Email,
 			PhoneNumber:    &data.PhoneNumber,
-			RoleName:       data.Edges.Departments.Name,
-			DepartmentName: data.Edges.Departments.Name,
+			RoleName:       &data.Edges.Departments.Name,
+			DepartmentName: &data.Edges.Departments.Name,
 		},
 	}, nil
 }
