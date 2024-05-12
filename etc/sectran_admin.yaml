@@ -22,7 +22,7 @@ Log:
 
 DatabaseConf:
   Type: mysql
-  Host: 101.133.229.239
+  Host: 127.0.0.1
   Port: 3306
   DBName: sectran
   Username: root
@@ -40,7 +40,7 @@ RedisConf:
 
 CasbinDatabaseConf:
   Type: mysql
-  Host: 101.133.229.239
+  Host: 127.0.0.1
   Port: 3306
   DBName: sectran
   Username: root

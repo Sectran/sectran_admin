@@ -116,7 +116,7 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
 	handler.RegisterHandlersCustom(server, ctx)
-
+	
 	initDept(ctx)
 	initRole(ctx)
 	initUser(ctx)
