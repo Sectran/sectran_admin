@@ -59,6 +59,13 @@ func (l *GetDepartmentListLogic) GetDepartmentList(req *types.DepartmentListReqR
 		return nil, types.ErrInternalError
 	}
 
+	prefix := fmt.Sprintf("%s%s%d", dDept.ParentDepartments, func() string {
+		if dDept.ParentDepartments == "" {
+			return ""
+		}
+		return ","
+	}(), dDept.ID)
+
 	if req.ParentDeptId != nil {
 		//子集查询必须传递flag
 		if req.Flag == nil {
@@ -85,20 +92,13 @@ func (l *GetDepartmentListLogic) GetDepartmentList(req *types.DepartmentListReqR
 			predicates = append(predicates, department.ParentDepartmentID(*req.ParentDeptId))
 		case 1:
 			//模糊查询这个部门下的所有部门
-			prefix := fmt.Sprintf("%s%s%d", dDept.ParentDepartments, func() string {
-				if dDept.ParentDepartments == "" {
-					return ""
-				}
-				return ","
-			}(), dDept.ID)
-			predicates = append(predicates, department.ParentDepartmentsHasPrefix(prefix))
 		default:
 			return nil, types.CustomError("Flag值不合法(0 or 1)")
 		}
 	}
 
 	//所请求的部门ID必须是当前主体的同级或者子级部门，不允许查询不在当前部门管辖范围内的部门数据
-	predicates = append(predicates, department.ParentDepartmentsHasPrefix(dDept.ParentDepartments))
+	predicates = append(predicates, department.ParentDepartmentsHasPrefix(prefix))
 
 	//模糊查询部门名称
 	if req.Name != nil {
