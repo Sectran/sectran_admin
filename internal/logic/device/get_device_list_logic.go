@@ -2,14 +2,16 @@ package device
 
 import (
 	"context"
+	"fmt"
 
+	"sectran_admin/ent"
+	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
 	"sectran_admin/ent/predicate"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
-	"sectran_admin/internal/utils/dberrorhandler"
 
-    "github.com/suyuan32/simple-admin-common/i18n"
+	"github.com/suyuan32/simple-admin-common/i18n"
 
 	"github.com/suyuan32/simple-admin-common/utils/pointy"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -30,20 +32,37 @@ func NewGetDeviceListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 }
 
 func (l *GetDeviceListLogic) GetDeviceList(req *types.DeviceListReq) (*types.DeviceListResp, error) {
+	domain := l.ctx.Value("request_domain").((*ent.User))
+	dDept, _ := l.svcCtx.DB.Department.Get(l.ctx, domain.DepartmentID)
+
 	var predicates []predicate.Device
+
+	//赋值拼接ParentDepartments
+	prefix := fmt.Sprintf("%s%s%d", dDept.ParentDepartments, func() string {
+		if dDept.ParentDepartments == "" {
+			return ""
+		}
+		return ","
+	}(), dDept.ID)
+
+	//查询所有子部门下的用户
+	predicates = append(predicates, device.HasDepartmentsWith(department.ParentDepartmentsHasPrefix(prefix)))
+
 	if req.Name != nil {
 		predicates = append(predicates, device.NameContains(*req.Name))
 	}
+
 	if req.Host != nil {
 		predicates = append(predicates, device.HostContains(*req.Host))
 	}
+
 	if req.Type != nil {
 		predicates = append(predicates, device.TypeContains(*req.Type))
 	}
-	data, err := l.svcCtx.DB.Device.Query().Where(predicates...).Page(l.ctx, req.Page, req.PageSize)
 
+	data, err := l.svcCtx.DB.Device.Query().Where(predicates...).Page(l.ctx, req.Page, req.PageSize)
 	if err != nil {
-		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
+		return nil, types.ErrInternalError
 	}
 
 	resp := &types.DeviceListResp{}
@@ -52,18 +71,18 @@ func (l *GetDeviceListLogic) GetDeviceList(req *types.DeviceListReq) (*types.Dev
 
 	for _, v := range data.List {
 		resp.Data.Data = append(resp.Data.Data,
-		types.DeviceInfo{
-            BaseIDInfo:    types.BaseIDInfo{
-				Id:          &v.ID,
-				CreatedAt:    pointy.GetPointer(v.CreatedAt.UnixMilli()),
-				UpdatedAt:    pointy.GetPointer(v.UpdatedAt.UnixMilli()),
-            },
-			Name:	&v.Name,
-			DepartmentId:	&v.DepartmentID,
-			Host:	&v.Host,
-			Type:	&v.Type,
-			Description:	&v.Description,
-		})
+			types.DeviceInfo{
+				BaseIDInfo: types.BaseIDInfo{
+					Id:        &v.ID,
+					CreatedAt: pointy.GetPointer(v.CreatedAt.UnixMilli()),
+					UpdatedAt: pointy.GetPointer(v.UpdatedAt.UnixMilli()),
+				},
+				Name:         &v.Name,
+				DepartmentId: &v.DepartmentID,
+				Host:         &v.Host,
+				Type:         &v.Type,
+				Description:  &v.Description,
+			})
 	}
 
 	return resp, nil
