@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"sectran_admin/ent/account"
+	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
 	"time"
 
@@ -91,6 +92,25 @@ func (dc *DeviceCreate) SetDescription(s string) *DeviceCreate {
 func (dc *DeviceCreate) SetID(u uint64) *DeviceCreate {
 	dc.mutation.SetID(u)
 	return dc
+}
+
+// SetDepartmentsID sets the "departments" edge to the Department entity by ID.
+func (dc *DeviceCreate) SetDepartmentsID(id uint64) *DeviceCreate {
+	dc.mutation.SetDepartmentsID(id)
+	return dc
+}
+
+// SetNillableDepartmentsID sets the "departments" edge to the Department entity by ID if the given value is not nil.
+func (dc *DeviceCreate) SetNillableDepartmentsID(id *uint64) *DeviceCreate {
+	if id != nil {
+		dc = dc.SetDepartmentsID(*id)
+	}
+	return dc
+}
+
+// SetDepartments sets the "departments" edge to the Department entity.
+func (dc *DeviceCreate) SetDepartments(d *Department) *DeviceCreate {
+	return dc.SetDepartmentsID(d.ID)
 }
 
 // AddAccountIDs adds the "accounts" edge to the Account entity by IDs.
@@ -242,10 +262,6 @@ func (dc *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 		_spec.SetField(device.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
-	if value, ok := dc.mutation.DepartmentID(); ok {
-		_spec.SetField(device.FieldDepartmentID, field.TypeUint64, value)
-		_node.DepartmentID = value
-	}
 	if value, ok := dc.mutation.Host(); ok {
 		_spec.SetField(device.FieldHost, field.TypeString, value)
 		_node.Host = value
@@ -257,6 +273,23 @@ func (dc *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 	if value, ok := dc.mutation.Description(); ok {
 		_spec.SetField(device.FieldDescription, field.TypeString, value)
 		_node.Description = value
+	}
+	if nodes := dc.mutation.DepartmentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   device.DepartmentsTable,
+			Columns: []string{device.DepartmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.DepartmentID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := dc.mutation.AccountsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

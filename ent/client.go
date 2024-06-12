@@ -787,6 +787,22 @@ func (c *DeviceClient) GetX(ctx context.Context, id uint64) *Device {
 	return obj
 }
 
+// QueryDepartments queries the departments edge of a Device.
+func (c *DeviceClient) QueryDepartments(d *Device) *DepartmentQuery {
+	query := (&DepartmentClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := d.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(device.Table, device.FieldID, id),
+			sqlgraph.To(department.Table, department.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, device.DepartmentsTable, device.DepartmentsColumn),
+		)
+		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryAccounts queries the accounts edge of a Device.
 func (c *DeviceClient) QueryAccounts(d *Device) *AccountQuery {
 	query := (&AccountClient{config: c.config}).Query()

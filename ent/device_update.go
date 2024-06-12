@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"sectran_admin/ent/account"
+	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
 	"sectran_admin/ent/predicate"
 	"time"
@@ -51,7 +52,6 @@ func (du *DeviceUpdate) SetNillableName(s *string) *DeviceUpdate {
 
 // SetDepartmentID sets the "department_id" field.
 func (du *DeviceUpdate) SetDepartmentID(u uint64) *DeviceUpdate {
-	du.mutation.ResetDepartmentID()
 	du.mutation.SetDepartmentID(u)
 	return du
 }
@@ -61,12 +61,6 @@ func (du *DeviceUpdate) SetNillableDepartmentID(u *uint64) *DeviceUpdate {
 	if u != nil {
 		du.SetDepartmentID(*u)
 	}
-	return du
-}
-
-// AddDepartmentID adds u to the "department_id" field.
-func (du *DeviceUpdate) AddDepartmentID(u int64) *DeviceUpdate {
-	du.mutation.AddDepartmentID(u)
 	return du
 }
 
@@ -118,6 +112,25 @@ func (du *DeviceUpdate) SetNillableDescription(s *string) *DeviceUpdate {
 	return du
 }
 
+// SetDepartmentsID sets the "departments" edge to the Department entity by ID.
+func (du *DeviceUpdate) SetDepartmentsID(id uint64) *DeviceUpdate {
+	du.mutation.SetDepartmentsID(id)
+	return du
+}
+
+// SetNillableDepartmentsID sets the "departments" edge to the Department entity by ID if the given value is not nil.
+func (du *DeviceUpdate) SetNillableDepartmentsID(id *uint64) *DeviceUpdate {
+	if id != nil {
+		du = du.SetDepartmentsID(*id)
+	}
+	return du
+}
+
+// SetDepartments sets the "departments" edge to the Department entity.
+func (du *DeviceUpdate) SetDepartments(d *Department) *DeviceUpdate {
+	return du.SetDepartmentsID(d.ID)
+}
+
 // AddAccountIDs adds the "accounts" edge to the Account entity by IDs.
 func (du *DeviceUpdate) AddAccountIDs(ids ...uint64) *DeviceUpdate {
 	du.mutation.AddAccountIDs(ids...)
@@ -136,6 +149,12 @@ func (du *DeviceUpdate) AddAccounts(a ...*Account) *DeviceUpdate {
 // Mutation returns the DeviceMutation object of the builder.
 func (du *DeviceUpdate) Mutation() *DeviceMutation {
 	return du.mutation
+}
+
+// ClearDepartments clears the "departments" edge to the Department entity.
+func (du *DeviceUpdate) ClearDepartments() *DeviceUpdate {
+	du.mutation.ClearDepartments()
+	return du
 }
 
 // ClearAccounts clears all "accounts" edges to the Account entity.
@@ -243,15 +262,6 @@ func (du *DeviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := du.mutation.Name(); ok {
 		_spec.SetField(device.FieldName, field.TypeString, value)
 	}
-	if value, ok := du.mutation.DepartmentID(); ok {
-		_spec.SetField(device.FieldDepartmentID, field.TypeUint64, value)
-	}
-	if value, ok := du.mutation.AddedDepartmentID(); ok {
-		_spec.AddField(device.FieldDepartmentID, field.TypeUint64, value)
-	}
-	if du.mutation.DepartmentIDCleared() {
-		_spec.ClearField(device.FieldDepartmentID, field.TypeUint64)
-	}
 	if value, ok := du.mutation.Host(); ok {
 		_spec.SetField(device.FieldHost, field.TypeString, value)
 	}
@@ -260,6 +270,35 @@ func (du *DeviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := du.mutation.Description(); ok {
 		_spec.SetField(device.FieldDescription, field.TypeString, value)
+	}
+	if du.mutation.DepartmentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   device.DepartmentsTable,
+			Columns: []string{device.DepartmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := du.mutation.DepartmentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   device.DepartmentsTable,
+			Columns: []string{device.DepartmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if du.mutation.AccountsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -348,7 +387,6 @@ func (duo *DeviceUpdateOne) SetNillableName(s *string) *DeviceUpdateOne {
 
 // SetDepartmentID sets the "department_id" field.
 func (duo *DeviceUpdateOne) SetDepartmentID(u uint64) *DeviceUpdateOne {
-	duo.mutation.ResetDepartmentID()
 	duo.mutation.SetDepartmentID(u)
 	return duo
 }
@@ -358,12 +396,6 @@ func (duo *DeviceUpdateOne) SetNillableDepartmentID(u *uint64) *DeviceUpdateOne 
 	if u != nil {
 		duo.SetDepartmentID(*u)
 	}
-	return duo
-}
-
-// AddDepartmentID adds u to the "department_id" field.
-func (duo *DeviceUpdateOne) AddDepartmentID(u int64) *DeviceUpdateOne {
-	duo.mutation.AddDepartmentID(u)
 	return duo
 }
 
@@ -415,6 +447,25 @@ func (duo *DeviceUpdateOne) SetNillableDescription(s *string) *DeviceUpdateOne {
 	return duo
 }
 
+// SetDepartmentsID sets the "departments" edge to the Department entity by ID.
+func (duo *DeviceUpdateOne) SetDepartmentsID(id uint64) *DeviceUpdateOne {
+	duo.mutation.SetDepartmentsID(id)
+	return duo
+}
+
+// SetNillableDepartmentsID sets the "departments" edge to the Department entity by ID if the given value is not nil.
+func (duo *DeviceUpdateOne) SetNillableDepartmentsID(id *uint64) *DeviceUpdateOne {
+	if id != nil {
+		duo = duo.SetDepartmentsID(*id)
+	}
+	return duo
+}
+
+// SetDepartments sets the "departments" edge to the Department entity.
+func (duo *DeviceUpdateOne) SetDepartments(d *Department) *DeviceUpdateOne {
+	return duo.SetDepartmentsID(d.ID)
+}
+
 // AddAccountIDs adds the "accounts" edge to the Account entity by IDs.
 func (duo *DeviceUpdateOne) AddAccountIDs(ids ...uint64) *DeviceUpdateOne {
 	duo.mutation.AddAccountIDs(ids...)
@@ -433,6 +484,12 @@ func (duo *DeviceUpdateOne) AddAccounts(a ...*Account) *DeviceUpdateOne {
 // Mutation returns the DeviceMutation object of the builder.
 func (duo *DeviceUpdateOne) Mutation() *DeviceMutation {
 	return duo.mutation
+}
+
+// ClearDepartments clears the "departments" edge to the Department entity.
+func (duo *DeviceUpdateOne) ClearDepartments() *DeviceUpdateOne {
+	duo.mutation.ClearDepartments()
+	return duo
 }
 
 // ClearAccounts clears all "accounts" edges to the Account entity.
@@ -570,15 +627,6 @@ func (duo *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err err
 	if value, ok := duo.mutation.Name(); ok {
 		_spec.SetField(device.FieldName, field.TypeString, value)
 	}
-	if value, ok := duo.mutation.DepartmentID(); ok {
-		_spec.SetField(device.FieldDepartmentID, field.TypeUint64, value)
-	}
-	if value, ok := duo.mutation.AddedDepartmentID(); ok {
-		_spec.AddField(device.FieldDepartmentID, field.TypeUint64, value)
-	}
-	if duo.mutation.DepartmentIDCleared() {
-		_spec.ClearField(device.FieldDepartmentID, field.TypeUint64)
-	}
 	if value, ok := duo.mutation.Host(); ok {
 		_spec.SetField(device.FieldHost, field.TypeString, value)
 	}
@@ -587,6 +635,35 @@ func (duo *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err err
 	}
 	if value, ok := duo.mutation.Description(); ok {
 		_spec.SetField(device.FieldDescription, field.TypeString, value)
+	}
+	if duo.mutation.DepartmentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   device.DepartmentsTable,
+			Columns: []string{device.DepartmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := duo.mutation.DepartmentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   device.DepartmentsTable,
+			Columns: []string{device.DepartmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if duo.mutation.AccountsCleared() {
 		edge := &sqlgraph.EdgeSpec{

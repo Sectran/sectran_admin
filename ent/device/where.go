@@ -255,26 +255,6 @@ func DepartmentIDNotIn(vs ...uint64) predicate.Device {
 	return predicate.Device(sql.FieldNotIn(FieldDepartmentID, vs...))
 }
 
-// DepartmentIDGT applies the GT predicate on the "department_id" field.
-func DepartmentIDGT(v uint64) predicate.Device {
-	return predicate.Device(sql.FieldGT(FieldDepartmentID, v))
-}
-
-// DepartmentIDGTE applies the GTE predicate on the "department_id" field.
-func DepartmentIDGTE(v uint64) predicate.Device {
-	return predicate.Device(sql.FieldGTE(FieldDepartmentID, v))
-}
-
-// DepartmentIDLT applies the LT predicate on the "department_id" field.
-func DepartmentIDLT(v uint64) predicate.Device {
-	return predicate.Device(sql.FieldLT(FieldDepartmentID, v))
-}
-
-// DepartmentIDLTE applies the LTE predicate on the "department_id" field.
-func DepartmentIDLTE(v uint64) predicate.Device {
-	return predicate.Device(sql.FieldLTE(FieldDepartmentID, v))
-}
-
 // DepartmentIDIsNil applies the IsNil predicate on the "department_id" field.
 func DepartmentIDIsNil() predicate.Device {
 	return predicate.Device(sql.FieldIsNull(FieldDepartmentID))
@@ -478,6 +458,29 @@ func DescriptionEqualFold(v string) predicate.Device {
 // DescriptionContainsFold applies the ContainsFold predicate on the "description" field.
 func DescriptionContainsFold(v string) predicate.Device {
 	return predicate.Device(sql.FieldContainsFold(FieldDescription, v))
+}
+
+// HasDepartments applies the HasEdge predicate on the "departments" edge.
+func HasDepartments() predicate.Device {
+	return predicate.Device(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, DepartmentsTable, DepartmentsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasDepartmentsWith applies the HasEdge predicate on the "departments" edge with a given conditions (other predicates).
+func HasDepartmentsWith(preds ...predicate.Department) predicate.Device {
+	return predicate.Device(func(s *sql.Selector) {
+		step := newDepartmentsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // HasAccounts applies the HasEdge predicate on the "accounts" edge.

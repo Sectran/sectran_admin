@@ -4,6 +4,7 @@ package ent
 
 import (
 	"fmt"
+	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
 	"strings"
 	"time"
@@ -39,17 +40,30 @@ type Device struct {
 
 // DeviceEdges holds the relations/edges for other nodes in the graph.
 type DeviceEdges struct {
+	// Departments holds the value of the departments edge.
+	Departments *Department `json:"departments,omitempty"`
 	// Accounts holds the value of the accounts edge.
 	Accounts []*Account `json:"accounts,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
+}
+
+// DepartmentsOrErr returns the Departments value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e DeviceEdges) DepartmentsOrErr() (*Department, error) {
+	if e.Departments != nil {
+		return e.Departments, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: department.Label}
+	}
+	return nil, &NotLoadedError{edge: "departments"}
 }
 
 // AccountsOrErr returns the Accounts value or an error if the edge
 // was not loaded in eager-loading.
 func (e DeviceEdges) AccountsOrErr() ([]*Account, error) {
-	if e.loadedTypes[0] {
+	if e.loadedTypes[1] {
 		return e.Accounts, nil
 	}
 	return nil, &NotLoadedError{edge: "accounts"}
@@ -140,6 +154,11 @@ func (d *Device) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (d *Device) Value(name string) (ent.Value, error) {
 	return d.selectValues.Get(name)
+}
+
+// QueryDepartments queries the "departments" edge of the Device entity.
+func (d *Device) QueryDepartments() *DepartmentQuery {
+	return NewDeviceClient(d.config).QueryDepartments(d)
 }
 
 // QueryAccounts queries the "accounts" edge of the Device entity.

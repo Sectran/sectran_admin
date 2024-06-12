@@ -2587,24 +2587,24 @@ func (m *DepartmentMutation) ResetEdge(name string) error {
 // DeviceMutation represents an operation that mutates the Device nodes in the graph.
 type DeviceMutation struct {
 	config
-	op               Op
-	typ              string
-	id               *uint64
-	created_at       *time.Time
-	updated_at       *time.Time
-	name             *string
-	department_id    *uint64
-	adddepartment_id *int64
-	host             *string
-	_type            *string
-	description      *string
-	clearedFields    map[string]struct{}
-	accounts         map[uint64]struct{}
-	removedaccounts  map[uint64]struct{}
-	clearedaccounts  bool
-	done             bool
-	oldValue         func(context.Context) (*Device, error)
-	predicates       []predicate.Device
+	op                 Op
+	typ                string
+	id                 *uint64
+	created_at         *time.Time
+	updated_at         *time.Time
+	name               *string
+	host               *string
+	_type              *string
+	description        *string
+	clearedFields      map[string]struct{}
+	departments        *uint64
+	cleareddepartments bool
+	accounts           map[uint64]struct{}
+	removedaccounts    map[uint64]struct{}
+	clearedaccounts    bool
+	done               bool
+	oldValue           func(context.Context) (*Device, error)
+	predicates         []predicate.Device
 }
 
 var _ ent.Mutation = (*DeviceMutation)(nil)
@@ -2821,13 +2821,12 @@ func (m *DeviceMutation) ResetName() {
 
 // SetDepartmentID sets the "department_id" field.
 func (m *DeviceMutation) SetDepartmentID(u uint64) {
-	m.department_id = &u
-	m.adddepartment_id = nil
+	m.departments = &u
 }
 
 // DepartmentID returns the value of the "department_id" field in the mutation.
 func (m *DeviceMutation) DepartmentID() (r uint64, exists bool) {
-	v := m.department_id
+	v := m.departments
 	if v == nil {
 		return
 	}
@@ -2851,28 +2850,9 @@ func (m *DeviceMutation) OldDepartmentID(ctx context.Context) (v uint64, err err
 	return oldValue.DepartmentID, nil
 }
 
-// AddDepartmentID adds u to the "department_id" field.
-func (m *DeviceMutation) AddDepartmentID(u int64) {
-	if m.adddepartment_id != nil {
-		*m.adddepartment_id += u
-	} else {
-		m.adddepartment_id = &u
-	}
-}
-
-// AddedDepartmentID returns the value that was added to the "department_id" field in this mutation.
-func (m *DeviceMutation) AddedDepartmentID() (r int64, exists bool) {
-	v := m.adddepartment_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
 // ClearDepartmentID clears the value of the "department_id" field.
 func (m *DeviceMutation) ClearDepartmentID() {
-	m.department_id = nil
-	m.adddepartment_id = nil
+	m.departments = nil
 	m.clearedFields[device.FieldDepartmentID] = struct{}{}
 }
 
@@ -2884,8 +2864,7 @@ func (m *DeviceMutation) DepartmentIDCleared() bool {
 
 // ResetDepartmentID resets all changes to the "department_id" field.
 func (m *DeviceMutation) ResetDepartmentID() {
-	m.department_id = nil
-	m.adddepartment_id = nil
+	m.departments = nil
 	delete(m.clearedFields, device.FieldDepartmentID)
 }
 
@@ -2997,6 +2976,46 @@ func (m *DeviceMutation) ResetDescription() {
 	m.description = nil
 }
 
+// SetDepartmentsID sets the "departments" edge to the Department entity by id.
+func (m *DeviceMutation) SetDepartmentsID(id uint64) {
+	m.departments = &id
+}
+
+// ClearDepartments clears the "departments" edge to the Department entity.
+func (m *DeviceMutation) ClearDepartments() {
+	m.cleareddepartments = true
+	m.clearedFields[device.FieldDepartmentID] = struct{}{}
+}
+
+// DepartmentsCleared reports if the "departments" edge to the Department entity was cleared.
+func (m *DeviceMutation) DepartmentsCleared() bool {
+	return m.DepartmentIDCleared() || m.cleareddepartments
+}
+
+// DepartmentsID returns the "departments" edge ID in the mutation.
+func (m *DeviceMutation) DepartmentsID() (id uint64, exists bool) {
+	if m.departments != nil {
+		return *m.departments, true
+	}
+	return
+}
+
+// DepartmentsIDs returns the "departments" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// DepartmentsID instead. It exists only for internal usage by the builders.
+func (m *DeviceMutation) DepartmentsIDs() (ids []uint64) {
+	if id := m.departments; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetDepartments resets all changes to the "departments" edge.
+func (m *DeviceMutation) ResetDepartments() {
+	m.departments = nil
+	m.cleareddepartments = false
+}
+
 // AddAccountIDs adds the "accounts" edge to the Account entity by ids.
 func (m *DeviceMutation) AddAccountIDs(ids ...uint64) {
 	if m.accounts == nil {
@@ -3095,7 +3114,7 @@ func (m *DeviceMutation) Fields() []string {
 	if m.name != nil {
 		fields = append(fields, device.FieldName)
 	}
-	if m.department_id != nil {
+	if m.departments != nil {
 		fields = append(fields, device.FieldDepartmentID)
 	}
 	if m.host != nil {
@@ -3218,9 +3237,6 @@ func (m *DeviceMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *DeviceMutation) AddedFields() []string {
 	var fields []string
-	if m.adddepartment_id != nil {
-		fields = append(fields, device.FieldDepartmentID)
-	}
 	return fields
 }
 
@@ -3229,8 +3245,6 @@ func (m *DeviceMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *DeviceMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case device.FieldDepartmentID:
-		return m.AddedDepartmentID()
 	}
 	return nil, false
 }
@@ -3240,13 +3254,6 @@ func (m *DeviceMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *DeviceMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case device.FieldDepartmentID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddDepartmentID(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Device numeric field %s", name)
 }
@@ -3310,7 +3317,10 @@ func (m *DeviceMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *DeviceMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.departments != nil {
+		edges = append(edges, device.EdgeDepartments)
+	}
 	if m.accounts != nil {
 		edges = append(edges, device.EdgeAccounts)
 	}
@@ -3321,6 +3331,10 @@ func (m *DeviceMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *DeviceMutation) AddedIDs(name string) []ent.Value {
 	switch name {
+	case device.EdgeDepartments:
+		if id := m.departments; id != nil {
+			return []ent.Value{*id}
+		}
 	case device.EdgeAccounts:
 		ids := make([]ent.Value, 0, len(m.accounts))
 		for id := range m.accounts {
@@ -3333,7 +3347,7 @@ func (m *DeviceMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *DeviceMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.removedaccounts != nil {
 		edges = append(edges, device.EdgeAccounts)
 	}
@@ -3356,7 +3370,10 @@ func (m *DeviceMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *DeviceMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.cleareddepartments {
+		edges = append(edges, device.EdgeDepartments)
+	}
 	if m.clearedaccounts {
 		edges = append(edges, device.EdgeAccounts)
 	}
@@ -3367,6 +3384,8 @@ func (m *DeviceMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *DeviceMutation) EdgeCleared(name string) bool {
 	switch name {
+	case device.EdgeDepartments:
+		return m.cleareddepartments
 	case device.EdgeAccounts:
 		return m.clearedaccounts
 	}
@@ -3377,6 +3396,9 @@ func (m *DeviceMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *DeviceMutation) ClearEdge(name string) error {
 	switch name {
+	case device.EdgeDepartments:
+		m.ClearDepartments()
+		return nil
 	}
 	return fmt.Errorf("unknown Device unique edge %s", name)
 }
@@ -3385,6 +3407,9 @@ func (m *DeviceMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *DeviceMutation) ResetEdge(name string) error {
 	switch name {
+	case device.EdgeDepartments:
+		m.ResetDepartments()
+		return nil
 	case device.EdgeAccounts:
 		m.ResetAccounts()
 		return nil

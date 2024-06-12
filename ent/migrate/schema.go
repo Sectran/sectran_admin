@@ -76,16 +76,24 @@ var (
 		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
 		{Name: "name", Type: field.TypeString, Size: 128, Comment: "The name of the device.|设备名称"},
-		{Name: "department_id", Type: field.TypeUint64, Nullable: true, Comment: "ID of the device's department.|设备所属部门"},
 		{Name: "host", Type: field.TypeString, Unique: true, Size: 64, Comment: "login host|设备地址"},
 		{Name: "type", Type: field.TypeString, Size: 64, Comment: "type of the device.|设备类型"},
 		{Name: "description", Type: field.TypeString, Size: 128, Comment: "Description of the device.|设备描述"},
+		{Name: "department_id", Type: field.TypeUint64, Nullable: true, Comment: "ID of the device's department.|设备所属部门"},
 	}
 	// DevicesTable holds the schema information for the "devices" table.
 	DevicesTable = &schema.Table{
 		Name:       "devices",
 		Columns:    DevicesColumns,
 		PrimaryKey: []*schema.Column{DevicesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "devices_departments_departments",
+				Columns:    []*schema.Column{DevicesColumns[7]},
+				RefColumns: []*schema.Column{DepartmentsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// RolesColumns holds the columns for the "roles" table.
 	RolesColumns = []*schema.Column{
@@ -149,6 +157,7 @@ var (
 
 func init() {
 	AccountsTable.ForeignKeys[0].RefTable = DevicesTable
+	DevicesTable.ForeignKeys[0].RefTable = DepartmentsTable
 	UsersTable.ForeignKeys[0].RefTable = DepartmentsTable
 	UsersTable.ForeignKeys[1].RefTable = RolesTable
 }

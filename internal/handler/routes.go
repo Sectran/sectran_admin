@@ -9,6 +9,7 @@ import (
 	base "sectran_admin/internal/handler/base"
 	department "sectran_admin/internal/handler/department"
 	device "sectran_admin/internal/handler/device"
+	policyauth "sectran_admin/internal/handler/policyauth"
 	role "sectran_admin/internal/handler/role"
 	user "sectran_admin/internal/handler/user"
 	"sectran_admin/internal/svc"
@@ -197,6 +198,39 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 	)
 
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/policy_auth/create",
+					Handler: policyauth.CreatePolicyAuthHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/policy_auth/update",
+					Handler: policyauth.UpdatePolicyAuthHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/policy_auth/delete",
+					Handler: policyauth.DeletePolicyAuthHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/policy_auth/list",
+					Handler: policyauth.GetPolicyAuthListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/policy_auth",
+					Handler: policyauth.GetPolicyAuthByIdHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
 
 	server.AddRoutes(
 		rest.WithMiddlewares(
