@@ -2,7 +2,6 @@ package device
 
 import (
 	"context"
-	"fmt"
 
 	"sectran_admin/ent"
 	"sectran_admin/ent/department"
@@ -37,17 +36,9 @@ func (l *GetDeviceListLogic) GetDeviceList(req *types.DeviceListReq) (*types.Dev
 
 	var predicates []predicate.Device
 
-	//赋值拼接ParentDepartments
-	prefix := fmt.Sprintf("%s%s%d", dDept.ParentDepartments, func() string {
-		if dDept.ParentDepartments == "" {
-			return ""
-		}
-		return ","
-	}(), dDept.ID)
-
 	if dDept.ParentDepartments != "" {
 		//查询所有子部门下的设备
-		predicates = append(predicates, device.HasDepartmentsWith(department.ParentDepartmentsHasPrefix(prefix)))
+		predicates = append(predicates, device.HasDepartmentsWith(department.ParentDepartmentsHasPrefix(dDept.ParentDepartments)))
 	}
 
 	if req.Name != nil {
