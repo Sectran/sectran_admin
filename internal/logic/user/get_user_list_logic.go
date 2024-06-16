@@ -92,6 +92,7 @@ func (l *GetUserListLogic) GetUserList(req *types.UserListReqRefer) (*types.User
 	resp.Data.Total = data.PageDetails.Total
 
 	for _, v := range data.List {
+		v.Password = ""
 		resp.Data.Data = append(resp.Data.Data,
 			types.UserInfoRefer{
 				BaseIDInfo: types.BaseIDInfo{

@@ -42,7 +42,7 @@ func (l *UpdateDeviceLogic) UpdateDevice(req *types.DeviceInfo) (*types.BaseMsgR
 
 	err = l.svcCtx.DB.Device.UpdateOneID(*req.Id).
 		SetNotNilName(req.Name).
-		SetNotNilDepartmentID(req.DepartmentId).
+		SetNotNilDepartmentID(&domain.DepartmentID).
 		SetNotNilHost(req.Host).
 		SetNotNilType(req.Type).
 		SetNotNilDescription(req.Description).
