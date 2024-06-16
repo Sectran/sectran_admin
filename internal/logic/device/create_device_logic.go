@@ -6,6 +6,7 @@ import (
 	"sectran_admin/ent"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
+	"sectran_admin/internal/utils/dberrorhandler"
 
 	"github.com/suyuan32/simple-admin-common/i18n"
 
@@ -38,7 +39,7 @@ func (l *CreateDeviceLogic) CreateDevice(req *types.DeviceInfo) (*types.BaseMsgR
 		Save(l.ctx)
 
 	if err != nil {
-		return nil, types.ErrInternalError
+		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
 
 	return &types.BaseMsgResp{Msg: l.svcCtx.Trans.Trans(l.ctx, i18n.CreateSuccess)}, nil

@@ -45,8 +45,10 @@ func (l *GetDeviceListLogic) GetDeviceList(req *types.DeviceListReq) (*types.Dev
 		return ","
 	}(), dDept.ID)
 
-	//查询所有子部门下的设备
-	predicates = append(predicates, device.HasDepartmentsWith(department.ParentDepartmentsHasPrefix(prefix)))
+	if dDept.ParentDepartments != "" {
+		//查询所有子部门下的设备
+		predicates = append(predicates, device.HasDepartmentsWith(department.ParentDepartmentsHasPrefix(prefix)))
+	}
 
 	if req.Name != nil {
 		predicates = append(predicates, device.NameContains(*req.Name))
