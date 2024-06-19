@@ -32,6 +32,7 @@ func (Device) Fields() []ent.Field {
 			MaxLen(64).
 			Annotations(entsql.WithComments(true)),
 		field.String("type").
+			NotEmpty().
 			Comment("type of the device.|设备类型").
 			MaxLen(64).
 			Annotations(entsql.WithComments(true)),

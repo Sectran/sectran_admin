@@ -5,7 +5,7 @@ Timeout: 20000
 
 Auth:
   AccessSecret: sectran@199212121
-  AccessExpire: 30
+  AccessExpire: 300
 
 CROSConf:
   Address: '*'

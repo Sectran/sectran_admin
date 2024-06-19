@@ -60,5 +60,8 @@ func (l *DeleteDeviceLogic) DeleteDevice(req *types.IDsReq) (*types.BaseMsgResp,
 		return nil, types.ErrInternalError
 	}
 
+	//删除设备关联的账号
+	//策略中删除设备
+
 	return &types.BaseMsgResp{Msg: l.svcCtx.Trans.Trans(l.ctx, i18n.DeleteSuccess)}, nil
 }

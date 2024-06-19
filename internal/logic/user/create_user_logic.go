@@ -3,9 +3,6 @@ package user
 import (
 	"context"
 
-	"sectran_admin/ent"
-	"sectran_admin/ent/department"
-	"sectran_admin/ent/role"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 	"sectran_admin/internal/utils/dberrorhandler"
@@ -13,8 +10,6 @@ import (
 	"github.com/dlclark/regexp2"
 	"github.com/suyuan32/simple-admin-common/i18n"
 	"github.com/suyuan32/simple-admin-common/utils/pointy"
-
-	dept "sectran_admin/internal/logic/department"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -41,37 +36,12 @@ func isValidPassword(password string) bool {
 }
 
 func (l *CreateUserLogic) CreateUser(req *types.UserInfo) (*types.UserInfoResp, error) {
-	domain := l.ctx.Value("request_domain").((*ent.User))
-
 	var (
-		roleExist int
-		status    bool = true
+		err error
 	)
 
-	targetDept, err := l.svcCtx.DB.Department.Query().Where(department.ID(*req.DepartmentId)).First(l.ctx)
-	if err != nil {
-		return nil, types.ErrInternalError
-	}
-
-	if targetDept == nil {
-		return nil, types.CustomError("所创建用户的部门不存在")
-	}
-
-	// 攻击行为
-	if _, err = dept.DomainDeptAccessed(int(domain.DepartmentID), targetDept.ParentDepartments); err != nil {
+	if err = ModifyCheckout(l.svcCtx, l.ctx, req); err != nil {
 		return nil, err
-	}
-
-	roleExist, err = l.svcCtx.DB.Role.Query().Where(role.ID(*req.RoleId)).Count(l.ctx)
-	if err != nil {
-		return nil, types.ErrInternalError
-	}
-	if roleExist == 0 {
-		return nil, types.CustomError("所创建用户的角色不存在")
-	}
-
-	if !isValidPassword(*req.Password) {
-		return nil, types.CustomError("密码必须至少包含一个大写字母、一个小写字母、一个数字,并且长度在8-20之间")
 	}
 
 	data, err := l.svcCtx.DB.User.Create().
@@ -80,7 +50,7 @@ func (l *CreateUserLogic) CreateUser(req *types.UserInfo) (*types.UserInfoResp, 
 		SetNotNilPassword(req.Password).
 		SetNotNilDepartmentID(req.DepartmentId).
 		SetNotNilRoleID(req.RoleId).
-		SetNotNilStatus(&status).
+		SetNotNilStatus(req.Status).
 		SetNotNilDescription(req.Description).
 		SetNotNilEmail(req.Email).
 		SetNotNilPhoneNumber(req.PhoneNumber).

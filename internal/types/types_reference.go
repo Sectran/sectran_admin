@@ -122,3 +122,37 @@ type UserListReqRefer struct {
 	RoleName       *string `json:"roleName,optional"`
 	DepartmentName *string `json:"departmentName,optional"`
 }
+
+// The response data of device list | Device列表数据
+// swagger:model DeviceListResp
+type DeviceListRespRefer struct {
+	BaseDataInfo
+	// Device list data | Device列表数据
+	Data DeviceListInfoRefer `json:"data"`
+}
+
+// Device list data | Device列表数据
+// swagger:model DeviceListInfo
+type DeviceListInfoRefer struct {
+	BaseListInfo
+	// The API list data | Device列表数据
+	Data []DeviceInfoRefer `json:"data"`
+}
+
+// The response data of device information | Device信息
+// swagger:model DeviceInfo
+type DeviceInfoRefer struct {
+	BaseIDInfo
+	// The name of the device.|设备名称
+	Name *string `json:"name,optional"`
+	// ID of the device's department.|设备所属部门
+	DepartmentId *uint64 `json:"departmentId,optional"`
+	// login host|设备地址
+	Host *string `json:"host,optional"`
+	// type of the device.|设备类型
+	Type *string `json:"type,optional"`
+	// Description of the device.|设备描述
+	Description *string `json:"description,optional"`
+	// the name of device department|设备所属部门名称
+	DeptName *string `json:"deptName,optional"`
+}

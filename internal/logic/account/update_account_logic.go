@@ -7,7 +7,7 @@ import (
 	"sectran_admin/internal/types"
 	"sectran_admin/internal/utils/dberrorhandler"
 
-    "github.com/suyuan32/simple-admin-common/i18n"
+	"github.com/suyuan32/simple-admin-common/i18n"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -26,18 +26,18 @@ func NewUpdateAccountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Upd
 }
 
 func (l *UpdateAccountLogic) UpdateAccount(req *types.AccountInfo) (*types.BaseMsgResp, error) {
-    err := l.svcCtx.DB.Account.UpdateOneID(*req.Id).
-			SetNotNilUsername(req.Username).
-			SetNotNilPort(req.Port).
-			SetNotNilProtocol(req.Protocol).
-			SetNotNilPassword(req.Password).
-			SetNotNilPrivateKey(req.PrivateKey).
-			SetNotNilDeviceID(req.DeviceId).
-			Exec(l.ctx)
+	err := l.svcCtx.DB.Account.UpdateOneID(*req.Id).
+		SetNotNilUsername(req.Username).
+		SetNotNilPort(req.Port).
+		SetNotNilProtocol(req.Protocol).
+		SetNotNilPassword(req.Password).
+		SetNotNilPrivateKey(req.PrivateKey).
+		SetNotNilDeviceID(req.DeviceId).
+		Exec(l.ctx)
 
-    if err != nil {
+	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
 
-    return &types.BaseMsgResp{Msg: l.svcCtx.Trans.Trans(l.ctx, i18n.UpdateSuccess)}, nil
+	return &types.BaseMsgResp{Msg: l.svcCtx.Trans.Trans(l.ctx, i18n.UpdateSuccess)}, nil
 }

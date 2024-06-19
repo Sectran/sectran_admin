@@ -30,7 +30,7 @@ func NewGetDeviceListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 	}
 }
 
-func (l *GetDeviceListLogic) GetDeviceList(req *types.DeviceListReq) (*types.DeviceListResp, error) {
+func (l *GetDeviceListLogic) GetDeviceList(req *types.DeviceListReq) (*types.DeviceListRespRefer, error) {
 	domain := l.ctx.Value("request_domain").((*ent.User))
 	dDept, _ := l.svcCtx.DB.Department.Get(l.ctx, domain.DepartmentID)
 
@@ -53,18 +53,18 @@ func (l *GetDeviceListLogic) GetDeviceList(req *types.DeviceListReq) (*types.Dev
 		predicates = append(predicates, device.TypeContains(*req.Type))
 	}
 
-	data, err := l.svcCtx.DB.Device.Query().Where(predicates...).Page(l.ctx, req.Page, req.PageSize)
+	data, err := l.svcCtx.DB.Device.Query().Where(predicates...).WithDepartments().Page(l.ctx, req.Page, req.PageSize)
 	if err != nil {
 		return nil, types.ErrInternalError
 	}
 
-	resp := &types.DeviceListResp{}
+	resp := &types.DeviceListRespRefer{}
 	resp.Msg = l.svcCtx.Trans.Trans(l.ctx, i18n.Success)
 	resp.Data.Total = data.PageDetails.Total
 
 	for _, v := range data.List {
 		resp.Data.Data = append(resp.Data.Data,
-			types.DeviceInfo{
+			types.DeviceInfoRefer{
 				BaseIDInfo: types.BaseIDInfo{
 					Id:        &v.ID,
 					CreatedAt: pointy.GetPointer(v.CreatedAt.UnixMilli()),
@@ -75,6 +75,7 @@ func (l *GetDeviceListLogic) GetDeviceList(req *types.DeviceListReq) (*types.Dev
 				Host:         &v.Host,
 				Type:         &v.Type,
 				Description:  &v.Description,
+				DeptName:     &v.Edges.Departments.Name,
 			})
 	}
 
