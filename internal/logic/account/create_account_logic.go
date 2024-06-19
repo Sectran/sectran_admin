@@ -27,7 +27,15 @@ func NewCreateAccountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Cre
 }
 
 func (l *CreateAccountLogic) CreateAccount(req *types.AccountInfo) (*types.BaseMsgResp, error) {
-	_, err := l.svcCtx.DB.Account.Create().
+	var (
+		err error
+	)
+
+	if err = ModifyCheckout(l.svcCtx, l.ctx, req); err != nil {
+		return nil, err
+	}
+
+	_, err = l.svcCtx.DB.Account.Create().
 		SetNotNilUsername(req.Username).
 		SetNotNilPort(req.Port).
 		SetNotNilProtocol(req.Protocol).
