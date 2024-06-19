@@ -67,7 +67,6 @@ type (
 )
 
 @server(
-    jwt: Auth
     group: access_policy
     middleware: Authority
 )

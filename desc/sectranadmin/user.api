@@ -1,101 +1,100 @@
 import "../base.api"
 
 type (
-    // The response data of user information | User信息
-    UserInfo {
-        BaseIDInfo
+	// The response data of user information | User信息
+	UserInfo {
+		BaseIDInfo
 
-        // User account.|用户账号 
-        Account  *string `json:"account,optional"`
+		// User account.|用户账号
+		Account *string `json:"account,optional"`
 
-        // User name.|用户姓名 
-        Name  *string `json:"name,optional"`
+		// User name.|用户姓名
+		Name *string `json:"name,optional"`
 
-        // User password.|用户密码 
-        Password  *string `json:"password,optional"`
+		// User password.|用户密码
+		Password *string `json:"password,optional"`
 
-        // ID of the user's department.|用户所属部门 
-        DepartmentId  *uint64 `json:"departmentId,optional"`
+		// ID of the user's department.|用户所属部门
+		DepartmentId *uint64 `json:"departmentId,optional"`
 
-        // ID of the user's role.|用户所属角色 
-        RoleId  *uint64 `json:"roleId,optional"`
+		// ID of the user's role.|用户所属角色
+		RoleId *uint64 `json:"roleId,optional"`
 
-        // User status (enabled(true) or disabled(false)).|用户账号状态 
-        Status  *bool `json:"status,optional"`
+		// User status (enabled(true) or disabled(false)).|用户账号状态
+		Status *bool `json:"status,optional"`
 
-        // User description.|用户账号描述 
-        Description  *string `json:"description,optional"`
+		// User description.|用户账号描述
+		Description *string `json:"description,optional"`
 
-        // User email.|用户邮箱 
-        Email  *string `json:"email,optional"`
+		// User email.|用户邮箱
+		Email *string `json:"email,optional"`
 
-        // User phone number.|用户手机号码 
-        PhoneNumber  *string `json:"phoneNumber,optional"`
-    }
+		// User phone number.|用户手机号码
+		PhoneNumber *string `json:"phoneNumber,optional"`
+	}
 
-    // The response data of user list | User列表数据
-    UserListResp {
-        BaseDataInfo
+	// The response data of user list | User列表数据
+	UserListResp {
+		BaseDataInfo
 
-        // User list data | User列表数据
-        Data UserListInfo `json:"data"`
-    }
+		// User list data | User列表数据
+		Data UserListInfo `json:"data"`
+	}
 
-    // User list data | User列表数据
-    UserListInfo {
-        BaseListInfo
+	// User list data | User列表数据
+	UserListInfo {
+		BaseListInfo
 
-        // The API list data | User列表数据
-        Data  []UserInfo  `json:"data"`
-    }
+		// The API list data | User列表数据
+		Data []UserInfo `json:"data"`
+	}
 
-    // Get user list request params | User列表请求参数
-    UserListReq {
-        PageInfo
+	// Get user list request params | User列表请求参数
+	UserListReq {
+		PageInfo
 
-        // User account.|用户账号 
-        Account  *string `json:"account,optional"`
+		// User account.|用户账号
+		Account *string `json:"account,optional"`
 
-        // User name.|用户姓名 
-        Name  *string `json:"name,optional"`
+		// User name.|用户姓名
+		Name *string `json:"name,optional"`
 
-        // User password.|用户密码 
-        Password  *string `json:"password,optional"`
-    }
+		// User password.|用户密码
+		Password *string `json:"password,optional"`
+	}
 
-    // User information response | User信息返回体
-    UserInfoResp {
-        BaseDataInfo
+	// User information response | User信息返回体
+	UserInfoResp {
+		BaseDataInfo
 
-        // User information | User数据
-        Data UserInfo `json:"data"`
-    }
+		// User information | User数据
+		Data UserInfo `json:"data"`
+	}
 )
 
 @server(
-    jwt: Auth
-    group: user
-    middleware: Authority
+	group: user
+	middleware: Authority
 )
 
 service SectranAdmin {
-    // Create user information | 创建User
-    @handler createUser
-    post /user/create (UserInfo) returns (BaseMsgResp)
+	// Create user information | 创建User
+	@handler createUser
+	post /user/create (UserInfo) returns (BaseMsgResp)
 
-    // Update user information | 更新User
-    @handler updateUser
-    post /user/update (UserInfo) returns (BaseMsgResp)
+	// Update user information | 更新User
+	@handler updateUser
+	post /user/update (UserInfo) returns (BaseMsgResp)
 
-    // Delete user information | 删除User信息
-    @handler deleteUser
-    post /user/delete (IDsReq) returns (BaseMsgResp)
+	// Delete user information | 删除User信息
+	@handler deleteUser
+	post /user/delete (IDsReq) returns (BaseMsgResp)
 
-    // Get user list | 获取User列表
-    @handler getUserList
-    post /user/list (UserListReq) returns (UserListResp)
+	// Get user list | 获取User列表
+	@handler getUserList
+	post /user/list (UserListReq) returns (UserListResp)
 
-    // Get user by ID | 通过ID获取User
-    @handler getUserById
-    post /user (IDReq) returns (UserInfoResp)
+	// Get user by ID | 通过ID获取User
+	@handler getUserById
+	post /user (IDReq) returns (UserInfoResp)
 }

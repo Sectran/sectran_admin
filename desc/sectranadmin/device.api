@@ -1,89 +1,88 @@
 import "../base.api"
 
 type (
-    // The response data of device information | Device信息
-    DeviceInfo {
-        BaseIDInfo
+	// The response data of device information | Device信息
+	DeviceInfo {
+		BaseIDInfo
 
-        // The name of the device.|设备名称 
-        Name  *string `json:"name,optional"`
+		// The name of the device.|设备名称
+		Name *string `json:"name,optional"`
 
-        // ID of the device's department.|设备所属部门 
-        DepartmentId  *uint64 `json:"departmentId,optional"`
+		// ID of the device's department.|设备所属部门
+		DepartmentId *uint64 `json:"departmentId,optional"`
 
-        // login host|设备地址 
-        Host  *string `json:"host,optional"`
+		// login host|设备地址
+		Host *string `json:"host,optional"`
 
-        // type of the device.|设备类型 
-        Type  *string `json:"type,optional"`
+		// type of the device.|设备类型
+		Type *string `json:"type,optional"`
 
-        // Description of the device.|设备描述 
-        Description  *string `json:"description,optional"`
-    }
+		// Description of the device.|设备描述
+		Description *string `json:"description,optional"`
+	}
 
-    // The response data of device list | Device列表数据
-    DeviceListResp {
-        BaseDataInfo
+	// The response data of device list | Device列表数据
+	DeviceListResp {
+		BaseDataInfo
 
-        // Device list data | Device列表数据
-        Data DeviceListInfo `json:"data"`
-    }
+		// Device list data | Device列表数据
+		Data DeviceListInfo `json:"data"`
+	}
 
-    // Device list data | Device列表数据
-    DeviceListInfo {
-        BaseListInfo
+	// Device list data | Device列表数据
+	DeviceListInfo {
+		BaseListInfo
 
-        // The API list data | Device列表数据
-        Data  []DeviceInfo  `json:"data"`
-    }
+		// The API list data | Device列表数据
+		Data []DeviceInfo `json:"data"`
+	}
 
-    // Get device list request params | Device列表请求参数
-    DeviceListReq {
-        PageInfo
+	// Get device list request params | Device列表请求参数
+	DeviceListReq {
+		PageInfo
 
-        // The name of the device.|设备名称 
-        Name  *string `json:"name,optional"`
+		// The name of the device.|设备名称
+		Name *string `json:"name,optional"`
 
-        // login host|设备地址 
-        Host  *string `json:"host,optional"`
+		// login host|设备地址
+		Host *string `json:"host,optional"`
 
-        // type of the device.|设备类型 
-        Type  *string `json:"type,optional"`
-    }
+		// type of the device.|设备类型
+		Type *string `json:"type,optional"`
+	}
 
-    // Device information response | Device信息返回体
-    DeviceInfoResp {
-        BaseDataInfo
+	// Device information response | Device信息返回体
+	DeviceInfoResp {
+		BaseDataInfo
 
-        // Device information | Device数据
-        Data DeviceInfo `json:"data"`
-    }
+		// Device information | Device数据
+		Data DeviceInfo `json:"data"`
+	}
 )
 
 @server(
-    jwt: Auth
-    group: device
-    middleware: Authority
+	group: device
+	middleware: Authority
 )
 
 service SectranAdmin {
-    // Create device information | 创建Device
-    @handler createDevice
-    post /device/create (DeviceInfo) returns (BaseMsgResp)
+	// Create device information | 创建Device
+	@handler createDevice
+	post /device/create (DeviceInfo) returns (BaseMsgResp)
 
-    // Update device information | 更新Device
-    @handler updateDevice
-    post /device/update (DeviceInfo) returns (BaseMsgResp)
+	// Update device information | 更新Device
+	@handler updateDevice
+	post /device/update (DeviceInfo) returns (BaseMsgResp)
 
-    // Delete device information | 删除Device信息
-    @handler deleteDevice
-    post /device/delete (IDsReq) returns (BaseMsgResp)
+	// Delete device information | 删除Device信息
+	@handler deleteDevice
+	post /device/delete (IDsReq) returns (BaseMsgResp)
 
-    // Get device list | 获取Device列表
-    @handler getDeviceList
-    post /device/list (DeviceListReq) returns (DeviceListResp)
+	// Get device list | 获取Device列表
+	@handler getDeviceList
+	post /device/list (DeviceListReq) returns (DeviceListResp)
 
-    // Get device by ID | 通过ID获取Device
-    @handler getDeviceById
-    post /device (IDReq) returns (DeviceInfoResp)
+	// Get device by ID | 通过ID获取Device
+	@handler getDeviceById
+	post /device (IDReq) returns (DeviceInfoResp)
 }

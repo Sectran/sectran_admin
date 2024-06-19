@@ -1,74 +1,73 @@
 import "../base.api"
 
 type (
-    // The response data of role information | Role信息
-    RoleInfo {
-        BaseIDInfo
+	// The response data of role information | Role信息
+	RoleInfo {
+		BaseIDInfo
 
-        // The name of the role.|角色名称 
-        Name  *string `json:"name,optional"`
+		// The name of the role.|角色名称
+		Name *string `json:"name,optional"`
 
-        // The weight of the role. Smaller values indicate higher priority.|角色优先级，值越小优先级越高 
-        Weight  *int `json:"weight,optional"`
-    }
+		// The weight of the role. Smaller values indicate higher priority.|角色优先级，值越小优先级越高
+		Weight *int `json:"weight,optional"`
+	}
 
-    // The response data of role list | Role列表数据
-    RoleListResp {
-        BaseDataInfo
+	// The response data of role list | Role列表数据
+	RoleListResp {
+		BaseDataInfo
 
-        // Role list data | Role列表数据
-        Data RoleListInfo `json:"data"`
-    }
+		// Role list data | Role列表数据
+		Data RoleListInfo `json:"data"`
+	}
 
-    // Role list data | Role列表数据
-    RoleListInfo {
-        BaseListInfo
+	// Role list data | Role列表数据
+	RoleListInfo {
+		BaseListInfo
 
-        // The API list data | Role列表数据
-        Data  []RoleInfo  `json:"data"`
-    }
+		// The API list data | Role列表数据
+		Data []RoleInfo `json:"data"`
+	}
 
-    // Get role list request params | Role列表请求参数
-    RoleListReq {
-        PageInfo
+	// Get role list request params | Role列表请求参数
+	RoleListReq {
+		PageInfo
 
-        // The name of the role.|角色名称 
-        Name  *string `json:"name,optional"`
-    }
+		// The name of the role.|角色名称
+		Name *string `json:"name,optional"`
+	}
 
-    // Role information response | Role信息返回体
-    RoleInfoResp {
-        BaseDataInfo
+	// Role information response | Role信息返回体
+	RoleInfoResp {
+		BaseDataInfo
 
-        // Role information | Role数据
-        Data RoleInfo `json:"data"`
-    }
+		// Role information | Role数据
+		Data RoleInfo `json:"data"`
+	}
 )
 
 @server(
-    jwt: Auth
-    group: role
-    middleware: Authority
+	group: role
+	middleware: Authority
 )
 
 service SectranAdmin {
-    // Create role information | 创建Role
-    @handler createRole
-    post /role/create (RoleInfo) returns (BaseMsgResp)
+	// Create role information | 创建Role
+	@handler createRole
+	post /role/create (RoleInfo) returns (BaseMsgResp)
 
-    // Update role information | 更新Role
-    @handler updateRole
-    post /role/update (RoleInfo) returns (BaseMsgResp)
+	// Update role information | 更新Role
+	@handler updateRole
+	post /role/update (RoleInfo) returns (BaseMsgResp)
 
-    // Delete role information | 删除Role信息
-    @handler deleteRole
-    post /role/delete (IDsReq) returns (BaseMsgResp)
+	// Delete role information | 删除Role信息
+	@handler deleteRole
+	post /role/delete (IDsReq) returns (BaseMsgResp)
 
-    // Get role list | 获取Role列表
-    @handler getRoleList
-    post /role/list (RoleListReq) returns (RoleListResp)
+	// Get role list | 获取Role列表
+	@handler getRoleList
+	post /role/list (RoleListReq) returns (RoleListResp)
 
-    // Get role by ID | 通过ID获取Role
-    @handler getRoleById
-    post /role (IDReq) returns (RoleInfoResp)
+	// Get role by ID | 通过ID获取Role
+	@handler getRoleById
+	post /role (IDReq) returns (RoleInfoResp)
 }
