@@ -4,8 +4,9 @@ import (
 	"context"
 
 	"sectran_admin/ent"
+	"sectran_admin/ent/department"
 	"sectran_admin/ent/user"
-	"sectran_admin/internal/logic/department"
+	dept "sectran_admin/internal/logic/department"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 	"sectran_admin/internal/utils/dberrorhandler"
@@ -36,7 +37,21 @@ func (l *UpdateUserLogic) UpdateUser(req *types.UserInfo) (*types.BaseMsgResp, e
 		return nil, types.ErrInternalError
 	}
 
-	if _, err = department.DomainDeptAccessed(int(domain.DepartmentID), targetUser.Edges.Departments.ParentDepartments); err != nil {
+	if _, err = dept.DomainDeptAccessed(int(domain.DepartmentID), targetUser.Edges.Departments.ParentDepartments); err != nil {
+		return nil, err
+	}
+
+	targetDept, err := l.svcCtx.DB.Department.Query().Where(department.ID(*req.DepartmentId)).First(l.ctx)
+	if err != nil {
+		return nil, types.ErrInternalError
+	}
+
+	if targetDept == nil {
+		return nil, types.CustomError("所修改的用户部门不存在")
+	}
+
+	// 攻击行为
+	if _, err = dept.DomainDeptAccessed(int(domain.DepartmentID), targetDept.ParentDepartments); err != nil {
 		return nil, err
 	}
 

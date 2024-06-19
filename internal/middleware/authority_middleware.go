@@ -6,8 +6,10 @@ import (
 	"errors"
 	"net/http"
 	"sectran_admin/ent"
+	"sectran_admin/internal/config"
 	"sectran_admin/internal/types"
 	"strconv"
+	"time"
 
 	"github.com/casbin/casbin/v2"
 	"github.com/redis/go-redis/v9"
@@ -21,13 +23,15 @@ type AuthorityMiddleware struct {
 	Cbn   *casbin.Enforcer
 	Rds   redis.UniversalClient
 	Trans *i18n.Translator
+	Conf  *config.Config
 }
 
-func NewAuthorityMiddleware(cbn *casbin.Enforcer, rds redis.UniversalClient, trans *i18n.Translator) *AuthorityMiddleware {
+func NewAuthorityMiddleware(cbn *casbin.Enforcer, rds redis.UniversalClient, trans *i18n.Translator, conf *config.Config) *AuthorityMiddleware {
 	return &AuthorityMiddleware{
 		Cbn:   cbn,
 		Rds:   rds,
 		Trans: trans,
+		Conf:  conf,
 	}
 }
 
@@ -36,9 +40,11 @@ func (m *AuthorityMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		obj := r.URL.Path
 		act := r.Method
 		token := r.Header.Get("Authorization")
+		ctx := context.Background()
 
-		userJson, err := m.Rds.Get(context.Background(), token).Result()
+		userJson, err := m.Rds.Get(ctx, token).Result()
 		if err != nil && !errors.Is(err, redis.Nil) {
+			logx.Errorw("从redis中查询token value失败", logx.Field("token", token))
 			httpx.Error(w, types.ErrRedis)
 			return
 		}
@@ -51,8 +57,24 @@ func (m *AuthorityMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		user := &ent.User{}
 		err = json.Unmarshal([]byte(userJson), user)
 		if err != nil {
+			logx.Errorw("从token中解析user json 失败", logx.Field("token", token))
 			httpx.Error(w, types.ErrInternalError)
 			return
+		}
+
+		if d, err := m.Rds.TTL(ctx, token).Result(); err != nil {
+			logx.Errorw("查询token失效时间失败", logx.Field("token", token))
+			httpx.Error(w, types.ErrInternalError)
+			return
+		} else {
+			if d < time.Minute*10 {
+				exp := time.Minute * time.Duration(m.Conf.Auth.AccessExpire-10)
+				if _, err = m.Rds.Expire(ctx, token, exp).Result(); err != nil {
+					logx.Errorw("无法延长token失效时间", logx.Field("token", token))
+					httpx.Error(w, types.ErrInternalError)
+					return
+				}
+			}
 		}
 
 		//开发者管理员

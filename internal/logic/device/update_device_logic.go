@@ -29,6 +29,10 @@ func NewUpdateDeviceLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Upda
 }
 
 func (l *UpdateDeviceLogic) UpdateDevice(req *types.DeviceInfo) (*types.BaseMsgResp, error) {
+	var (
+		err error
+	)
+
 	domain := l.ctx.Value("request_domain").((*ent.User))
 
 	targetDevice, err := l.svcCtx.DB.Device.Query().Where(device.ID(*req.Id)).WithDepartments().Only(l.ctx)
@@ -42,7 +46,7 @@ func (l *UpdateDeviceLogic) UpdateDevice(req *types.DeviceInfo) (*types.BaseMsgR
 
 	err = l.svcCtx.DB.Device.UpdateOneID(*req.Id).
 		SetNotNilName(req.Name).
-		SetNotNilDepartmentID(&domain.DepartmentID).
+		// SetNotNilDepartmentID(&domain.DepartmentID).
 		SetNotNilHost(req.Host).
 		SetNotNilType(req.Type).
 		SetNotNilDescription(req.Description).

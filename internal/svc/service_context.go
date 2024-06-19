@@ -38,7 +38,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ent.Debug(), // debug mode
 	)
 
-	AuthorityMiddleware := middleware.NewAuthorityMiddleware(cbn, rds, trans)
+	AuthorityMiddleware := middleware.NewAuthorityMiddleware(cbn, rds, trans, &c)
 	return &ServiceContext{
 		Config:              c,
 		AuthorityMiddleware: AuthorityMiddleware,

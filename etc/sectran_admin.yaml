@@ -5,7 +5,7 @@ Timeout: 20000
 
 Auth:
   AccessSecret: sectran@199212121
-  AccessExpire: 100000
+  AccessExpire: 30
 
 CROSConf:
   Address: '*'
@@ -36,7 +36,7 @@ CoreRpc:
   Enabled: true
 
 RedisConf:
-  Host: 101.133.229.239:6379
+  Host: 127.0.0.1:6379
 
 CasbinDatabaseConf:
   Type: mysql

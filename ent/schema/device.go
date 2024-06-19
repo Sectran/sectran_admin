@@ -27,7 +27,6 @@ func (Device) Fields() []ent.Field {
 			Comment("ID of the device's department.|设备所属部门").
 			Annotations(entsql.WithComments(true)),
 		field.String("host").
-			Unique().
 			NotEmpty().
 			Comment("login host|设备地址").
 			MaxLen(64).

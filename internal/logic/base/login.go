@@ -53,7 +53,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 		return nil, types.CustomError("用户认证失败")
 	}
 
-	exp := time.Hour * time.Duration(l.svcCtx.Config.Auth.AccessExpire)
+	exp := time.Minute * time.Duration(l.svcCtx.Config.Auth.AccessExpire)
 	token, err := jwt.GenerateTokenUsingHs256(l.svcCtx.Config.Auth.AccessSecret, exp, user)
 	if err != nil {
 		return nil, types.CustomError("无法为该用户正确授权,请联系开发者")
@@ -65,8 +65,8 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 	}
 
 	//set timeout 5 secends
-	status := l.svcCtx.AuthorityMiddleware.Rds.Set(context.Background(), token, userJson, exp)
-	if status.Err() != nil {
+	_, err = l.svcCtx.AuthorityMiddleware.Rds.Set(context.Background(), token, userJson, exp).Result()
+	if err != nil {
 		return nil, types.CustomError("系统服务繁忙,请稍后再试")
 	}
 

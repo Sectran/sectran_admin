@@ -76,7 +76,7 @@ var (
 		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
 		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
 		{Name: "name", Type: field.TypeString, Size: 128, Comment: "The name of the device.|设备名称"},
-		{Name: "host", Type: field.TypeString, Unique: true, Size: 64, Comment: "login host|设备地址"},
+		{Name: "host", Type: field.TypeString, Size: 64, Comment: "login host|设备地址"},
 		{Name: "type", Type: field.TypeString, Size: 64, Comment: "type of the device.|设备类型"},
 		{Name: "description", Type: field.TypeString, Size: 128, Comment: "Description of the device.|设备描述"},
 		{Name: "department_id", Type: field.TypeUint64, Nullable: true, Comment: "ID of the device's department.|设备所属部门"},
