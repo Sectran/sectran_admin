@@ -28,6 +28,14 @@ func NewGetAccountByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 }
 
 func (l *GetAccountByIdLogic) GetAccountById(req *types.IDReq) (*types.AccountInfoResp, error) {
+	var (
+		err error
+	)
+
+	if err = AccountIdCheckout(l.svcCtx, l.ctx, req.Id); err != nil {
+		return nil, err
+	}
+
 	data, err := l.svcCtx.DB.Account.Get(l.ctx, req.Id)
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)

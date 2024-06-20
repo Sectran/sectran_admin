@@ -6,7 +6,7 @@ import (
 
 var (
 	//	//	20000 custom error
-	ErrAccountHasNoRights error = &errorx.CodeError{Code: 20001, Msg: "该账号权限不足"}
+	ErrAccountHasNoRights error = &errorx.CodeError{Code: 20001, Msg: "该账号权限不足，继续操作将被认定为攻击行为"}
 	ErrInternalError            = &errorx.CodeError{Code: 20002, Msg: "系统内部错误,请联系开发者"}
 	ErrDataNotFound             = &errorx.CodeError{Code: 20003, Msg: "操作数据不存在,可能已经被删除或者被移动"}
 	ErrInvalidToken             = &errorx.CodeError{Code: 20004, Msg: "用户还未登录或者回话已过期，请重新登录"}

@@ -2,15 +2,12 @@ package account
 
 import (
 	"context"
-	"sectran_admin/ent"
 	"sectran_admin/ent/account"
-	"sectran_admin/ent/department"
-	"sectran_admin/ent/device"
 	"sectran_admin/ent/predicate"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 
-	dept "sectran_admin/internal/logic/department"
+	dev "sectran_admin/internal/logic/device"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -27,9 +24,28 @@ const (
 	ProtocolMax
 )
 
-func ModifyCheckout(svcCtx *svc.ServiceContext, ctx context.Context, req *types.AccountInfo) error {
-	domain := ctx.Value("request_domain").((*ent.User))
+func AccountIdCheckout(svcCtx *svc.ServiceContext, ctx context.Context, accountId uint64) error {
+	deviceId, err := svcCtx.DB.Account.Query().Where(account.ID(accountId)).Select(account.FieldDeviceID).Int(ctx)
+	if err != nil {
+		logx.Errorw("操作设备账号时查询设备ID失败", logx.Field("accountId", accountId))
+		return types.ErrInternalError
+	}
 
+	return dev.DeviceIdCheckout(svcCtx, ctx, uint64(deviceId))
+}
+
+func AccountIdsCheckout(svcCtx *svc.ServiceContext, ctx context.Context, accountIds []uint64) error {
+	deviceIds := make([]uint64, 0)
+	err := svcCtx.DB.Account.Query().Where(account.IDIn(accountIds...)).Select(account.FieldDeviceID).Scan(ctx, &deviceIds)
+	if err != nil {
+		logx.Errorw("操作设备账号时查询设备ID失败", logx.Field("accountIds", accountIds))
+		return types.ErrInternalError
+	}
+
+	return dev.DeviceIdsCheckout(svcCtx, ctx, deviceIds)
+}
+
+func ModifyCheckout(svcCtx *svc.ServiceContext, ctx context.Context, req *types.AccountInfo) error {
 	if req.DeviceId == nil {
 		return types.CustomError("设备ID不能为空")
 	}
@@ -55,23 +71,8 @@ func ModifyCheckout(svcCtx *svc.ServiceContext, ctx context.Context, req *types.
 		return types.CustomError("账号端口不能为空")
 	}
 
-	deptId, err := svcCtx.DB.Device.Query().Where(device.ID(*req.DeviceId)).Select(device.FieldDepartmentID).Int(ctx)
-	if err != nil {
-		logx.Errorw("操作设备账号时查询设备部门失败", logx.Field("DeviceId", *req.DeviceId))
-		return types.ErrInternalError
-	}
-
-	//设备所属部门必须为该主体的子部门
-	deviceParentDepartments, err := svcCtx.DB.Department.Query().Where(department.ID(uint64(deptId))).Select(department.FieldParentDepartments).String(ctx)
-	if err != nil {
-		if _, ok := err.(*ent.NotFoundError); ok {
-			return types.CustomError("父部门不存在，可能已被删除")
-		}
-		return types.ErrInternalError
-	}
-
-	//当前主体是否存在权限操作该部门下的设备
-	if _, err = dept.DomainDeptAccessed(int(domain.DepartmentID), deviceParentDepartments); err != nil {
+	//校验是否有权限操作该账号
+	if err := AccountIdCheckout(svcCtx, ctx, *req.Id); err != nil {
 		return err
 	}
 
@@ -80,7 +81,13 @@ func ModifyCheckout(svcCtx *svc.ServiceContext, ctx context.Context, req *types.
 	predicates = append(predicates, account.ProtocolEQ(*req.Protocol))
 	predicates = append(predicates, account.UsernameEQ(*req.Username))
 	predicates = append(predicates, account.PortEQ(*req.Port))
+
+	//同一设备下不是本身账号、新增没有id、只有编辑才有
 	predicates = append(predicates, account.DeviceIDEQ(*req.DeviceId))
+	if req.Id != nil {
+		predicates = append(predicates, account.IDNEQ(uint64(*req.Id)))
+	}
+
 	acctExt, err := svcCtx.DB.Account.Query().Where(predicates...).Exist(ctx)
 	if err != nil {
 		logx.Errorw("查询设备账号三元组协议、账号、端口是否重复时失败")

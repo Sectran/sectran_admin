@@ -53,7 +53,7 @@ func initDept(ctx *svc.ServiceContext) {
 			SetArea("北京").
 			SetDescription("北京山川科技股份有限公司根部门").
 			SetParentDepartmentID(math.MaxInt - 1).
-			SetParentDepartments("").
+			SetParentDepartments("0").
 			Save(context.Background())
 		if err != nil {
 			fmt.Printf("项目初始化失败:%s\n", err)
@@ -116,7 +116,7 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
 	handler.RegisterHandlersCustom(server, ctx)
-	
+
 	initDept(ctx)
 	initRole(ctx)
 	initUser(ctx)

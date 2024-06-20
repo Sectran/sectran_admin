@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"sectran_admin/ent"
 	"sectran_admin/ent/department"
+	"sectran_admin/ent/predicate"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 	"strings"
@@ -58,8 +59,16 @@ func ModifyCheckout(svcCtx *svc.ServiceContext, ctx context.Context, req *types.
 		Name string `json:"name"`
 	}
 
+	var predicates []predicate.Department
+	predicates = append(predicates, department.ParentDepartmentsHasPrefix(prefix))
+
+	//只有编辑才会传递ID
+	if req.Id != nil {
+		predicates = append(predicates, department.IDNEQ(*req.Id))
+	}
+
 	err = svcCtx.DB.Department.Query().
-		Where(department.ParentDepartmentsHasPrefix(prefix)).
+		Where(predicates...).
 		Select(department.FieldName).
 		Scan(ctx, &sameLevelDeptNames)
 	if err != nil {

@@ -27,7 +27,15 @@ func NewDeleteAccountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Del
 }
 
 func (l *DeleteAccountLogic) DeleteAccount(req *types.IDsReq) (*types.BaseMsgResp, error) {
-	_, err := l.svcCtx.DB.Account.Delete().Where(account.IDIn(req.Ids...)).Exec(l.ctx)
+	var (
+		err error
+	)
+
+	if err = AccountIdsCheckout(l.svcCtx, l.ctx, req.Ids); err != nil {
+		return nil, err
+	}
+
+	_, err = l.svcCtx.DB.Account.Delete().Where(account.IDIn(req.Ids...)).Exec(l.ctx)
 
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)

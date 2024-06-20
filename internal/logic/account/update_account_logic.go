@@ -26,7 +26,15 @@ func NewUpdateAccountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Upd
 }
 
 func (l *UpdateAccountLogic) UpdateAccount(req *types.AccountInfo) (*types.BaseMsgResp, error) {
-	err := l.svcCtx.DB.Account.UpdateOneID(*req.Id).
+	var (
+		err error
+	)
+
+	if err = ModifyCheckout(l.svcCtx, l.ctx, req); err != nil {
+		return nil, err
+	}
+
+	err = l.svcCtx.DB.Account.UpdateOneID(*req.Id).
 		SetNotNilUsername(req.Username).
 		SetNotNilPort(req.Port).
 		SetNotNilProtocol(req.Protocol).
