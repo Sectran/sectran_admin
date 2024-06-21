@@ -11,10 +11,10 @@ import (
 
 	"sectran_admin/ent/migrate"
 
-	"sectran_admin/ent/accesspolicy"
 	"sectran_admin/ent/account"
 	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
+	"sectran_admin/ent/labletree"
 	"sectran_admin/ent/role"
 	"sectran_admin/ent/user"
 
@@ -31,14 +31,14 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// AccessPolicy is the client for interacting with the AccessPolicy builders.
-	AccessPolicy *AccessPolicyClient
 	// Account is the client for interacting with the Account builders.
 	Account *AccountClient
 	// Department is the client for interacting with the Department builders.
 	Department *DepartmentClient
 	// Device is the client for interacting with the Device builders.
 	Device *DeviceClient
+	// LableTree is the client for interacting with the LableTree builders.
+	LableTree *LableTreeClient
 	// Role is the client for interacting with the Role builders.
 	Role *RoleClient
 	// User is the client for interacting with the User builders.
@@ -54,10 +54,10 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.AccessPolicy = NewAccessPolicyClient(c.config)
 	c.Account = NewAccountClient(c.config)
 	c.Department = NewDepartmentClient(c.config)
 	c.Device = NewDeviceClient(c.config)
+	c.LableTree = NewLableTreeClient(c.config)
 	c.Role = NewRoleClient(c.config)
 	c.User = NewUserClient(c.config)
 }
@@ -150,14 +150,14 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:          ctx,
-		config:       cfg,
-		AccessPolicy: NewAccessPolicyClient(cfg),
-		Account:      NewAccountClient(cfg),
-		Department:   NewDepartmentClient(cfg),
-		Device:       NewDeviceClient(cfg),
-		Role:         NewRoleClient(cfg),
-		User:         NewUserClient(cfg),
+		ctx:        ctx,
+		config:     cfg,
+		Account:    NewAccountClient(cfg),
+		Department: NewDepartmentClient(cfg),
+		Device:     NewDeviceClient(cfg),
+		LableTree:  NewLableTreeClient(cfg),
+		Role:       NewRoleClient(cfg),
+		User:       NewUserClient(cfg),
 	}, nil
 }
 
@@ -175,21 +175,21 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:          ctx,
-		config:       cfg,
-		AccessPolicy: NewAccessPolicyClient(cfg),
-		Account:      NewAccountClient(cfg),
-		Department:   NewDepartmentClient(cfg),
-		Device:       NewDeviceClient(cfg),
-		Role:         NewRoleClient(cfg),
-		User:         NewUserClient(cfg),
+		ctx:        ctx,
+		config:     cfg,
+		Account:    NewAccountClient(cfg),
+		Department: NewDepartmentClient(cfg),
+		Device:     NewDeviceClient(cfg),
+		LableTree:  NewLableTreeClient(cfg),
+		Role:       NewRoleClient(cfg),
+		User:       NewUserClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		AccessPolicy.
+//		Account.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -212,7 +212,7 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.AccessPolicy, c.Account, c.Department, c.Device, c.Role, c.User,
+		c.Account, c.Department, c.Device, c.LableTree, c.Role, c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -222,7 +222,7 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.AccessPolicy, c.Account, c.Department, c.Device, c.Role, c.User,
+		c.Account, c.Department, c.Device, c.LableTree, c.Role, c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -231,153 +231,20 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
-	case *AccessPolicyMutation:
-		return c.AccessPolicy.mutate(ctx, m)
 	case *AccountMutation:
 		return c.Account.mutate(ctx, m)
 	case *DepartmentMutation:
 		return c.Department.mutate(ctx, m)
 	case *DeviceMutation:
 		return c.Device.mutate(ctx, m)
+	case *LableTreeMutation:
+		return c.LableTree.mutate(ctx, m)
 	case *RoleMutation:
 		return c.Role.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
-	}
-}
-
-// AccessPolicyClient is a client for the AccessPolicy schema.
-type AccessPolicyClient struct {
-	config
-}
-
-// NewAccessPolicyClient returns a client for the AccessPolicy from the given config.
-func NewAccessPolicyClient(c config) *AccessPolicyClient {
-	return &AccessPolicyClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `accesspolicy.Hooks(f(g(h())))`.
-func (c *AccessPolicyClient) Use(hooks ...Hook) {
-	c.hooks.AccessPolicy = append(c.hooks.AccessPolicy, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `accesspolicy.Intercept(f(g(h())))`.
-func (c *AccessPolicyClient) Intercept(interceptors ...Interceptor) {
-	c.inters.AccessPolicy = append(c.inters.AccessPolicy, interceptors...)
-}
-
-// Create returns a builder for creating a AccessPolicy entity.
-func (c *AccessPolicyClient) Create() *AccessPolicyCreate {
-	mutation := newAccessPolicyMutation(c.config, OpCreate)
-	return &AccessPolicyCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of AccessPolicy entities.
-func (c *AccessPolicyClient) CreateBulk(builders ...*AccessPolicyCreate) *AccessPolicyCreateBulk {
-	return &AccessPolicyCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *AccessPolicyClient) MapCreateBulk(slice any, setFunc func(*AccessPolicyCreate, int)) *AccessPolicyCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &AccessPolicyCreateBulk{err: fmt.Errorf("calling to AccessPolicyClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*AccessPolicyCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &AccessPolicyCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for AccessPolicy.
-func (c *AccessPolicyClient) Update() *AccessPolicyUpdate {
-	mutation := newAccessPolicyMutation(c.config, OpUpdate)
-	return &AccessPolicyUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *AccessPolicyClient) UpdateOne(ap *AccessPolicy) *AccessPolicyUpdateOne {
-	mutation := newAccessPolicyMutation(c.config, OpUpdateOne, withAccessPolicy(ap))
-	return &AccessPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *AccessPolicyClient) UpdateOneID(id uint64) *AccessPolicyUpdateOne {
-	mutation := newAccessPolicyMutation(c.config, OpUpdateOne, withAccessPolicyID(id))
-	return &AccessPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for AccessPolicy.
-func (c *AccessPolicyClient) Delete() *AccessPolicyDelete {
-	mutation := newAccessPolicyMutation(c.config, OpDelete)
-	return &AccessPolicyDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *AccessPolicyClient) DeleteOne(ap *AccessPolicy) *AccessPolicyDeleteOne {
-	return c.DeleteOneID(ap.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *AccessPolicyClient) DeleteOneID(id uint64) *AccessPolicyDeleteOne {
-	builder := c.Delete().Where(accesspolicy.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &AccessPolicyDeleteOne{builder}
-}
-
-// Query returns a query builder for AccessPolicy.
-func (c *AccessPolicyClient) Query() *AccessPolicyQuery {
-	return &AccessPolicyQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeAccessPolicy},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a AccessPolicy entity by its id.
-func (c *AccessPolicyClient) Get(ctx context.Context, id uint64) (*AccessPolicy, error) {
-	return c.Query().Where(accesspolicy.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *AccessPolicyClient) GetX(ctx context.Context, id uint64) *AccessPolicy {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// Hooks returns the client hooks.
-func (c *AccessPolicyClient) Hooks() []Hook {
-	return c.hooks.AccessPolicy
-}
-
-// Interceptors returns the client interceptors.
-func (c *AccessPolicyClient) Interceptors() []Interceptor {
-	return c.inters.AccessPolicy
-}
-
-func (c *AccessPolicyClient) mutate(ctx context.Context, m *AccessPolicyMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&AccessPolicyCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&AccessPolicyUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&AccessPolicyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&AccessPolicyDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown AccessPolicy mutation op: %q", m.Op())
 	}
 }
 
@@ -844,6 +711,139 @@ func (c *DeviceClient) mutate(ctx context.Context, m *DeviceMutation) (Value, er
 	}
 }
 
+// LableTreeClient is a client for the LableTree schema.
+type LableTreeClient struct {
+	config
+}
+
+// NewLableTreeClient returns a client for the LableTree from the given config.
+func NewLableTreeClient(c config) *LableTreeClient {
+	return &LableTreeClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `labletree.Hooks(f(g(h())))`.
+func (c *LableTreeClient) Use(hooks ...Hook) {
+	c.hooks.LableTree = append(c.hooks.LableTree, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `labletree.Intercept(f(g(h())))`.
+func (c *LableTreeClient) Intercept(interceptors ...Interceptor) {
+	c.inters.LableTree = append(c.inters.LableTree, interceptors...)
+}
+
+// Create returns a builder for creating a LableTree entity.
+func (c *LableTreeClient) Create() *LableTreeCreate {
+	mutation := newLableTreeMutation(c.config, OpCreate)
+	return &LableTreeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of LableTree entities.
+func (c *LableTreeClient) CreateBulk(builders ...*LableTreeCreate) *LableTreeCreateBulk {
+	return &LableTreeCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *LableTreeClient) MapCreateBulk(slice any, setFunc func(*LableTreeCreate, int)) *LableTreeCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &LableTreeCreateBulk{err: fmt.Errorf("calling to LableTreeClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*LableTreeCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &LableTreeCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for LableTree.
+func (c *LableTreeClient) Update() *LableTreeUpdate {
+	mutation := newLableTreeMutation(c.config, OpUpdate)
+	return &LableTreeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *LableTreeClient) UpdateOne(lt *LableTree) *LableTreeUpdateOne {
+	mutation := newLableTreeMutation(c.config, OpUpdateOne, withLableTree(lt))
+	return &LableTreeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *LableTreeClient) UpdateOneID(id uint64) *LableTreeUpdateOne {
+	mutation := newLableTreeMutation(c.config, OpUpdateOne, withLableTreeID(id))
+	return &LableTreeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for LableTree.
+func (c *LableTreeClient) Delete() *LableTreeDelete {
+	mutation := newLableTreeMutation(c.config, OpDelete)
+	return &LableTreeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *LableTreeClient) DeleteOne(lt *LableTree) *LableTreeDeleteOne {
+	return c.DeleteOneID(lt.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *LableTreeClient) DeleteOneID(id uint64) *LableTreeDeleteOne {
+	builder := c.Delete().Where(labletree.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &LableTreeDeleteOne{builder}
+}
+
+// Query returns a query builder for LableTree.
+func (c *LableTreeClient) Query() *LableTreeQuery {
+	return &LableTreeQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeLableTree},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a LableTree entity by its id.
+func (c *LableTreeClient) Get(ctx context.Context, id uint64) (*LableTree, error) {
+	return c.Query().Where(labletree.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *LableTreeClient) GetX(ctx context.Context, id uint64) *LableTree {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *LableTreeClient) Hooks() []Hook {
+	return c.hooks.LableTree
+}
+
+// Interceptors returns the client interceptors.
+func (c *LableTreeClient) Interceptors() []Interceptor {
+	return c.inters.LableTree
+}
+
+func (c *LableTreeClient) mutate(ctx context.Context, m *LableTreeMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&LableTreeCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&LableTreeUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&LableTreeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&LableTreeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown LableTree mutation op: %q", m.Op())
+	}
+}
+
 // RoleClient is a client for the Role schema.
 type RoleClient struct {
 	config
@@ -1161,10 +1161,10 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		AccessPolicy, Account, Department, Device, Role, User []ent.Hook
+		Account, Department, Device, LableTree, Role, User []ent.Hook
 	}
 	inters struct {
-		AccessPolicy, Account, Department, Device, Role, User []ent.Interceptor
+		Account, Department, Device, LableTree, Role, User []ent.Interceptor
 	}
 )
 

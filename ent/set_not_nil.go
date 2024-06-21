@@ -5,198 +5,6 @@ package ent
 import "time"
 
 // set field if value's pointer is not nil.
-func (ap *AccessPolicyUpdate) SetNotNilUpdatedAt(value *time.Time) *AccessPolicyUpdate {
-	if value != nil {
-		return ap.SetUpdatedAt(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyUpdateOne) SetNotNilUpdatedAt(value *time.Time) *AccessPolicyUpdateOne {
-	if value != nil {
-		return ap.SetUpdatedAt(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyCreate) SetNotNilUpdatedAt(value *time.Time) *AccessPolicyCreate {
-	if value != nil {
-		return ap.SetUpdatedAt(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyUpdate) SetNotNilName(value *string) *AccessPolicyUpdate {
-	if value != nil {
-		return ap.SetName(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyUpdateOne) SetNotNilName(value *string) *AccessPolicyUpdateOne {
-	if value != nil {
-		return ap.SetName(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyCreate) SetNotNilName(value *string) *AccessPolicyCreate {
-	if value != nil {
-		return ap.SetName(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyUpdate) SetNotNilPower(value *int32) *AccessPolicyUpdate {
-	if value != nil {
-		return ap.SetPower(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyUpdateOne) SetNotNilPower(value *int32) *AccessPolicyUpdateOne {
-	if value != nil {
-		return ap.SetPower(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyCreate) SetNotNilPower(value *int32) *AccessPolicyCreate {
-	if value != nil {
-		return ap.SetPower(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyUpdate) SetNotNilDepartmentID(value *uint64) *AccessPolicyUpdate {
-	if value != nil {
-		return ap.SetDepartmentID(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyUpdateOne) SetNotNilDepartmentID(value *uint64) *AccessPolicyUpdateOne {
-	if value != nil {
-		return ap.SetDepartmentID(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyCreate) SetNotNilDepartmentID(value *uint64) *AccessPolicyCreate {
-	if value != nil {
-		return ap.SetDepartmentID(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyUpdate) SetNotNilUsers(value *string) *AccessPolicyUpdate {
-	if value != nil {
-		return ap.SetUsers(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyUpdateOne) SetNotNilUsers(value *string) *AccessPolicyUpdateOne {
-	if value != nil {
-		return ap.SetUsers(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyCreate) SetNotNilUsers(value *string) *AccessPolicyCreate {
-	if value != nil {
-		return ap.SetUsers(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyUpdate) SetNotNilAccounts(value *string) *AccessPolicyUpdate {
-	if value != nil {
-		return ap.SetAccounts(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyUpdateOne) SetNotNilAccounts(value *string) *AccessPolicyUpdateOne {
-	if value != nil {
-		return ap.SetAccounts(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyCreate) SetNotNilAccounts(value *string) *AccessPolicyCreate {
-	if value != nil {
-		return ap.SetAccounts(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyUpdate) SetNotNilEffecteTimeStart(value *time.Time) *AccessPolicyUpdate {
-	if value != nil {
-		return ap.SetEffecteTimeStart(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyUpdateOne) SetNotNilEffecteTimeStart(value *time.Time) *AccessPolicyUpdateOne {
-	if value != nil {
-		return ap.SetEffecteTimeStart(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyCreate) SetNotNilEffecteTimeStart(value *time.Time) *AccessPolicyCreate {
-	if value != nil {
-		return ap.SetEffecteTimeStart(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyUpdate) SetNotNilEffecteTimeEnd(value *time.Time) *AccessPolicyUpdate {
-	if value != nil {
-		return ap.SetEffecteTimeEnd(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyUpdateOne) SetNotNilEffecteTimeEnd(value *time.Time) *AccessPolicyUpdateOne {
-	if value != nil {
-		return ap.SetEffecteTimeEnd(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
-func (ap *AccessPolicyCreate) SetNotNilEffecteTimeEnd(value *time.Time) *AccessPolicyCreate {
-	if value != nil {
-		return ap.SetEffecteTimeEnd(*value)
-	}
-	return ap
-}
-
-// set field if value's pointer is not nil.
 func (a *AccountUpdate) SetNotNilUpdatedAt(value *time.Time) *AccountUpdate {
 	if value != nil {
 		return a.SetUpdatedAt(*value)
@@ -650,6 +458,246 @@ func (d *DeviceCreate) SetNotNilDescription(value *string) *DeviceCreate {
 		return d.SetDescription(*value)
 	}
 	return d
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdate) SetNotNilUpdatedAt(value *time.Time) *LableTreeUpdate {
+	if value != nil {
+		return lt.SetUpdatedAt(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdateOne) SetNotNilUpdatedAt(value *time.Time) *LableTreeUpdateOne {
+	if value != nil {
+		return lt.SetUpdatedAt(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeCreate) SetNotNilUpdatedAt(value *time.Time) *LableTreeCreate {
+	if value != nil {
+		return lt.SetUpdatedAt(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdate) SetNotNilName(value *string) *LableTreeUpdate {
+	if value != nil {
+		return lt.SetName(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdateOne) SetNotNilName(value *string) *LableTreeUpdateOne {
+	if value != nil {
+		return lt.SetName(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeCreate) SetNotNilName(value *string) *LableTreeCreate {
+	if value != nil {
+		return lt.SetName(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdate) SetNotNilType(value *uint) *LableTreeUpdate {
+	if value != nil {
+		return lt.SetType(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdateOne) SetNotNilType(value *uint) *LableTreeUpdateOne {
+	if value != nil {
+		return lt.SetType(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeCreate) SetNotNilType(value *uint) *LableTreeCreate {
+	if value != nil {
+		return lt.SetType(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdate) SetNotNilIcon(value *string) *LableTreeUpdate {
+	if value != nil {
+		return lt.SetIcon(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdateOne) SetNotNilIcon(value *string) *LableTreeUpdateOne {
+	if value != nil {
+		return lt.SetIcon(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeCreate) SetNotNilIcon(value *string) *LableTreeCreate {
+	if value != nil {
+		return lt.SetIcon(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdate) SetNotNilParentLable(value *uint64) *LableTreeUpdate {
+	if value != nil {
+		return lt.SetParentLable(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdateOne) SetNotNilParentLable(value *uint64) *LableTreeUpdateOne {
+	if value != nil {
+		return lt.SetParentLable(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeCreate) SetNotNilParentLable(value *uint64) *LableTreeCreate {
+	if value != nil {
+		return lt.SetParentLable(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdate) SetNotNilParentLables(value *string) *LableTreeUpdate {
+	if value != nil {
+		return lt.SetParentLables(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdateOne) SetNotNilParentLables(value *string) *LableTreeUpdateOne {
+	if value != nil {
+		return lt.SetParentLables(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeCreate) SetNotNilParentLables(value *string) *LableTreeCreate {
+	if value != nil {
+		return lt.SetParentLables(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdate) SetNotNilLableOwner(value *uint64) *LableTreeUpdate {
+	if value != nil {
+		return lt.SetLableOwner(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdateOne) SetNotNilLableOwner(value *uint64) *LableTreeUpdateOne {
+	if value != nil {
+		return lt.SetLableOwner(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeCreate) SetNotNilLableOwner(value *uint64) *LableTreeCreate {
+	if value != nil {
+		return lt.SetLableOwner(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdate) SetNotNilInherit(value *bool) *LableTreeUpdate {
+	if value != nil {
+		return lt.SetInherit(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdateOne) SetNotNilInherit(value *bool) *LableTreeUpdateOne {
+	if value != nil {
+		return lt.SetInherit(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeCreate) SetNotNilInherit(value *bool) *LableTreeCreate {
+	if value != nil {
+		return lt.SetInherit(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdate) SetNotNilRelatedLabels(value *string) *LableTreeUpdate {
+	if value != nil {
+		return lt.SetRelatedLabels(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdateOne) SetNotNilRelatedLabels(value *string) *LableTreeUpdateOne {
+	if value != nil {
+		return lt.SetRelatedLabels(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeCreate) SetNotNilRelatedLabels(value *string) *LableTreeCreate {
+	if value != nil {
+		return lt.SetRelatedLabels(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdate) SetNotNilDescription(value *string) *LableTreeUpdate {
+	if value != nil {
+		return lt.SetDescription(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdateOne) SetNotNilDescription(value *string) *LableTreeUpdateOne {
+	if value != nil {
+		return lt.SetDescription(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeCreate) SetNotNilDescription(value *string) *LableTreeCreate {
+	if value != nil {
+		return lt.SetDescription(*value)
+	}
+	return lt
 }
 
 // set field if value's pointer is not nil.

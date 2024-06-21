@@ -3,10 +3,10 @@
 package ent
 
 import (
-	"sectran_admin/ent/accesspolicy"
 	"sectran_admin/ent/account"
 	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
+	"sectran_admin/ent/labletree"
 	"sectran_admin/ent/role"
 	"sectran_admin/ent/schema"
 	"sectran_admin/ent/user"
@@ -17,69 +17,6 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	accesspolicyMixin := schema.AccessPolicy{}.Mixin()
-	accesspolicyMixinFields0 := accesspolicyMixin[0].Fields()
-	_ = accesspolicyMixinFields0
-	accesspolicyFields := schema.AccessPolicy{}.Fields()
-	_ = accesspolicyFields
-	// accesspolicyDescCreatedAt is the schema descriptor for created_at field.
-	accesspolicyDescCreatedAt := accesspolicyMixinFields0[1].Descriptor()
-	// accesspolicy.DefaultCreatedAt holds the default value on creation for the created_at field.
-	accesspolicy.DefaultCreatedAt = accesspolicyDescCreatedAt.Default.(func() time.Time)
-	// accesspolicyDescUpdatedAt is the schema descriptor for updated_at field.
-	accesspolicyDescUpdatedAt := accesspolicyMixinFields0[2].Descriptor()
-	// accesspolicy.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	accesspolicy.DefaultUpdatedAt = accesspolicyDescUpdatedAt.Default.(func() time.Time)
-	// accesspolicy.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	accesspolicy.UpdateDefaultUpdatedAt = accesspolicyDescUpdatedAt.UpdateDefault.(func() time.Time)
-	// accesspolicyDescName is the schema descriptor for name field.
-	accesspolicyDescName := accesspolicyFields[0].Descriptor()
-	// accesspolicy.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	accesspolicy.NameValidator = func() func(string) error {
-		validators := accesspolicyDescName.Validators
-		fns := [...]func(string) error{
-			validators[0].(func(string) error),
-			validators[1].(func(string) error),
-		}
-		return func(name string) error {
-			for _, fn := range fns {
-				if err := fn(name); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
-	// accesspolicyDescPower is the schema descriptor for power field.
-	accesspolicyDescPower := accesspolicyFields[1].Descriptor()
-	// accesspolicy.DefaultPower holds the default value on creation for the power field.
-	accesspolicy.DefaultPower = accesspolicyDescPower.Default.(int32)
-	// accesspolicy.PowerValidator is a validator for the "power" field. It is called by the builders before save.
-	accesspolicy.PowerValidator = accesspolicyDescPower.Validators[0].(func(int32) error)
-	// accesspolicyDescDepartmentID is the schema descriptor for department_id field.
-	accesspolicyDescDepartmentID := accesspolicyFields[2].Descriptor()
-	// accesspolicy.DepartmentIDValidator is a validator for the "department_id" field. It is called by the builders before save.
-	accesspolicy.DepartmentIDValidator = accesspolicyDescDepartmentID.Validators[0].(func(uint64) error)
-	// accesspolicyDescUsers is the schema descriptor for users field.
-	accesspolicyDescUsers := accesspolicyFields[3].Descriptor()
-	// accesspolicy.UsersValidator is a validator for the "users" field. It is called by the builders before save.
-	accesspolicy.UsersValidator = accesspolicyDescUsers.Validators[0].(func(string) error)
-	// accesspolicyDescAccounts is the schema descriptor for accounts field.
-	accesspolicyDescAccounts := accesspolicyFields[4].Descriptor()
-	// accesspolicy.AccountsValidator is a validator for the "accounts" field. It is called by the builders before save.
-	accesspolicy.AccountsValidator = accesspolicyDescAccounts.Validators[0].(func(string) error)
-	// accesspolicyDescEffecteTimeStart is the schema descriptor for effecte_time_start field.
-	accesspolicyDescEffecteTimeStart := accesspolicyFields[5].Descriptor()
-	// accesspolicy.DefaultEffecteTimeStart holds the default value on creation for the effecte_time_start field.
-	accesspolicy.DefaultEffecteTimeStart = accesspolicyDescEffecteTimeStart.Default.(func() time.Time)
-	// accesspolicy.UpdateDefaultEffecteTimeStart holds the default value on update for the effecte_time_start field.
-	accesspolicy.UpdateDefaultEffecteTimeStart = accesspolicyDescEffecteTimeStart.UpdateDefault.(func() time.Time)
-	// accesspolicyDescEffecteTimeEnd is the schema descriptor for effecte_time_end field.
-	accesspolicyDescEffecteTimeEnd := accesspolicyFields[6].Descriptor()
-	// accesspolicy.DefaultEffecteTimeEnd holds the default value on creation for the effecte_time_end field.
-	accesspolicy.DefaultEffecteTimeEnd = accesspolicyDescEffecteTimeEnd.Default.(time.Time)
-	// accesspolicy.UpdateDefaultEffecteTimeEnd holds the default value on update for the effecte_time_end field.
-	accesspolicy.UpdateDefaultEffecteTimeEnd = accesspolicyDescEffecteTimeEnd.UpdateDefault.(func() time.Time)
 	accountMixin := schema.Account{}.Mixin()
 	accountMixinFields0 := accountMixin[0].Fields()
 	_ = accountMixinFields0
@@ -278,11 +215,62 @@ func init() {
 	// deviceDescType is the schema descriptor for type field.
 	deviceDescType := deviceFields[3].Descriptor()
 	// device.TypeValidator is a validator for the "type" field. It is called by the builders before save.
-	device.TypeValidator = deviceDescType.Validators[0].(func(string) error)
+	device.TypeValidator = func() func(string) error {
+		validators := deviceDescType.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(_type string) error {
+			for _, fn := range fns {
+				if err := fn(_type); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// deviceDescDescription is the schema descriptor for description field.
 	deviceDescDescription := deviceFields[4].Descriptor()
 	// device.DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
 	device.DescriptionValidator = deviceDescDescription.Validators[0].(func(string) error)
+	labletreeMixin := schema.LableTree{}.Mixin()
+	labletreeMixinFields0 := labletreeMixin[0].Fields()
+	_ = labletreeMixinFields0
+	labletreeFields := schema.LableTree{}.Fields()
+	_ = labletreeFields
+	// labletreeDescCreatedAt is the schema descriptor for created_at field.
+	labletreeDescCreatedAt := labletreeMixinFields0[1].Descriptor()
+	// labletree.DefaultCreatedAt holds the default value on creation for the created_at field.
+	labletree.DefaultCreatedAt = labletreeDescCreatedAt.Default.(func() time.Time)
+	// labletreeDescUpdatedAt is the schema descriptor for updated_at field.
+	labletreeDescUpdatedAt := labletreeMixinFields0[2].Descriptor()
+	// labletree.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	labletree.DefaultUpdatedAt = labletreeDescUpdatedAt.Default.(func() time.Time)
+	// labletree.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	labletree.UpdateDefaultUpdatedAt = labletreeDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// labletreeDescName is the schema descriptor for name field.
+	labletreeDescName := labletreeFields[0].Descriptor()
+	// labletree.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	labletree.NameValidator = func() func(string) error {
+		validators := labletreeDescName.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(name string) error {
+			for _, fn := range fns {
+				if err := fn(name); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// labletreeDescDescription is the schema descriptor for description field.
+	labletreeDescDescription := labletreeFields[8].Descriptor()
+	// labletree.DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
+	labletree.DescriptionValidator = labletreeDescDescription.Validators[0].(func(string) error)
 	roleMixin := schema.Role{}.Mixin()
 	roleMixinFields0 := roleMixin[0].Fields()
 	_ = roleMixinFields0

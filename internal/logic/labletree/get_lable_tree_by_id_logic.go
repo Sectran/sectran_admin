@@ -1,4 +1,4 @@
-package access_policy
+package LableTree
 
 import (
 	"context"
@@ -13,44 +13,46 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type GetAccessPolicyByIdLogic struct {
+type GetLableTreeByIdLogic struct {
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewGetAccessPolicyByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetAccessPolicyByIdLogic {
-	return &GetAccessPolicyByIdLogic{
+func NewGetLableTreeByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetLableTreeByIdLogic {
+	return &GetLableTreeByIdLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (l *GetAccessPolicyByIdLogic) GetAccessPolicyById(req *types.IDReq) (*types.AccessPolicyInfoResp, error) {
-	data, err := l.svcCtx.DB.AccessPolicy.Get(l.ctx, req.Id)
+func (l *GetLableTreeByIdLogic) GetLableTreeById(req *types.IDReq) (*types.LableTreeInfoResp, error) {
+	data, err := l.svcCtx.DB.LableTree.Get(l.ctx, req.Id)
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
 
-	return &types.AccessPolicyInfoResp{
+	return &types.LableTreeInfoResp{
 	    BaseDataInfo: types.BaseDataInfo{
             Code: 0,
             Msg:  l.svcCtx.Trans.Trans(l.ctx, i18n.Success),
         },
-        Data: types.AccessPolicyInfo{
+        Data: types.LableTreeInfo{
             BaseIDInfo:    types.BaseIDInfo{
 				Id:          &data.ID,
 				CreatedAt:    pointy.GetPointer(data.CreatedAt.UnixMilli()),
 				UpdatedAt:    pointy.GetPointer(data.UpdatedAt.UnixMilli()),
             },
 			Name:	&data.Name,
-			Power:	&data.Power,
-			DepartmentId:	&data.DepartmentID,
-			Users:	&data.Users,
-			Accounts:	&data.Accounts,
-			EffecteTimeStart:	pointy.GetUnixMilliPointer(data.EffecteTimeStart.UnixMilli()),
-			EffecteTimeEnd:	pointy.GetUnixMilliPointer(data.EffecteTimeEnd.UnixMilli()),
+			Type:	&data.Type,
+			Icon:	&data.Icon,
+			ParentLable:	&data.ParentLable,
+			ParentLables:	&data.ParentLables,
+			LableOwner:	&data.LableOwner,
+			Inherit:	&data.Inherit,
+			RelatedLabels:	&data.RelatedLabels,
+			Description:	&data.Description,
         },
 	}, nil
 }

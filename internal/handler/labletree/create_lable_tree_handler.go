@@ -1,40 +1,40 @@
-package access_policy
+package LableTree
 
 import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
 
-	"sectran_admin/internal/logic/access_policy"
+	"sectran_admin/internal/logic/LableTree"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 )
 
-// swagger:route post /access_policy/update access_policy UpdateAccessPolicy
+// swagger:route post /lable_tree/create LableTree CreateLableTree
 //
-// Update access policy information | 更新AccessPolicy
+// Create lable tree information | 创建LableTree
 //
-// Update access policy information | 更新AccessPolicy
+// Create lable tree information | 创建LableTree
 //
 // Parameters:
 //  + name: body
 //    require: true
 //    in: body
-//    type: AccessPolicyInfo
+//    type: LableTreeInfo
 //
 // Responses:
 //  200: BaseMsgResp
 
-func UpdateAccessPolicyHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func CreateLableTreeHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.AccessPolicyInfo
+		var req types.LableTreeInfo
 		if err := httpx.Parse(r, &req, true); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := access_policy.NewUpdateAccessPolicyLogic(r.Context(), svcCtx)
-		resp, err := l.UpdateAccessPolicy(&req)
+		l := LableTree.NewCreateLableTreeLogic(r.Context(), svcCtx)
+		resp, err := l.CreateLableTree(&req)
 		if err != nil {
 			err = svcCtx.Trans.TransError(r.Context(), err)
 			httpx.ErrorCtx(r.Context(), w, err)

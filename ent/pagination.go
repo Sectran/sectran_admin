@@ -5,10 +5,10 @@ package ent
 import (
 	"context"
 	"fmt"
-	"sectran_admin/ent/accesspolicy"
 	"sectran_admin/ent/account"
 	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
+	"sectran_admin/ent/labletree"
 	"sectran_admin/ent/role"
 	"sectran_admin/ent/user"
 )
@@ -58,85 +58,6 @@ func (o OrderDirection) reverse() OrderDirection {
 }
 
 const errInvalidPagination = "INVALID_PAGINATION"
-
-type AccessPolicyPager struct {
-	Order  accesspolicy.OrderOption
-	Filter func(*AccessPolicyQuery) (*AccessPolicyQuery, error)
-}
-
-// AccessPolicyPaginateOption enables pagination customization.
-type AccessPolicyPaginateOption func(*AccessPolicyPager)
-
-// DefaultAccessPolicyOrder is the default ordering of AccessPolicy.
-var DefaultAccessPolicyOrder = Desc(accesspolicy.FieldID)
-
-func newAccessPolicyPager(opts []AccessPolicyPaginateOption) (*AccessPolicyPager, error) {
-	pager := &AccessPolicyPager{}
-	for _, opt := range opts {
-		opt(pager)
-	}
-	if pager.Order == nil {
-		pager.Order = DefaultAccessPolicyOrder
-	}
-	return pager, nil
-}
-
-func (p *AccessPolicyPager) ApplyFilter(query *AccessPolicyQuery) (*AccessPolicyQuery, error) {
-	if p.Filter != nil {
-		return p.Filter(query)
-	}
-	return query, nil
-}
-
-// AccessPolicyPageList is AccessPolicy PageList result.
-type AccessPolicyPageList struct {
-	List        []*AccessPolicy `json:"list"`
-	PageDetails *PageDetails    `json:"pageDetails"`
-}
-
-func (ap *AccessPolicyQuery) Page(
-	ctx context.Context, pageNum uint64, pageSize uint64, opts ...AccessPolicyPaginateOption,
-) (*AccessPolicyPageList, error) {
-
-	pager, err := newAccessPolicyPager(opts)
-	if err != nil {
-		return nil, err
-	}
-
-	if ap, err = pager.ApplyFilter(ap); err != nil {
-		return nil, err
-	}
-
-	ret := &AccessPolicyPageList{}
-
-	ret.PageDetails = &PageDetails{
-		Page: pageNum,
-		Size: pageSize,
-	}
-
-	count, err := ap.Clone().Count(ctx)
-
-	if err != nil {
-		return nil, err
-	}
-
-	ret.PageDetails.Total = uint64(count)
-
-	if pager.Order != nil {
-		ap = ap.Order(pager.Order)
-	} else {
-		ap = ap.Order(DefaultAccessPolicyOrder)
-	}
-
-	ap = ap.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
-	list, err := ap.All(ctx)
-	if err != nil {
-		return nil, err
-	}
-	ret.List = list
-
-	return ret, nil
-}
 
 type AccountPager struct {
 	Order  account.OrderOption
@@ -367,6 +288,85 @@ func (d *DeviceQuery) Page(
 
 	d = d.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
 	list, err := d.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	ret.List = list
+
+	return ret, nil
+}
+
+type LableTreePager struct {
+	Order  labletree.OrderOption
+	Filter func(*LableTreeQuery) (*LableTreeQuery, error)
+}
+
+// LableTreePaginateOption enables pagination customization.
+type LableTreePaginateOption func(*LableTreePager)
+
+// DefaultLableTreeOrder is the default ordering of LableTree.
+var DefaultLableTreeOrder = Desc(labletree.FieldID)
+
+func newLableTreePager(opts []LableTreePaginateOption) (*LableTreePager, error) {
+	pager := &LableTreePager{}
+	for _, opt := range opts {
+		opt(pager)
+	}
+	if pager.Order == nil {
+		pager.Order = DefaultLableTreeOrder
+	}
+	return pager, nil
+}
+
+func (p *LableTreePager) ApplyFilter(query *LableTreeQuery) (*LableTreeQuery, error) {
+	if p.Filter != nil {
+		return p.Filter(query)
+	}
+	return query, nil
+}
+
+// LableTreePageList is LableTree PageList result.
+type LableTreePageList struct {
+	List        []*LableTree `json:"list"`
+	PageDetails *PageDetails `json:"pageDetails"`
+}
+
+func (lt *LableTreeQuery) Page(
+	ctx context.Context, pageNum uint64, pageSize uint64, opts ...LableTreePaginateOption,
+) (*LableTreePageList, error) {
+
+	pager, err := newLableTreePager(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	if lt, err = pager.ApplyFilter(lt); err != nil {
+		return nil, err
+	}
+
+	ret := &LableTreePageList{}
+
+	ret.PageDetails = &PageDetails{
+		Page: pageNum,
+		Size: pageSize,
+	}
+
+	count, err := lt.Clone().Count(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	ret.PageDetails.Total = uint64(count)
+
+	if pager.Order != nil {
+		lt = lt.Order(pager.Order)
+	} else {
+		lt = lt.Order(DefaultLableTreeOrder)
+	}
+
+	lt = lt.Offset(int((pageNum - 1) * pageSize)).Limit(int(pageSize))
+	list, err := lt.All(ctx)
 	if err != nil {
 		return nil, err
 	}

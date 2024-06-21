@@ -1,40 +1,40 @@
-package access_policy
+package LableTree
 
 import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
 
-	"sectran_admin/internal/logic/access_policy"
+	"sectran_admin/internal/logic/LableTree"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 )
 
-// swagger:route post /access_policy/delete access_policy DeleteAccessPolicy
+// swagger:route post /lable_tree/list LableTree GetLableTreeList
 //
-// Delete access policy information | 删除AccessPolicy信息
+// Get lable tree list | 获取LableTree列表
 //
-// Delete access policy information | 删除AccessPolicy信息
+// Get lable tree list | 获取LableTree列表
 //
 // Parameters:
 //  + name: body
 //    require: true
 //    in: body
-//    type: IDsReq
+//    type: LableTreeListReq
 //
 // Responses:
-//  200: BaseMsgResp
+//  200: LableTreeListResp
 
-func DeleteAccessPolicyHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func GetLableTreeListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.IDsReq
+		var req types.LableTreeListReq
 		if err := httpx.Parse(r, &req, true); err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
 			return
 		}
 
-		l := access_policy.NewDeleteAccessPolicyLogic(r.Context(), svcCtx)
-		resp, err := l.DeleteAccessPolicy(&req)
+		l := LableTree.NewGetLableTreeListLogic(r.Context(), svcCtx)
+		resp, err := l.GetLableTreeList(&req)
 		if err != nil {
 			err = svcCtx.Trans.TransError(r.Context(), err)
 			httpx.ErrorCtx(r.Context(), w, err)

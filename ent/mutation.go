@@ -6,10 +6,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"sectran_admin/ent/accesspolicy"
 	"sectran_admin/ent/account"
 	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
+	"sectran_admin/ent/labletree"
 	"sectran_admin/ent/predicate"
 	"sectran_admin/ent/role"
 	"sectran_admin/ent/user"
@@ -29,907 +29,13 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAccessPolicy = "AccessPolicy"
-	TypeAccount      = "Account"
-	TypeDepartment   = "Department"
-	TypeDevice       = "Device"
-	TypeRole         = "Role"
-	TypeUser         = "User"
+	TypeAccount    = "Account"
+	TypeDepartment = "Department"
+	TypeDevice     = "Device"
+	TypeLableTree  = "LableTree"
+	TypeRole       = "Role"
+	TypeUser       = "User"
 )
-
-// AccessPolicyMutation represents an operation that mutates the AccessPolicy nodes in the graph.
-type AccessPolicyMutation struct {
-	config
-	op                 Op
-	typ                string
-	id                 *uint64
-	created_at         *time.Time
-	updated_at         *time.Time
-	name               *string
-	power              *int32
-	addpower           *int32
-	department_id      *uint64
-	adddepartment_id   *int64
-	users              *string
-	accounts           *string
-	effecte_time_start *time.Time
-	effecte_time_end   *time.Time
-	clearedFields      map[string]struct{}
-	done               bool
-	oldValue           func(context.Context) (*AccessPolicy, error)
-	predicates         []predicate.AccessPolicy
-}
-
-var _ ent.Mutation = (*AccessPolicyMutation)(nil)
-
-// accesspolicyOption allows management of the mutation configuration using functional options.
-type accesspolicyOption func(*AccessPolicyMutation)
-
-// newAccessPolicyMutation creates new mutation for the AccessPolicy entity.
-func newAccessPolicyMutation(c config, op Op, opts ...accesspolicyOption) *AccessPolicyMutation {
-	m := &AccessPolicyMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeAccessPolicy,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withAccessPolicyID sets the ID field of the mutation.
-func withAccessPolicyID(id uint64) accesspolicyOption {
-	return func(m *AccessPolicyMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *AccessPolicy
-		)
-		m.oldValue = func(ctx context.Context) (*AccessPolicy, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().AccessPolicy.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withAccessPolicy sets the old AccessPolicy of the mutation.
-func withAccessPolicy(node *AccessPolicy) accesspolicyOption {
-	return func(m *AccessPolicyMutation) {
-		m.oldValue = func(context.Context) (*AccessPolicy, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m AccessPolicyMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m AccessPolicyMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of AccessPolicy entities.
-func (m *AccessPolicyMutation) SetID(id uint64) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *AccessPolicyMutation) ID() (id uint64, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *AccessPolicyMutation) IDs(ctx context.Context) ([]uint64, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []uint64{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().AccessPolicy.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (m *AccessPolicyMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *AccessPolicyMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the AccessPolicy entity.
-// If the AccessPolicy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AccessPolicyMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *AccessPolicyMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *AccessPolicyMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *AccessPolicyMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the AccessPolicy entity.
-// If the AccessPolicy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AccessPolicyMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *AccessPolicyMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
-// SetName sets the "name" field.
-func (m *AccessPolicyMutation) SetName(s string) {
-	m.name = &s
-}
-
-// Name returns the value of the "name" field in the mutation.
-func (m *AccessPolicyMutation) Name() (r string, exists bool) {
-	v := m.name
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldName returns the old "name" field's value of the AccessPolicy entity.
-// If the AccessPolicy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AccessPolicyMutation) OldName(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldName is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldName requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldName: %w", err)
-	}
-	return oldValue.Name, nil
-}
-
-// ResetName resets all changes to the "name" field.
-func (m *AccessPolicyMutation) ResetName() {
-	m.name = nil
-}
-
-// SetPower sets the "power" field.
-func (m *AccessPolicyMutation) SetPower(i int32) {
-	m.power = &i
-	m.addpower = nil
-}
-
-// Power returns the value of the "power" field in the mutation.
-func (m *AccessPolicyMutation) Power() (r int32, exists bool) {
-	v := m.power
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPower returns the old "power" field's value of the AccessPolicy entity.
-// If the AccessPolicy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AccessPolicyMutation) OldPower(ctx context.Context) (v int32, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPower is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPower requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPower: %w", err)
-	}
-	return oldValue.Power, nil
-}
-
-// AddPower adds i to the "power" field.
-func (m *AccessPolicyMutation) AddPower(i int32) {
-	if m.addpower != nil {
-		*m.addpower += i
-	} else {
-		m.addpower = &i
-	}
-}
-
-// AddedPower returns the value that was added to the "power" field in this mutation.
-func (m *AccessPolicyMutation) AddedPower() (r int32, exists bool) {
-	v := m.addpower
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearPower clears the value of the "power" field.
-func (m *AccessPolicyMutation) ClearPower() {
-	m.power = nil
-	m.addpower = nil
-	m.clearedFields[accesspolicy.FieldPower] = struct{}{}
-}
-
-// PowerCleared returns if the "power" field was cleared in this mutation.
-func (m *AccessPolicyMutation) PowerCleared() bool {
-	_, ok := m.clearedFields[accesspolicy.FieldPower]
-	return ok
-}
-
-// ResetPower resets all changes to the "power" field.
-func (m *AccessPolicyMutation) ResetPower() {
-	m.power = nil
-	m.addpower = nil
-	delete(m.clearedFields, accesspolicy.FieldPower)
-}
-
-// SetDepartmentID sets the "department_id" field.
-func (m *AccessPolicyMutation) SetDepartmentID(u uint64) {
-	m.department_id = &u
-	m.adddepartment_id = nil
-}
-
-// DepartmentID returns the value of the "department_id" field in the mutation.
-func (m *AccessPolicyMutation) DepartmentID() (r uint64, exists bool) {
-	v := m.department_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDepartmentID returns the old "department_id" field's value of the AccessPolicy entity.
-// If the AccessPolicy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AccessPolicyMutation) OldDepartmentID(ctx context.Context) (v uint64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDepartmentID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDepartmentID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDepartmentID: %w", err)
-	}
-	return oldValue.DepartmentID, nil
-}
-
-// AddDepartmentID adds u to the "department_id" field.
-func (m *AccessPolicyMutation) AddDepartmentID(u int64) {
-	if m.adddepartment_id != nil {
-		*m.adddepartment_id += u
-	} else {
-		m.adddepartment_id = &u
-	}
-}
-
-// AddedDepartmentID returns the value that was added to the "department_id" field in this mutation.
-func (m *AccessPolicyMutation) AddedDepartmentID() (r int64, exists bool) {
-	v := m.adddepartment_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetDepartmentID resets all changes to the "department_id" field.
-func (m *AccessPolicyMutation) ResetDepartmentID() {
-	m.department_id = nil
-	m.adddepartment_id = nil
-}
-
-// SetUsers sets the "users" field.
-func (m *AccessPolicyMutation) SetUsers(s string) {
-	m.users = &s
-}
-
-// Users returns the value of the "users" field in the mutation.
-func (m *AccessPolicyMutation) Users() (r string, exists bool) {
-	v := m.users
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUsers returns the old "users" field's value of the AccessPolicy entity.
-// If the AccessPolicy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AccessPolicyMutation) OldUsers(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUsers is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUsers requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUsers: %w", err)
-	}
-	return oldValue.Users, nil
-}
-
-// ResetUsers resets all changes to the "users" field.
-func (m *AccessPolicyMutation) ResetUsers() {
-	m.users = nil
-}
-
-// SetAccounts sets the "accounts" field.
-func (m *AccessPolicyMutation) SetAccounts(s string) {
-	m.accounts = &s
-}
-
-// Accounts returns the value of the "accounts" field in the mutation.
-func (m *AccessPolicyMutation) Accounts() (r string, exists bool) {
-	v := m.accounts
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAccounts returns the old "accounts" field's value of the AccessPolicy entity.
-// If the AccessPolicy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AccessPolicyMutation) OldAccounts(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAccounts is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAccounts requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAccounts: %w", err)
-	}
-	return oldValue.Accounts, nil
-}
-
-// ResetAccounts resets all changes to the "accounts" field.
-func (m *AccessPolicyMutation) ResetAccounts() {
-	m.accounts = nil
-}
-
-// SetEffecteTimeStart sets the "effecte_time_start" field.
-func (m *AccessPolicyMutation) SetEffecteTimeStart(t time.Time) {
-	m.effecte_time_start = &t
-}
-
-// EffecteTimeStart returns the value of the "effecte_time_start" field in the mutation.
-func (m *AccessPolicyMutation) EffecteTimeStart() (r time.Time, exists bool) {
-	v := m.effecte_time_start
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldEffecteTimeStart returns the old "effecte_time_start" field's value of the AccessPolicy entity.
-// If the AccessPolicy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AccessPolicyMutation) OldEffecteTimeStart(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldEffecteTimeStart is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldEffecteTimeStart requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldEffecteTimeStart: %w", err)
-	}
-	return oldValue.EffecteTimeStart, nil
-}
-
-// ClearEffecteTimeStart clears the value of the "effecte_time_start" field.
-func (m *AccessPolicyMutation) ClearEffecteTimeStart() {
-	m.effecte_time_start = nil
-	m.clearedFields[accesspolicy.FieldEffecteTimeStart] = struct{}{}
-}
-
-// EffecteTimeStartCleared returns if the "effecte_time_start" field was cleared in this mutation.
-func (m *AccessPolicyMutation) EffecteTimeStartCleared() bool {
-	_, ok := m.clearedFields[accesspolicy.FieldEffecteTimeStart]
-	return ok
-}
-
-// ResetEffecteTimeStart resets all changes to the "effecte_time_start" field.
-func (m *AccessPolicyMutation) ResetEffecteTimeStart() {
-	m.effecte_time_start = nil
-	delete(m.clearedFields, accesspolicy.FieldEffecteTimeStart)
-}
-
-// SetEffecteTimeEnd sets the "effecte_time_end" field.
-func (m *AccessPolicyMutation) SetEffecteTimeEnd(t time.Time) {
-	m.effecte_time_end = &t
-}
-
-// EffecteTimeEnd returns the value of the "effecte_time_end" field in the mutation.
-func (m *AccessPolicyMutation) EffecteTimeEnd() (r time.Time, exists bool) {
-	v := m.effecte_time_end
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldEffecteTimeEnd returns the old "effecte_time_end" field's value of the AccessPolicy entity.
-// If the AccessPolicy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AccessPolicyMutation) OldEffecteTimeEnd(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldEffecteTimeEnd is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldEffecteTimeEnd requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldEffecteTimeEnd: %w", err)
-	}
-	return oldValue.EffecteTimeEnd, nil
-}
-
-// ClearEffecteTimeEnd clears the value of the "effecte_time_end" field.
-func (m *AccessPolicyMutation) ClearEffecteTimeEnd() {
-	m.effecte_time_end = nil
-	m.clearedFields[accesspolicy.FieldEffecteTimeEnd] = struct{}{}
-}
-
-// EffecteTimeEndCleared returns if the "effecte_time_end" field was cleared in this mutation.
-func (m *AccessPolicyMutation) EffecteTimeEndCleared() bool {
-	_, ok := m.clearedFields[accesspolicy.FieldEffecteTimeEnd]
-	return ok
-}
-
-// ResetEffecteTimeEnd resets all changes to the "effecte_time_end" field.
-func (m *AccessPolicyMutation) ResetEffecteTimeEnd() {
-	m.effecte_time_end = nil
-	delete(m.clearedFields, accesspolicy.FieldEffecteTimeEnd)
-}
-
-// Where appends a list predicates to the AccessPolicyMutation builder.
-func (m *AccessPolicyMutation) Where(ps ...predicate.AccessPolicy) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the AccessPolicyMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *AccessPolicyMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.AccessPolicy, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *AccessPolicyMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *AccessPolicyMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (AccessPolicy).
-func (m *AccessPolicyMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *AccessPolicyMutation) Fields() []string {
-	fields := make([]string, 0, 9)
-	if m.created_at != nil {
-		fields = append(fields, accesspolicy.FieldCreatedAt)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, accesspolicy.FieldUpdatedAt)
-	}
-	if m.name != nil {
-		fields = append(fields, accesspolicy.FieldName)
-	}
-	if m.power != nil {
-		fields = append(fields, accesspolicy.FieldPower)
-	}
-	if m.department_id != nil {
-		fields = append(fields, accesspolicy.FieldDepartmentID)
-	}
-	if m.users != nil {
-		fields = append(fields, accesspolicy.FieldUsers)
-	}
-	if m.accounts != nil {
-		fields = append(fields, accesspolicy.FieldAccounts)
-	}
-	if m.effecte_time_start != nil {
-		fields = append(fields, accesspolicy.FieldEffecteTimeStart)
-	}
-	if m.effecte_time_end != nil {
-		fields = append(fields, accesspolicy.FieldEffecteTimeEnd)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *AccessPolicyMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case accesspolicy.FieldCreatedAt:
-		return m.CreatedAt()
-	case accesspolicy.FieldUpdatedAt:
-		return m.UpdatedAt()
-	case accesspolicy.FieldName:
-		return m.Name()
-	case accesspolicy.FieldPower:
-		return m.Power()
-	case accesspolicy.FieldDepartmentID:
-		return m.DepartmentID()
-	case accesspolicy.FieldUsers:
-		return m.Users()
-	case accesspolicy.FieldAccounts:
-		return m.Accounts()
-	case accesspolicy.FieldEffecteTimeStart:
-		return m.EffecteTimeStart()
-	case accesspolicy.FieldEffecteTimeEnd:
-		return m.EffecteTimeEnd()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *AccessPolicyMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case accesspolicy.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case accesspolicy.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
-	case accesspolicy.FieldName:
-		return m.OldName(ctx)
-	case accesspolicy.FieldPower:
-		return m.OldPower(ctx)
-	case accesspolicy.FieldDepartmentID:
-		return m.OldDepartmentID(ctx)
-	case accesspolicy.FieldUsers:
-		return m.OldUsers(ctx)
-	case accesspolicy.FieldAccounts:
-		return m.OldAccounts(ctx)
-	case accesspolicy.FieldEffecteTimeStart:
-		return m.OldEffecteTimeStart(ctx)
-	case accesspolicy.FieldEffecteTimeEnd:
-		return m.OldEffecteTimeEnd(ctx)
-	}
-	return nil, fmt.Errorf("unknown AccessPolicy field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *AccessPolicyMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case accesspolicy.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	case accesspolicy.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
-		return nil
-	case accesspolicy.FieldName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetName(v)
-		return nil
-	case accesspolicy.FieldPower:
-		v, ok := value.(int32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPower(v)
-		return nil
-	case accesspolicy.FieldDepartmentID:
-		v, ok := value.(uint64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDepartmentID(v)
-		return nil
-	case accesspolicy.FieldUsers:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUsers(v)
-		return nil
-	case accesspolicy.FieldAccounts:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAccounts(v)
-		return nil
-	case accesspolicy.FieldEffecteTimeStart:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetEffecteTimeStart(v)
-		return nil
-	case accesspolicy.FieldEffecteTimeEnd:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetEffecteTimeEnd(v)
-		return nil
-	}
-	return fmt.Errorf("unknown AccessPolicy field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *AccessPolicyMutation) AddedFields() []string {
-	var fields []string
-	if m.addpower != nil {
-		fields = append(fields, accesspolicy.FieldPower)
-	}
-	if m.adddepartment_id != nil {
-		fields = append(fields, accesspolicy.FieldDepartmentID)
-	}
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *AccessPolicyMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case accesspolicy.FieldPower:
-		return m.AddedPower()
-	case accesspolicy.FieldDepartmentID:
-		return m.AddedDepartmentID()
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *AccessPolicyMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	case accesspolicy.FieldPower:
-		v, ok := value.(int32)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddPower(v)
-		return nil
-	case accesspolicy.FieldDepartmentID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddDepartmentID(v)
-		return nil
-	}
-	return fmt.Errorf("unknown AccessPolicy numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *AccessPolicyMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(accesspolicy.FieldPower) {
-		fields = append(fields, accesspolicy.FieldPower)
-	}
-	if m.FieldCleared(accesspolicy.FieldEffecteTimeStart) {
-		fields = append(fields, accesspolicy.FieldEffecteTimeStart)
-	}
-	if m.FieldCleared(accesspolicy.FieldEffecteTimeEnd) {
-		fields = append(fields, accesspolicy.FieldEffecteTimeEnd)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *AccessPolicyMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *AccessPolicyMutation) ClearField(name string) error {
-	switch name {
-	case accesspolicy.FieldPower:
-		m.ClearPower()
-		return nil
-	case accesspolicy.FieldEffecteTimeStart:
-		m.ClearEffecteTimeStart()
-		return nil
-	case accesspolicy.FieldEffecteTimeEnd:
-		m.ClearEffecteTimeEnd()
-		return nil
-	}
-	return fmt.Errorf("unknown AccessPolicy nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *AccessPolicyMutation) ResetField(name string) error {
-	switch name {
-	case accesspolicy.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	case accesspolicy.FieldUpdatedAt:
-		m.ResetUpdatedAt()
-		return nil
-	case accesspolicy.FieldName:
-		m.ResetName()
-		return nil
-	case accesspolicy.FieldPower:
-		m.ResetPower()
-		return nil
-	case accesspolicy.FieldDepartmentID:
-		m.ResetDepartmentID()
-		return nil
-	case accesspolicy.FieldUsers:
-		m.ResetUsers()
-		return nil
-	case accesspolicy.FieldAccounts:
-		m.ResetAccounts()
-		return nil
-	case accesspolicy.FieldEffecteTimeStart:
-		m.ResetEffecteTimeStart()
-		return nil
-	case accesspolicy.FieldEffecteTimeEnd:
-		m.ResetEffecteTimeEnd()
-		return nil
-	}
-	return fmt.Errorf("unknown AccessPolicy field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *AccessPolicyMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *AccessPolicyMutation) AddedIDs(name string) []ent.Value {
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *AccessPolicyMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *AccessPolicyMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *AccessPolicyMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *AccessPolicyMutation) EdgeCleared(name string) bool {
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *AccessPolicyMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown AccessPolicy unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *AccessPolicyMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown AccessPolicy edge %s", name)
-}
 
 // AccountMutation represents an operation that mutates the Account nodes in the graph.
 type AccountMutation struct {
@@ -3415,6 +2521,980 @@ func (m *DeviceMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown Device edge %s", name)
+}
+
+// LableTreeMutation represents an operation that mutates the LableTree nodes in the graph.
+type LableTreeMutation struct {
+	config
+	op              Op
+	typ             string
+	id              *uint64
+	created_at      *time.Time
+	updated_at      *time.Time
+	name            *string
+	_type           *uint
+	add_type        *int
+	icon            *string
+	parent_lable    *uint64
+	addparent_lable *int64
+	parent_lables   *string
+	lable_owner     *uint64
+	addlable_owner  *int64
+	inherit         *bool
+	related_labels  *string
+	description     *string
+	clearedFields   map[string]struct{}
+	done            bool
+	oldValue        func(context.Context) (*LableTree, error)
+	predicates      []predicate.LableTree
+}
+
+var _ ent.Mutation = (*LableTreeMutation)(nil)
+
+// labletreeOption allows management of the mutation configuration using functional options.
+type labletreeOption func(*LableTreeMutation)
+
+// newLableTreeMutation creates new mutation for the LableTree entity.
+func newLableTreeMutation(c config, op Op, opts ...labletreeOption) *LableTreeMutation {
+	m := &LableTreeMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeLableTree,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withLableTreeID sets the ID field of the mutation.
+func withLableTreeID(id uint64) labletreeOption {
+	return func(m *LableTreeMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *LableTree
+		)
+		m.oldValue = func(ctx context.Context) (*LableTree, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().LableTree.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withLableTree sets the old LableTree of the mutation.
+func withLableTree(node *LableTree) labletreeOption {
+	return func(m *LableTreeMutation) {
+		m.oldValue = func(context.Context) (*LableTree, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m LableTreeMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m LableTreeMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of LableTree entities.
+func (m *LableTreeMutation) SetID(id uint64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *LableTreeMutation) ID() (id uint64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *LableTreeMutation) IDs(ctx context.Context) ([]uint64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []uint64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().LableTree.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *LableTreeMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *LableTreeMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the LableTree entity.
+// If the LableTree object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LableTreeMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *LableTreeMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *LableTreeMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *LableTreeMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the LableTree entity.
+// If the LableTree object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LableTreeMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *LableTreeMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetName sets the "name" field.
+func (m *LableTreeMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *LableTreeMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the LableTree entity.
+// If the LableTree object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LableTreeMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *LableTreeMutation) ResetName() {
+	m.name = nil
+}
+
+// SetType sets the "type" field.
+func (m *LableTreeMutation) SetType(u uint) {
+	m._type = &u
+	m.add_type = nil
+}
+
+// GetType returns the value of the "type" field in the mutation.
+func (m *LableTreeMutation) GetType() (r uint, exists bool) {
+	v := m._type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldType returns the old "type" field's value of the LableTree entity.
+// If the LableTree object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LableTreeMutation) OldType(ctx context.Context) (v uint, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldType: %w", err)
+	}
+	return oldValue.Type, nil
+}
+
+// AddType adds u to the "type" field.
+func (m *LableTreeMutation) AddType(u int) {
+	if m.add_type != nil {
+		*m.add_type += u
+	} else {
+		m.add_type = &u
+	}
+}
+
+// AddedType returns the value that was added to the "type" field in this mutation.
+func (m *LableTreeMutation) AddedType() (r int, exists bool) {
+	v := m.add_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetType resets all changes to the "type" field.
+func (m *LableTreeMutation) ResetType() {
+	m._type = nil
+	m.add_type = nil
+}
+
+// SetIcon sets the "icon" field.
+func (m *LableTreeMutation) SetIcon(s string) {
+	m.icon = &s
+}
+
+// Icon returns the value of the "icon" field in the mutation.
+func (m *LableTreeMutation) Icon() (r string, exists bool) {
+	v := m.icon
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIcon returns the old "icon" field's value of the LableTree entity.
+// If the LableTree object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LableTreeMutation) OldIcon(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIcon is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIcon requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIcon: %w", err)
+	}
+	return oldValue.Icon, nil
+}
+
+// ResetIcon resets all changes to the "icon" field.
+func (m *LableTreeMutation) ResetIcon() {
+	m.icon = nil
+}
+
+// SetParentLable sets the "parent_lable" field.
+func (m *LableTreeMutation) SetParentLable(u uint64) {
+	m.parent_lable = &u
+	m.addparent_lable = nil
+}
+
+// ParentLable returns the value of the "parent_lable" field in the mutation.
+func (m *LableTreeMutation) ParentLable() (r uint64, exists bool) {
+	v := m.parent_lable
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldParentLable returns the old "parent_lable" field's value of the LableTree entity.
+// If the LableTree object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LableTreeMutation) OldParentLable(ctx context.Context) (v uint64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldParentLable is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldParentLable requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldParentLable: %w", err)
+	}
+	return oldValue.ParentLable, nil
+}
+
+// AddParentLable adds u to the "parent_lable" field.
+func (m *LableTreeMutation) AddParentLable(u int64) {
+	if m.addparent_lable != nil {
+		*m.addparent_lable += u
+	} else {
+		m.addparent_lable = &u
+	}
+}
+
+// AddedParentLable returns the value that was added to the "parent_lable" field in this mutation.
+func (m *LableTreeMutation) AddedParentLable() (r int64, exists bool) {
+	v := m.addparent_lable
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetParentLable resets all changes to the "parent_lable" field.
+func (m *LableTreeMutation) ResetParentLable() {
+	m.parent_lable = nil
+	m.addparent_lable = nil
+}
+
+// SetParentLables sets the "parent_lables" field.
+func (m *LableTreeMutation) SetParentLables(s string) {
+	m.parent_lables = &s
+}
+
+// ParentLables returns the value of the "parent_lables" field in the mutation.
+func (m *LableTreeMutation) ParentLables() (r string, exists bool) {
+	v := m.parent_lables
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldParentLables returns the old "parent_lables" field's value of the LableTree entity.
+// If the LableTree object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LableTreeMutation) OldParentLables(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldParentLables is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldParentLables requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldParentLables: %w", err)
+	}
+	return oldValue.ParentLables, nil
+}
+
+// ResetParentLables resets all changes to the "parent_lables" field.
+func (m *LableTreeMutation) ResetParentLables() {
+	m.parent_lables = nil
+}
+
+// SetLableOwner sets the "lable_owner" field.
+func (m *LableTreeMutation) SetLableOwner(u uint64) {
+	m.lable_owner = &u
+	m.addlable_owner = nil
+}
+
+// LableOwner returns the value of the "lable_owner" field in the mutation.
+func (m *LableTreeMutation) LableOwner() (r uint64, exists bool) {
+	v := m.lable_owner
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLableOwner returns the old "lable_owner" field's value of the LableTree entity.
+// If the LableTree object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LableTreeMutation) OldLableOwner(ctx context.Context) (v uint64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLableOwner is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLableOwner requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLableOwner: %w", err)
+	}
+	return oldValue.LableOwner, nil
+}
+
+// AddLableOwner adds u to the "lable_owner" field.
+func (m *LableTreeMutation) AddLableOwner(u int64) {
+	if m.addlable_owner != nil {
+		*m.addlable_owner += u
+	} else {
+		m.addlable_owner = &u
+	}
+}
+
+// AddedLableOwner returns the value that was added to the "lable_owner" field in this mutation.
+func (m *LableTreeMutation) AddedLableOwner() (r int64, exists bool) {
+	v := m.addlable_owner
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLableOwner resets all changes to the "lable_owner" field.
+func (m *LableTreeMutation) ResetLableOwner() {
+	m.lable_owner = nil
+	m.addlable_owner = nil
+}
+
+// SetInherit sets the "inherit" field.
+func (m *LableTreeMutation) SetInherit(b bool) {
+	m.inherit = &b
+}
+
+// Inherit returns the value of the "inherit" field in the mutation.
+func (m *LableTreeMutation) Inherit() (r bool, exists bool) {
+	v := m.inherit
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldInherit returns the old "inherit" field's value of the LableTree entity.
+// If the LableTree object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LableTreeMutation) OldInherit(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldInherit is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldInherit requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldInherit: %w", err)
+	}
+	return oldValue.Inherit, nil
+}
+
+// ResetInherit resets all changes to the "inherit" field.
+func (m *LableTreeMutation) ResetInherit() {
+	m.inherit = nil
+}
+
+// SetRelatedLabels sets the "related_labels" field.
+func (m *LableTreeMutation) SetRelatedLabels(s string) {
+	m.related_labels = &s
+}
+
+// RelatedLabels returns the value of the "related_labels" field in the mutation.
+func (m *LableTreeMutation) RelatedLabels() (r string, exists bool) {
+	v := m.related_labels
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRelatedLabels returns the old "related_labels" field's value of the LableTree entity.
+// If the LableTree object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LableTreeMutation) OldRelatedLabels(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRelatedLabels is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRelatedLabels requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRelatedLabels: %w", err)
+	}
+	return oldValue.RelatedLabels, nil
+}
+
+// ResetRelatedLabels resets all changes to the "related_labels" field.
+func (m *LableTreeMutation) ResetRelatedLabels() {
+	m.related_labels = nil
+}
+
+// SetDescription sets the "description" field.
+func (m *LableTreeMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *LableTreeMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the LableTree entity.
+// If the LableTree object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LableTreeMutation) OldDescription(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *LableTreeMutation) ResetDescription() {
+	m.description = nil
+}
+
+// Where appends a list predicates to the LableTreeMutation builder.
+func (m *LableTreeMutation) Where(ps ...predicate.LableTree) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the LableTreeMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *LableTreeMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.LableTree, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *LableTreeMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *LableTreeMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (LableTree).
+func (m *LableTreeMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *LableTreeMutation) Fields() []string {
+	fields := make([]string, 0, 11)
+	if m.created_at != nil {
+		fields = append(fields, labletree.FieldCreatedAt)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, labletree.FieldUpdatedAt)
+	}
+	if m.name != nil {
+		fields = append(fields, labletree.FieldName)
+	}
+	if m._type != nil {
+		fields = append(fields, labletree.FieldType)
+	}
+	if m.icon != nil {
+		fields = append(fields, labletree.FieldIcon)
+	}
+	if m.parent_lable != nil {
+		fields = append(fields, labletree.FieldParentLable)
+	}
+	if m.parent_lables != nil {
+		fields = append(fields, labletree.FieldParentLables)
+	}
+	if m.lable_owner != nil {
+		fields = append(fields, labletree.FieldLableOwner)
+	}
+	if m.inherit != nil {
+		fields = append(fields, labletree.FieldInherit)
+	}
+	if m.related_labels != nil {
+		fields = append(fields, labletree.FieldRelatedLabels)
+	}
+	if m.description != nil {
+		fields = append(fields, labletree.FieldDescription)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *LableTreeMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case labletree.FieldCreatedAt:
+		return m.CreatedAt()
+	case labletree.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case labletree.FieldName:
+		return m.Name()
+	case labletree.FieldType:
+		return m.GetType()
+	case labletree.FieldIcon:
+		return m.Icon()
+	case labletree.FieldParentLable:
+		return m.ParentLable()
+	case labletree.FieldParentLables:
+		return m.ParentLables()
+	case labletree.FieldLableOwner:
+		return m.LableOwner()
+	case labletree.FieldInherit:
+		return m.Inherit()
+	case labletree.FieldRelatedLabels:
+		return m.RelatedLabels()
+	case labletree.FieldDescription:
+		return m.Description()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *LableTreeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case labletree.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case labletree.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case labletree.FieldName:
+		return m.OldName(ctx)
+	case labletree.FieldType:
+		return m.OldType(ctx)
+	case labletree.FieldIcon:
+		return m.OldIcon(ctx)
+	case labletree.FieldParentLable:
+		return m.OldParentLable(ctx)
+	case labletree.FieldParentLables:
+		return m.OldParentLables(ctx)
+	case labletree.FieldLableOwner:
+		return m.OldLableOwner(ctx)
+	case labletree.FieldInherit:
+		return m.OldInherit(ctx)
+	case labletree.FieldRelatedLabels:
+		return m.OldRelatedLabels(ctx)
+	case labletree.FieldDescription:
+		return m.OldDescription(ctx)
+	}
+	return nil, fmt.Errorf("unknown LableTree field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *LableTreeMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case labletree.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case labletree.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case labletree.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case labletree.FieldType:
+		v, ok := value.(uint)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetType(v)
+		return nil
+	case labletree.FieldIcon:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIcon(v)
+		return nil
+	case labletree.FieldParentLable:
+		v, ok := value.(uint64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetParentLable(v)
+		return nil
+	case labletree.FieldParentLables:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetParentLables(v)
+		return nil
+	case labletree.FieldLableOwner:
+		v, ok := value.(uint64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLableOwner(v)
+		return nil
+	case labletree.FieldInherit:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetInherit(v)
+		return nil
+	case labletree.FieldRelatedLabels:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRelatedLabels(v)
+		return nil
+	case labletree.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	}
+	return fmt.Errorf("unknown LableTree field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *LableTreeMutation) AddedFields() []string {
+	var fields []string
+	if m.add_type != nil {
+		fields = append(fields, labletree.FieldType)
+	}
+	if m.addparent_lable != nil {
+		fields = append(fields, labletree.FieldParentLable)
+	}
+	if m.addlable_owner != nil {
+		fields = append(fields, labletree.FieldLableOwner)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *LableTreeMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case labletree.FieldType:
+		return m.AddedType()
+	case labletree.FieldParentLable:
+		return m.AddedParentLable()
+	case labletree.FieldLableOwner:
+		return m.AddedLableOwner()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *LableTreeMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case labletree.FieldType:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddType(v)
+		return nil
+	case labletree.FieldParentLable:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddParentLable(v)
+		return nil
+	case labletree.FieldLableOwner:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLableOwner(v)
+		return nil
+	}
+	return fmt.Errorf("unknown LableTree numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *LableTreeMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *LableTreeMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *LableTreeMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown LableTree nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *LableTreeMutation) ResetField(name string) error {
+	switch name {
+	case labletree.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case labletree.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case labletree.FieldName:
+		m.ResetName()
+		return nil
+	case labletree.FieldType:
+		m.ResetType()
+		return nil
+	case labletree.FieldIcon:
+		m.ResetIcon()
+		return nil
+	case labletree.FieldParentLable:
+		m.ResetParentLable()
+		return nil
+	case labletree.FieldParentLables:
+		m.ResetParentLables()
+		return nil
+	case labletree.FieldLableOwner:
+		m.ResetLableOwner()
+		return nil
+	case labletree.FieldInherit:
+		m.ResetInherit()
+		return nil
+	case labletree.FieldRelatedLabels:
+		m.ResetRelatedLabels()
+		return nil
+	case labletree.FieldDescription:
+		m.ResetDescription()
+		return nil
+	}
+	return fmt.Errorf("unknown LableTree field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *LableTreeMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *LableTreeMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *LableTreeMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *LableTreeMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *LableTreeMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *LableTreeMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *LableTreeMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown LableTree unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *LableTreeMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown LableTree edge %s", name)
 }
 
 // RoleMutation represents an operation that mutates the Role nodes in the graph.

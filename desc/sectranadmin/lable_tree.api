@@ -1,0 +1,101 @@
+import "../base.api"
+
+type (
+    // The response data of lable tree information | LableTree信息
+    LableTreeInfo {
+        BaseIDInfo
+
+        // lable name|标签名称 
+        Name  *string `json:"name,optional"`
+
+        // lable type|标签类型 
+        Type  *uint `json:"type,optional"`
+
+        // lable icon|标签图标 
+        Icon  *string `json:"icon,optional"`
+
+        // parent lable id|父标签id 
+        ParentLable  *uint64 `json:"parentLable,optional"`
+
+        // parent lables id,split by ','|父标签id集合升序排列,逗号分隔 
+        ParentLables  *string `json:"parentLables,optional"`
+
+        // lable owner,user ID|标签所属者,用户ID 
+        LableOwner  *uint64 `json:"lableOwner,optional"`
+
+        // child lable can inherit parents|标签是否可以继承 
+        Inherit  *bool `json:"inherit,optional"`
+
+        // related labels id,split by ','|关联标签id集合升序排列,逗号分隔 
+        RelatedLabels  *string `json:"relatedLabels,optional"`
+
+        // label description|标签描述 
+        Description  *string `json:"description,optional"`
+    }
+
+    // The response data of lable tree list | LableTree列表数据
+    LableTreeListResp {
+        BaseDataInfo
+
+        // LableTree list data | LableTree列表数据
+        Data LableTreeListInfo `json:"data"`
+    }
+
+    // LableTree list data | LableTree列表数据
+    LableTreeListInfo {
+        BaseListInfo
+
+        // The API list data | LableTree列表数据
+        Data  []LableTreeInfo  `json:"data"`
+    }
+
+    // Get lable tree list request params | LableTree列表请求参数
+    LableTreeListReq {
+        PageInfo
+
+        // lable name|标签名称 
+        Name  *string `json:"name,optional"`
+
+        // lable icon|标签图标 
+        Icon  *string `json:"icon,optional"`
+
+        // parent lables id,split by ','|父标签id集合升序排列,逗号分隔 
+        ParentLables  *string `json:"parentLables,optional"`
+    }
+
+    // LableTree information response | LableTree信息返回体
+    LableTreeInfoResp {
+        BaseDataInfo
+
+        // LableTree information | LableTree数据
+        Data LableTreeInfo `json:"data"`
+    }
+)
+
+@server(
+    jwt: Auth
+    group: LableTree
+    middleware: Authority
+)
+
+service SectranAdmin {
+    // Create lable tree information | 创建LableTree
+    @handler createLableTree
+    post /lable_tree/create (LableTreeInfo) returns (BaseMsgResp)
+
+    // Update lable tree information | 更新LableTree
+    @handler updateLableTree
+    post /lable_tree/update (LableTreeInfo) returns (BaseMsgResp)
+
+    // Delete lable tree information | 删除LableTree信息
+    @handler deleteLableTree
+    post /lable_tree/delete (IDsReq) returns (BaseMsgResp)
+
+    // Get lable tree list | 获取LableTree列表
+    @handler getLableTreeList
+    post /lable_tree/list (LableTreeListReq) returns (LableTreeListResp)
+
+    // Get lable tree by ID | 通过ID获取LableTree
+    @handler getLableTreeById
+    post /lable_tree (IDReq) returns (LableTreeInfoResp)
+}

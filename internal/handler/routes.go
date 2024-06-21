@@ -4,7 +4,7 @@ package handler
 import (
 	"net/http"
 
-	access_policy "sectran_admin/internal/handler/access_policy"
+	LableTree "sectran_admin/internal/handler/LableTree"
 	account "sectran_admin/internal/handler/account"
 	base "sectran_admin/internal/handler/base"
 	department "sectran_admin/internal/handler/department"
@@ -198,30 +198,31 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Route{
 				{
 					Method:  http.MethodPost,
-					Path:    "/access_policy/create",
-					Handler: access_policy.CreateAccessPolicyHandler(serverCtx),
+					Path:    "/lable_tree/create",
+					Handler: LableTree.CreateLableTreeHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/access_policy/update",
-					Handler: access_policy.UpdateAccessPolicyHandler(serverCtx),
+					Path:    "/lable_tree/update",
+					Handler: LableTree.UpdateLableTreeHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/access_policy/delete",
-					Handler: access_policy.DeleteAccessPolicyHandler(serverCtx),
+					Path:    "/lable_tree/delete",
+					Handler: LableTree.DeleteLableTreeHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/access_policy/list",
-					Handler: access_policy.GetAccessPolicyListHandler(serverCtx),
+					Path:    "/lable_tree/list",
+					Handler: LableTree.GetLableTreeListHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
-					Path:    "/access_policy",
-					Handler: access_policy.GetAccessPolicyByIdHandler(serverCtx),
+					Path:    "/lable_tree",
+					Handler: LableTree.GetLableTreeByIdHandler(serverCtx),
 				},
 			}...,
 		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 	)
 }

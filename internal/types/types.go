@@ -375,112 +375,62 @@ type DeviceInfoResp struct {
 	Data DeviceInfo `json:"data"`
 }
 
-// The response data of policy auth information | PolicyAuth信息
-// swagger:model PolicyAuthInfo
-type PolicyAuthInfo struct {
+// The response data of lable tree information | LableTree信息
+// swagger:model LableTreeInfo
+type LableTreeInfo struct {
 	BaseIDInfo
-	// policy name|策略名称
+	// lable name|标签名称
 	Name *string `json:"name,optional"`
-	// policy power|策略优先级
-	Power *int32 `json:"power,optional"`
-	// ID of the policy's department.|策略所属部门
-	DepartmentId *uint64 `json:"departmentId,optional"`
-	// 策略关联用户
-	Users *string `json:"users,optional"`
-	// 策略关联账号
-	Accounts *string `json:"accounts,optional"`
-	// 策略相关性方向,默认正向，即断言正向用户与账号
-	Direction *bool `json:"direction,optional"`
+	// lable type|标签类型
+	Type *uint `json:"type,optional"`
+	// lable icon|标签图标
+	Icon *string `json:"icon,optional"`
+	// parent lable id|父标签id
+	ParentLable *uint64 `json:"parentLable,optional"`
+	// parent lables id,split by ','|父标签id集合升序排列,逗号分隔
+	ParentLables *string `json:"parentLables,optional"`
+	// lable owner,user ID|标签所属者,用户ID
+	LableOwner *uint64 `json:"lableOwner,optional"`
+	// child lable can inherit parents|标签是否可以继承
+	Inherit *bool `json:"inherit,optional"`
+	// related labels id,split by ','|关联标签id集合升序排列,逗号分隔
+	RelatedLabels *string `json:"relatedLabels,optional"`
+	// label description|标签描述
+	Description *string `json:"description,optional"`
 }
 
-// The response data of policy auth list | PolicyAuth列表数据
-// swagger:model PolicyAuthListResp
-type PolicyAuthListResp struct {
+// The response data of lable tree list | LableTree列表数据
+// swagger:model LableTreeListResp
+type LableTreeListResp struct {
 	BaseDataInfo
-	// PolicyAuth list data | PolicyAuth列表数据
-	Data PolicyAuthListInfo `json:"data"`
+	// LableTree list data | LableTree列表数据
+	Data LableTreeListInfo `json:"data"`
 }
 
-// PolicyAuth list data | PolicyAuth列表数据
-// swagger:model PolicyAuthListInfo
-type PolicyAuthListInfo struct {
+// LableTree list data | LableTree列表数据
+// swagger:model LableTreeListInfo
+type LableTreeListInfo struct {
 	BaseListInfo
-	// The API list data | PolicyAuth列表数据
-	Data []PolicyAuthInfo `json:"data"`
+	// The API list data | LableTree列表数据
+	Data []LableTreeInfo `json:"data"`
 }
 
-// Get policy auth list request params | PolicyAuth列表请求参数
-// swagger:model PolicyAuthListReq
-type PolicyAuthListReq struct {
+// Get lable tree list request params | LableTree列表请求参数
+// swagger:model LableTreeListReq
+type LableTreeListReq struct {
 	PageInfo
-	// policy name|策略名称
+	// lable name|标签名称
 	Name *string `json:"name,optional"`
-	// 策略关联用户
-	Users *string `json:"users,optional"`
-	// 策略关联账号
-	Accounts *string `json:"accounts,optional"`
+	// lable icon|标签图标
+	Icon *string `json:"icon,optional"`
+	// parent lables id,split by ','|父标签id集合升序排列,逗号分隔
+	ParentLables *string `json:"parentLables,optional"`
 }
 
-// PolicyAuth information response | PolicyAuth信息返回体
-// swagger:model PolicyAuthInfoResp
-type PolicyAuthInfoResp struct {
+// LableTree information response | LableTree信息返回体
+// swagger:model LableTreeInfoResp
+type LableTreeInfoResp struct {
 	BaseDataInfo
-	// PolicyAuth information | PolicyAuth数据
-	Data PolicyAuthInfo `json:"data"`
-}
-
-// The response data of access policy information | AccessPolicy信息
-// swagger:model AccessPolicyInfo
-type AccessPolicyInfo struct {
-	BaseIDInfo
-	// AccessPolicy name|策略名称
-	Name *string `json:"name,optional"`
-	// AccessPolicy power|策略优先级、值越小优先级约高
-	Power *int32 `json:"power,optional"`
-	// ID of the AccessPolicy's department.|策略所属部门
-	DepartmentId *uint64 `json:"departmentId,optional"`
-	// 策略关联用户
-	Users *string `json:"users,optional"`
-	// 策略关联账号
-	Accounts *string `json:"accounts,optional"`
-	// AccessPolicy effective time rangw start|策略生效时间开始
-	EffecteTimeStart *int64 `json:"effecteTimeStart,optional"`
-	// AccessPolicy effective time rangw end|策略生效时间结束
-	EffecteTimeEnd *int64 `json:"effecteTimeEnd,optional"`
-}
-
-// The response data of access policy list | AccessPolicy列表数据
-// swagger:model AccessPolicyListResp
-type AccessPolicyListResp struct {
-	BaseDataInfo
-	// AccessPolicy list data | AccessPolicy列表数据
-	Data AccessPolicyListInfo `json:"data"`
-}
-
-// AccessPolicy list data | AccessPolicy列表数据
-// swagger:model AccessPolicyListInfo
-type AccessPolicyListInfo struct {
-	BaseListInfo
-	// The API list data | AccessPolicy列表数据
-	Data []AccessPolicyInfo `json:"data"`
-}
-
-// Get access policy list request params | AccessPolicy列表请求参数
-// swagger:model AccessPolicyListReq
-type AccessPolicyListReq struct {
-	PageInfo
-	// AccessPolicy name|策略名称
-	Name *string `json:"name,optional"`
-	// 策略关联用户
-	Users *string `json:"users,optional"`
-	// 策略关联账号
-	Accounts *string `json:"accounts,optional"`
-}
-
-// AccessPolicy information response | AccessPolicy信息返回体
-// swagger:model AccessPolicyInfoResp
-type AccessPolicyInfoResp struct {
-	BaseDataInfo
-	// AccessPolicy information | AccessPolicy数据
-	Data AccessPolicyInfo `json:"data"`
+	// LableTree information | LableTree数据
+	Data LableTreeInfo `json:"data"`
 }

@@ -8,18 +8,6 @@ import (
 	"sectran_admin/ent"
 )
 
-// The AccessPolicyFunc type is an adapter to allow the use of ordinary
-// function as AccessPolicy mutator.
-type AccessPolicyFunc func(context.Context, *ent.AccessPolicyMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f AccessPolicyFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.AccessPolicyMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AccessPolicyMutation", m)
-}
-
 // The AccountFunc type is an adapter to allow the use of ordinary
 // function as Account mutator.
 type AccountFunc func(context.Context, *ent.AccountMutation) (ent.Value, error)
@@ -54,6 +42,18 @@ func (f DeviceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, erro
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DeviceMutation", m)
+}
+
+// The LableTreeFunc type is an adapter to allow the use of ordinary
+// function as LableTree mutator.
+type LableTreeFunc func(context.Context, *ent.LableTreeMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f LableTreeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.LableTreeMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.LableTreeMutation", m)
 }
 
 // The RoleFunc type is an adapter to allow the use of ordinary

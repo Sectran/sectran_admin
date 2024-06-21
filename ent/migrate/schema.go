@@ -8,25 +8,6 @@ import (
 )
 
 var (
-	// AccessPoliciesColumns holds the columns for the "access_policies" table.
-	AccessPoliciesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeUint64, Increment: true},
-		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
-		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
-		{Name: "name", Type: field.TypeString, Size: 64, Comment: "AccessPolicy name|策略名称"},
-		{Name: "power", Type: field.TypeInt32, Nullable: true, Comment: "AccessPolicy power|策略优先级、值越小优先级约高", Default: 0},
-		{Name: "department_id", Type: field.TypeUint64, Comment: "ID of the AccessPolicy's department.|策略所属部门"},
-		{Name: "users", Type: field.TypeString, Comment: "策略关联用户"},
-		{Name: "accounts", Type: field.TypeString, Comment: "策略关联账号"},
-		{Name: "effecte_time_start", Type: field.TypeTime, Nullable: true, Comment: "AccessPolicy effective time rangw start|策略生效时间开始"},
-		{Name: "effecte_time_end", Type: field.TypeTime, Nullable: true, Comment: "AccessPolicy effective time rangw end|策略生效时间结束"},
-	}
-	// AccessPoliciesTable holds the schema information for the "access_policies" table.
-	AccessPoliciesTable = &schema.Table{
-		Name:       "access_policies",
-		Columns:    AccessPoliciesColumns,
-		PrimaryKey: []*schema.Column{AccessPoliciesColumns[0]},
-	}
 	// AccountsColumns holds the columns for the "accounts" table.
 	AccountsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
@@ -95,6 +76,27 @@ var (
 			},
 		},
 	}
+	// LableTreesColumns holds the columns for the "lable_trees" table.
+	LableTreesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
+		{Name: "name", Type: field.TypeString, Size: 64, Comment: "lable name|标签名称"},
+		{Name: "type", Type: field.TypeUint, Comment: "lable type|标签类型"},
+		{Name: "icon", Type: field.TypeString, Comment: "lable icon|标签图标"},
+		{Name: "parent_lable", Type: field.TypeUint64, Comment: "parent lable id|父标签id"},
+		{Name: "parent_lables", Type: field.TypeString, Comment: "parent lables id,split by ','|父标签id集合升序排列,逗号分隔"},
+		{Name: "lable_owner", Type: field.TypeUint64, Comment: "lable owner,user ID|标签所属者,用户ID"},
+		{Name: "inherit", Type: field.TypeBool, Comment: "child lable can inherit parents|标签是否可以继承"},
+		{Name: "related_labels", Type: field.TypeString, Comment: "related labels id,split by ','|关联标签id集合升序排列,逗号分隔"},
+		{Name: "description", Type: field.TypeString, Size: 1024, Comment: "label description|标签描述"},
+	}
+	// LableTreesTable holds the schema information for the "lable_trees" table.
+	LableTreesTable = &schema.Table{
+		Name:       "lable_trees",
+		Columns:    LableTreesColumns,
+		PrimaryKey: []*schema.Column{LableTreesColumns[0]},
+	}
 	// RolesColumns holds the columns for the "roles" table.
 	RolesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
@@ -146,10 +148,10 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		AccessPoliciesTable,
 		AccountsTable,
 		DepartmentsTable,
 		DevicesTable,
+		LableTreesTable,
 		RolesTable,
 		UsersTable,
 	}

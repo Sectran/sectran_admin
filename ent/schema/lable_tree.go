@@ -43,7 +43,7 @@ func (LableTree) Fields() []ent.Field {
 			Comment("child lable can inherit parents|标签是否可以继承").
 			Annotations(entsql.WithComments(true)),
 		//平行关联标签
-		field.Strings("related_labels").
+		field.String("related_labels").
 			Comment("related labels id,split by ','|关联标签id集合升序排列,逗号分隔").
 			Annotations(entsql.WithComments(true)),
 		field.String("description").

@@ -6,9 +6,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// AccessPolicy is the predicate function for accesspolicy builders.
-type AccessPolicy func(*sql.Selector)
-
 // Account is the predicate function for account builders.
 type Account func(*sql.Selector)
 
@@ -17,6 +14,9 @@ type Department func(*sql.Selector)
 
 // Device is the predicate function for device builders.
 type Device func(*sql.Selector)
+
+// LableTree is the predicate function for labletree builders.
+type LableTree func(*sql.Selector)
 
 // Role is the predicate function for role builders.
 type Role func(*sql.Selector)
