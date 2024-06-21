@@ -12,6 +12,22 @@ type LableTree struct {
 	ent.Schema
 }
 
+const (
+	LableTargetType_User uint8 = 0x2f + iota
+	LableTargetType_Dept
+	LableTargetType_Device
+	LableTargetType_Account
+	LableTargetType_Role
+	LableTargetType_Log
+	LableTargetType_Max
+)
+
+const (
+	LableType_Group uint8 = 0x3f + iota
+	LableType_Control
+	LableType_Authorization
+)
+
 // Fields of the LableTree.
 func (LableTree) Fields() []ent.Field {
 	return []ent.Field{
@@ -25,10 +41,19 @@ func (LableTree) Fields() []ent.Field {
 			Comment("lable type|标签类型").
 			Annotations(entsql.WithComments(true)),
 		field.String("icon").
+			MaxLen(32).
 			Comment("lable icon|标签图标").
+			Annotations(entsql.WithComments(true)),
+		field.String("content").
+			MaxLen(1024).
+			Comment("lable content|标签内容").
 			Annotations(entsql.WithComments(true)),
 		field.Uint64("parent_lable").
 			Comment("parent lable id|父标签id").
+			Annotations(entsql.WithComments(true)),
+		//分组标签如果指定了目标类型、那么只能给这个类型的数据打标签
+		field.Uint16("lable_target_type").
+			Comment("lable target type|标签目标类型").
 			Annotations(entsql.WithComments(true)),
 		field.String("parent_lables").
 			Comment("parent lables id,split by ','|父标签id集合升序排列,逗号分隔").
@@ -42,13 +67,19 @@ func (LableTree) Fields() []ent.Field {
 		field.Bool("inherit").
 			Comment("child lable can inherit parents|标签是否可以继承").
 			Annotations(entsql.WithComments(true)),
-		//平行关联标签
-		field.String("related_labels").
+		//关联标签,非排序
+		field.String("related_lables").
 			Comment("related labels id,split by ','|关联标签id集合升序排列,逗号分隔").
 			Annotations(entsql.WithComments(true)),
 		field.String("description").
-			MaxLen(1024).
+			MaxLen(256).
 			Comment("label description|标签描述").
+			Annotations(entsql.WithComments(true)),
+		field.String("ext1").
+			Comment("label extented|标签拓展").
+			Annotations(entsql.WithComments(true)),
+		field.String("ext2").
+			Comment("label extented|标签拓展").
 			Annotations(entsql.WithComments(true)),
 	}
 }

@@ -40,6 +40,10 @@ func (Device) Fields() []ent.Field {
 			Comment("Description of the device.|设备描述").
 			MaxLen(128).
 			Annotations(entsql.WithComments(true)),
+		field.String("lables").
+			Optional().
+			Comment("account lable ids|账号标签ID集合").
+			Annotations(entsql.WithComments(true)),
 	}
 }
 

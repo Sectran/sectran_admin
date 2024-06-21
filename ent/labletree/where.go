@@ -79,9 +79,19 @@ func Icon(v string) predicate.LableTree {
 	return predicate.LableTree(sql.FieldEQ(FieldIcon, v))
 }
 
+// Content applies equality check predicate on the "content" field. It's identical to ContentEQ.
+func Content(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldContent, v))
+}
+
 // ParentLable applies equality check predicate on the "parent_lable" field. It's identical to ParentLableEQ.
 func ParentLable(v uint64) predicate.LableTree {
 	return predicate.LableTree(sql.FieldEQ(FieldParentLable, v))
+}
+
+// LableTargetType applies equality check predicate on the "lable_target_type" field. It's identical to LableTargetTypeEQ.
+func LableTargetType(v uint16) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldLableTargetType, v))
 }
 
 // ParentLables applies equality check predicate on the "parent_lables" field. It's identical to ParentLablesEQ.
@@ -99,14 +109,24 @@ func Inherit(v bool) predicate.LableTree {
 	return predicate.LableTree(sql.FieldEQ(FieldInherit, v))
 }
 
-// RelatedLabels applies equality check predicate on the "related_labels" field. It's identical to RelatedLabelsEQ.
-func RelatedLabels(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEQ(FieldRelatedLabels, v))
+// RelatedLables applies equality check predicate on the "related_lables" field. It's identical to RelatedLablesEQ.
+func RelatedLables(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldRelatedLables, v))
 }
 
 // Description applies equality check predicate on the "description" field. It's identical to DescriptionEQ.
 func Description(v string) predicate.LableTree {
 	return predicate.LableTree(sql.FieldEQ(FieldDescription, v))
+}
+
+// Ext1 applies equality check predicate on the "ext1" field. It's identical to Ext1EQ.
+func Ext1(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldExt1, v))
+}
+
+// Ext2 applies equality check predicate on the "ext2" field. It's identical to Ext2EQ.
+func Ext2(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldExt2, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -359,6 +379,71 @@ func IconContainsFold(v string) predicate.LableTree {
 	return predicate.LableTree(sql.FieldContainsFold(FieldIcon, v))
 }
 
+// ContentEQ applies the EQ predicate on the "content" field.
+func ContentEQ(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldContent, v))
+}
+
+// ContentNEQ applies the NEQ predicate on the "content" field.
+func ContentNEQ(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNEQ(FieldContent, v))
+}
+
+// ContentIn applies the In predicate on the "content" field.
+func ContentIn(vs ...string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldIn(FieldContent, vs...))
+}
+
+// ContentNotIn applies the NotIn predicate on the "content" field.
+func ContentNotIn(vs ...string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNotIn(FieldContent, vs...))
+}
+
+// ContentGT applies the GT predicate on the "content" field.
+func ContentGT(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGT(FieldContent, v))
+}
+
+// ContentGTE applies the GTE predicate on the "content" field.
+func ContentGTE(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGTE(FieldContent, v))
+}
+
+// ContentLT applies the LT predicate on the "content" field.
+func ContentLT(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLT(FieldContent, v))
+}
+
+// ContentLTE applies the LTE predicate on the "content" field.
+func ContentLTE(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLTE(FieldContent, v))
+}
+
+// ContentContains applies the Contains predicate on the "content" field.
+func ContentContains(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldContains(FieldContent, v))
+}
+
+// ContentHasPrefix applies the HasPrefix predicate on the "content" field.
+func ContentHasPrefix(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldHasPrefix(FieldContent, v))
+}
+
+// ContentHasSuffix applies the HasSuffix predicate on the "content" field.
+func ContentHasSuffix(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldHasSuffix(FieldContent, v))
+}
+
+// ContentEqualFold applies the EqualFold predicate on the "content" field.
+func ContentEqualFold(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEqualFold(FieldContent, v))
+}
+
+// ContentContainsFold applies the ContainsFold predicate on the "content" field.
+func ContentContainsFold(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldContainsFold(FieldContent, v))
+}
+
 // ParentLableEQ applies the EQ predicate on the "parent_lable" field.
 func ParentLableEQ(v uint64) predicate.LableTree {
 	return predicate.LableTree(sql.FieldEQ(FieldParentLable, v))
@@ -397,6 +482,46 @@ func ParentLableLT(v uint64) predicate.LableTree {
 // ParentLableLTE applies the LTE predicate on the "parent_lable" field.
 func ParentLableLTE(v uint64) predicate.LableTree {
 	return predicate.LableTree(sql.FieldLTE(FieldParentLable, v))
+}
+
+// LableTargetTypeEQ applies the EQ predicate on the "lable_target_type" field.
+func LableTargetTypeEQ(v uint16) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldLableTargetType, v))
+}
+
+// LableTargetTypeNEQ applies the NEQ predicate on the "lable_target_type" field.
+func LableTargetTypeNEQ(v uint16) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNEQ(FieldLableTargetType, v))
+}
+
+// LableTargetTypeIn applies the In predicate on the "lable_target_type" field.
+func LableTargetTypeIn(vs ...uint16) predicate.LableTree {
+	return predicate.LableTree(sql.FieldIn(FieldLableTargetType, vs...))
+}
+
+// LableTargetTypeNotIn applies the NotIn predicate on the "lable_target_type" field.
+func LableTargetTypeNotIn(vs ...uint16) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNotIn(FieldLableTargetType, vs...))
+}
+
+// LableTargetTypeGT applies the GT predicate on the "lable_target_type" field.
+func LableTargetTypeGT(v uint16) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGT(FieldLableTargetType, v))
+}
+
+// LableTargetTypeGTE applies the GTE predicate on the "lable_target_type" field.
+func LableTargetTypeGTE(v uint16) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGTE(FieldLableTargetType, v))
+}
+
+// LableTargetTypeLT applies the LT predicate on the "lable_target_type" field.
+func LableTargetTypeLT(v uint16) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLT(FieldLableTargetType, v))
+}
+
+// LableTargetTypeLTE applies the LTE predicate on the "lable_target_type" field.
+func LableTargetTypeLTE(v uint16) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLTE(FieldLableTargetType, v))
 }
 
 // ParentLablesEQ applies the EQ predicate on the "parent_lables" field.
@@ -514,69 +639,69 @@ func InheritNEQ(v bool) predicate.LableTree {
 	return predicate.LableTree(sql.FieldNEQ(FieldInherit, v))
 }
 
-// RelatedLabelsEQ applies the EQ predicate on the "related_labels" field.
-func RelatedLabelsEQ(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEQ(FieldRelatedLabels, v))
+// RelatedLablesEQ applies the EQ predicate on the "related_lables" field.
+func RelatedLablesEQ(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldRelatedLables, v))
 }
 
-// RelatedLabelsNEQ applies the NEQ predicate on the "related_labels" field.
-func RelatedLabelsNEQ(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldNEQ(FieldRelatedLabels, v))
+// RelatedLablesNEQ applies the NEQ predicate on the "related_lables" field.
+func RelatedLablesNEQ(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNEQ(FieldRelatedLables, v))
 }
 
-// RelatedLabelsIn applies the In predicate on the "related_labels" field.
-func RelatedLabelsIn(vs ...string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldIn(FieldRelatedLabels, vs...))
+// RelatedLablesIn applies the In predicate on the "related_lables" field.
+func RelatedLablesIn(vs ...string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldIn(FieldRelatedLables, vs...))
 }
 
-// RelatedLabelsNotIn applies the NotIn predicate on the "related_labels" field.
-func RelatedLabelsNotIn(vs ...string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldNotIn(FieldRelatedLabels, vs...))
+// RelatedLablesNotIn applies the NotIn predicate on the "related_lables" field.
+func RelatedLablesNotIn(vs ...string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNotIn(FieldRelatedLables, vs...))
 }
 
-// RelatedLabelsGT applies the GT predicate on the "related_labels" field.
-func RelatedLabelsGT(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldGT(FieldRelatedLabels, v))
+// RelatedLablesGT applies the GT predicate on the "related_lables" field.
+func RelatedLablesGT(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGT(FieldRelatedLables, v))
 }
 
-// RelatedLabelsGTE applies the GTE predicate on the "related_labels" field.
-func RelatedLabelsGTE(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldGTE(FieldRelatedLabels, v))
+// RelatedLablesGTE applies the GTE predicate on the "related_lables" field.
+func RelatedLablesGTE(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGTE(FieldRelatedLables, v))
 }
 
-// RelatedLabelsLT applies the LT predicate on the "related_labels" field.
-func RelatedLabelsLT(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldLT(FieldRelatedLabels, v))
+// RelatedLablesLT applies the LT predicate on the "related_lables" field.
+func RelatedLablesLT(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLT(FieldRelatedLables, v))
 }
 
-// RelatedLabelsLTE applies the LTE predicate on the "related_labels" field.
-func RelatedLabelsLTE(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldLTE(FieldRelatedLabels, v))
+// RelatedLablesLTE applies the LTE predicate on the "related_lables" field.
+func RelatedLablesLTE(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLTE(FieldRelatedLables, v))
 }
 
-// RelatedLabelsContains applies the Contains predicate on the "related_labels" field.
-func RelatedLabelsContains(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldContains(FieldRelatedLabels, v))
+// RelatedLablesContains applies the Contains predicate on the "related_lables" field.
+func RelatedLablesContains(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldContains(FieldRelatedLables, v))
 }
 
-// RelatedLabelsHasPrefix applies the HasPrefix predicate on the "related_labels" field.
-func RelatedLabelsHasPrefix(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldHasPrefix(FieldRelatedLabels, v))
+// RelatedLablesHasPrefix applies the HasPrefix predicate on the "related_lables" field.
+func RelatedLablesHasPrefix(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldHasPrefix(FieldRelatedLables, v))
 }
 
-// RelatedLabelsHasSuffix applies the HasSuffix predicate on the "related_labels" field.
-func RelatedLabelsHasSuffix(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldHasSuffix(FieldRelatedLabels, v))
+// RelatedLablesHasSuffix applies the HasSuffix predicate on the "related_lables" field.
+func RelatedLablesHasSuffix(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldHasSuffix(FieldRelatedLables, v))
 }
 
-// RelatedLabelsEqualFold applies the EqualFold predicate on the "related_labels" field.
-func RelatedLabelsEqualFold(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEqualFold(FieldRelatedLabels, v))
+// RelatedLablesEqualFold applies the EqualFold predicate on the "related_lables" field.
+func RelatedLablesEqualFold(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEqualFold(FieldRelatedLables, v))
 }
 
-// RelatedLabelsContainsFold applies the ContainsFold predicate on the "related_labels" field.
-func RelatedLabelsContainsFold(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldContainsFold(FieldRelatedLabels, v))
+// RelatedLablesContainsFold applies the ContainsFold predicate on the "related_lables" field.
+func RelatedLablesContainsFold(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldContainsFold(FieldRelatedLables, v))
 }
 
 // DescriptionEQ applies the EQ predicate on the "description" field.
@@ -642,6 +767,136 @@ func DescriptionEqualFold(v string) predicate.LableTree {
 // DescriptionContainsFold applies the ContainsFold predicate on the "description" field.
 func DescriptionContainsFold(v string) predicate.LableTree {
 	return predicate.LableTree(sql.FieldContainsFold(FieldDescription, v))
+}
+
+// Ext1EQ applies the EQ predicate on the "ext1" field.
+func Ext1EQ(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldExt1, v))
+}
+
+// Ext1NEQ applies the NEQ predicate on the "ext1" field.
+func Ext1NEQ(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNEQ(FieldExt1, v))
+}
+
+// Ext1In applies the In predicate on the "ext1" field.
+func Ext1In(vs ...string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldIn(FieldExt1, vs...))
+}
+
+// Ext1NotIn applies the NotIn predicate on the "ext1" field.
+func Ext1NotIn(vs ...string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNotIn(FieldExt1, vs...))
+}
+
+// Ext1GT applies the GT predicate on the "ext1" field.
+func Ext1GT(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGT(FieldExt1, v))
+}
+
+// Ext1GTE applies the GTE predicate on the "ext1" field.
+func Ext1GTE(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGTE(FieldExt1, v))
+}
+
+// Ext1LT applies the LT predicate on the "ext1" field.
+func Ext1LT(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLT(FieldExt1, v))
+}
+
+// Ext1LTE applies the LTE predicate on the "ext1" field.
+func Ext1LTE(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLTE(FieldExt1, v))
+}
+
+// Ext1Contains applies the Contains predicate on the "ext1" field.
+func Ext1Contains(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldContains(FieldExt1, v))
+}
+
+// Ext1HasPrefix applies the HasPrefix predicate on the "ext1" field.
+func Ext1HasPrefix(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldHasPrefix(FieldExt1, v))
+}
+
+// Ext1HasSuffix applies the HasSuffix predicate on the "ext1" field.
+func Ext1HasSuffix(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldHasSuffix(FieldExt1, v))
+}
+
+// Ext1EqualFold applies the EqualFold predicate on the "ext1" field.
+func Ext1EqualFold(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEqualFold(FieldExt1, v))
+}
+
+// Ext1ContainsFold applies the ContainsFold predicate on the "ext1" field.
+func Ext1ContainsFold(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldContainsFold(FieldExt1, v))
+}
+
+// Ext2EQ applies the EQ predicate on the "ext2" field.
+func Ext2EQ(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldExt2, v))
+}
+
+// Ext2NEQ applies the NEQ predicate on the "ext2" field.
+func Ext2NEQ(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNEQ(FieldExt2, v))
+}
+
+// Ext2In applies the In predicate on the "ext2" field.
+func Ext2In(vs ...string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldIn(FieldExt2, vs...))
+}
+
+// Ext2NotIn applies the NotIn predicate on the "ext2" field.
+func Ext2NotIn(vs ...string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNotIn(FieldExt2, vs...))
+}
+
+// Ext2GT applies the GT predicate on the "ext2" field.
+func Ext2GT(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGT(FieldExt2, v))
+}
+
+// Ext2GTE applies the GTE predicate on the "ext2" field.
+func Ext2GTE(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGTE(FieldExt2, v))
+}
+
+// Ext2LT applies the LT predicate on the "ext2" field.
+func Ext2LT(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLT(FieldExt2, v))
+}
+
+// Ext2LTE applies the LTE predicate on the "ext2" field.
+func Ext2LTE(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLTE(FieldExt2, v))
+}
+
+// Ext2Contains applies the Contains predicate on the "ext2" field.
+func Ext2Contains(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldContains(FieldExt2, v))
+}
+
+// Ext2HasPrefix applies the HasPrefix predicate on the "ext2" field.
+func Ext2HasPrefix(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldHasPrefix(FieldExt2, v))
+}
+
+// Ext2HasSuffix applies the HasSuffix predicate on the "ext2" field.
+func Ext2HasSuffix(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldHasSuffix(FieldExt2, v))
+}
+
+// Ext2EqualFold applies the EqualFold predicate on the "ext2" field.
+func Ext2EqualFold(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEqualFold(FieldExt2, v))
+}
+
+// Ext2ContainsFold applies the ContainsFold predicate on the "ext2" field.
+func Ext2ContainsFold(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldContainsFold(FieldExt2, v))
 }
 
 // And groups predicates with the AND operator between them.

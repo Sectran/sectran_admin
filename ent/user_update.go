@@ -192,6 +192,26 @@ func (uu *UserUpdate) ClearPhoneNumber() *UserUpdate {
 	return uu
 }
 
+// SetLables sets the "lables" field.
+func (uu *UserUpdate) SetLables(s string) *UserUpdate {
+	uu.mutation.SetLables(s)
+	return uu
+}
+
+// SetNillableLables sets the "lables" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableLables(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetLables(*s)
+	}
+	return uu
+}
+
+// ClearLables clears the value of the "lables" field.
+func (uu *UserUpdate) ClearLables() *UserUpdate {
+	uu.mutation.ClearLables()
+	return uu
+}
+
 // SetDepartmentsID sets the "departments" edge to the Department entity by ID.
 func (uu *UserUpdate) SetDepartmentsID(id uint64) *UserUpdate {
 	uu.mutation.SetDepartmentsID(id)
@@ -372,6 +392,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if uu.mutation.PhoneNumberCleared() {
 		_spec.ClearField(user.FieldPhoneNumber, field.TypeString)
+	}
+	if value, ok := uu.mutation.Lables(); ok {
+		_spec.SetField(user.FieldLables, field.TypeString, value)
+	}
+	if uu.mutation.LablesCleared() {
+		_spec.ClearField(user.FieldLables, field.TypeString)
 	}
 	if uu.mutation.DepartmentsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -613,6 +639,26 @@ func (uuo *UserUpdateOne) ClearPhoneNumber() *UserUpdateOne {
 	return uuo
 }
 
+// SetLables sets the "lables" field.
+func (uuo *UserUpdateOne) SetLables(s string) *UserUpdateOne {
+	uuo.mutation.SetLables(s)
+	return uuo
+}
+
+// SetNillableLables sets the "lables" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableLables(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetLables(*s)
+	}
+	return uuo
+}
+
+// ClearLables clears the value of the "lables" field.
+func (uuo *UserUpdateOne) ClearLables() *UserUpdateOne {
+	uuo.mutation.ClearLables()
+	return uuo
+}
+
 // SetDepartmentsID sets the "departments" edge to the Department entity by ID.
 func (uuo *UserUpdateOne) SetDepartmentsID(id uint64) *UserUpdateOne {
 	uuo.mutation.SetDepartmentsID(id)
@@ -823,6 +869,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if uuo.mutation.PhoneNumberCleared() {
 		_spec.ClearField(user.FieldPhoneNumber, field.TypeString)
+	}
+	if value, ok := uuo.mutation.Lables(); ok {
+		_spec.SetField(user.FieldLables, field.TypeString, value)
+	}
+	if uuo.mutation.LablesCleared() {
+		_spec.ClearField(user.FieldLables, field.TypeString)
 	}
 	if uuo.mutation.DepartmentsCleared() {
 		edge := &sqlgraph.EdgeSpec{

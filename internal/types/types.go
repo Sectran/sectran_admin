@@ -385,8 +385,12 @@ type LableTreeInfo struct {
 	Type *uint `json:"type,optional"`
 	// lable icon|标签图标
 	Icon *string `json:"icon,optional"`
+	// lable content|标签内容
+	Content *string `json:"content,optional"`
 	// parent lable id|父标签id
 	ParentLable *uint64 `json:"parentLable,optional"`
+	// lable target type|标签目标类型
+	LableTargetType *uint16 `json:"lableTargetType,optional"`
 	// parent lables id,split by ','|父标签id集合升序排列,逗号分隔
 	ParentLables *string `json:"parentLables,optional"`
 	// lable owner,user ID|标签所属者,用户ID
@@ -394,9 +398,13 @@ type LableTreeInfo struct {
 	// child lable can inherit parents|标签是否可以继承
 	Inherit *bool `json:"inherit,optional"`
 	// related labels id,split by ','|关联标签id集合升序排列,逗号分隔
-	RelatedLabels *string `json:"relatedLabels,optional"`
+	RelatedLables *string `json:"relatedLables,optional"`
 	// label description|标签描述
 	Description *string `json:"description,optional"`
+	// label extented|标签拓展
+	Ext1 *string `json:"ext1,optional"`
+	// label extented|标签拓展
+	Ext2 *string `json:"ext2,optional"`
 }
 
 // The response data of lable tree list | LableTree列表数据
@@ -423,8 +431,8 @@ type LableTreeListReq struct {
 	Name *string `json:"name,optional"`
 	// lable icon|标签图标
 	Icon *string `json:"icon,optional"`
-	// parent lables id,split by ','|父标签id集合升序排列,逗号分隔
-	ParentLables *string `json:"parentLables,optional"`
+	// lable content|标签内容
+	Content *string `json:"content,optional"`
 }
 
 // LableTree information response | LableTree信息返回体

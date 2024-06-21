@@ -95,6 +95,11 @@ func DeviceID(v uint64) predicate.Account {
 	return predicate.Account(sql.FieldEQ(FieldDeviceID, v))
 }
 
+// Lables applies equality check predicate on the "lables" field. It's identical to LablesEQ.
+func Lables(v string) predicate.Account {
+	return predicate.Account(sql.FieldEQ(FieldLables, v))
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.Account {
 	return predicate.Account(sql.FieldEQ(FieldCreatedAt, v))
@@ -478,6 +483,81 @@ func DeviceIDIsNil() predicate.Account {
 // DeviceIDNotNil applies the NotNil predicate on the "device_id" field.
 func DeviceIDNotNil() predicate.Account {
 	return predicate.Account(sql.FieldNotNull(FieldDeviceID))
+}
+
+// LablesEQ applies the EQ predicate on the "lables" field.
+func LablesEQ(v string) predicate.Account {
+	return predicate.Account(sql.FieldEQ(FieldLables, v))
+}
+
+// LablesNEQ applies the NEQ predicate on the "lables" field.
+func LablesNEQ(v string) predicate.Account {
+	return predicate.Account(sql.FieldNEQ(FieldLables, v))
+}
+
+// LablesIn applies the In predicate on the "lables" field.
+func LablesIn(vs ...string) predicate.Account {
+	return predicate.Account(sql.FieldIn(FieldLables, vs...))
+}
+
+// LablesNotIn applies the NotIn predicate on the "lables" field.
+func LablesNotIn(vs ...string) predicate.Account {
+	return predicate.Account(sql.FieldNotIn(FieldLables, vs...))
+}
+
+// LablesGT applies the GT predicate on the "lables" field.
+func LablesGT(v string) predicate.Account {
+	return predicate.Account(sql.FieldGT(FieldLables, v))
+}
+
+// LablesGTE applies the GTE predicate on the "lables" field.
+func LablesGTE(v string) predicate.Account {
+	return predicate.Account(sql.FieldGTE(FieldLables, v))
+}
+
+// LablesLT applies the LT predicate on the "lables" field.
+func LablesLT(v string) predicate.Account {
+	return predicate.Account(sql.FieldLT(FieldLables, v))
+}
+
+// LablesLTE applies the LTE predicate on the "lables" field.
+func LablesLTE(v string) predicate.Account {
+	return predicate.Account(sql.FieldLTE(FieldLables, v))
+}
+
+// LablesContains applies the Contains predicate on the "lables" field.
+func LablesContains(v string) predicate.Account {
+	return predicate.Account(sql.FieldContains(FieldLables, v))
+}
+
+// LablesHasPrefix applies the HasPrefix predicate on the "lables" field.
+func LablesHasPrefix(v string) predicate.Account {
+	return predicate.Account(sql.FieldHasPrefix(FieldLables, v))
+}
+
+// LablesHasSuffix applies the HasSuffix predicate on the "lables" field.
+func LablesHasSuffix(v string) predicate.Account {
+	return predicate.Account(sql.FieldHasSuffix(FieldLables, v))
+}
+
+// LablesIsNil applies the IsNil predicate on the "lables" field.
+func LablesIsNil() predicate.Account {
+	return predicate.Account(sql.FieldIsNull(FieldLables))
+}
+
+// LablesNotNil applies the NotNil predicate on the "lables" field.
+func LablesNotNil() predicate.Account {
+	return predicate.Account(sql.FieldNotNull(FieldLables))
+}
+
+// LablesEqualFold applies the EqualFold predicate on the "lables" field.
+func LablesEqualFold(v string) predicate.Account {
+	return predicate.Account(sql.FieldEqualFold(FieldLables, v))
+}
+
+// LablesContainsFold applies the ContainsFold predicate on the "lables" field.
+func LablesContainsFold(v string) predicate.Account {
+	return predicate.Account(sql.FieldContainsFold(FieldLables, v))
 }
 
 // HasDevices applies the HasEdge predicate on the "devices" edge.

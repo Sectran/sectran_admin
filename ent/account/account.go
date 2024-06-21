@@ -30,6 +30,8 @@ const (
 	FieldPrivateKey = "private_key"
 	// FieldDeviceID holds the string denoting the device_id field in the database.
 	FieldDeviceID = "device_id"
+	// FieldLables holds the string denoting the lables field in the database.
+	FieldLables = "lables"
 	// EdgeDevices holds the string denoting the devices edge name in mutations.
 	EdgeDevices = "devices"
 	// Table holds the table name of the account in the database.
@@ -54,6 +56,7 @@ var Columns = []string{
 	FieldPassword,
 	FieldPrivateKey,
 	FieldDeviceID,
+	FieldLables,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -133,6 +136,11 @@ func ByPrivateKey(opts ...sql.OrderTermOption) OrderOption {
 // ByDeviceID orders the results by the device_id field.
 func ByDeviceID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDeviceID, opts...).ToFunc()
+}
+
+// ByLables orders the results by the lables field.
+func ByLables(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLables, opts...).ToFunc()
 }
 
 // ByDevicesField orders the results by devices field.

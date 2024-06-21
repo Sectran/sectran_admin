@@ -139,6 +139,26 @@ func (au *AccountUpdate) ClearDeviceID() *AccountUpdate {
 	return au
 }
 
+// SetLables sets the "lables" field.
+func (au *AccountUpdate) SetLables(s string) *AccountUpdate {
+	au.mutation.SetLables(s)
+	return au
+}
+
+// SetNillableLables sets the "lables" field if the given value is not nil.
+func (au *AccountUpdate) SetNillableLables(s *string) *AccountUpdate {
+	if s != nil {
+		au.SetLables(*s)
+	}
+	return au
+}
+
+// ClearLables clears the value of the "lables" field.
+func (au *AccountUpdate) ClearLables() *AccountUpdate {
+	au.mutation.ClearLables()
+	return au
+}
+
 // SetDevicesID sets the "devices" edge to the Device entity by ID.
 func (au *AccountUpdate) SetDevicesID(id uint64) *AccountUpdate {
 	au.mutation.SetDevicesID(id)
@@ -275,6 +295,12 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := au.mutation.PrivateKey(); ok {
 		_spec.SetField(account.FieldPrivateKey, field.TypeString, value)
+	}
+	if value, ok := au.mutation.Lables(); ok {
+		_spec.SetField(account.FieldLables, field.TypeString, value)
+	}
+	if au.mutation.LablesCleared() {
+		_spec.ClearField(account.FieldLables, field.TypeString)
 	}
 	if au.mutation.DevicesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -432,6 +458,26 @@ func (auo *AccountUpdateOne) SetNillableDeviceID(u *uint64) *AccountUpdateOne {
 // ClearDeviceID clears the value of the "device_id" field.
 func (auo *AccountUpdateOne) ClearDeviceID() *AccountUpdateOne {
 	auo.mutation.ClearDeviceID()
+	return auo
+}
+
+// SetLables sets the "lables" field.
+func (auo *AccountUpdateOne) SetLables(s string) *AccountUpdateOne {
+	auo.mutation.SetLables(s)
+	return auo
+}
+
+// SetNillableLables sets the "lables" field if the given value is not nil.
+func (auo *AccountUpdateOne) SetNillableLables(s *string) *AccountUpdateOne {
+	if s != nil {
+		auo.SetLables(*s)
+	}
+	return auo
+}
+
+// ClearLables clears the value of the "lables" field.
+func (auo *AccountUpdateOne) ClearLables() *AccountUpdateOne {
+	auo.mutation.ClearLables()
 	return auo
 }
 
@@ -601,6 +647,12 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 	}
 	if value, ok := auo.mutation.PrivateKey(); ok {
 		_spec.SetField(account.FieldPrivateKey, field.TypeString, value)
+	}
+	if value, ok := auo.mutation.Lables(); ok {
+		_spec.SetField(account.FieldLables, field.TypeString, value)
+	}
+	if auo.mutation.LablesCleared() {
+		_spec.ClearField(account.FieldLables, field.TypeString)
 	}
 	if auo.mutation.DevicesCleared() {
 		edge := &sqlgraph.EdgeSpec{

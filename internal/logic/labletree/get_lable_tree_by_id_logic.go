@@ -1,4 +1,4 @@
-package LableTree
+package labletree
 
 import (
 	"context"
@@ -47,12 +47,16 @@ func (l *GetLableTreeByIdLogic) GetLableTreeById(req *types.IDReq) (*types.Lable
 			Name:	&data.Name,
 			Type:	&data.Type,
 			Icon:	&data.Icon,
+			Content:	&data.Content,
 			ParentLable:	&data.ParentLable,
+			LableTargetType:	&data.LableTargetType,
 			ParentLables:	&data.ParentLables,
 			LableOwner:	&data.LableOwner,
 			Inherit:	&data.Inherit,
-			RelatedLabels:	&data.RelatedLabels,
+			RelatedLables:	&data.RelatedLables,
 			Description:	&data.Description,
+			Ext1:	&data.Ext1,
+			Ext2:	&data.Ext2,
         },
 	}, nil
 }

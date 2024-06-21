@@ -36,6 +36,8 @@ const (
 	FieldEmail = "email"
 	// FieldPhoneNumber holds the string denoting the phone_number field in the database.
 	FieldPhoneNumber = "phone_number"
+	// FieldLables holds the string denoting the lables field in the database.
+	FieldLables = "lables"
 	// EdgeDepartments holds the string denoting the departments edge name in mutations.
 	EdgeDepartments = "departments"
 	// EdgeRoles holds the string denoting the roles edge name in mutations.
@@ -72,6 +74,7 @@ var Columns = []string{
 	FieldDescription,
 	FieldEmail,
 	FieldPhoneNumber,
+	FieldLables,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -172,6 +175,11 @@ func ByEmail(opts ...sql.OrderTermOption) OrderOption {
 // ByPhoneNumber orders the results by the phone_number field.
 func ByPhoneNumber(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPhoneNumber, opts...).ToFunc()
+}
+
+// ByLables orders the results by the lables field.
+func ByLables(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLables, opts...).ToFunc()
 }
 
 // ByDepartmentsField orders the results by departments field.

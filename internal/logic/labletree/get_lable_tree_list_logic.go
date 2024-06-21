@@ -1,4 +1,4 @@
-package LableTree
+package labletree
 
 import (
 	"context"
@@ -37,8 +37,8 @@ func (l *GetLableTreeListLogic) GetLableTreeList(req *types.LableTreeListReq) (*
 	if req.Icon != nil {
 		predicates = append(predicates, labletree.IconContains(*req.Icon))
 	}
-	if req.ParentLables != nil {
-		predicates = append(predicates, labletree.ParentLablesContains(*req.ParentLables))
+	if req.Content != nil {
+		predicates = append(predicates, labletree.ContentContains(*req.Content))
 	}
 	data, err := l.svcCtx.DB.LableTree.Query().Where(predicates...).Page(l.ctx, req.Page, req.PageSize)
 
@@ -61,12 +61,16 @@ func (l *GetLableTreeListLogic) GetLableTreeList(req *types.LableTreeListReq) (*
 			Name:	&v.Name,
 			Type:	&v.Type,
 			Icon:	&v.Icon,
+			Content:	&v.Content,
 			ParentLable:	&v.ParentLable,
+			LableTargetType:	&v.LableTargetType,
 			ParentLables:	&v.ParentLables,
 			LableOwner:	&v.LableOwner,
 			Inherit:	&v.Inherit,
-			RelatedLabels:	&v.RelatedLabels,
+			RelatedLables:	&v.RelatedLables,
 			Description:	&v.Description,
+			Ext1:	&v.Ext1,
+			Ext2:	&v.Ext2,
 		})
 	}
 

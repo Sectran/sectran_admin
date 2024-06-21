@@ -1,4 +1,4 @@
-package LableTree
+package labletree
 
 import (
 	"context"

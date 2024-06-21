@@ -83,6 +83,20 @@ func (ltu *LableTreeUpdate) SetNillableIcon(s *string) *LableTreeUpdate {
 	return ltu
 }
 
+// SetContent sets the "content" field.
+func (ltu *LableTreeUpdate) SetContent(s string) *LableTreeUpdate {
+	ltu.mutation.SetContent(s)
+	return ltu
+}
+
+// SetNillableContent sets the "content" field if the given value is not nil.
+func (ltu *LableTreeUpdate) SetNillableContent(s *string) *LableTreeUpdate {
+	if s != nil {
+		ltu.SetContent(*s)
+	}
+	return ltu
+}
+
 // SetParentLable sets the "parent_lable" field.
 func (ltu *LableTreeUpdate) SetParentLable(u uint64) *LableTreeUpdate {
 	ltu.mutation.ResetParentLable()
@@ -101,6 +115,27 @@ func (ltu *LableTreeUpdate) SetNillableParentLable(u *uint64) *LableTreeUpdate {
 // AddParentLable adds u to the "parent_lable" field.
 func (ltu *LableTreeUpdate) AddParentLable(u int64) *LableTreeUpdate {
 	ltu.mutation.AddParentLable(u)
+	return ltu
+}
+
+// SetLableTargetType sets the "lable_target_type" field.
+func (ltu *LableTreeUpdate) SetLableTargetType(u uint16) *LableTreeUpdate {
+	ltu.mutation.ResetLableTargetType()
+	ltu.mutation.SetLableTargetType(u)
+	return ltu
+}
+
+// SetNillableLableTargetType sets the "lable_target_type" field if the given value is not nil.
+func (ltu *LableTreeUpdate) SetNillableLableTargetType(u *uint16) *LableTreeUpdate {
+	if u != nil {
+		ltu.SetLableTargetType(*u)
+	}
+	return ltu
+}
+
+// AddLableTargetType adds u to the "lable_target_type" field.
+func (ltu *LableTreeUpdate) AddLableTargetType(u int16) *LableTreeUpdate {
+	ltu.mutation.AddLableTargetType(u)
 	return ltu
 }
 
@@ -153,16 +188,16 @@ func (ltu *LableTreeUpdate) SetNillableInherit(b *bool) *LableTreeUpdate {
 	return ltu
 }
 
-// SetRelatedLabels sets the "related_labels" field.
-func (ltu *LableTreeUpdate) SetRelatedLabels(s string) *LableTreeUpdate {
-	ltu.mutation.SetRelatedLabels(s)
+// SetRelatedLables sets the "related_lables" field.
+func (ltu *LableTreeUpdate) SetRelatedLables(s string) *LableTreeUpdate {
+	ltu.mutation.SetRelatedLables(s)
 	return ltu
 }
 
-// SetNillableRelatedLabels sets the "related_labels" field if the given value is not nil.
-func (ltu *LableTreeUpdate) SetNillableRelatedLabels(s *string) *LableTreeUpdate {
+// SetNillableRelatedLables sets the "related_lables" field if the given value is not nil.
+func (ltu *LableTreeUpdate) SetNillableRelatedLables(s *string) *LableTreeUpdate {
 	if s != nil {
-		ltu.SetRelatedLabels(*s)
+		ltu.SetRelatedLables(*s)
 	}
 	return ltu
 }
@@ -177,6 +212,34 @@ func (ltu *LableTreeUpdate) SetDescription(s string) *LableTreeUpdate {
 func (ltu *LableTreeUpdate) SetNillableDescription(s *string) *LableTreeUpdate {
 	if s != nil {
 		ltu.SetDescription(*s)
+	}
+	return ltu
+}
+
+// SetExt1 sets the "ext1" field.
+func (ltu *LableTreeUpdate) SetExt1(s string) *LableTreeUpdate {
+	ltu.mutation.SetExt1(s)
+	return ltu
+}
+
+// SetNillableExt1 sets the "ext1" field if the given value is not nil.
+func (ltu *LableTreeUpdate) SetNillableExt1(s *string) *LableTreeUpdate {
+	if s != nil {
+		ltu.SetExt1(*s)
+	}
+	return ltu
+}
+
+// SetExt2 sets the "ext2" field.
+func (ltu *LableTreeUpdate) SetExt2(s string) *LableTreeUpdate {
+	ltu.mutation.SetExt2(s)
+	return ltu
+}
+
+// SetNillableExt2 sets the "ext2" field if the given value is not nil.
+func (ltu *LableTreeUpdate) SetNillableExt2(s *string) *LableTreeUpdate {
+	if s != nil {
+		ltu.SetExt2(*s)
 	}
 	return ltu
 }
@@ -229,6 +292,16 @@ func (ltu *LableTreeUpdate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "LableTree.name": %w`, err)}
 		}
 	}
+	if v, ok := ltu.mutation.Icon(); ok {
+		if err := labletree.IconValidator(v); err != nil {
+			return &ValidationError{Name: "icon", err: fmt.Errorf(`ent: validator failed for field "LableTree.icon": %w`, err)}
+		}
+	}
+	if v, ok := ltu.mutation.Content(); ok {
+		if err := labletree.ContentValidator(v); err != nil {
+			return &ValidationError{Name: "content", err: fmt.Errorf(`ent: validator failed for field "LableTree.content": %w`, err)}
+		}
+	}
 	if v, ok := ltu.mutation.Description(); ok {
 		if err := labletree.DescriptionValidator(v); err != nil {
 			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "LableTree.description": %w`, err)}
@@ -264,11 +337,20 @@ func (ltu *LableTreeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := ltu.mutation.Icon(); ok {
 		_spec.SetField(labletree.FieldIcon, field.TypeString, value)
 	}
+	if value, ok := ltu.mutation.Content(); ok {
+		_spec.SetField(labletree.FieldContent, field.TypeString, value)
+	}
 	if value, ok := ltu.mutation.ParentLable(); ok {
 		_spec.SetField(labletree.FieldParentLable, field.TypeUint64, value)
 	}
 	if value, ok := ltu.mutation.AddedParentLable(); ok {
 		_spec.AddField(labletree.FieldParentLable, field.TypeUint64, value)
+	}
+	if value, ok := ltu.mutation.LableTargetType(); ok {
+		_spec.SetField(labletree.FieldLableTargetType, field.TypeUint16, value)
+	}
+	if value, ok := ltu.mutation.AddedLableTargetType(); ok {
+		_spec.AddField(labletree.FieldLableTargetType, field.TypeUint16, value)
 	}
 	if value, ok := ltu.mutation.ParentLables(); ok {
 		_spec.SetField(labletree.FieldParentLables, field.TypeString, value)
@@ -282,11 +364,17 @@ func (ltu *LableTreeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := ltu.mutation.Inherit(); ok {
 		_spec.SetField(labletree.FieldInherit, field.TypeBool, value)
 	}
-	if value, ok := ltu.mutation.RelatedLabels(); ok {
-		_spec.SetField(labletree.FieldRelatedLabels, field.TypeString, value)
+	if value, ok := ltu.mutation.RelatedLables(); ok {
+		_spec.SetField(labletree.FieldRelatedLables, field.TypeString, value)
 	}
 	if value, ok := ltu.mutation.Description(); ok {
 		_spec.SetField(labletree.FieldDescription, field.TypeString, value)
+	}
+	if value, ok := ltu.mutation.Ext1(); ok {
+		_spec.SetField(labletree.FieldExt1, field.TypeString, value)
+	}
+	if value, ok := ltu.mutation.Ext2(); ok {
+		_spec.SetField(labletree.FieldExt2, field.TypeString, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, ltu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -363,6 +451,20 @@ func (ltuo *LableTreeUpdateOne) SetNillableIcon(s *string) *LableTreeUpdateOne {
 	return ltuo
 }
 
+// SetContent sets the "content" field.
+func (ltuo *LableTreeUpdateOne) SetContent(s string) *LableTreeUpdateOne {
+	ltuo.mutation.SetContent(s)
+	return ltuo
+}
+
+// SetNillableContent sets the "content" field if the given value is not nil.
+func (ltuo *LableTreeUpdateOne) SetNillableContent(s *string) *LableTreeUpdateOne {
+	if s != nil {
+		ltuo.SetContent(*s)
+	}
+	return ltuo
+}
+
 // SetParentLable sets the "parent_lable" field.
 func (ltuo *LableTreeUpdateOne) SetParentLable(u uint64) *LableTreeUpdateOne {
 	ltuo.mutation.ResetParentLable()
@@ -381,6 +483,27 @@ func (ltuo *LableTreeUpdateOne) SetNillableParentLable(u *uint64) *LableTreeUpda
 // AddParentLable adds u to the "parent_lable" field.
 func (ltuo *LableTreeUpdateOne) AddParentLable(u int64) *LableTreeUpdateOne {
 	ltuo.mutation.AddParentLable(u)
+	return ltuo
+}
+
+// SetLableTargetType sets the "lable_target_type" field.
+func (ltuo *LableTreeUpdateOne) SetLableTargetType(u uint16) *LableTreeUpdateOne {
+	ltuo.mutation.ResetLableTargetType()
+	ltuo.mutation.SetLableTargetType(u)
+	return ltuo
+}
+
+// SetNillableLableTargetType sets the "lable_target_type" field if the given value is not nil.
+func (ltuo *LableTreeUpdateOne) SetNillableLableTargetType(u *uint16) *LableTreeUpdateOne {
+	if u != nil {
+		ltuo.SetLableTargetType(*u)
+	}
+	return ltuo
+}
+
+// AddLableTargetType adds u to the "lable_target_type" field.
+func (ltuo *LableTreeUpdateOne) AddLableTargetType(u int16) *LableTreeUpdateOne {
+	ltuo.mutation.AddLableTargetType(u)
 	return ltuo
 }
 
@@ -433,16 +556,16 @@ func (ltuo *LableTreeUpdateOne) SetNillableInherit(b *bool) *LableTreeUpdateOne 
 	return ltuo
 }
 
-// SetRelatedLabels sets the "related_labels" field.
-func (ltuo *LableTreeUpdateOne) SetRelatedLabels(s string) *LableTreeUpdateOne {
-	ltuo.mutation.SetRelatedLabels(s)
+// SetRelatedLables sets the "related_lables" field.
+func (ltuo *LableTreeUpdateOne) SetRelatedLables(s string) *LableTreeUpdateOne {
+	ltuo.mutation.SetRelatedLables(s)
 	return ltuo
 }
 
-// SetNillableRelatedLabels sets the "related_labels" field if the given value is not nil.
-func (ltuo *LableTreeUpdateOne) SetNillableRelatedLabels(s *string) *LableTreeUpdateOne {
+// SetNillableRelatedLables sets the "related_lables" field if the given value is not nil.
+func (ltuo *LableTreeUpdateOne) SetNillableRelatedLables(s *string) *LableTreeUpdateOne {
 	if s != nil {
-		ltuo.SetRelatedLabels(*s)
+		ltuo.SetRelatedLables(*s)
 	}
 	return ltuo
 }
@@ -457,6 +580,34 @@ func (ltuo *LableTreeUpdateOne) SetDescription(s string) *LableTreeUpdateOne {
 func (ltuo *LableTreeUpdateOne) SetNillableDescription(s *string) *LableTreeUpdateOne {
 	if s != nil {
 		ltuo.SetDescription(*s)
+	}
+	return ltuo
+}
+
+// SetExt1 sets the "ext1" field.
+func (ltuo *LableTreeUpdateOne) SetExt1(s string) *LableTreeUpdateOne {
+	ltuo.mutation.SetExt1(s)
+	return ltuo
+}
+
+// SetNillableExt1 sets the "ext1" field if the given value is not nil.
+func (ltuo *LableTreeUpdateOne) SetNillableExt1(s *string) *LableTreeUpdateOne {
+	if s != nil {
+		ltuo.SetExt1(*s)
+	}
+	return ltuo
+}
+
+// SetExt2 sets the "ext2" field.
+func (ltuo *LableTreeUpdateOne) SetExt2(s string) *LableTreeUpdateOne {
+	ltuo.mutation.SetExt2(s)
+	return ltuo
+}
+
+// SetNillableExt2 sets the "ext2" field if the given value is not nil.
+func (ltuo *LableTreeUpdateOne) SetNillableExt2(s *string) *LableTreeUpdateOne {
+	if s != nil {
+		ltuo.SetExt2(*s)
 	}
 	return ltuo
 }
@@ -522,6 +673,16 @@ func (ltuo *LableTreeUpdateOne) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "LableTree.name": %w`, err)}
 		}
 	}
+	if v, ok := ltuo.mutation.Icon(); ok {
+		if err := labletree.IconValidator(v); err != nil {
+			return &ValidationError{Name: "icon", err: fmt.Errorf(`ent: validator failed for field "LableTree.icon": %w`, err)}
+		}
+	}
+	if v, ok := ltuo.mutation.Content(); ok {
+		if err := labletree.ContentValidator(v); err != nil {
+			return &ValidationError{Name: "content", err: fmt.Errorf(`ent: validator failed for field "LableTree.content": %w`, err)}
+		}
+	}
 	if v, ok := ltuo.mutation.Description(); ok {
 		if err := labletree.DescriptionValidator(v); err != nil {
 			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "LableTree.description": %w`, err)}
@@ -574,11 +735,20 @@ func (ltuo *LableTreeUpdateOne) sqlSave(ctx context.Context) (_node *LableTree, 
 	if value, ok := ltuo.mutation.Icon(); ok {
 		_spec.SetField(labletree.FieldIcon, field.TypeString, value)
 	}
+	if value, ok := ltuo.mutation.Content(); ok {
+		_spec.SetField(labletree.FieldContent, field.TypeString, value)
+	}
 	if value, ok := ltuo.mutation.ParentLable(); ok {
 		_spec.SetField(labletree.FieldParentLable, field.TypeUint64, value)
 	}
 	if value, ok := ltuo.mutation.AddedParentLable(); ok {
 		_spec.AddField(labletree.FieldParentLable, field.TypeUint64, value)
+	}
+	if value, ok := ltuo.mutation.LableTargetType(); ok {
+		_spec.SetField(labletree.FieldLableTargetType, field.TypeUint16, value)
+	}
+	if value, ok := ltuo.mutation.AddedLableTargetType(); ok {
+		_spec.AddField(labletree.FieldLableTargetType, field.TypeUint16, value)
 	}
 	if value, ok := ltuo.mutation.ParentLables(); ok {
 		_spec.SetField(labletree.FieldParentLables, field.TypeString, value)
@@ -592,11 +762,17 @@ func (ltuo *LableTreeUpdateOne) sqlSave(ctx context.Context) (_node *LableTree, 
 	if value, ok := ltuo.mutation.Inherit(); ok {
 		_spec.SetField(labletree.FieldInherit, field.TypeBool, value)
 	}
-	if value, ok := ltuo.mutation.RelatedLabels(); ok {
-		_spec.SetField(labletree.FieldRelatedLabels, field.TypeString, value)
+	if value, ok := ltuo.mutation.RelatedLables(); ok {
+		_spec.SetField(labletree.FieldRelatedLables, field.TypeString, value)
 	}
 	if value, ok := ltuo.mutation.Description(); ok {
 		_spec.SetField(labletree.FieldDescription, field.TypeString, value)
+	}
+	if value, ok := ltuo.mutation.Ext1(); ok {
+		_spec.SetField(labletree.FieldExt1, field.TypeString, value)
+	}
+	if value, ok := ltuo.mutation.Ext2(); ok {
+		_spec.SetField(labletree.FieldExt2, field.TypeString, value)
 	}
 	_node = &LableTree{config: ltuo.config}
 	_spec.Assign = _node.assignValues

@@ -90,6 +90,11 @@ func ParentDepartments(v string) predicate.Department {
 	return predicate.Department(sql.FieldEQ(FieldParentDepartments, v))
 }
 
+// Lables applies equality check predicate on the "lables" field. It's identical to LablesEQ.
+func Lables(v string) predicate.Department {
+	return predicate.Department(sql.FieldEQ(FieldLables, v))
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.Department {
 	return predicate.Department(sql.FieldEQ(FieldCreatedAt, v))
@@ -468,6 +473,81 @@ func ParentDepartmentsEqualFold(v string) predicate.Department {
 // ParentDepartmentsContainsFold applies the ContainsFold predicate on the "parent_departments" field.
 func ParentDepartmentsContainsFold(v string) predicate.Department {
 	return predicate.Department(sql.FieldContainsFold(FieldParentDepartments, v))
+}
+
+// LablesEQ applies the EQ predicate on the "lables" field.
+func LablesEQ(v string) predicate.Department {
+	return predicate.Department(sql.FieldEQ(FieldLables, v))
+}
+
+// LablesNEQ applies the NEQ predicate on the "lables" field.
+func LablesNEQ(v string) predicate.Department {
+	return predicate.Department(sql.FieldNEQ(FieldLables, v))
+}
+
+// LablesIn applies the In predicate on the "lables" field.
+func LablesIn(vs ...string) predicate.Department {
+	return predicate.Department(sql.FieldIn(FieldLables, vs...))
+}
+
+// LablesNotIn applies the NotIn predicate on the "lables" field.
+func LablesNotIn(vs ...string) predicate.Department {
+	return predicate.Department(sql.FieldNotIn(FieldLables, vs...))
+}
+
+// LablesGT applies the GT predicate on the "lables" field.
+func LablesGT(v string) predicate.Department {
+	return predicate.Department(sql.FieldGT(FieldLables, v))
+}
+
+// LablesGTE applies the GTE predicate on the "lables" field.
+func LablesGTE(v string) predicate.Department {
+	return predicate.Department(sql.FieldGTE(FieldLables, v))
+}
+
+// LablesLT applies the LT predicate on the "lables" field.
+func LablesLT(v string) predicate.Department {
+	return predicate.Department(sql.FieldLT(FieldLables, v))
+}
+
+// LablesLTE applies the LTE predicate on the "lables" field.
+func LablesLTE(v string) predicate.Department {
+	return predicate.Department(sql.FieldLTE(FieldLables, v))
+}
+
+// LablesContains applies the Contains predicate on the "lables" field.
+func LablesContains(v string) predicate.Department {
+	return predicate.Department(sql.FieldContains(FieldLables, v))
+}
+
+// LablesHasPrefix applies the HasPrefix predicate on the "lables" field.
+func LablesHasPrefix(v string) predicate.Department {
+	return predicate.Department(sql.FieldHasPrefix(FieldLables, v))
+}
+
+// LablesHasSuffix applies the HasSuffix predicate on the "lables" field.
+func LablesHasSuffix(v string) predicate.Department {
+	return predicate.Department(sql.FieldHasSuffix(FieldLables, v))
+}
+
+// LablesIsNil applies the IsNil predicate on the "lables" field.
+func LablesIsNil() predicate.Department {
+	return predicate.Department(sql.FieldIsNull(FieldLables))
+}
+
+// LablesNotNil applies the NotNil predicate on the "lables" field.
+func LablesNotNil() predicate.Department {
+	return predicate.Department(sql.FieldNotNull(FieldLables))
+}
+
+// LablesEqualFold applies the EqualFold predicate on the "lables" field.
+func LablesEqualFold(v string) predicate.Department {
+	return predicate.Department(sql.FieldEqualFold(FieldLables, v))
+}
+
+// LablesContainsFold applies the ContainsFold predicate on the "lables" field.
+func LablesContainsFold(v string) predicate.Department {
+	return predicate.Department(sql.FieldContainsFold(FieldLables, v))
 }
 
 // HasUsers applies the HasEdge predicate on the "users" edge.

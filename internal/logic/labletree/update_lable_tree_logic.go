@@ -1,4 +1,4 @@
-package LableTree
+package labletree
 
 import (
 	"context"
@@ -30,12 +30,16 @@ func (l *UpdateLableTreeLogic) UpdateLableTree(req *types.LableTreeInfo) (*types
 			SetNotNilName(req.Name).
 			SetNotNilType(req.Type).
 			SetNotNilIcon(req.Icon).
+			SetNotNilContent(req.Content).
 			SetNotNilParentLable(req.ParentLable).
+			SetNotNilLableTargetType(req.LableTargetType).
 			SetNotNilParentLables(req.ParentLables).
 			SetNotNilLableOwner(req.LableOwner).
 			SetNotNilInherit(req.Inherit).
-			SetNotNilRelatedLabels(req.RelatedLabels).
+			SetNotNilRelatedLables(req.RelatedLables).
 			SetNotNilDescription(req.Description).
+			SetNotNilExt1(req.Ext1).
+			SetNotNilExt2(req.Ext2).
 			Exec(l.ctx)
 
     if err != nil {

@@ -61,6 +61,20 @@ func (rc *RoleCreate) SetWeight(i int) *RoleCreate {
 	return rc
 }
 
+// SetLables sets the "lables" field.
+func (rc *RoleCreate) SetLables(s string) *RoleCreate {
+	rc.mutation.SetLables(s)
+	return rc
+}
+
+// SetNillableLables sets the "lables" field if the given value is not nil.
+func (rc *RoleCreate) SetNillableLables(s *string) *RoleCreate {
+	if s != nil {
+		rc.SetLables(*s)
+	}
+	return rc
+}
+
 // SetID sets the "id" field.
 func (rc *RoleCreate) SetID(u uint64) *RoleCreate {
 	rc.mutation.SetID(u)
@@ -198,6 +212,10 @@ func (rc *RoleCreate) createSpec() (*Role, *sqlgraph.CreateSpec) {
 	if value, ok := rc.mutation.Weight(); ok {
 		_spec.SetField(role.FieldWeight, field.TypeInt, value)
 		_node.Weight = value
+	}
+	if value, ok := rc.mutation.Lables(); ok {
+		_spec.SetField(role.FieldLables, field.TypeString, value)
+		_node.Lables = value
 	}
 	if nodes := rc.mutation.UsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

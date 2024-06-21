@@ -173,6 +173,30 @@ func (a *AccountCreate) SetNotNilDeviceID(value *uint64) *AccountCreate {
 }
 
 // set field if value's pointer is not nil.
+func (a *AccountUpdate) SetNotNilLables(value *string) *AccountUpdate {
+	if value != nil {
+		return a.SetLables(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountUpdateOne) SetNotNilLables(value *string) *AccountUpdateOne {
+	if value != nil {
+		return a.SetLables(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountCreate) SetNotNilLables(value *string) *AccountCreate {
+	if value != nil {
+		return a.SetLables(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
 func (d *DepartmentUpdate) SetNotNilUpdatedAt(value *time.Time) *DepartmentUpdate {
 	if value != nil {
 		return d.SetUpdatedAt(*value)
@@ -312,6 +336,30 @@ func (d *DepartmentUpdateOne) SetNotNilParentDepartments(value *string) *Departm
 func (d *DepartmentCreate) SetNotNilParentDepartments(value *string) *DepartmentCreate {
 	if value != nil {
 		return d.SetParentDepartments(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DepartmentUpdate) SetNotNilLables(value *string) *DepartmentUpdate {
+	if value != nil {
+		return d.SetLables(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DepartmentUpdateOne) SetNotNilLables(value *string) *DepartmentUpdateOne {
+	if value != nil {
+		return d.SetLables(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DepartmentCreate) SetNotNilLables(value *string) *DepartmentCreate {
+	if value != nil {
+		return d.SetLables(*value)
 	}
 	return d
 }
@@ -461,6 +509,30 @@ func (d *DeviceCreate) SetNotNilDescription(value *string) *DeviceCreate {
 }
 
 // set field if value's pointer is not nil.
+func (d *DeviceUpdate) SetNotNilLables(value *string) *DeviceUpdate {
+	if value != nil {
+		return d.SetLables(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DeviceUpdateOne) SetNotNilLables(value *string) *DeviceUpdateOne {
+	if value != nil {
+		return d.SetLables(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
+func (d *DeviceCreate) SetNotNilLables(value *string) *DeviceCreate {
+	if value != nil {
+		return d.SetLables(*value)
+	}
+	return d
+}
+
+// set field if value's pointer is not nil.
 func (lt *LableTreeUpdate) SetNotNilUpdatedAt(value *time.Time) *LableTreeUpdate {
 	if value != nil {
 		return lt.SetUpdatedAt(*value)
@@ -557,6 +629,30 @@ func (lt *LableTreeCreate) SetNotNilIcon(value *string) *LableTreeCreate {
 }
 
 // set field if value's pointer is not nil.
+func (lt *LableTreeUpdate) SetNotNilContent(value *string) *LableTreeUpdate {
+	if value != nil {
+		return lt.SetContent(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdateOne) SetNotNilContent(value *string) *LableTreeUpdateOne {
+	if value != nil {
+		return lt.SetContent(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeCreate) SetNotNilContent(value *string) *LableTreeCreate {
+	if value != nil {
+		return lt.SetContent(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
 func (lt *LableTreeUpdate) SetNotNilParentLable(value *uint64) *LableTreeUpdate {
 	if value != nil {
 		return lt.SetParentLable(*value)
@@ -576,6 +672,30 @@ func (lt *LableTreeUpdateOne) SetNotNilParentLable(value *uint64) *LableTreeUpda
 func (lt *LableTreeCreate) SetNotNilParentLable(value *uint64) *LableTreeCreate {
 	if value != nil {
 		return lt.SetParentLable(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdate) SetNotNilLableTargetType(value *uint16) *LableTreeUpdate {
+	if value != nil {
+		return lt.SetLableTargetType(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdateOne) SetNotNilLableTargetType(value *uint16) *LableTreeUpdateOne {
+	if value != nil {
+		return lt.SetLableTargetType(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeCreate) SetNotNilLableTargetType(value *uint16) *LableTreeCreate {
+	if value != nil {
+		return lt.SetLableTargetType(*value)
 	}
 	return lt
 }
@@ -653,25 +773,25 @@ func (lt *LableTreeCreate) SetNotNilInherit(value *bool) *LableTreeCreate {
 }
 
 // set field if value's pointer is not nil.
-func (lt *LableTreeUpdate) SetNotNilRelatedLabels(value *string) *LableTreeUpdate {
+func (lt *LableTreeUpdate) SetNotNilRelatedLables(value *string) *LableTreeUpdate {
 	if value != nil {
-		return lt.SetRelatedLabels(*value)
+		return lt.SetRelatedLables(*value)
 	}
 	return lt
 }
 
 // set field if value's pointer is not nil.
-func (lt *LableTreeUpdateOne) SetNotNilRelatedLabels(value *string) *LableTreeUpdateOne {
+func (lt *LableTreeUpdateOne) SetNotNilRelatedLables(value *string) *LableTreeUpdateOne {
 	if value != nil {
-		return lt.SetRelatedLabels(*value)
+		return lt.SetRelatedLables(*value)
 	}
 	return lt
 }
 
 // set field if value's pointer is not nil.
-func (lt *LableTreeCreate) SetNotNilRelatedLabels(value *string) *LableTreeCreate {
+func (lt *LableTreeCreate) SetNotNilRelatedLables(value *string) *LableTreeCreate {
 	if value != nil {
-		return lt.SetRelatedLabels(*value)
+		return lt.SetRelatedLables(*value)
 	}
 	return lt
 }
@@ -696,6 +816,54 @@ func (lt *LableTreeUpdateOne) SetNotNilDescription(value *string) *LableTreeUpda
 func (lt *LableTreeCreate) SetNotNilDescription(value *string) *LableTreeCreate {
 	if value != nil {
 		return lt.SetDescription(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdate) SetNotNilExt1(value *string) *LableTreeUpdate {
+	if value != nil {
+		return lt.SetExt1(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdateOne) SetNotNilExt1(value *string) *LableTreeUpdateOne {
+	if value != nil {
+		return lt.SetExt1(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeCreate) SetNotNilExt1(value *string) *LableTreeCreate {
+	if value != nil {
+		return lt.SetExt1(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdate) SetNotNilExt2(value *string) *LableTreeUpdate {
+	if value != nil {
+		return lt.SetExt2(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdateOne) SetNotNilExt2(value *string) *LableTreeUpdateOne {
+	if value != nil {
+		return lt.SetExt2(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeCreate) SetNotNilExt2(value *string) *LableTreeCreate {
+	if value != nil {
+		return lt.SetExt2(*value)
 	}
 	return lt
 }
@@ -768,6 +936,30 @@ func (r *RoleUpdateOne) SetNotNilWeight(value *int) *RoleUpdateOne {
 func (r *RoleCreate) SetNotNilWeight(value *int) *RoleCreate {
 	if value != nil {
 		return r.SetWeight(*value)
+	}
+	return r
+}
+
+// set field if value's pointer is not nil.
+func (r *RoleUpdate) SetNotNilLables(value *string) *RoleUpdate {
+	if value != nil {
+		return r.SetLables(*value)
+	}
+	return r
+}
+
+// set field if value's pointer is not nil.
+func (r *RoleUpdateOne) SetNotNilLables(value *string) *RoleUpdateOne {
+	if value != nil {
+		return r.SetLables(*value)
+	}
+	return r
+}
+
+// set field if value's pointer is not nil.
+func (r *RoleCreate) SetNotNilLables(value *string) *RoleCreate {
+	if value != nil {
+		return r.SetLables(*value)
 	}
 	return r
 }
@@ -1008,6 +1200,30 @@ func (u *UserUpdateOne) SetNotNilPhoneNumber(value *string) *UserUpdateOne {
 func (u *UserCreate) SetNotNilPhoneNumber(value *string) *UserCreate {
 	if value != nil {
 		return u.SetPhoneNumber(*value)
+	}
+	return u
+}
+
+// set field if value's pointer is not nil.
+func (u *UserUpdate) SetNotNilLables(value *string) *UserUpdate {
+	if value != nil {
+		return u.SetLables(*value)
+	}
+	return u
+}
+
+// set field if value's pointer is not nil.
+func (u *UserUpdateOne) SetNotNilLables(value *string) *UserUpdateOne {
+	if value != nil {
+		return u.SetLables(*value)
+	}
+	return u
+}
+
+// set field if value's pointer is not nil.
+func (u *UserCreate) SetNotNilLables(value *string) *UserCreate {
+	if value != nil {
+		return u.SetLables(*value)
 	}
 	return u
 }

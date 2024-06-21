@@ -41,6 +41,11 @@ func (Department) Fields() []ent.Field {
 		field.String("parent_departments").
 			Comment("Comma-separated list of parent department IDs in ascending order.|上级部门集合逗号分隔升序排列").
 			Annotations(entsql.WithComments(true)),
+
+		field.String("lables").
+			Optional().
+			Comment("account lable ids|账号标签ID集合").
+			Annotations(entsql.WithComments(true)),
 	}
 }
 

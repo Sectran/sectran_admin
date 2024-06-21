@@ -18,140 +18,6 @@
   "host": "localhost:8081",
   "basePath": "/",
   "paths": {
-    "/access_policy": {
-      "post": {
-        "description": "Get access policy by ID | 通过ID获取AccessPolicy",
-        "tags": [
-          "access_policy"
-        ],
-        "summary": "Get access policy by ID | 通过ID获取AccessPolicy",
-        "operationId": "GetAccessPolicyById",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/IDReq"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/AccessPolicyInfoResp"
-          }
-        }
-      }
-    },
-    "/access_policy/create": {
-      "post": {
-        "description": "Create access policy information | 创建AccessPolicy",
-        "tags": [
-          "access_policy"
-        ],
-        "summary": "Create access policy information | 创建AccessPolicy",
-        "operationId": "CreateAccessPolicy",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/AccessPolicyInfo"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "BaseMsgResp",
-            "schema": {
-              "$ref": "#/definitions/BaseMsgResp"
-            }
-          }
-        }
-      }
-    },
-    "/access_policy/delete": {
-      "post": {
-        "description": "Delete access policy information | 删除AccessPolicy信息",
-        "tags": [
-          "access_policy"
-        ],
-        "summary": "Delete access policy information | 删除AccessPolicy信息",
-        "operationId": "DeleteAccessPolicy",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/IDsReq"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "BaseMsgResp",
-            "schema": {
-              "$ref": "#/definitions/BaseMsgResp"
-            }
-          }
-        }
-      }
-    },
-    "/access_policy/list": {
-      "post": {
-        "description": "Get access policy list | 获取AccessPolicy列表",
-        "tags": [
-          "access_policy"
-        ],
-        "summary": "Get access policy list | 获取AccessPolicy列表",
-        "operationId": "GetAccessPolicyList",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/AccessPolicyListReq"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/AccessPolicyListResp"
-          }
-        }
-      }
-    },
-    "/access_policy/update": {
-      "post": {
-        "description": "Update access policy information | 更新AccessPolicy",
-        "tags": [
-          "access_policy"
-        ],
-        "summary": "Update access policy information | 更新AccessPolicy",
-        "operationId": "UpdateAccessPolicy",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/AccessPolicyInfo"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "BaseMsgResp",
-            "schema": {
-              "$ref": "#/definitions/BaseMsgResp"
-            }
-          }
-        }
-      }
-    },
     "/account": {
       "post": {
         "description": "Get account by ID | 通过ID获取Account",
@@ -594,7 +460,7 @@
       "post": {
         "description": "Get lable tree by ID | 通过ID获取LableTree",
         "tags": [
-          "LableTree"
+          "labletree"
         ],
         "summary": "Get lable tree by ID | 通过ID获取LableTree",
         "operationId": "GetLableTreeById",
@@ -622,7 +488,7 @@
       "post": {
         "description": "Create lable tree information | 创建LableTree",
         "tags": [
-          "LableTree"
+          "labletree"
         ],
         "summary": "Create lable tree information | 创建LableTree",
         "operationId": "CreateLableTree",
@@ -650,7 +516,7 @@
       "post": {
         "description": "Delete lable tree information | 删除LableTree信息",
         "tags": [
-          "LableTree"
+          "labletree"
         ],
         "summary": "Delete lable tree information | 删除LableTree信息",
         "operationId": "DeleteLableTree",
@@ -678,7 +544,7 @@
       "post": {
         "description": "Get lable tree list | 获取LableTree列表",
         "tags": [
-          "LableTree"
+          "labletree"
         ],
         "summary": "Get lable tree list | 获取LableTree列表",
         "operationId": "GetLableTreeList",
@@ -706,7 +572,7 @@
       "post": {
         "description": "Update lable tree information | 更新LableTree",
         "tags": [
-          "LableTree"
+          "labletree"
         ],
         "summary": "Update lable tree information | 更新LableTree",
         "operationId": "UpdateLableTree",
@@ -717,140 +583,6 @@
             "schema": {
               "type": "object",
               "$ref": "#/definitions/LableTreeInfo"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "BaseMsgResp",
-            "schema": {
-              "$ref": "#/definitions/BaseMsgResp"
-            }
-          }
-        }
-      }
-    },
-    "/policy_auth": {
-      "post": {
-        "description": "Get policy auth by ID | 通过ID获取PolicyAuth",
-        "tags": [
-          "policyauth"
-        ],
-        "summary": "Get policy auth by ID | 通过ID获取PolicyAuth",
-        "operationId": "GetPolicyAuthById",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/IDReq"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/PolicyAuthInfoResp"
-          }
-        }
-      }
-    },
-    "/policy_auth/create": {
-      "post": {
-        "description": "Create policy auth information | 创建PolicyAuth",
-        "tags": [
-          "policyauth"
-        ],
-        "summary": "Create policy auth information | 创建PolicyAuth",
-        "operationId": "CreatePolicyAuth",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/PolicyAuthInfo"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "BaseMsgResp",
-            "schema": {
-              "$ref": "#/definitions/BaseMsgResp"
-            }
-          }
-        }
-      }
-    },
-    "/policy_auth/delete": {
-      "post": {
-        "description": "Delete policy auth information | 删除PolicyAuth信息",
-        "tags": [
-          "policyauth"
-        ],
-        "summary": "Delete policy auth information | 删除PolicyAuth信息",
-        "operationId": "DeletePolicyAuth",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/IDsReq"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "BaseMsgResp",
-            "schema": {
-              "$ref": "#/definitions/BaseMsgResp"
-            }
-          }
-        }
-      }
-    },
-    "/policy_auth/list": {
-      "post": {
-        "description": "Get policy auth list | 获取PolicyAuth列表",
-        "tags": [
-          "policyauth"
-        ],
-        "summary": "Get policy auth list | 获取PolicyAuth列表",
-        "operationId": "GetPolicyAuthList",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/PolicyAuthListReq"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/PolicyAuthListResp"
-          }
-        }
-      }
-    },
-    "/policy_auth/update": {
-      "post": {
-        "description": "Update policy auth information | 更新PolicyAuth",
-        "tags": [
-          "policyauth"
-        ],
-        "summary": "Update policy auth information | 更新PolicyAuth",
-        "operationId": "UpdatePolicyAuth",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/PolicyAuthInfo"
             }
           }
         ],
@@ -1455,7 +1187,7 @@
       "x-go-package": "sectran_admin/internal/types"
     },
     "DepartmentInfo": {
-      "description": "The response data of department information | Department信息",
+      "description": "部门----------------------------\nThe response data of department information | Department信息",
       "type": "object",
       "properties": {
         "area": {
@@ -1473,6 +1205,10 @@
           "description": "Description of the department.|部门描述",
           "type": "string",
           "x-go-name": "Description"
+        },
+        "hasChildren": {
+          "type": "boolean",
+          "x-go-name": "HasChildren"
         },
         "id": {
           "description": "ID",
@@ -1570,6 +1306,12 @@
           "type": "string",
           "x-go-name": "Description"
         },
+        "flag": {
+          "description": "查询一级子部门或者ParentDeptId部门下所有数据",
+          "type": "integer",
+          "format": "uint8",
+          "x-go-name": "Flag"
+        },
         "name": {
           "description": "The name of the department.|部门名称",
           "type": "string",
@@ -1588,6 +1330,12 @@
           "format": "uint64",
           "maximum": 100000,
           "x-go-name": "PageSize"
+        },
+        "parentDeptId": {
+          "description": "the parent departmenr id |父部门id",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "ParentDeptId"
         }
       },
       "x-go-name": "DepartmentListReqRefer",
@@ -1835,6 +1583,11 @@
       "description": "The response data of lable tree information | LableTree信息",
       "type": "object",
       "properties": {
+        "content": {
+          "description": "lable content|标签内容",
+          "type": "string",
+          "x-go-name": "Content"
+        },
         "createdAt": {
           "description": "Create date | 创建日期",
           "type": "integer",
@@ -1845,6 +1598,16 @@
           "description": "label description|标签描述",
           "type": "string",
           "x-go-name": "Description"
+        },
+        "ext1": {
+          "description": "label extented|标签拓展",
+          "type": "string",
+          "x-go-name": "Ext1"
+        },
+        "ext2": {
+          "description": "label extented|标签拓展",
+          "type": "string",
+          "x-go-name": "Ext2"
         },
         "icon": {
           "description": "lable icon|标签图标",
@@ -1868,6 +1631,12 @@
           "format": "uint64",
           "x-go-name": "LableOwner"
         },
+        "lableTargetType": {
+          "description": "lable target type|标签目标类型",
+          "type": "integer",
+          "format": "uint16",
+          "x-go-name": "LableTargetType"
+        },
         "name": {
           "description": "lable name|标签名称",
           "type": "string",
@@ -1884,10 +1653,10 @@
           "type": "string",
           "x-go-name": "ParentLables"
         },
-        "relatedLabels": {
+        "relatedLables": {
           "description": "related labels id,split by ','|关联标签id集合升序排列,逗号分隔",
           "type": "string",
-          "x-go-name": "RelatedLabels"
+          "x-go-name": "RelatedLables"
         },
         "type": {
           "description": "lable type|标签类型",
@@ -1957,6 +1726,11 @@
         "pageSize"
       ],
       "properties": {
+        "content": {
+          "description": "lable content|标签内容",
+          "type": "string",
+          "x-go-name": "Content"
+        },
         "icon": {
           "description": "lable icon|标签图标",
           "type": "string",
@@ -1980,11 +1754,6 @@
           "format": "uint64",
           "maximum": 100000,
           "x-go-name": "PageSize"
-        },
-        "parentLables": {
-          "description": "parent lables id,split by ','|父标签id集合升序排列,逗号分隔",
-          "type": "string",
-          "x-go-name": "ParentLables"
         }
       },
       "x-go-package": "sectran_admin/internal/types"
@@ -2381,20 +2150,6 @@
           "type": "string",
           "x-go-name": "Account"
         },
-        "departmentName": {
-          "type": "string",
-          "x-go-name": "DepartmentName"
-        },
-        "description": {
-          "description": "User description.|用户账号描述",
-          "type": "string",
-          "x-go-name": "Description"
-        },
-        "email": {
-          "description": "User email.|用户邮箱",
-          "type": "string",
-          "x-go-name": "Email"
-        },
         "name": {
           "description": "User name.|用户姓名",
           "type": "string",
@@ -2414,19 +2169,10 @@
           "maximum": 100000,
           "x-go-name": "PageSize"
         },
-        "phoneNumber": {
-          "description": "User phone number.|用户手机号码",
+        "password": {
+          "description": "User password.|用户密码",
           "type": "string",
-          "x-go-name": "PhoneNumber"
-        },
-        "roleName": {
-          "type": "string",
-          "x-go-name": "RoleName"
-        },
-        "status": {
-          "description": "User status (enabled(true) or disabled(false)).|用户账号状态",
-          "type": "boolean",
-          "x-go-name": "Status"
+          "x-go-name": "Password"
         }
       },
       "x-go-name": "UserListReqRefer",

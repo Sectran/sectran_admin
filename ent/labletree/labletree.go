@@ -23,18 +23,26 @@ const (
 	FieldType = "type"
 	// FieldIcon holds the string denoting the icon field in the database.
 	FieldIcon = "icon"
+	// FieldContent holds the string denoting the content field in the database.
+	FieldContent = "content"
 	// FieldParentLable holds the string denoting the parent_lable field in the database.
 	FieldParentLable = "parent_lable"
+	// FieldLableTargetType holds the string denoting the lable_target_type field in the database.
+	FieldLableTargetType = "lable_target_type"
 	// FieldParentLables holds the string denoting the parent_lables field in the database.
 	FieldParentLables = "parent_lables"
 	// FieldLableOwner holds the string denoting the lable_owner field in the database.
 	FieldLableOwner = "lable_owner"
 	// FieldInherit holds the string denoting the inherit field in the database.
 	FieldInherit = "inherit"
-	// FieldRelatedLabels holds the string denoting the related_labels field in the database.
-	FieldRelatedLabels = "related_labels"
+	// FieldRelatedLables holds the string denoting the related_lables field in the database.
+	FieldRelatedLables = "related_lables"
 	// FieldDescription holds the string denoting the description field in the database.
 	FieldDescription = "description"
+	// FieldExt1 holds the string denoting the ext1 field in the database.
+	FieldExt1 = "ext1"
+	// FieldExt2 holds the string denoting the ext2 field in the database.
+	FieldExt2 = "ext2"
 	// Table holds the table name of the labletree in the database.
 	Table = "lable_trees"
 )
@@ -47,12 +55,16 @@ var Columns = []string{
 	FieldName,
 	FieldType,
 	FieldIcon,
+	FieldContent,
 	FieldParentLable,
+	FieldLableTargetType,
 	FieldParentLables,
 	FieldLableOwner,
 	FieldInherit,
-	FieldRelatedLabels,
+	FieldRelatedLables,
 	FieldDescription,
+	FieldExt1,
+	FieldExt2,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -74,6 +86,10 @@ var (
 	UpdateDefaultUpdatedAt func() time.Time
 	// NameValidator is a validator for the "name" field. It is called by the builders before save.
 	NameValidator func(string) error
+	// IconValidator is a validator for the "icon" field. It is called by the builders before save.
+	IconValidator func(string) error
+	// ContentValidator is a validator for the "content" field. It is called by the builders before save.
+	ContentValidator func(string) error
 	// DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
 	DescriptionValidator func(string) error
 )
@@ -111,9 +127,19 @@ func ByIcon(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldIcon, opts...).ToFunc()
 }
 
+// ByContent orders the results by the content field.
+func ByContent(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldContent, opts...).ToFunc()
+}
+
 // ByParentLable orders the results by the parent_lable field.
 func ByParentLable(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldParentLable, opts...).ToFunc()
+}
+
+// ByLableTargetType orders the results by the lable_target_type field.
+func ByLableTargetType(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLableTargetType, opts...).ToFunc()
 }
 
 // ByParentLables orders the results by the parent_lables field.
@@ -131,12 +157,22 @@ func ByInherit(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldInherit, opts...).ToFunc()
 }
 
-// ByRelatedLabels orders the results by the related_labels field.
-func ByRelatedLabels(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldRelatedLabels, opts...).ToFunc()
+// ByRelatedLables orders the results by the related_lables field.
+func ByRelatedLables(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRelatedLables, opts...).ToFunc()
 }
 
 // ByDescription orders the results by the description field.
 func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDescription, opts...).ToFunc()
+}
+
+// ByExt1 orders the results by the ext1 field.
+func ByExt1(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldExt1, opts...).ToFunc()
+}
+
+// ByExt2 orders the results by the ext2 field.
+func ByExt2(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldExt2, opts...).ToFunc()
 }

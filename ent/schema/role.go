@@ -25,6 +25,10 @@ func (Role) Fields() []ent.Field {
 			Min(0).
 			Comment("The weight of the role. Smaller values indicate higher priority.|角色优先级，值越小优先级越高").
 			Annotations(entsql.WithComments(true)),
+		field.String("lables").
+			Optional().
+			Comment("account lable ids|账号标签ID集合").
+			Annotations(entsql.WithComments(true)),
 	}
 }
 

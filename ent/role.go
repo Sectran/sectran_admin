@@ -25,6 +25,8 @@ type Role struct {
 	Name string `json:"name,omitempty"`
 	// The weight of the role. Smaller values indicate higher priority.|角色优先级，值越小优先级越高
 	Weight int `json:"weight,omitempty"`
+	// account lable ids|账号标签ID集合
+	Lables string `json:"lables,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the RoleQuery when eager-loading is set.
 	Edges        RoleEdges `json:"edges"`
@@ -56,7 +58,7 @@ func (*Role) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case role.FieldID, role.FieldWeight:
 			values[i] = new(sql.NullInt64)
-		case role.FieldName:
+		case role.FieldName, role.FieldLables:
 			values[i] = new(sql.NullString)
 		case role.FieldCreatedAt, role.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -104,6 +106,12 @@ func (r *Role) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field weight", values[i])
 			} else if value.Valid {
 				r.Weight = int(value.Int64)
+			}
+		case role.FieldLables:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field lables", values[i])
+			} else if value.Valid {
+				r.Lables = value.String
 			}
 		default:
 			r.selectValues.Set(columns[i], values[i])
@@ -157,6 +165,9 @@ func (r *Role) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("weight=")
 	builder.WriteString(fmt.Sprintf("%v", r.Weight))
+	builder.WriteString(", ")
+	builder.WriteString("lables=")
+	builder.WriteString(r.Lables)
 	builder.WriteByte(')')
 	return builder.String()
 }

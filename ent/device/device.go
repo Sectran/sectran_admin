@@ -28,6 +28,8 @@ const (
 	FieldType = "type"
 	// FieldDescription holds the string denoting the description field in the database.
 	FieldDescription = "description"
+	// FieldLables holds the string denoting the lables field in the database.
+	FieldLables = "lables"
 	// EdgeDepartments holds the string denoting the departments edge name in mutations.
 	EdgeDepartments = "departments"
 	// EdgeAccounts holds the string denoting the accounts edge name in mutations.
@@ -60,6 +62,7 @@ var Columns = []string{
 	FieldHost,
 	FieldType,
 	FieldDescription,
+	FieldLables,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -132,6 +135,11 @@ func ByType(opts ...sql.OrderTermOption) OrderOption {
 // ByDescription orders the results by the description field.
 func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDescription, opts...).ToFunc()
+}
+
+// ByLables orders the results by the lables field.
+func ByLables(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLables, opts...).ToFunc()
 }
 
 // ByDepartmentsField orders the results by departments field.

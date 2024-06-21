@@ -1,16 +1,16 @@
-package LableTree
+package labletree
 
 import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
 
-	"sectran_admin/internal/logic/LableTree"
+	"sectran_admin/internal/logic/labletree"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 )
 
-// swagger:route post /lable_tree LableTree GetLableTreeById
+// swagger:route post /lable_tree labletree GetLableTreeById
 //
 // Get lable tree by ID | 通过ID获取LableTree
 //
@@ -33,7 +33,7 @@ func GetLableTreeByIdHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := LableTree.NewGetLableTreeByIdLogic(r.Context(), svcCtx)
+		l := labletree.NewGetLableTreeByIdLogic(r.Context(), svcCtx)
 		resp, err := l.GetLableTreeById(&req)
 		if err != nil {
 			err = svcCtx.Trans.TransError(r.Context(), err)

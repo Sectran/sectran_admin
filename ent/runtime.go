@@ -267,8 +267,16 @@ func init() {
 			return nil
 		}
 	}()
+	// labletreeDescIcon is the schema descriptor for icon field.
+	labletreeDescIcon := labletreeFields[2].Descriptor()
+	// labletree.IconValidator is a validator for the "icon" field. It is called by the builders before save.
+	labletree.IconValidator = labletreeDescIcon.Validators[0].(func(string) error)
+	// labletreeDescContent is the schema descriptor for content field.
+	labletreeDescContent := labletreeFields[3].Descriptor()
+	// labletree.ContentValidator is a validator for the "content" field. It is called by the builders before save.
+	labletree.ContentValidator = labletreeDescContent.Validators[0].(func(string) error)
 	// labletreeDescDescription is the schema descriptor for description field.
-	labletreeDescDescription := labletreeFields[8].Descriptor()
+	labletreeDescDescription := labletreeFields[10].Descriptor()
 	// labletree.DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
 	labletree.DescriptionValidator = labletreeDescDescription.Validators[0].(func(string) error)
 	roleMixin := schema.Role{}.Mixin()

@@ -79,6 +79,20 @@ func (dc *DepartmentCreate) SetParentDepartments(s string) *DepartmentCreate {
 	return dc
 }
 
+// SetLables sets the "lables" field.
+func (dc *DepartmentCreate) SetLables(s string) *DepartmentCreate {
+	dc.mutation.SetLables(s)
+	return dc
+}
+
+// SetNillableLables sets the "lables" field if the given value is not nil.
+func (dc *DepartmentCreate) SetNillableLables(s *string) *DepartmentCreate {
+	if s != nil {
+		dc.SetLables(*s)
+	}
+	return dc
+}
+
 // SetID sets the "id" field.
 func (dc *DepartmentCreate) SetID(u uint64) *DepartmentCreate {
 	dc.mutation.SetID(u)
@@ -247,6 +261,10 @@ func (dc *DepartmentCreate) createSpec() (*Department, *sqlgraph.CreateSpec) {
 	if value, ok := dc.mutation.ParentDepartments(); ok {
 		_spec.SetField(department.FieldParentDepartments, field.TypeString, value)
 		_node.ParentDepartments = value
+	}
+	if value, ok := dc.mutation.Lables(); ok {
+		_spec.SetField(department.FieldLables, field.TypeString, value)
+		_node.Lables = value
 	}
 	if nodes := dc.mutation.UsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

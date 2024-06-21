@@ -28,6 +28,8 @@ const (
 	FieldParentDepartmentID = "parent_department_id"
 	// FieldParentDepartments holds the string denoting the parent_departments field in the database.
 	FieldParentDepartments = "parent_departments"
+	// FieldLables holds the string denoting the lables field in the database.
+	FieldLables = "lables"
 	// EdgeUsers holds the string denoting the users edge name in mutations.
 	EdgeUsers = "users"
 	// Table holds the table name of the department in the database.
@@ -51,6 +53,7 @@ var Columns = []string{
 	FieldDescription,
 	FieldParentDepartmentID,
 	FieldParentDepartments,
+	FieldLables,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -121,6 +124,11 @@ func ByParentDepartmentID(opts ...sql.OrderTermOption) OrderOption {
 // ByParentDepartments orders the results by the parent_departments field.
 func ByParentDepartments(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldParentDepartments, opts...).ToFunc()
+}
+
+// ByLables orders the results by the lables field.
+func ByLables(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLables, opts...).ToFunc()
 }
 
 // ByUsersCount orders the results by users count.

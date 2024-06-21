@@ -66,9 +66,21 @@ func (ltc *LableTreeCreate) SetIcon(s string) *LableTreeCreate {
 	return ltc
 }
 
+// SetContent sets the "content" field.
+func (ltc *LableTreeCreate) SetContent(s string) *LableTreeCreate {
+	ltc.mutation.SetContent(s)
+	return ltc
+}
+
 // SetParentLable sets the "parent_lable" field.
 func (ltc *LableTreeCreate) SetParentLable(u uint64) *LableTreeCreate {
 	ltc.mutation.SetParentLable(u)
+	return ltc
+}
+
+// SetLableTargetType sets the "lable_target_type" field.
+func (ltc *LableTreeCreate) SetLableTargetType(u uint16) *LableTreeCreate {
+	ltc.mutation.SetLableTargetType(u)
 	return ltc
 }
 
@@ -90,15 +102,27 @@ func (ltc *LableTreeCreate) SetInherit(b bool) *LableTreeCreate {
 	return ltc
 }
 
-// SetRelatedLabels sets the "related_labels" field.
-func (ltc *LableTreeCreate) SetRelatedLabels(s string) *LableTreeCreate {
-	ltc.mutation.SetRelatedLabels(s)
+// SetRelatedLables sets the "related_lables" field.
+func (ltc *LableTreeCreate) SetRelatedLables(s string) *LableTreeCreate {
+	ltc.mutation.SetRelatedLables(s)
 	return ltc
 }
 
 // SetDescription sets the "description" field.
 func (ltc *LableTreeCreate) SetDescription(s string) *LableTreeCreate {
 	ltc.mutation.SetDescription(s)
+	return ltc
+}
+
+// SetExt1 sets the "ext1" field.
+func (ltc *LableTreeCreate) SetExt1(s string) *LableTreeCreate {
+	ltc.mutation.SetExt1(s)
+	return ltc
+}
+
+// SetExt2 sets the "ext2" field.
+func (ltc *LableTreeCreate) SetExt2(s string) *LableTreeCreate {
+	ltc.mutation.SetExt2(s)
 	return ltc
 }
 
@@ -175,8 +199,24 @@ func (ltc *LableTreeCreate) check() error {
 	if _, ok := ltc.mutation.Icon(); !ok {
 		return &ValidationError{Name: "icon", err: errors.New(`ent: missing required field "LableTree.icon"`)}
 	}
+	if v, ok := ltc.mutation.Icon(); ok {
+		if err := labletree.IconValidator(v); err != nil {
+			return &ValidationError{Name: "icon", err: fmt.Errorf(`ent: validator failed for field "LableTree.icon": %w`, err)}
+		}
+	}
+	if _, ok := ltc.mutation.Content(); !ok {
+		return &ValidationError{Name: "content", err: errors.New(`ent: missing required field "LableTree.content"`)}
+	}
+	if v, ok := ltc.mutation.Content(); ok {
+		if err := labletree.ContentValidator(v); err != nil {
+			return &ValidationError{Name: "content", err: fmt.Errorf(`ent: validator failed for field "LableTree.content": %w`, err)}
+		}
+	}
 	if _, ok := ltc.mutation.ParentLable(); !ok {
 		return &ValidationError{Name: "parent_lable", err: errors.New(`ent: missing required field "LableTree.parent_lable"`)}
+	}
+	if _, ok := ltc.mutation.LableTargetType(); !ok {
+		return &ValidationError{Name: "lable_target_type", err: errors.New(`ent: missing required field "LableTree.lable_target_type"`)}
 	}
 	if _, ok := ltc.mutation.ParentLables(); !ok {
 		return &ValidationError{Name: "parent_lables", err: errors.New(`ent: missing required field "LableTree.parent_lables"`)}
@@ -187,8 +227,8 @@ func (ltc *LableTreeCreate) check() error {
 	if _, ok := ltc.mutation.Inherit(); !ok {
 		return &ValidationError{Name: "inherit", err: errors.New(`ent: missing required field "LableTree.inherit"`)}
 	}
-	if _, ok := ltc.mutation.RelatedLabels(); !ok {
-		return &ValidationError{Name: "related_labels", err: errors.New(`ent: missing required field "LableTree.related_labels"`)}
+	if _, ok := ltc.mutation.RelatedLables(); !ok {
+		return &ValidationError{Name: "related_lables", err: errors.New(`ent: missing required field "LableTree.related_lables"`)}
 	}
 	if _, ok := ltc.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "LableTree.description"`)}
@@ -197,6 +237,12 @@ func (ltc *LableTreeCreate) check() error {
 		if err := labletree.DescriptionValidator(v); err != nil {
 			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "LableTree.description": %w`, err)}
 		}
+	}
+	if _, ok := ltc.mutation.Ext1(); !ok {
+		return &ValidationError{Name: "ext1", err: errors.New(`ent: missing required field "LableTree.ext1"`)}
+	}
+	if _, ok := ltc.mutation.Ext2(); !ok {
+		return &ValidationError{Name: "ext2", err: errors.New(`ent: missing required field "LableTree.ext2"`)}
 	}
 	return nil
 }
@@ -250,9 +296,17 @@ func (ltc *LableTreeCreate) createSpec() (*LableTree, *sqlgraph.CreateSpec) {
 		_spec.SetField(labletree.FieldIcon, field.TypeString, value)
 		_node.Icon = value
 	}
+	if value, ok := ltc.mutation.Content(); ok {
+		_spec.SetField(labletree.FieldContent, field.TypeString, value)
+		_node.Content = value
+	}
 	if value, ok := ltc.mutation.ParentLable(); ok {
 		_spec.SetField(labletree.FieldParentLable, field.TypeUint64, value)
 		_node.ParentLable = value
+	}
+	if value, ok := ltc.mutation.LableTargetType(); ok {
+		_spec.SetField(labletree.FieldLableTargetType, field.TypeUint16, value)
+		_node.LableTargetType = value
 	}
 	if value, ok := ltc.mutation.ParentLables(); ok {
 		_spec.SetField(labletree.FieldParentLables, field.TypeString, value)
@@ -266,13 +320,21 @@ func (ltc *LableTreeCreate) createSpec() (*LableTree, *sqlgraph.CreateSpec) {
 		_spec.SetField(labletree.FieldInherit, field.TypeBool, value)
 		_node.Inherit = value
 	}
-	if value, ok := ltc.mutation.RelatedLabels(); ok {
-		_spec.SetField(labletree.FieldRelatedLabels, field.TypeString, value)
-		_node.RelatedLabels = value
+	if value, ok := ltc.mutation.RelatedLables(); ok {
+		_spec.SetField(labletree.FieldRelatedLables, field.TypeString, value)
+		_node.RelatedLables = value
 	}
 	if value, ok := ltc.mutation.Description(); ok {
 		_spec.SetField(labletree.FieldDescription, field.TypeString, value)
 		_node.Description = value
+	}
+	if value, ok := ltc.mutation.Ext1(); ok {
+		_spec.SetField(labletree.FieldExt1, field.TypeString, value)
+		_node.Ext1 = value
+	}
+	if value, ok := ltc.mutation.Ext2(); ok {
+		_spec.SetField(labletree.FieldExt2, field.TypeString, value)
+		_node.Ext2 = value
 	}
 	return _node, _spec
 }

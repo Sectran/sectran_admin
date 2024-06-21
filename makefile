@@ -58,12 +58,6 @@ tools: # Install the necessary tools | 安装必要的工具
 	$(GO) install github.com/golangci/golangci-lint/cmd/golangci-lint@latest;
 	$(GO) install github.com/go-swagger/go-swagger/cmd/swagger@latest
 
-.PHONY: gen
-gen: 
-	make gen-ent
-	make gen-api-ent-logic model=all group=all
-	make gen-api
-
 .PHONY: docker
 docker: # Build the docker image | 构建 docker 镜像
 	docker build -f Dockerfile -t ${DOCKER_USERNAME}/$(SERVICE_DASH)-$(PROJECT_BUILD_SUFFIX):${VERSION} .
@@ -123,3 +117,10 @@ help: # Show help | 显示帮助
 
 .PHONY: init
 init: 
+
+gen: schema=labeltree
+gen: 
+	make gen-ent
+	make gen-api-ent-logic model=$(schema) group=$(schema)
+	make gen-api
+.PHONY: gen

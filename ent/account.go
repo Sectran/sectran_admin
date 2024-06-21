@@ -34,6 +34,8 @@ type Account struct {
 	PrivateKey string `json:"private_key,omitempty"`
 	// account belong to|账号所属设备
 	DeviceID uint64 `json:"device_id,omitempty"`
+	// account lable ids|账号标签ID集合
+	Lables string `json:"lables,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AccountQuery when eager-loading is set.
 	Edges        AccountEdges `json:"edges"`
@@ -67,7 +69,7 @@ func (*Account) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case account.FieldID, account.FieldPort, account.FieldProtocol, account.FieldDeviceID:
 			values[i] = new(sql.NullInt64)
-		case account.FieldUsername, account.FieldPassword, account.FieldPrivateKey:
+		case account.FieldUsername, account.FieldPassword, account.FieldPrivateKey, account.FieldLables:
 			values[i] = new(sql.NullString)
 		case account.FieldCreatedAt, account.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -140,6 +142,12 @@ func (a *Account) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				a.DeviceID = uint64(value.Int64)
 			}
+		case account.FieldLables:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field lables", values[i])
+			} else if value.Valid {
+				a.Lables = value.String
+			}
 		default:
 			a.selectValues.Set(columns[i], values[i])
 		}
@@ -204,6 +212,9 @@ func (a *Account) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("device_id=")
 	builder.WriteString(fmt.Sprintf("%v", a.DeviceID))
+	builder.WriteString(", ")
+	builder.WriteString("lables=")
+	builder.WriteString(a.Lables)
 	builder.WriteByte(')')
 	return builder.String()
 }

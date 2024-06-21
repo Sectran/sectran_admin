@@ -152,6 +152,20 @@ func (uc *UserCreate) SetNillablePhoneNumber(s *string) *UserCreate {
 	return uc
 }
 
+// SetLables sets the "lables" field.
+func (uc *UserCreate) SetLables(s string) *UserCreate {
+	uc.mutation.SetLables(s)
+	return uc
+}
+
+// SetNillableLables sets the "lables" field if the given value is not nil.
+func (uc *UserCreate) SetNillableLables(s *string) *UserCreate {
+	if s != nil {
+		uc.SetLables(*s)
+	}
+	return uc
+}
+
 // SetID sets the "id" field.
 func (uc *UserCreate) SetID(u uint64) *UserCreate {
 	uc.mutation.SetID(u)
@@ -372,6 +386,10 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.PhoneNumber(); ok {
 		_spec.SetField(user.FieldPhoneNumber, field.TypeString, value)
 		_node.PhoneNumber = value
+	}
+	if value, ok := uc.mutation.Lables(); ok {
+		_spec.SetField(user.FieldLables, field.TypeString, value)
+		_node.Lables = value
 	}
 	if nodes := uc.mutation.DepartmentsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

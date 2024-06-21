@@ -4,11 +4,11 @@ package handler
 import (
 	"net/http"
 
-	LableTree "sectran_admin/internal/handler/LableTree"
 	account "sectran_admin/internal/handler/account"
 	base "sectran_admin/internal/handler/base"
 	department "sectran_admin/internal/handler/department"
 	device "sectran_admin/internal/handler/device"
+	labletree "sectran_admin/internal/handler/labletree"
 	role "sectran_admin/internal/handler/role"
 	user "sectran_admin/internal/handler/user"
 	"sectran_admin/internal/svc"
@@ -199,27 +199,27 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				{
 					Method:  http.MethodPost,
 					Path:    "/lable_tree/create",
-					Handler: LableTree.CreateLableTreeHandler(serverCtx),
+					Handler: labletree.CreateLableTreeHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/lable_tree/update",
-					Handler: LableTree.UpdateLableTreeHandler(serverCtx),
+					Handler: labletree.UpdateLableTreeHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/lable_tree/delete",
-					Handler: LableTree.DeleteLableTreeHandler(serverCtx),
+					Handler: labletree.DeleteLableTreeHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/lable_tree/list",
-					Handler: LableTree.GetLableTreeListHandler(serverCtx),
+					Handler: labletree.GetLableTreeListHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
 					Path:    "/lable_tree",
-					Handler: LableTree.GetLableTreeByIdHandler(serverCtx),
+					Handler: labletree.GetLableTreeByIdHandler(serverCtx),
 				},
 			}...,
 		),
