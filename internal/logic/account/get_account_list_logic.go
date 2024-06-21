@@ -68,6 +68,7 @@ func (l *GetAccountListLogic) GetAccountList(req *types.AccountListReqRefer) (*t
 				Username:   &v.Username,
 				Port:       &v.Port,
 				Protocol:   &v.Protocol,
+				Password:   &v.Password,
 				PrivateKey: &v.PrivateKey,
 				DeviceId:   &v.DeviceID,
 			})
