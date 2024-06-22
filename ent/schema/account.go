@@ -25,6 +25,11 @@ const (
 	ProtocolMax
 )
 
+type Lable struct {
+	ID   uint64 `json:"id"`
+	Name string `json:"name"`
+}
+
 // Fields of the Account.
 func (Account) Fields() []ent.Field {
 	return []ent.Field{

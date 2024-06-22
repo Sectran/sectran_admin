@@ -63,6 +63,7 @@ func (l *CreateDepartmentLogic) CreateDepartment(req *types.DepartmentInfo) (*ty
 			Area:               &data.Area,
 			Description:        &data.Description,
 			ParentDepartmentId: &data.ParentDepartmentID,
+			ParentDepartments:  &data.ParentDepartments,
 		},
 	}, nil
 }

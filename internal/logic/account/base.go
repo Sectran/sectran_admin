@@ -71,22 +71,23 @@ func ModifyCheckout(svcCtx *svc.ServiceContext, ctx context.Context, req *types.
 		return types.CustomError("账号端口不能为空")
 	}
 
-	//校验是否有权限操作该账号
-	if err := AccountIdCheckout(svcCtx, ctx, *req.Id); err != nil {
-		return err
-	}
-
 	//(三元组：协议、账号、端口)不可重复
 	var predicates []predicate.Account
+
+	if req.Id != nil {
+		//校验是否有权限操作该账号
+		if err := AccountIdCheckout(svcCtx, ctx, *req.Id); err != nil {
+			return err
+		}
+
+		//同一设备下不是本身账号、新增没有id、只有编辑才有
+		predicates = append(predicates, account.IDNEQ(uint64(*req.Id)))
+	}
+
 	predicates = append(predicates, account.ProtocolEQ(*req.Protocol))
 	predicates = append(predicates, account.UsernameEQ(*req.Username))
 	predicates = append(predicates, account.PortEQ(*req.Port))
-
-	//同一设备下不是本身账号、新增没有id、只有编辑才有
 	predicates = append(predicates, account.DeviceIDEQ(*req.DeviceId))
-	if req.Id != nil {
-		predicates = append(predicates, account.IDNEQ(uint64(*req.Id)))
-	}
 
 	acctExt, err := svcCtx.DB.Account.Query().Where(predicates...).Exist(ctx)
 	if err != nil {

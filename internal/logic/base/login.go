@@ -4,12 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"sectran_admin/ent/predicate"
+	"sectran_admin/ent/user"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 	"sectran_admin/internal/utils/jwt"
 	"time"
 
-	"entgo.io/ent/dialect/sql"
 	"github.com/suyuan32/simple-admin-common/i18n"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -31,7 +31,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginRes, err error
 	var predicates []predicate.User
 
 	if req.Username != nil {
-		predicates = append(predicates, sql.FieldEQ("account", req.Username))
+		predicates = append(predicates, user.AccountEQ(*req.Username))
 	}
 
 	user, err := l.svcCtx.DB.User.Query().Where(predicates...).Only(l.ctx)
