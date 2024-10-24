@@ -61,3 +61,9 @@ CasbinConf:
     e = some(where (p.eft == allow))
     [matchers]
     m = r.sub == p.sub && keyMatch2(r.obj,p.obj) && r.act == p.act
+
+UploadConf:
+  MaxImageSize: 33554432  # 32 mb
+  MaxVideoSize: 1073741824 # 1gb
+  MaxAudioSize: 33554432  # 32mb
+  MaxOtherSize: 10485760  # 10 mb

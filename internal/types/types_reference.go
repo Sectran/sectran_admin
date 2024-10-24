@@ -156,3 +156,20 @@ type DeviceInfoRefer struct {
 	// the name of device department|设备所属部门名称
 	DeptName *string `json:"deptName,optional"`
 }
+
+// The data when upload finished | 上传完成数据
+// swagger:model UploadInfo
+type UploadInfo struct {
+	// File name | 文件名称
+	Name string `json:"name"`
+	// File path | 文件路径
+	Url string `json:"url"`
+}
+
+// The response data when upload finished | 上传完成返回的数据
+// swagger:model UploadResp
+type UploadResp struct {
+	BaseDataInfo
+	// The  data when upload finished | 上传完成数据
+	Data UploadInfo `json:"data"`
+}

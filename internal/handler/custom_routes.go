@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	base "sectran_admin/internal/handler/base"
+	"sectran_admin/internal/handler/file"
 	"sectran_admin/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -35,5 +36,18 @@ func RegisterHandlersCustom(server *rest.Server, serverCtx *svc.ServiceContext) 
 				Handler: base.LoginHandler(serverCtx),
 			},
 		},
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/upload",
+					Handler: file.UploadHandler(serverCtx),
+				},
+			}...,
+		),
 	)
 }
