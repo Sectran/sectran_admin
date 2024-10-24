@@ -64,7 +64,7 @@ func (l *UploadLogic) Upload() (resp *types.UploadResp, err error) {
 		return nil, err
 	}
 
-	service := l.r.FormValue("service")
+	service := l.r.Header.Get("serviceName")
 	if service == "" {
 		return nil, errorx.NewCodeInvalidArgumentError("service.missing")
 	}

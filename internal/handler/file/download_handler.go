@@ -3,6 +3,7 @@ package file
 import (
 	"net/http"
 	"os"
+	"sectran_admin/internal/logic/file"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 
@@ -32,7 +33,7 @@ func DownloadFileHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := file.NewDownloadFileLogic(r.Context(), svcCtx)
+		l := file.NewDownloadFileLogic(r, r.Context(), svcCtx)
 		filePath, err := l.DownloadFile(&req)
 		if err != nil {
 			err = svcCtx.Trans.TransError(r.Context(), err)
