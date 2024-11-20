@@ -112,26 +112,6 @@ func (du *DepartmentUpdate) SetNillableParentDepartments(s *string) *DepartmentU
 	return du
 }
 
-// SetLables sets the "lables" field.
-func (du *DepartmentUpdate) SetLables(s string) *DepartmentUpdate {
-	du.mutation.SetLables(s)
-	return du
-}
-
-// SetNillableLables sets the "lables" field if the given value is not nil.
-func (du *DepartmentUpdate) SetNillableLables(s *string) *DepartmentUpdate {
-	if s != nil {
-		du.SetLables(*s)
-	}
-	return du
-}
-
-// ClearLables clears the value of the "lables" field.
-func (du *DepartmentUpdate) ClearLables() *DepartmentUpdate {
-	du.mutation.ClearLables()
-	return du
-}
-
 // AddUserIDs adds the "users" edge to the User entity by IDs.
 func (du *DepartmentUpdate) AddUserIDs(ids ...uint64) *DepartmentUpdate {
 	du.mutation.AddUserIDs(ids...)
@@ -266,12 +246,6 @@ func (du *DepartmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := du.mutation.ParentDepartments(); ok {
 		_spec.SetField(department.FieldParentDepartments, field.TypeString, value)
-	}
-	if value, ok := du.mutation.Lables(); ok {
-		_spec.SetField(department.FieldLables, field.TypeString, value)
-	}
-	if du.mutation.LablesCleared() {
-		_spec.ClearField(department.FieldLables, field.TypeString)
 	}
 	if du.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -418,26 +392,6 @@ func (duo *DepartmentUpdateOne) SetNillableParentDepartments(s *string) *Departm
 	if s != nil {
 		duo.SetParentDepartments(*s)
 	}
-	return duo
-}
-
-// SetLables sets the "lables" field.
-func (duo *DepartmentUpdateOne) SetLables(s string) *DepartmentUpdateOne {
-	duo.mutation.SetLables(s)
-	return duo
-}
-
-// SetNillableLables sets the "lables" field if the given value is not nil.
-func (duo *DepartmentUpdateOne) SetNillableLables(s *string) *DepartmentUpdateOne {
-	if s != nil {
-		duo.SetLables(*s)
-	}
-	return duo
-}
-
-// ClearLables clears the value of the "lables" field.
-func (duo *DepartmentUpdateOne) ClearLables() *DepartmentUpdateOne {
-	duo.mutation.ClearLables()
 	return duo
 }
 
@@ -605,12 +559,6 @@ func (duo *DepartmentUpdateOne) sqlSave(ctx context.Context) (_node *Department,
 	}
 	if value, ok := duo.mutation.ParentDepartments(); ok {
 		_spec.SetField(department.FieldParentDepartments, field.TypeString, value)
-	}
-	if value, ok := duo.mutation.Lables(); ok {
-		_spec.SetField(department.FieldLables, field.TypeString, value)
-	}
-	if duo.mutation.LablesCleared() {
-		_spec.ClearField(department.FieldLables, field.TypeString)
 	}
 	if duo.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{

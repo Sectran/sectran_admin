@@ -22,8 +22,6 @@ const (
 	FieldName = "name"
 	// FieldWeight holds the string denoting the weight field in the database.
 	FieldWeight = "weight"
-	// FieldLables holds the string denoting the lables field in the database.
-	FieldLables = "lables"
 	// EdgeUsers holds the string denoting the users edge name in mutations.
 	EdgeUsers = "users"
 	// Table holds the table name of the role in the database.
@@ -44,7 +42,6 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldName,
 	FieldWeight,
-	FieldLables,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -96,11 +93,6 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 // ByWeight orders the results by the weight field.
 func ByWeight(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldWeight, opts...).ToFunc()
-}
-
-// ByLables orders the results by the lables field.
-func ByLables(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLables, opts...).ToFunc()
 }
 
 // ByUsersCount orders the results by users count.

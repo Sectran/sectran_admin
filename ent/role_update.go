@@ -70,26 +70,6 @@ func (ru *RoleUpdate) AddWeight(i int) *RoleUpdate {
 	return ru
 }
 
-// SetLables sets the "lables" field.
-func (ru *RoleUpdate) SetLables(s string) *RoleUpdate {
-	ru.mutation.SetLables(s)
-	return ru
-}
-
-// SetNillableLables sets the "lables" field if the given value is not nil.
-func (ru *RoleUpdate) SetNillableLables(s *string) *RoleUpdate {
-	if s != nil {
-		ru.SetLables(*s)
-	}
-	return ru
-}
-
-// ClearLables clears the value of the "lables" field.
-func (ru *RoleUpdate) ClearLables() *RoleUpdate {
-	ru.mutation.ClearLables()
-	return ru
-}
-
 // AddUserIDs adds the "users" edge to the User entity by IDs.
 func (ru *RoleUpdate) AddUserIDs(ids ...uint64) *RoleUpdate {
 	ru.mutation.AddUserIDs(ids...)
@@ -206,12 +186,6 @@ func (ru *RoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := ru.mutation.AddedWeight(); ok {
 		_spec.AddField(role.FieldWeight, field.TypeInt, value)
 	}
-	if value, ok := ru.mutation.Lables(); ok {
-		_spec.SetField(role.FieldLables, field.TypeString, value)
-	}
-	if ru.mutation.LablesCleared() {
-		_spec.ClearField(role.FieldLables, field.TypeString)
-	}
 	if ru.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -315,26 +289,6 @@ func (ruo *RoleUpdateOne) SetNillableWeight(i *int) *RoleUpdateOne {
 // AddWeight adds i to the "weight" field.
 func (ruo *RoleUpdateOne) AddWeight(i int) *RoleUpdateOne {
 	ruo.mutation.AddWeight(i)
-	return ruo
-}
-
-// SetLables sets the "lables" field.
-func (ruo *RoleUpdateOne) SetLables(s string) *RoleUpdateOne {
-	ruo.mutation.SetLables(s)
-	return ruo
-}
-
-// SetNillableLables sets the "lables" field if the given value is not nil.
-func (ruo *RoleUpdateOne) SetNillableLables(s *string) *RoleUpdateOne {
-	if s != nil {
-		ruo.SetLables(*s)
-	}
-	return ruo
-}
-
-// ClearLables clears the value of the "lables" field.
-func (ruo *RoleUpdateOne) ClearLables() *RoleUpdateOne {
-	ruo.mutation.ClearLables()
 	return ruo
 }
 
@@ -483,12 +437,6 @@ func (ruo *RoleUpdateOne) sqlSave(ctx context.Context) (_node *Role, err error) 
 	}
 	if value, ok := ruo.mutation.AddedWeight(); ok {
 		_spec.AddField(role.FieldWeight, field.TypeInt, value)
-	}
-	if value, ok := ruo.mutation.Lables(); ok {
-		_spec.SetField(role.FieldLables, field.TypeString, value)
-	}
-	if ruo.mutation.LablesCleared() {
-		_spec.ClearField(role.FieldLables, field.TypeString)
 	}
 	if ruo.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{

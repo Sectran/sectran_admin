@@ -93,20 +93,6 @@ func (ac *AccountCreate) SetNillableDeviceID(u *uint64) *AccountCreate {
 	return ac
 }
 
-// SetLables sets the "lables" field.
-func (ac *AccountCreate) SetLables(s string) *AccountCreate {
-	ac.mutation.SetLables(s)
-	return ac
-}
-
-// SetNillableLables sets the "lables" field if the given value is not nil.
-func (ac *AccountCreate) SetNillableLables(s *string) *AccountCreate {
-	if s != nil {
-		ac.SetLables(*s)
-	}
-	return ac
-}
-
 // SetID sets the "id" field.
 func (ac *AccountCreate) SetID(u uint64) *AccountCreate {
 	ac.mutation.SetID(u)
@@ -289,10 +275,6 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 	if value, ok := ac.mutation.PrivateKey(); ok {
 		_spec.SetField(account.FieldPrivateKey, field.TypeString, value)
 		_node.PrivateKey = value
-	}
-	if value, ok := ac.mutation.Lables(); ok {
-		_spec.SetField(account.FieldLables, field.TypeString, value)
-		_node.Lables = value
 	}
 	if nodes := ac.mutation.DevicesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

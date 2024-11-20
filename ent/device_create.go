@@ -88,20 +88,6 @@ func (dc *DeviceCreate) SetDescription(s string) *DeviceCreate {
 	return dc
 }
 
-// SetLables sets the "lables" field.
-func (dc *DeviceCreate) SetLables(s string) *DeviceCreate {
-	dc.mutation.SetLables(s)
-	return dc
-}
-
-// SetNillableLables sets the "lables" field if the given value is not nil.
-func (dc *DeviceCreate) SetNillableLables(s *string) *DeviceCreate {
-	if s != nil {
-		dc.SetLables(*s)
-	}
-	return dc
-}
-
 // SetID sets the "id" field.
 func (dc *DeviceCreate) SetID(u uint64) *DeviceCreate {
 	dc.mutation.SetID(u)
@@ -287,10 +273,6 @@ func (dc *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 	if value, ok := dc.mutation.Description(); ok {
 		_spec.SetField(device.FieldDescription, field.TypeString, value)
 		_node.Description = value
-	}
-	if value, ok := dc.mutation.Lables(); ok {
-		_spec.SetField(device.FieldLables, field.TypeString, value)
-		_node.Lables = value
 	}
 	if nodes := dc.mutation.DepartmentsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

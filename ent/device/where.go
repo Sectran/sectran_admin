@@ -90,11 +90,6 @@ func Description(v string) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldDescription, v))
 }
 
-// Lables applies equality check predicate on the "lables" field. It's identical to LablesEQ.
-func Lables(v string) predicate.Device {
-	return predicate.Device(sql.FieldEQ(FieldLables, v))
-}
-
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldCreatedAt, v))
@@ -463,81 +458,6 @@ func DescriptionEqualFold(v string) predicate.Device {
 // DescriptionContainsFold applies the ContainsFold predicate on the "description" field.
 func DescriptionContainsFold(v string) predicate.Device {
 	return predicate.Device(sql.FieldContainsFold(FieldDescription, v))
-}
-
-// LablesEQ applies the EQ predicate on the "lables" field.
-func LablesEQ(v string) predicate.Device {
-	return predicate.Device(sql.FieldEQ(FieldLables, v))
-}
-
-// LablesNEQ applies the NEQ predicate on the "lables" field.
-func LablesNEQ(v string) predicate.Device {
-	return predicate.Device(sql.FieldNEQ(FieldLables, v))
-}
-
-// LablesIn applies the In predicate on the "lables" field.
-func LablesIn(vs ...string) predicate.Device {
-	return predicate.Device(sql.FieldIn(FieldLables, vs...))
-}
-
-// LablesNotIn applies the NotIn predicate on the "lables" field.
-func LablesNotIn(vs ...string) predicate.Device {
-	return predicate.Device(sql.FieldNotIn(FieldLables, vs...))
-}
-
-// LablesGT applies the GT predicate on the "lables" field.
-func LablesGT(v string) predicate.Device {
-	return predicate.Device(sql.FieldGT(FieldLables, v))
-}
-
-// LablesGTE applies the GTE predicate on the "lables" field.
-func LablesGTE(v string) predicate.Device {
-	return predicate.Device(sql.FieldGTE(FieldLables, v))
-}
-
-// LablesLT applies the LT predicate on the "lables" field.
-func LablesLT(v string) predicate.Device {
-	return predicate.Device(sql.FieldLT(FieldLables, v))
-}
-
-// LablesLTE applies the LTE predicate on the "lables" field.
-func LablesLTE(v string) predicate.Device {
-	return predicate.Device(sql.FieldLTE(FieldLables, v))
-}
-
-// LablesContains applies the Contains predicate on the "lables" field.
-func LablesContains(v string) predicate.Device {
-	return predicate.Device(sql.FieldContains(FieldLables, v))
-}
-
-// LablesHasPrefix applies the HasPrefix predicate on the "lables" field.
-func LablesHasPrefix(v string) predicate.Device {
-	return predicate.Device(sql.FieldHasPrefix(FieldLables, v))
-}
-
-// LablesHasSuffix applies the HasSuffix predicate on the "lables" field.
-func LablesHasSuffix(v string) predicate.Device {
-	return predicate.Device(sql.FieldHasSuffix(FieldLables, v))
-}
-
-// LablesIsNil applies the IsNil predicate on the "lables" field.
-func LablesIsNil() predicate.Device {
-	return predicate.Device(sql.FieldIsNull(FieldLables))
-}
-
-// LablesNotNil applies the NotNil predicate on the "lables" field.
-func LablesNotNil() predicate.Device {
-	return predicate.Device(sql.FieldNotNull(FieldLables))
-}
-
-// LablesEqualFold applies the EqualFold predicate on the "lables" field.
-func LablesEqualFold(v string) predicate.Device {
-	return predicate.Device(sql.FieldEqualFold(FieldLables, v))
-}
-
-// LablesContainsFold applies the ContainsFold predicate on the "lables" field.
-func LablesContainsFold(v string) predicate.Device {
-	return predicate.Device(sql.FieldContainsFold(FieldLables, v))
 }
 
 // HasDepartments applies the HasEdge predicate on the "departments" edge.

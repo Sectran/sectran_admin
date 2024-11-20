@@ -18,7 +18,6 @@ var (
 		{Name: "protocol", Type: field.TypeUint8, Comment: "protocol of the this account.|账号协议"},
 		{Name: "password", Type: field.TypeString, Size: 128, Comment: "account password|账号密码"},
 		{Name: "private_key", Type: field.TypeString, Size: 4096, Comment: "private_key of the this account.|账号私钥"},
-		{Name: "lables", Type: field.TypeString, Nullable: true, Comment: "account lable ids|账号标签ID集合"},
 		{Name: "device_id", Type: field.TypeUint64, Nullable: true, Comment: "account belong to|账号所属设备"},
 	}
 	// AccountsTable holds the schema information for the "accounts" table.
@@ -29,7 +28,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "accounts_devices_devices",
-				Columns:    []*schema.Column{AccountsColumns[9]},
+				Columns:    []*schema.Column{AccountsColumns[8]},
 				RefColumns: []*schema.Column{DevicesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -45,7 +44,6 @@ var (
 		{Name: "description", Type: field.TypeString, Size: 128, Comment: "Description of the department.|部门描述"},
 		{Name: "parent_department_id", Type: field.TypeUint64, Comment: "parent department ID.|父亲部门id"},
 		{Name: "parent_departments", Type: field.TypeString, Comment: "Comma-separated list of parent department IDs in ascending order.|上级部门集合逗号分隔升序排列"},
-		{Name: "lables", Type: field.TypeString, Nullable: true, Comment: "account lable ids|账号标签ID集合"},
 	}
 	// DepartmentsTable holds the schema information for the "departments" table.
 	DepartmentsTable = &schema.Table{
@@ -62,7 +60,6 @@ var (
 		{Name: "host", Type: field.TypeString, Size: 64, Comment: "login host|设备地址"},
 		{Name: "type", Type: field.TypeString, Size: 64, Comment: "type of the device.|设备类型"},
 		{Name: "description", Type: field.TypeString, Size: 128, Comment: "Description of the device.|设备描述"},
-		{Name: "lables", Type: field.TypeString, Nullable: true, Comment: "account lable ids|账号标签ID集合"},
 		{Name: "department_id", Type: field.TypeUint64, Nullable: true, Comment: "ID of the device's department.|设备所属部门"},
 	}
 	// DevicesTable holds the schema information for the "devices" table.
@@ -73,7 +70,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "devices_departments_departments",
-				Columns:    []*schema.Column{DevicesColumns[8]},
+				Columns:    []*schema.Column{DevicesColumns[7]},
 				RefColumns: []*schema.Column{DepartmentsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -111,7 +108,6 @@ var (
 		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
 		{Name: "name", Type: field.TypeString, Unique: true, Size: 32, Comment: "The name of the role.|角色名称"},
 		{Name: "weight", Type: field.TypeInt, Comment: "The weight of the role. Smaller values indicate higher priority.|角色优先级，值越小优先级越高"},
-		{Name: "lables", Type: field.TypeString, Nullable: true, Comment: "account lable ids|账号标签ID集合"},
 	}
 	// RolesTable holds the schema information for the "roles" table.
 	RolesTable = &schema.Table{
@@ -131,7 +127,6 @@ var (
 		{Name: "description", Type: field.TypeString, Nullable: true, Size: 128, Comment: "User description.|用户账号描述"},
 		{Name: "email", Type: field.TypeString, Nullable: true, Size: 64, Comment: "User email.|用户邮箱"},
 		{Name: "phone_number", Type: field.TypeString, Nullable: true, Size: 32, Comment: "User phone number.|用户手机号码"},
-		{Name: "lables", Type: field.TypeString, Nullable: true, Comment: "account lable ids|账号标签ID集合"},
 		{Name: "department_id", Type: field.TypeUint64, Nullable: true, Comment: "ID of the user's department.|用户所属部门"},
 		{Name: "role_id", Type: field.TypeUint64, Nullable: true, Comment: "ID of the user's role.|用户所属角色"},
 	}
@@ -143,13 +138,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "users_departments_departments",
-				Columns:    []*schema.Column{UsersColumns[11]},
+				Columns:    []*schema.Column{UsersColumns[10]},
 				RefColumns: []*schema.Column{DepartmentsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "users_roles_roles",
-				Columns:    []*schema.Column{UsersColumns[12]},
+				Columns:    []*schema.Column{UsersColumns[11]},
 				RefColumns: []*schema.Column{RolesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

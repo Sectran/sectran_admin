@@ -52,7 +52,6 @@ type AccountMutation struct {
 	addprotocol    *int8
 	password       *string
 	private_key    *string
-	lables         *string
 	clearedFields  map[string]struct{}
 	devices        *uint64
 	cleareddevices bool
@@ -506,55 +505,6 @@ func (m *AccountMutation) ResetDeviceID() {
 	delete(m.clearedFields, account.FieldDeviceID)
 }
 
-// SetLables sets the "lables" field.
-func (m *AccountMutation) SetLables(s string) {
-	m.lables = &s
-}
-
-// Lables returns the value of the "lables" field in the mutation.
-func (m *AccountMutation) Lables() (r string, exists bool) {
-	v := m.lables
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldLables returns the old "lables" field's value of the Account entity.
-// If the Account object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AccountMutation) OldLables(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLables is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLables requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLables: %w", err)
-	}
-	return oldValue.Lables, nil
-}
-
-// ClearLables clears the value of the "lables" field.
-func (m *AccountMutation) ClearLables() {
-	m.lables = nil
-	m.clearedFields[account.FieldLables] = struct{}{}
-}
-
-// LablesCleared returns if the "lables" field was cleared in this mutation.
-func (m *AccountMutation) LablesCleared() bool {
-	_, ok := m.clearedFields[account.FieldLables]
-	return ok
-}
-
-// ResetLables resets all changes to the "lables" field.
-func (m *AccountMutation) ResetLables() {
-	m.lables = nil
-	delete(m.clearedFields, account.FieldLables)
-}
-
 // SetDevicesID sets the "devices" edge to the Device entity by id.
 func (m *AccountMutation) SetDevicesID(id uint64) {
 	m.devices = &id
@@ -629,7 +579,7 @@ func (m *AccountMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AccountMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 8)
 	if m.created_at != nil {
 		fields = append(fields, account.FieldCreatedAt)
 	}
@@ -653,9 +603,6 @@ func (m *AccountMutation) Fields() []string {
 	}
 	if m.devices != nil {
 		fields = append(fields, account.FieldDeviceID)
-	}
-	if m.lables != nil {
-		fields = append(fields, account.FieldLables)
 	}
 	return fields
 }
@@ -681,8 +628,6 @@ func (m *AccountMutation) Field(name string) (ent.Value, bool) {
 		return m.PrivateKey()
 	case account.FieldDeviceID:
 		return m.DeviceID()
-	case account.FieldLables:
-		return m.Lables()
 	}
 	return nil, false
 }
@@ -708,8 +653,6 @@ func (m *AccountMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldPrivateKey(ctx)
 	case account.FieldDeviceID:
 		return m.OldDeviceID(ctx)
-	case account.FieldLables:
-		return m.OldLables(ctx)
 	}
 	return nil, fmt.Errorf("unknown Account field %s", name)
 }
@@ -775,13 +718,6 @@ func (m *AccountMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDeviceID(v)
 		return nil
-	case account.FieldLables:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetLables(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Account field %s", name)
 }
@@ -842,9 +778,6 @@ func (m *AccountMutation) ClearedFields() []string {
 	if m.FieldCleared(account.FieldDeviceID) {
 		fields = append(fields, account.FieldDeviceID)
 	}
-	if m.FieldCleared(account.FieldLables) {
-		fields = append(fields, account.FieldLables)
-	}
 	return fields
 }
 
@@ -861,9 +794,6 @@ func (m *AccountMutation) ClearField(name string) error {
 	switch name {
 	case account.FieldDeviceID:
 		m.ClearDeviceID()
-		return nil
-	case account.FieldLables:
-		m.ClearLables()
 		return nil
 	}
 	return fmt.Errorf("unknown Account nullable field %s", name)
@@ -896,9 +826,6 @@ func (m *AccountMutation) ResetField(name string) error {
 		return nil
 	case account.FieldDeviceID:
 		m.ResetDeviceID()
-		return nil
-	case account.FieldLables:
-		m.ResetLables()
 		return nil
 	}
 	return fmt.Errorf("unknown Account field %s", name)
@@ -992,7 +919,6 @@ type DepartmentMutation struct {
 	parent_department_id    *uint64
 	addparent_department_id *int64
 	parent_departments      *string
-	lables                  *string
 	clearedFields           map[string]struct{}
 	users                   map[uint64]struct{}
 	removedusers            map[uint64]struct{}
@@ -1378,55 +1304,6 @@ func (m *DepartmentMutation) ResetParentDepartments() {
 	m.parent_departments = nil
 }
 
-// SetLables sets the "lables" field.
-func (m *DepartmentMutation) SetLables(s string) {
-	m.lables = &s
-}
-
-// Lables returns the value of the "lables" field in the mutation.
-func (m *DepartmentMutation) Lables() (r string, exists bool) {
-	v := m.lables
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldLables returns the old "lables" field's value of the Department entity.
-// If the Department object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DepartmentMutation) OldLables(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLables is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLables requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLables: %w", err)
-	}
-	return oldValue.Lables, nil
-}
-
-// ClearLables clears the value of the "lables" field.
-func (m *DepartmentMutation) ClearLables() {
-	m.lables = nil
-	m.clearedFields[department.FieldLables] = struct{}{}
-}
-
-// LablesCleared returns if the "lables" field was cleared in this mutation.
-func (m *DepartmentMutation) LablesCleared() bool {
-	_, ok := m.clearedFields[department.FieldLables]
-	return ok
-}
-
-// ResetLables resets all changes to the "lables" field.
-func (m *DepartmentMutation) ResetLables() {
-	m.lables = nil
-	delete(m.clearedFields, department.FieldLables)
-}
-
 // AddUserIDs adds the "users" edge to the User entity by ids.
 func (m *DepartmentMutation) AddUserIDs(ids ...uint64) {
 	if m.users == nil {
@@ -1515,7 +1392,7 @@ func (m *DepartmentMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DepartmentMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 7)
 	if m.created_at != nil {
 		fields = append(fields, department.FieldCreatedAt)
 	}
@@ -1536,9 +1413,6 @@ func (m *DepartmentMutation) Fields() []string {
 	}
 	if m.parent_departments != nil {
 		fields = append(fields, department.FieldParentDepartments)
-	}
-	if m.lables != nil {
-		fields = append(fields, department.FieldLables)
 	}
 	return fields
 }
@@ -1562,8 +1436,6 @@ func (m *DepartmentMutation) Field(name string) (ent.Value, bool) {
 		return m.ParentDepartmentID()
 	case department.FieldParentDepartments:
 		return m.ParentDepartments()
-	case department.FieldLables:
-		return m.Lables()
 	}
 	return nil, false
 }
@@ -1587,8 +1459,6 @@ func (m *DepartmentMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldParentDepartmentID(ctx)
 	case department.FieldParentDepartments:
 		return m.OldParentDepartments(ctx)
-	case department.FieldLables:
-		return m.OldLables(ctx)
 	}
 	return nil, fmt.Errorf("unknown Department field %s", name)
 }
@@ -1647,13 +1517,6 @@ func (m *DepartmentMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetParentDepartments(v)
 		return nil
-	case department.FieldLables:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetLables(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Department field %s", name)
 }
@@ -1698,11 +1561,7 @@ func (m *DepartmentMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *DepartmentMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(department.FieldLables) {
-		fields = append(fields, department.FieldLables)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -1715,11 +1574,6 @@ func (m *DepartmentMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *DepartmentMutation) ClearField(name string) error {
-	switch name {
-	case department.FieldLables:
-		m.ClearLables()
-		return nil
-	}
 	return fmt.Errorf("unknown Department nullable field %s", name)
 }
 
@@ -1747,9 +1601,6 @@ func (m *DepartmentMutation) ResetField(name string) error {
 		return nil
 	case department.FieldParentDepartments:
 		m.ResetParentDepartments()
-		return nil
-	case department.FieldLables:
-		m.ResetLables()
 		return nil
 	}
 	return fmt.Errorf("unknown Department field %s", name)
@@ -1851,7 +1702,6 @@ type DeviceMutation struct {
 	host               *string
 	_type              *string
 	description        *string
-	lables             *string
 	clearedFields      map[string]struct{}
 	departments        *uint64
 	cleareddepartments bool
@@ -2232,55 +2082,6 @@ func (m *DeviceMutation) ResetDescription() {
 	m.description = nil
 }
 
-// SetLables sets the "lables" field.
-func (m *DeviceMutation) SetLables(s string) {
-	m.lables = &s
-}
-
-// Lables returns the value of the "lables" field in the mutation.
-func (m *DeviceMutation) Lables() (r string, exists bool) {
-	v := m.lables
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldLables returns the old "lables" field's value of the Device entity.
-// If the Device object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DeviceMutation) OldLables(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLables is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLables requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLables: %w", err)
-	}
-	return oldValue.Lables, nil
-}
-
-// ClearLables clears the value of the "lables" field.
-func (m *DeviceMutation) ClearLables() {
-	m.lables = nil
-	m.clearedFields[device.FieldLables] = struct{}{}
-}
-
-// LablesCleared returns if the "lables" field was cleared in this mutation.
-func (m *DeviceMutation) LablesCleared() bool {
-	_, ok := m.clearedFields[device.FieldLables]
-	return ok
-}
-
-// ResetLables resets all changes to the "lables" field.
-func (m *DeviceMutation) ResetLables() {
-	m.lables = nil
-	delete(m.clearedFields, device.FieldLables)
-}
-
 // SetDepartmentsID sets the "departments" edge to the Department entity by id.
 func (m *DeviceMutation) SetDepartmentsID(id uint64) {
 	m.departments = &id
@@ -2409,7 +2210,7 @@ func (m *DeviceMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DeviceMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 7)
 	if m.created_at != nil {
 		fields = append(fields, device.FieldCreatedAt)
 	}
@@ -2430,9 +2231,6 @@ func (m *DeviceMutation) Fields() []string {
 	}
 	if m.description != nil {
 		fields = append(fields, device.FieldDescription)
-	}
-	if m.lables != nil {
-		fields = append(fields, device.FieldLables)
 	}
 	return fields
 }
@@ -2456,8 +2254,6 @@ func (m *DeviceMutation) Field(name string) (ent.Value, bool) {
 		return m.GetType()
 	case device.FieldDescription:
 		return m.Description()
-	case device.FieldLables:
-		return m.Lables()
 	}
 	return nil, false
 }
@@ -2481,8 +2277,6 @@ func (m *DeviceMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldType(ctx)
 	case device.FieldDescription:
 		return m.OldDescription(ctx)
-	case device.FieldLables:
-		return m.OldLables(ctx)
 	}
 	return nil, fmt.Errorf("unknown Device field %s", name)
 }
@@ -2541,13 +2335,6 @@ func (m *DeviceMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDescription(v)
 		return nil
-	case device.FieldLables:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetLables(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Device field %s", name)
 }
@@ -2584,9 +2371,6 @@ func (m *DeviceMutation) ClearedFields() []string {
 	if m.FieldCleared(device.FieldDepartmentID) {
 		fields = append(fields, device.FieldDepartmentID)
 	}
-	if m.FieldCleared(device.FieldLables) {
-		fields = append(fields, device.FieldLables)
-	}
 	return fields
 }
 
@@ -2603,9 +2387,6 @@ func (m *DeviceMutation) ClearField(name string) error {
 	switch name {
 	case device.FieldDepartmentID:
 		m.ClearDepartmentID()
-		return nil
-	case device.FieldLables:
-		m.ClearLables()
 		return nil
 	}
 	return fmt.Errorf("unknown Device nullable field %s", name)
@@ -2635,9 +2416,6 @@ func (m *DeviceMutation) ResetField(name string) error {
 		return nil
 	case device.FieldDescription:
 		m.ResetDescription()
-		return nil
-	case device.FieldLables:
-		m.ResetLables()
 		return nil
 	}
 	return fmt.Errorf("unknown Device field %s", name)
@@ -3979,7 +3757,6 @@ type RoleMutation struct {
 	name          *string
 	weight        *int
 	addweight     *int
-	lables        *string
 	clearedFields map[string]struct{}
 	users         map[uint64]struct{}
 	removedusers  map[uint64]struct{}
@@ -4257,55 +4034,6 @@ func (m *RoleMutation) ResetWeight() {
 	m.addweight = nil
 }
 
-// SetLables sets the "lables" field.
-func (m *RoleMutation) SetLables(s string) {
-	m.lables = &s
-}
-
-// Lables returns the value of the "lables" field in the mutation.
-func (m *RoleMutation) Lables() (r string, exists bool) {
-	v := m.lables
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldLables returns the old "lables" field's value of the Role entity.
-// If the Role object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RoleMutation) OldLables(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLables is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLables requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLables: %w", err)
-	}
-	return oldValue.Lables, nil
-}
-
-// ClearLables clears the value of the "lables" field.
-func (m *RoleMutation) ClearLables() {
-	m.lables = nil
-	m.clearedFields[role.FieldLables] = struct{}{}
-}
-
-// LablesCleared returns if the "lables" field was cleared in this mutation.
-func (m *RoleMutation) LablesCleared() bool {
-	_, ok := m.clearedFields[role.FieldLables]
-	return ok
-}
-
-// ResetLables resets all changes to the "lables" field.
-func (m *RoleMutation) ResetLables() {
-	m.lables = nil
-	delete(m.clearedFields, role.FieldLables)
-}
-
 // AddUserIDs adds the "users" edge to the User entity by ids.
 func (m *RoleMutation) AddUserIDs(ids ...uint64) {
 	if m.users == nil {
@@ -4394,7 +4122,7 @@ func (m *RoleMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *RoleMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 4)
 	if m.created_at != nil {
 		fields = append(fields, role.FieldCreatedAt)
 	}
@@ -4406,9 +4134,6 @@ func (m *RoleMutation) Fields() []string {
 	}
 	if m.weight != nil {
 		fields = append(fields, role.FieldWeight)
-	}
-	if m.lables != nil {
-		fields = append(fields, role.FieldLables)
 	}
 	return fields
 }
@@ -4426,8 +4151,6 @@ func (m *RoleMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case role.FieldWeight:
 		return m.Weight()
-	case role.FieldLables:
-		return m.Lables()
 	}
 	return nil, false
 }
@@ -4445,8 +4168,6 @@ func (m *RoleMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldName(ctx)
 	case role.FieldWeight:
 		return m.OldWeight(ctx)
-	case role.FieldLables:
-		return m.OldLables(ctx)
 	}
 	return nil, fmt.Errorf("unknown Role field %s", name)
 }
@@ -4483,13 +4204,6 @@ func (m *RoleMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetWeight(v)
-		return nil
-	case role.FieldLables:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetLables(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Role field %s", name)
@@ -4535,11 +4249,7 @@ func (m *RoleMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *RoleMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(role.FieldLables) {
-		fields = append(fields, role.FieldLables)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -4552,11 +4262,6 @@ func (m *RoleMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *RoleMutation) ClearField(name string) error {
-	switch name {
-	case role.FieldLables:
-		m.ClearLables()
-		return nil
-	}
 	return fmt.Errorf("unknown Role nullable field %s", name)
 }
 
@@ -4575,9 +4280,6 @@ func (m *RoleMutation) ResetField(name string) error {
 		return nil
 	case role.FieldWeight:
 		m.ResetWeight()
-		return nil
-	case role.FieldLables:
-		m.ResetLables()
 		return nil
 	}
 	return fmt.Errorf("unknown Role field %s", name)
@@ -4682,7 +4384,6 @@ type UserMutation struct {
 	description        *string
 	email              *string
 	phone_number       *string
-	lables             *string
 	clearedFields      map[string]struct{}
 	departments        *uint64
 	cleareddepartments bool
@@ -5258,55 +4959,6 @@ func (m *UserMutation) ResetPhoneNumber() {
 	delete(m.clearedFields, user.FieldPhoneNumber)
 }
 
-// SetLables sets the "lables" field.
-func (m *UserMutation) SetLables(s string) {
-	m.lables = &s
-}
-
-// Lables returns the value of the "lables" field in the mutation.
-func (m *UserMutation) Lables() (r string, exists bool) {
-	v := m.lables
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldLables returns the old "lables" field's value of the User entity.
-// If the User object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldLables(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLables is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLables requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLables: %w", err)
-	}
-	return oldValue.Lables, nil
-}
-
-// ClearLables clears the value of the "lables" field.
-func (m *UserMutation) ClearLables() {
-	m.lables = nil
-	m.clearedFields[user.FieldLables] = struct{}{}
-}
-
-// LablesCleared returns if the "lables" field was cleared in this mutation.
-func (m *UserMutation) LablesCleared() bool {
-	_, ok := m.clearedFields[user.FieldLables]
-	return ok
-}
-
-// ResetLables resets all changes to the "lables" field.
-func (m *UserMutation) ResetLables() {
-	m.lables = nil
-	delete(m.clearedFields, user.FieldLables)
-}
-
 // SetDepartmentsID sets the "departments" edge to the Department entity by id.
 func (m *UserMutation) SetDepartmentsID(id uint64) {
 	m.departments = &id
@@ -5421,7 +5073,7 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 11)
 	if m.created_at != nil {
 		fields = append(fields, user.FieldCreatedAt)
 	}
@@ -5455,9 +5107,6 @@ func (m *UserMutation) Fields() []string {
 	if m.phone_number != nil {
 		fields = append(fields, user.FieldPhoneNumber)
 	}
-	if m.lables != nil {
-		fields = append(fields, user.FieldLables)
-	}
 	return fields
 }
 
@@ -5488,8 +5137,6 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.Email()
 	case user.FieldPhoneNumber:
 		return m.PhoneNumber()
-	case user.FieldLables:
-		return m.Lables()
 	}
 	return nil, false
 }
@@ -5521,8 +5168,6 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldEmail(ctx)
 	case user.FieldPhoneNumber:
 		return m.OldPhoneNumber(ctx)
-	case user.FieldLables:
-		return m.OldLables(ctx)
 	}
 	return nil, fmt.Errorf("unknown User field %s", name)
 }
@@ -5609,13 +5254,6 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetPhoneNumber(v)
 		return nil
-	case user.FieldLables:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetLables(v)
-		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)
 }
@@ -5664,9 +5302,6 @@ func (m *UserMutation) ClearedFields() []string {
 	if m.FieldCleared(user.FieldPhoneNumber) {
 		fields = append(fields, user.FieldPhoneNumber)
 	}
-	if m.FieldCleared(user.FieldLables) {
-		fields = append(fields, user.FieldLables)
-	}
 	return fields
 }
 
@@ -5695,9 +5330,6 @@ func (m *UserMutation) ClearField(name string) error {
 		return nil
 	case user.FieldPhoneNumber:
 		m.ClearPhoneNumber()
-		return nil
-	case user.FieldLables:
-		m.ClearLables()
 		return nil
 	}
 	return fmt.Errorf("unknown User nullable field %s", name)
@@ -5739,9 +5371,6 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldPhoneNumber:
 		m.ResetPhoneNumber()
-		return nil
-	case user.FieldLables:
-		m.ResetLables()
 		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)

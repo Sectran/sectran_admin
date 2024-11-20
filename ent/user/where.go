@@ -110,11 +110,6 @@ func PhoneNumber(v string) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldPhoneNumber, v))
 }
 
-// Lables applies equality check predicate on the "lables" field. It's identical to LablesEQ.
-func Lables(v string) predicate.User {
-	return predicate.User(sql.FieldEQ(FieldLables, v))
-}
-
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldCreatedAt, v))
@@ -683,81 +678,6 @@ func PhoneNumberEqualFold(v string) predicate.User {
 // PhoneNumberContainsFold applies the ContainsFold predicate on the "phone_number" field.
 func PhoneNumberContainsFold(v string) predicate.User {
 	return predicate.User(sql.FieldContainsFold(FieldPhoneNumber, v))
-}
-
-// LablesEQ applies the EQ predicate on the "lables" field.
-func LablesEQ(v string) predicate.User {
-	return predicate.User(sql.FieldEQ(FieldLables, v))
-}
-
-// LablesNEQ applies the NEQ predicate on the "lables" field.
-func LablesNEQ(v string) predicate.User {
-	return predicate.User(sql.FieldNEQ(FieldLables, v))
-}
-
-// LablesIn applies the In predicate on the "lables" field.
-func LablesIn(vs ...string) predicate.User {
-	return predicate.User(sql.FieldIn(FieldLables, vs...))
-}
-
-// LablesNotIn applies the NotIn predicate on the "lables" field.
-func LablesNotIn(vs ...string) predicate.User {
-	return predicate.User(sql.FieldNotIn(FieldLables, vs...))
-}
-
-// LablesGT applies the GT predicate on the "lables" field.
-func LablesGT(v string) predicate.User {
-	return predicate.User(sql.FieldGT(FieldLables, v))
-}
-
-// LablesGTE applies the GTE predicate on the "lables" field.
-func LablesGTE(v string) predicate.User {
-	return predicate.User(sql.FieldGTE(FieldLables, v))
-}
-
-// LablesLT applies the LT predicate on the "lables" field.
-func LablesLT(v string) predicate.User {
-	return predicate.User(sql.FieldLT(FieldLables, v))
-}
-
-// LablesLTE applies the LTE predicate on the "lables" field.
-func LablesLTE(v string) predicate.User {
-	return predicate.User(sql.FieldLTE(FieldLables, v))
-}
-
-// LablesContains applies the Contains predicate on the "lables" field.
-func LablesContains(v string) predicate.User {
-	return predicate.User(sql.FieldContains(FieldLables, v))
-}
-
-// LablesHasPrefix applies the HasPrefix predicate on the "lables" field.
-func LablesHasPrefix(v string) predicate.User {
-	return predicate.User(sql.FieldHasPrefix(FieldLables, v))
-}
-
-// LablesHasSuffix applies the HasSuffix predicate on the "lables" field.
-func LablesHasSuffix(v string) predicate.User {
-	return predicate.User(sql.FieldHasSuffix(FieldLables, v))
-}
-
-// LablesIsNil applies the IsNil predicate on the "lables" field.
-func LablesIsNil() predicate.User {
-	return predicate.User(sql.FieldIsNull(FieldLables))
-}
-
-// LablesNotNil applies the NotNil predicate on the "lables" field.
-func LablesNotNil() predicate.User {
-	return predicate.User(sql.FieldNotNull(FieldLables))
-}
-
-// LablesEqualFold applies the EqualFold predicate on the "lables" field.
-func LablesEqualFold(v string) predicate.User {
-	return predicate.User(sql.FieldEqualFold(FieldLables, v))
-}
-
-// LablesContainsFold applies the ContainsFold predicate on the "lables" field.
-func LablesContainsFold(v string) predicate.User {
-	return predicate.User(sql.FieldContainsFold(FieldLables, v))
 }
 
 // HasDepartments applies the HasEdge predicate on the "departments" edge.

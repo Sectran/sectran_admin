@@ -32,8 +32,6 @@ type Device struct {
 	Type string `json:"type,omitempty"`
 	// Description of the device.|设备描述
 	Description string `json:"description,omitempty"`
-	// account lable ids|账号标签ID集合
-	Lables string `json:"lables,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the DeviceQuery when eager-loading is set.
 	Edges        DeviceEdges `json:"edges"`
@@ -78,7 +76,7 @@ func (*Device) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case device.FieldID, device.FieldDepartmentID:
 			values[i] = new(sql.NullInt64)
-		case device.FieldName, device.FieldHost, device.FieldType, device.FieldDescription, device.FieldLables:
+		case device.FieldName, device.FieldHost, device.FieldType, device.FieldDescription:
 			values[i] = new(sql.NullString)
 		case device.FieldCreatedAt, device.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -144,12 +142,6 @@ func (d *Device) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
 				d.Description = value.String
-			}
-		case device.FieldLables:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field lables", values[i])
-			} else if value.Valid {
-				d.Lables = value.String
 			}
 		default:
 			d.selectValues.Set(columns[i], values[i])
@@ -217,9 +209,6 @@ func (d *Device) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("description=")
 	builder.WriteString(d.Description)
-	builder.WriteString(", ")
-	builder.WriteString("lables=")
-	builder.WriteString(d.Lables)
 	builder.WriteByte(')')
 	return builder.String()
 }

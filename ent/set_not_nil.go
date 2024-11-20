@@ -173,30 +173,6 @@ func (a *AccountCreate) SetNotNilDeviceID(value *uint64) *AccountCreate {
 }
 
 // set field if value's pointer is not nil.
-func (a *AccountUpdate) SetNotNilLables(value *string) *AccountUpdate {
-	if value != nil {
-		return a.SetLables(*value)
-	}
-	return a
-}
-
-// set field if value's pointer is not nil.
-func (a *AccountUpdateOne) SetNotNilLables(value *string) *AccountUpdateOne {
-	if value != nil {
-		return a.SetLables(*value)
-	}
-	return a
-}
-
-// set field if value's pointer is not nil.
-func (a *AccountCreate) SetNotNilLables(value *string) *AccountCreate {
-	if value != nil {
-		return a.SetLables(*value)
-	}
-	return a
-}
-
-// set field if value's pointer is not nil.
 func (d *DepartmentUpdate) SetNotNilUpdatedAt(value *time.Time) *DepartmentUpdate {
 	if value != nil {
 		return d.SetUpdatedAt(*value)
@@ -341,30 +317,6 @@ func (d *DepartmentCreate) SetNotNilParentDepartments(value *string) *Department
 }
 
 // set field if value's pointer is not nil.
-func (d *DepartmentUpdate) SetNotNilLables(value *string) *DepartmentUpdate {
-	if value != nil {
-		return d.SetLables(*value)
-	}
-	return d
-}
-
-// set field if value's pointer is not nil.
-func (d *DepartmentUpdateOne) SetNotNilLables(value *string) *DepartmentUpdateOne {
-	if value != nil {
-		return d.SetLables(*value)
-	}
-	return d
-}
-
-// set field if value's pointer is not nil.
-func (d *DepartmentCreate) SetNotNilLables(value *string) *DepartmentCreate {
-	if value != nil {
-		return d.SetLables(*value)
-	}
-	return d
-}
-
-// set field if value's pointer is not nil.
 func (d *DeviceUpdate) SetNotNilUpdatedAt(value *time.Time) *DeviceUpdate {
 	if value != nil {
 		return d.SetUpdatedAt(*value)
@@ -504,30 +456,6 @@ func (d *DeviceUpdateOne) SetNotNilDescription(value *string) *DeviceUpdateOne {
 func (d *DeviceCreate) SetNotNilDescription(value *string) *DeviceCreate {
 	if value != nil {
 		return d.SetDescription(*value)
-	}
-	return d
-}
-
-// set field if value's pointer is not nil.
-func (d *DeviceUpdate) SetNotNilLables(value *string) *DeviceUpdate {
-	if value != nil {
-		return d.SetLables(*value)
-	}
-	return d
-}
-
-// set field if value's pointer is not nil.
-func (d *DeviceUpdateOne) SetNotNilLables(value *string) *DeviceUpdateOne {
-	if value != nil {
-		return d.SetLables(*value)
-	}
-	return d
-}
-
-// set field if value's pointer is not nil.
-func (d *DeviceCreate) SetNotNilLables(value *string) *DeviceCreate {
-	if value != nil {
-		return d.SetLables(*value)
 	}
 	return d
 }
@@ -941,30 +869,6 @@ func (r *RoleCreate) SetNotNilWeight(value *int) *RoleCreate {
 }
 
 // set field if value's pointer is not nil.
-func (r *RoleUpdate) SetNotNilLables(value *string) *RoleUpdate {
-	if value != nil {
-		return r.SetLables(*value)
-	}
-	return r
-}
-
-// set field if value's pointer is not nil.
-func (r *RoleUpdateOne) SetNotNilLables(value *string) *RoleUpdateOne {
-	if value != nil {
-		return r.SetLables(*value)
-	}
-	return r
-}
-
-// set field if value's pointer is not nil.
-func (r *RoleCreate) SetNotNilLables(value *string) *RoleCreate {
-	if value != nil {
-		return r.SetLables(*value)
-	}
-	return r
-}
-
-// set field if value's pointer is not nil.
 func (u *UserUpdate) SetNotNilUpdatedAt(value *time.Time) *UserUpdate {
 	if value != nil {
 		return u.SetUpdatedAt(*value)
@@ -1200,30 +1104,6 @@ func (u *UserUpdateOne) SetNotNilPhoneNumber(value *string) *UserUpdateOne {
 func (u *UserCreate) SetNotNilPhoneNumber(value *string) *UserCreate {
 	if value != nil {
 		return u.SetPhoneNumber(*value)
-	}
-	return u
-}
-
-// set field if value's pointer is not nil.
-func (u *UserUpdate) SetNotNilLables(value *string) *UserUpdate {
-	if value != nil {
-		return u.SetLables(*value)
-	}
-	return u
-}
-
-// set field if value's pointer is not nil.
-func (u *UserUpdateOne) SetNotNilLables(value *string) *UserUpdateOne {
-	if value != nil {
-		return u.SetLables(*value)
-	}
-	return u
-}
-
-// set field if value's pointer is not nil.
-func (u *UserCreate) SetNotNilLables(value *string) *UserCreate {
-	if value != nil {
-		return u.SetLables(*value)
 	}
 	return u
 }

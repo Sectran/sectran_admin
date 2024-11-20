@@ -41,8 +41,6 @@ type User struct {
 	Email string `json:"email,omitempty"`
 	// User phone number.|用户手机号码
 	PhoneNumber string `json:"phone_number,omitempty"`
-	// account lable ids|账号标签ID集合
-	Lables string `json:"lables,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
 	Edges        UserEdges `json:"edges"`
@@ -91,7 +89,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case user.FieldID, user.FieldDepartmentID, user.FieldRoleID:
 			values[i] = new(sql.NullInt64)
-		case user.FieldAccount, user.FieldName, user.FieldPassword, user.FieldDescription, user.FieldEmail, user.FieldPhoneNumber, user.FieldLables:
+		case user.FieldAccount, user.FieldName, user.FieldPassword, user.FieldDescription, user.FieldEmail, user.FieldPhoneNumber:
 			values[i] = new(sql.NullString)
 		case user.FieldCreatedAt, user.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -182,12 +180,6 @@ func (u *User) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				u.PhoneNumber = value.String
 			}
-		case user.FieldLables:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field lables", values[i])
-			} else if value.Valid {
-				u.Lables = value.String
-			}
 		default:
 			u.selectValues.Set(columns[i], values[i])
 		}
@@ -265,9 +257,6 @@ func (u *User) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("phone_number=")
 	builder.WriteString(u.PhoneNumber)
-	builder.WriteString(", ")
-	builder.WriteString("lables=")
-	builder.WriteString(u.Lables)
 	builder.WriteByte(')')
 	return builder.String()
 }

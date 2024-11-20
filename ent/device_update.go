@@ -112,26 +112,6 @@ func (du *DeviceUpdate) SetNillableDescription(s *string) *DeviceUpdate {
 	return du
 }
 
-// SetLables sets the "lables" field.
-func (du *DeviceUpdate) SetLables(s string) *DeviceUpdate {
-	du.mutation.SetLables(s)
-	return du
-}
-
-// SetNillableLables sets the "lables" field if the given value is not nil.
-func (du *DeviceUpdate) SetNillableLables(s *string) *DeviceUpdate {
-	if s != nil {
-		du.SetLables(*s)
-	}
-	return du
-}
-
-// ClearLables clears the value of the "lables" field.
-func (du *DeviceUpdate) ClearLables() *DeviceUpdate {
-	du.mutation.ClearLables()
-	return du
-}
-
 // SetDepartmentsID sets the "departments" edge to the Department entity by ID.
 func (du *DeviceUpdate) SetDepartmentsID(id uint64) *DeviceUpdate {
 	du.mutation.SetDepartmentsID(id)
@@ -290,12 +270,6 @@ func (du *DeviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := du.mutation.Description(); ok {
 		_spec.SetField(device.FieldDescription, field.TypeString, value)
-	}
-	if value, ok := du.mutation.Lables(); ok {
-		_spec.SetField(device.FieldLables, field.TypeString, value)
-	}
-	if du.mutation.LablesCleared() {
-		_spec.ClearField(device.FieldLables, field.TypeString)
 	}
 	if du.mutation.DepartmentsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -470,26 +444,6 @@ func (duo *DeviceUpdateOne) SetNillableDescription(s *string) *DeviceUpdateOne {
 	if s != nil {
 		duo.SetDescription(*s)
 	}
-	return duo
-}
-
-// SetLables sets the "lables" field.
-func (duo *DeviceUpdateOne) SetLables(s string) *DeviceUpdateOne {
-	duo.mutation.SetLables(s)
-	return duo
-}
-
-// SetNillableLables sets the "lables" field if the given value is not nil.
-func (duo *DeviceUpdateOne) SetNillableLables(s *string) *DeviceUpdateOne {
-	if s != nil {
-		duo.SetLables(*s)
-	}
-	return duo
-}
-
-// ClearLables clears the value of the "lables" field.
-func (duo *DeviceUpdateOne) ClearLables() *DeviceUpdateOne {
-	duo.mutation.ClearLables()
 	return duo
 }
 
@@ -681,12 +635,6 @@ func (duo *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err err
 	}
 	if value, ok := duo.mutation.Description(); ok {
 		_spec.SetField(device.FieldDescription, field.TypeString, value)
-	}
-	if value, ok := duo.mutation.Lables(); ok {
-		_spec.SetField(device.FieldLables, field.TypeString, value)
-	}
-	if duo.mutation.LablesCleared() {
-		_spec.ClearField(device.FieldLables, field.TypeString)
 	}
 	if duo.mutation.DepartmentsCleared() {
 		edge := &sqlgraph.EdgeSpec{

@@ -31,8 +31,6 @@ type Department struct {
 	ParentDepartmentID uint64 `json:"parent_department_id,omitempty"`
 	// Comma-separated list of parent department IDs in ascending order.|上级部门集合逗号分隔升序排列
 	ParentDepartments string `json:"parent_departments,omitempty"`
-	// account lable ids|账号标签ID集合
-	Lables string `json:"lables,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the DepartmentQuery when eager-loading is set.
 	Edges        DepartmentEdges `json:"edges"`
@@ -64,7 +62,7 @@ func (*Department) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case department.FieldID, department.FieldParentDepartmentID:
 			values[i] = new(sql.NullInt64)
-		case department.FieldName, department.FieldArea, department.FieldDescription, department.FieldParentDepartments, department.FieldLables:
+		case department.FieldName, department.FieldArea, department.FieldDescription, department.FieldParentDepartments:
 			values[i] = new(sql.NullString)
 		case department.FieldCreatedAt, department.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -131,12 +129,6 @@ func (d *Department) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				d.ParentDepartments = value.String
 			}
-		case department.FieldLables:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field lables", values[i])
-			} else if value.Valid {
-				d.Lables = value.String
-			}
 		default:
 			d.selectValues.Set(columns[i], values[i])
 		}
@@ -198,9 +190,6 @@ func (d *Department) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("parent_departments=")
 	builder.WriteString(d.ParentDepartments)
-	builder.WriteString(", ")
-	builder.WriteString("lables=")
-	builder.WriteString(d.Lables)
 	builder.WriteByte(')')
 	return builder.String()
 }
