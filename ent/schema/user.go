@@ -60,10 +60,6 @@ func (User) Fields() []ent.Field {
 			MaxLen(32).
 			Comment("User phone number.|用户手机号码").
 			Annotations(entsql.WithComments(true)),
-		field.String("lables").
-			Optional().
-			Comment("account lable ids|账号标签ID集合").
-			Annotations(entsql.WithComments(true)),
 	}
 }
 

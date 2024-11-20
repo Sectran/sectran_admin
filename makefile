@@ -119,7 +119,7 @@ help: # Show help | 显示帮助
 init: 
 
 gen: schema=labeltree
-gen: 
+gen:
 	make gen-ent
 	make gen-api-ent-logic model=$(schema) group=$(schema)
 	make gen-api

@@ -24,6 +24,7 @@ func DomainDeptAccessed(domainParentDepartments int, targetParentDepartments str
 	}
 	return false, types.ErrAccountHasNoRights
 }
+
 func ModifyCheckout(svcCtx *svc.ServiceContext, ctx context.Context, req *types.DepartmentInfo) error {
 	if req.Area == nil {
 		return types.CustomError("部门归属地不能为空")

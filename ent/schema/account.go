@@ -59,10 +59,6 @@ func (Account) Fields() []ent.Field {
 			Comment("account belong to|账号所属设备").
 			Min(1).
 			Annotations(entsql.WithComments(true)),
-		field.String("lables").
-			Optional().
-			Comment("account lable ids|账号标签ID集合").
-			Annotations(entsql.WithComments(true)),
 	}
 }
 
