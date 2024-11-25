@@ -53,7 +53,6 @@ func (l *GetUserByIdLogic) GetUserById(req *types.IDReqRefer) (*types.UserInfoRe
 		return nil, err
 	}
 
-	data.Password = ""
 	resp := &types.UserInfoRespRefer{
 		BaseDataInfo: types.BaseDataInfo{
 			Code: 0,
