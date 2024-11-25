@@ -2,13 +2,13 @@ package user
 
 import (
 	"context"
-	"fmt"
 
 	"sectran_admin/ent"
 	"sectran_admin/ent/department"
 	"sectran_admin/ent/predicate"
 	"sectran_admin/ent/role"
 	"sectran_admin/ent/user"
+	deptLogic "sectran_admin/internal/logic/department"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 	"sectran_admin/internal/utils/dberrorhandler"
@@ -35,20 +35,15 @@ func NewGetUserListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 
 func (l *GetUserListLogic) GetUserList(req *types.UserListReqRefer) (*types.UserListRespRefer, error) {
 	domain := l.ctx.Value("request_domain").((*ent.User))
-
-	dDept, _ := l.svcCtx.DB.Department.Get(l.ctx, domain.DepartmentID)
 	var predicates []predicate.User
 
-	//赋值拼接ParentDepartments
-	prefix := fmt.Sprintf("%s%s%d", dDept.ParentDepartments, func() string {
-		if dDept.ParentDepartments == "" {
-			return ""
-		}
-		return ","
-	}(), dDept.ID)
+	prefix, err := deptLogic.GetCurrentDominDeptPrefix(l.svcCtx, domain)
+	if err != nil {
+		dberrorhandler.DefaultEntError(l.Logger, err, req)
+	}
 
 	//查询所有子部门下的用户
-	predicates = append(predicates, user.HasDepartmentsWith(department.ParentDepartmentsHasPrefix(prefix)))
+	predicates = append(predicates, user.HasDepartmentsWith(department.ParentDepartmentsHasPrefix(*prefix)))
 
 	if req.Account != nil {
 		predicates = append(predicates, user.AccountContains(*req.Account))

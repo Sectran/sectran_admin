@@ -25,6 +25,21 @@ func DomainDeptAccessed(domainParentDepartments int, targetParentDepartments str
 	return false, types.ErrAccountHasNoRights
 }
 
+func GetCurrentDominDeptPrefix(svcCtx *svc.ServiceContext, domain *ent.User) (*string, error) {
+	domainDept, err := svcCtx.DB.Department.Get(context.Background(), domain.DepartmentID)
+	if err != nil {
+		return nil, err
+	}
+
+	prefix := fmt.Sprintf("%s%s%d", domainDept.ParentDepartments, func() string {
+		if domainDept.ParentDepartments == "" {
+			return ""
+		}
+		return ","
+	}(), domainDept.ID)
+	return &prefix, nil
+}
+
 func ModifyCheckout(svcCtx *svc.ServiceContext, ctx context.Context, req *types.DepartmentInfo) error {
 	if req.Area == nil {
 		return types.CustomError("部门归属地不能为空")

@@ -12,6 +12,9 @@ import (
 
 	"github.com/suyuan32/simple-admin-common/i18n"
 
+	deptLogic "sectran_admin/internal/logic/department"
+	"sectran_admin/internal/utils/dberrorhandler"
+
 	"github.com/suyuan32/simple-admin-common/utils/pointy"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -32,14 +35,14 @@ func NewGetDeviceListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 
 func (l *GetDeviceListLogic) GetDeviceList(req *types.DeviceListReq) (*types.DeviceListRespRefer, error) {
 	domain := l.ctx.Value("request_domain").((*ent.User))
-	dDept, _ := l.svcCtx.DB.Department.Get(l.ctx, domain.DepartmentID)
 
 	var predicates []predicate.Device
-
-	if dDept.ParentDepartments != "" {
-		//查询所有子部门下的设备
-		predicates = append(predicates, device.HasDepartmentsWith(department.ParentDepartmentsHasPrefix(dDept.ParentDepartments)))
+	prefix, err := deptLogic.GetCurrentDominDeptPrefix(l.svcCtx, domain)
+	if err != nil {
+		dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
+	predicates = append(predicates, //查询所有子部门下的设备
+		device.HasDepartmentsWith(department.ParentDepartmentsHasPrefix(*prefix)))
 
 	if req.Name != nil {
 		predicates = append(predicates, device.NameContains(*req.Name))
