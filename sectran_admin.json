@@ -1036,12 +1036,6 @@
         "pageSize"
       ],
       "properties": {
-        "deviceId": {
-          "description": "所属设备id",
-          "type": "integer",
-          "format": "uint64",
-          "x-go-name": "DeviceId"
-        },
         "page": {
           "description": "Page number | 第几页",
           "type": "integer",
@@ -1056,17 +1050,15 @@
           "maximum": 100000,
           "x-go-name": "PageSize"
         },
-        "port": {
-          "description": "账号端口",
-          "type": "integer",
-          "format": "uint32",
-          "x-go-name": "Port"
+        "password": {
+          "description": "account password|账号密码",
+          "type": "string",
+          "x-go-name": "Password"
         },
-        "protocol": {
-          "description": "账号协议",
-          "type": "integer",
-          "format": "uint8",
-          "x-go-name": "Protocol"
+        "privateKey": {
+          "description": "private_key of the this account.|账号私钥",
+          "type": "string",
+          "x-go-name": "PrivateKey"
         },
         "username": {
           "description": "account username|账号名称",
@@ -2110,10 +2102,6 @@
           "format": "uint64",
           "x-go-name": "DepartmentId"
         },
-        "departmentName": {
-          "type": "string",
-          "x-go-name": "DepartmentName"
-        },
         "description": {
           "description": "User description.|用户账号描述",
           "type": "string",
@@ -2150,10 +2138,6 @@
           "type": "integer",
           "format": "uint64",
           "x-go-name": "RoleId"
-        },
-        "roleName": {
-          "type": "string",
-          "x-go-name": "RoleName"
         },
         "status": {
           "description": "User status (enabled(true) or disabled(false)).|用户账号状态",
@@ -2230,6 +2214,20 @@
           "type": "string",
           "x-go-name": "Account"
         },
+        "departmentName": {
+          "type": "string",
+          "x-go-name": "DepartmentName"
+        },
+        "description": {
+          "description": "User description.|用户账号描述",
+          "type": "string",
+          "x-go-name": "Description"
+        },
+        "email": {
+          "description": "User email.|用户邮箱",
+          "type": "string",
+          "x-go-name": "Email"
+        },
         "name": {
           "description": "User name.|用户姓名",
           "type": "string",
@@ -2249,10 +2247,19 @@
           "maximum": 100000,
           "x-go-name": "PageSize"
         },
-        "password": {
-          "description": "User password.|用户密码",
+        "phoneNumber": {
+          "description": "User phone number.|用户手机号码",
           "type": "string",
-          "x-go-name": "Password"
+          "x-go-name": "PhoneNumber"
+        },
+        "roleName": {
+          "type": "string",
+          "x-go-name": "RoleName"
+        },
+        "status": {
+          "description": "User status (enabled(true) or disabled(false)).|用户账号状态",
+          "type": "boolean",
+          "x-go-name": "Status"
         }
       },
       "x-go-name": "UserListReqRefer",

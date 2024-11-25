@@ -173,3 +173,13 @@ type UploadResp struct {
 	// The  data when upload finished | 上传完成数据
 	Data UploadInfo `json:"data"`
 }
+
+// Basic ID request | 基础ID参数请求
+// swagger:model IDReq
+type IDReqRefer struct {
+	// ID
+	// Required: true
+	Id uint64 `json:"id" validate:"number"`
+	// detail
+	Detail bool `json:"detail"`
+}

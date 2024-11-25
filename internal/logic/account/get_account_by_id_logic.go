@@ -27,7 +27,7 @@ func NewGetAccountByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 	}
 }
 
-func (l *GetAccountByIdLogic) GetAccountById(req *types.IDReq) (*types.AccountInfoResp, error) {
+func (l *GetAccountByIdLogic) GetAccountById(req *types.IDReqRefer) (*types.AccountInfoResp, error) {
 	var (
 		err error
 	)
@@ -41,7 +41,7 @@ func (l *GetAccountByIdLogic) GetAccountById(req *types.IDReq) (*types.AccountIn
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}
 
-	return &types.AccountInfoResp{
+	resp := &types.AccountInfoResp{
 		BaseDataInfo: types.BaseDataInfo{
 			Code: 0,
 			Msg:  l.svcCtx.Trans.Trans(l.ctx, i18n.Success),
@@ -52,11 +52,18 @@ func (l *GetAccountByIdLogic) GetAccountById(req *types.IDReq) (*types.AccountIn
 				CreatedAt: pointy.GetPointer(data.CreatedAt.UnixMilli()),
 				UpdatedAt: pointy.GetPointer(data.UpdatedAt.UnixMilli()),
 			},
-			Username:   &data.Username,
-			Port:       &data.Port,
-			Protocol:   &data.Protocol,
-			PrivateKey: &data.PrivateKey,
-			DeviceId:   &data.DeviceID,
+			Username: &data.Username,
+			Port:     &data.Port,
+			Protocol: &data.Protocol,
+			DeviceId: &data.DeviceID,
 		},
-	}, nil
+	}
+
+	//认证凭据
+	if req.Detail {
+		resp.Data.Password = &data.Password
+		resp.Data.PrivateKey = &data.PrivateKey
+	}
+
+	return resp, nil
 }

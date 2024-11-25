@@ -65,12 +65,10 @@ func (l *GetAccountListLogic) GetAccountList(req *types.AccountListReqRefer) (*t
 					CreatedAt: pointy.GetPointer(v.CreatedAt.UnixMilli()),
 					UpdatedAt: pointy.GetPointer(v.UpdatedAt.UnixMilli()),
 				},
-				Username:   &v.Username,
-				Port:       &v.Port,
-				Protocol:   &v.Protocol,
-				Password:   &v.Password,
-				PrivateKey: &v.PrivateKey,
-				DeviceId:   &v.DeviceID,
+				Username: &v.Username,
+				Port:     &v.Port,
+				Protocol: &v.Protocol,
+				DeviceId: &v.DeviceID,
 			})
 	}
 

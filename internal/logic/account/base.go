@@ -14,15 +14,28 @@ import (
 
 const (
 	ProtocolSsh uint8 = 1 + iota
-	PtotocolRdp
-	PtotocolVnv
-	PtotocolSftp
-	PtotocolFtp
-	PtotocolMysql
-	PtotocolOracle
-	PtotocolRedis
+	ProtocolRdp
+	ProtocolVnv
+	ProtocolSftp
+	ProtocolFtp
+	ProtocolMysql
+	ProtocolOracle
+	ProtocolRedis
 	ProtocolMax
 )
+
+// protocols is an array that stores the string representation of each protocol.
+var ProtocolsMap = [...]string{
+	"",
+	"SSH",
+	"RDP",
+	"VNV",
+	"SFTP",
+	"FTP",
+	"MySQL",
+	"Oracle",
+	"Redis",
+}
 
 func AccountIdCheckout(svcCtx *svc.ServiceContext, ctx context.Context, accountId uint64) error {
 	deviceId, err := svcCtx.DB.Account.Query().Where(account.ID(accountId)).Select(account.FieldDeviceID).Int(ctx)

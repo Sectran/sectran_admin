@@ -31,7 +31,7 @@ func NewGetUserByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 	}
 }
 
-func (l *GetUserByIdLogic) GetUserById(req *types.IDReq) (*types.UserInfoRespRefer, error) {
+func (l *GetUserByIdLogic) GetUserById(req *types.IDReqRefer) (*types.UserInfoRespRefer, error) {
 	//获取当前主体
 	domain := l.ctx.Value("request_domain").((*ent.User))
 
@@ -54,7 +54,7 @@ func (l *GetUserByIdLogic) GetUserById(req *types.IDReq) (*types.UserInfoRespRef
 	}
 
 	data.Password = ""
-	return &types.UserInfoRespRefer{
+	resp := &types.UserInfoRespRefer{
 		BaseDataInfo: types.BaseDataInfo{
 			Code: 0,
 			Msg:  l.svcCtx.Trans.Trans(l.ctx, i18n.Success),
@@ -67,7 +67,6 @@ func (l *GetUserByIdLogic) GetUserById(req *types.IDReq) (*types.UserInfoRespRef
 			},
 			Account:        &data.Account,
 			Name:           &data.Name,
-			Password:       &data.Password,
 			DepartmentId:   &data.DepartmentID,
 			RoleId:         &data.RoleID,
 			Status:         &data.Status,
@@ -77,5 +76,11 @@ func (l *GetUserByIdLogic) GetUserById(req *types.IDReq) (*types.UserInfoRespRef
 			RoleName:       &data.Edges.Departments.Name,
 			DepartmentName: &data.Edges.Departments.Name,
 		},
-	}, nil
+	}
+
+	if req.Detail {
+		resp.Data.Password = &data.Password
+	}
+
+	return resp, nil
 }
