@@ -493,6 +493,52 @@ func HasUsersWith(preds ...predicate.User) predicate.Department {
 	})
 }
 
+// HasDevices applies the HasEdge predicate on the "devices" edge.
+func HasDevices() predicate.Department {
+	return predicate.Department(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, DevicesTable, DevicesColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasDevicesWith applies the HasEdge predicate on the "devices" edge with a given conditions (other predicates).
+func HasDevicesWith(preds ...predicate.Device) predicate.Department {
+	return predicate.Department(func(s *sql.Selector) {
+		step := newDevicesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasAccounts applies the HasEdge predicate on the "accounts" edge.
+func HasAccounts() predicate.Department {
+	return predicate.Department(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, AccountsTable, AccountsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasAccountsWith applies the HasEdge predicate on the "accounts" edge with a given conditions (other predicates).
+func HasAccountsWith(preds ...predicate.Account) predicate.Department {
+	return predicate.Department(func(s *sql.Selector) {
+		step := newAccountsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Department) predicate.Department {
 	return predicate.Department(sql.AndPredicates(predicates...))

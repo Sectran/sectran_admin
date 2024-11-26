@@ -68,10 +68,10 @@ func (Account) Fields() []ent.Field {
 }
 
 // Edges of the Account.
-func (Account) Edges() []ent.Edge {
+func (Account) Edges() []ent.Edge { //账号是最小子元素。属于部门和设备。
 	return []ent.Edge{
 		edge.To("devices", Device.Type).Required().Unique().Field("device_id"),
-		edge.To("departments", Device.Type).Required().Unique().Field("department_id"),
+		edge.To("departments", Department.Type).Required().Unique().Field("department_id"),
 	}
 }
 

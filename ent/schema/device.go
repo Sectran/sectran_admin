@@ -43,9 +43,10 @@ func (Device) Fields() []ent.Field {
 }
 
 // Edges of the Device.
-func (Device) Edges() []ent.Edge {
+func (Device) Edges() []ent.Edge { //设备属于部门、账号属于设备
 	return []ent.Edge{
 		edge.To("departments", Department.Type).Required().Unique().Field("department_id"),
+		edge.From("accounts", Account.Type).Ref("devices"),
 	}
 }
 

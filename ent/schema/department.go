@@ -44,9 +44,11 @@ func (Department) Fields() []ent.Field {
 	}
 }
 
-func (Department) Edges() []ent.Edge {
+func (Department) Edges() []ent.Edge { //部门是最高元素，用户、设备、账号均属于部门
 	return []ent.Edge{
 		edge.From("users", User.Type).Ref("departments"),
+		edge.From("devices", Device.Type).Ref("departments"),
+		edge.From("accounts", Account.Type).Ref("departments"),
 	}
 }
 

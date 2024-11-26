@@ -630,7 +630,7 @@ func HasDepartments() predicate.Account {
 }
 
 // HasDepartmentsWith applies the HasEdge predicate on the "departments" edge with a given conditions (other predicates).
-func HasDepartmentsWith(preds ...predicate.Device) predicate.Account {
+func HasDepartmentsWith(preds ...predicate.Department) predicate.Account {
 	return predicate.Account(func(s *sql.Selector) {
 		step := newDepartmentsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {

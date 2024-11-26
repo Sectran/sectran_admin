@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 	"sectran_admin/ent/account"
+	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
 	"sectran_admin/ent/predicate"
 
@@ -23,7 +24,7 @@ type AccountQuery struct {
 	inters          []Interceptor
 	predicates      []predicate.Account
 	withDevices     *DeviceQuery
-	withDepartments *DeviceQuery
+	withDepartments *DepartmentQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -83,8 +84,8 @@ func (aq *AccountQuery) QueryDevices() *DeviceQuery {
 }
 
 // QueryDepartments chains the current query on the "departments" edge.
-func (aq *AccountQuery) QueryDepartments() *DeviceQuery {
-	query := (&DeviceClient{config: aq.config}).Query()
+func (aq *AccountQuery) QueryDepartments() *DepartmentQuery {
+	query := (&DepartmentClient{config: aq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := aq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -95,7 +96,7 @@ func (aq *AccountQuery) QueryDepartments() *DeviceQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(account.Table, account.FieldID, selector),
-			sqlgraph.To(device.Table, device.FieldID),
+			sqlgraph.To(department.Table, department.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, account.DepartmentsTable, account.DepartmentsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
@@ -317,8 +318,8 @@ func (aq *AccountQuery) WithDevices(opts ...func(*DeviceQuery)) *AccountQuery {
 
 // WithDepartments tells the query-builder to eager-load the nodes that are connected to
 // the "departments" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AccountQuery) WithDepartments(opts ...func(*DeviceQuery)) *AccountQuery {
-	query := (&DeviceClient{config: aq.config}).Query()
+func (aq *AccountQuery) WithDepartments(opts ...func(*DepartmentQuery)) *AccountQuery {
+	query := (&DepartmentClient{config: aq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -435,7 +436,7 @@ func (aq *AccountQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Acco
 	}
 	if query := aq.withDepartments; query != nil {
 		if err := aq.loadDepartments(ctx, query, nodes, nil,
-			func(n *Account, e *Device) { n.Edges.Departments = e }); err != nil {
+			func(n *Account, e *Department) { n.Edges.Departments = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -471,7 +472,7 @@ func (aq *AccountQuery) loadDevices(ctx context.Context, query *DeviceQuery, nod
 	}
 	return nil
 }
-func (aq *AccountQuery) loadDepartments(ctx context.Context, query *DeviceQuery, nodes []*Account, init func(*Account), assign func(*Account, *Device)) error {
+func (aq *AccountQuery) loadDepartments(ctx context.Context, query *DepartmentQuery, nodes []*Account, init func(*Account), assign func(*Account, *Department)) error {
 	ids := make([]uint64, 0, len(nodes))
 	nodeids := make(map[uint64][]*Account)
 	for i := range nodes {
@@ -484,7 +485,7 @@ func (aq *AccountQuery) loadDepartments(ctx context.Context, query *DeviceQuery,
 	if len(ids) == 0 {
 		return nil
 	}
-	query.Where(device.IDIn(ids...))
+	query.Where(department.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err

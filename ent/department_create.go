@@ -6,7 +6,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"sectran_admin/ent/account"
 	"sectran_admin/ent/department"
+	"sectran_admin/ent/device"
 	"sectran_admin/ent/user"
 	"time"
 
@@ -98,6 +100,36 @@ func (dc *DepartmentCreate) AddUsers(u ...*User) *DepartmentCreate {
 		ids[i] = u[i].ID
 	}
 	return dc.AddUserIDs(ids...)
+}
+
+// AddDeviceIDs adds the "devices" edge to the Device entity by IDs.
+func (dc *DepartmentCreate) AddDeviceIDs(ids ...uint64) *DepartmentCreate {
+	dc.mutation.AddDeviceIDs(ids...)
+	return dc
+}
+
+// AddDevices adds the "devices" edges to the Device entity.
+func (dc *DepartmentCreate) AddDevices(d ...*Device) *DepartmentCreate {
+	ids := make([]uint64, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return dc.AddDeviceIDs(ids...)
+}
+
+// AddAccountIDs adds the "accounts" edge to the Account entity by IDs.
+func (dc *DepartmentCreate) AddAccountIDs(ids ...uint64) *DepartmentCreate {
+	dc.mutation.AddAccountIDs(ids...)
+	return dc
+}
+
+// AddAccounts adds the "accounts" edges to the Account entity.
+func (dc *DepartmentCreate) AddAccounts(a ...*Account) *DepartmentCreate {
+	ids := make([]uint64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return dc.AddAccountIDs(ids...)
 }
 
 // Mutation returns the DepartmentMutation object of the builder.
@@ -257,6 +289,38 @@ func (dc *DepartmentCreate) createSpec() (*Department, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := dc.mutation.DevicesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.DevicesTable,
+			Columns: []string{department.DevicesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := dc.mutation.AccountsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.AccountsTable,
+			Columns: []string{department.AccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {

@@ -41,9 +41,13 @@ type Department struct {
 type DepartmentEdges struct {
 	// Users holds the value of the users edge.
 	Users []*User `json:"users,omitempty"`
+	// Devices holds the value of the devices edge.
+	Devices []*Device `json:"devices,omitempty"`
+	// Accounts holds the value of the accounts edge.
+	Accounts []*Account `json:"accounts,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [3]bool
 }
 
 // UsersOrErr returns the Users value or an error if the edge
@@ -53,6 +57,24 @@ func (e DepartmentEdges) UsersOrErr() ([]*User, error) {
 		return e.Users, nil
 	}
 	return nil, &NotLoadedError{edge: "users"}
+}
+
+// DevicesOrErr returns the Devices value or an error if the edge
+// was not loaded in eager-loading.
+func (e DepartmentEdges) DevicesOrErr() ([]*Device, error) {
+	if e.loadedTypes[1] {
+		return e.Devices, nil
+	}
+	return nil, &NotLoadedError{edge: "devices"}
+}
+
+// AccountsOrErr returns the Accounts value or an error if the edge
+// was not loaded in eager-loading.
+func (e DepartmentEdges) AccountsOrErr() ([]*Account, error) {
+	if e.loadedTypes[2] {
+		return e.Accounts, nil
+	}
+	return nil, &NotLoadedError{edge: "accounts"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -145,6 +167,16 @@ func (d *Department) Value(name string) (ent.Value, error) {
 // QueryUsers queries the "users" edge of the Department entity.
 func (d *Department) QueryUsers() *UserQuery {
 	return NewDepartmentClient(d.config).QueryUsers(d)
+}
+
+// QueryDevices queries the "devices" edge of the Department entity.
+func (d *Department) QueryDevices() *DeviceQuery {
+	return NewDepartmentClient(d.config).QueryDevices(d)
+}
+
+// QueryAccounts queries the "accounts" edge of the Department entity.
+func (d *Department) QueryAccounts() *AccountQuery {
+	return NewDepartmentClient(d.config).QueryAccounts(d)
 }
 
 // Update returns a builder for updating this Department.

@@ -8,6 +8,7 @@ import (
 	base "sectran_admin/internal/handler/base"
 	department "sectran_admin/internal/handler/department"
 	device "sectran_admin/internal/handler/device"
+	labletree "sectran_admin/internal/handler/labletree"
 	role "sectran_admin/internal/handler/role"
 	user "sectran_admin/internal/handler/user"
 	"sectran_admin/internal/svc"
@@ -191,4 +192,36 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		),
 	)
 
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/lable_tree/create",
+					Handler: labletree.CreateLableTreeHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/lable_tree/update",
+					Handler: labletree.UpdateLableTreeHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/lable_tree/delete",
+					Handler: labletree.DeleteLableTreeHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/lable_tree/list",
+					Handler: labletree.GetLableTreeListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/lable_tree",
+					Handler: labletree.GetLableTreeByIdHandler(serverCtx),
+				},
+			}...,
+		),
+	)
 }

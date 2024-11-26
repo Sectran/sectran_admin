@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"sectran_admin/ent/account"
 	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
 	"sectran_admin/ent/predicate"
@@ -116,6 +117,21 @@ func (du *DeviceUpdate) SetDepartments(d *Department) *DeviceUpdate {
 	return du.SetDepartmentsID(d.ID)
 }
 
+// AddAccountIDs adds the "accounts" edge to the Account entity by IDs.
+func (du *DeviceUpdate) AddAccountIDs(ids ...uint64) *DeviceUpdate {
+	du.mutation.AddAccountIDs(ids...)
+	return du
+}
+
+// AddAccounts adds the "accounts" edges to the Account entity.
+func (du *DeviceUpdate) AddAccounts(a ...*Account) *DeviceUpdate {
+	ids := make([]uint64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return du.AddAccountIDs(ids...)
+}
+
 // Mutation returns the DeviceMutation object of the builder.
 func (du *DeviceUpdate) Mutation() *DeviceMutation {
 	return du.mutation
@@ -125,6 +141,27 @@ func (du *DeviceUpdate) Mutation() *DeviceMutation {
 func (du *DeviceUpdate) ClearDepartments() *DeviceUpdate {
 	du.mutation.ClearDepartments()
 	return du
+}
+
+// ClearAccounts clears all "accounts" edges to the Account entity.
+func (du *DeviceUpdate) ClearAccounts() *DeviceUpdate {
+	du.mutation.ClearAccounts()
+	return du
+}
+
+// RemoveAccountIDs removes the "accounts" edge to Account entities by IDs.
+func (du *DeviceUpdate) RemoveAccountIDs(ids ...uint64) *DeviceUpdate {
+	du.mutation.RemoveAccountIDs(ids...)
+	return du
+}
+
+// RemoveAccounts removes "accounts" edges to Account entities.
+func (du *DeviceUpdate) RemoveAccounts(a ...*Account) *DeviceUpdate {
+	ids := make([]uint64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return du.RemoveAccountIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -252,6 +289,51 @@ func (du *DeviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if du.mutation.AccountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   device.AccountsTable,
+			Columns: []string{device.AccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := du.mutation.RemovedAccountsIDs(); len(nodes) > 0 && !du.mutation.AccountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   device.AccountsTable,
+			Columns: []string{device.AccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := du.mutation.AccountsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   device.AccountsTable,
+			Columns: []string{device.AccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, du.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{device.Label}
@@ -359,6 +441,21 @@ func (duo *DeviceUpdateOne) SetDepartments(d *Department) *DeviceUpdateOne {
 	return duo.SetDepartmentsID(d.ID)
 }
 
+// AddAccountIDs adds the "accounts" edge to the Account entity by IDs.
+func (duo *DeviceUpdateOne) AddAccountIDs(ids ...uint64) *DeviceUpdateOne {
+	duo.mutation.AddAccountIDs(ids...)
+	return duo
+}
+
+// AddAccounts adds the "accounts" edges to the Account entity.
+func (duo *DeviceUpdateOne) AddAccounts(a ...*Account) *DeviceUpdateOne {
+	ids := make([]uint64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return duo.AddAccountIDs(ids...)
+}
+
 // Mutation returns the DeviceMutation object of the builder.
 func (duo *DeviceUpdateOne) Mutation() *DeviceMutation {
 	return duo.mutation
@@ -368,6 +465,27 @@ func (duo *DeviceUpdateOne) Mutation() *DeviceMutation {
 func (duo *DeviceUpdateOne) ClearDepartments() *DeviceUpdateOne {
 	duo.mutation.ClearDepartments()
 	return duo
+}
+
+// ClearAccounts clears all "accounts" edges to the Account entity.
+func (duo *DeviceUpdateOne) ClearAccounts() *DeviceUpdateOne {
+	duo.mutation.ClearAccounts()
+	return duo
+}
+
+// RemoveAccountIDs removes the "accounts" edge to Account entities by IDs.
+func (duo *DeviceUpdateOne) RemoveAccountIDs(ids ...uint64) *DeviceUpdateOne {
+	duo.mutation.RemoveAccountIDs(ids...)
+	return duo
+}
+
+// RemoveAccounts removes "accounts" edges to Account entities.
+func (duo *DeviceUpdateOne) RemoveAccounts(a ...*Account) *DeviceUpdateOne {
+	ids := make([]uint64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return duo.RemoveAccountIDs(ids...)
 }
 
 // Where appends a list predicates to the DeviceUpdate builder.
@@ -518,6 +636,51 @@ func (duo *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err err
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if duo.mutation.AccountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   device.AccountsTable,
+			Columns: []string{device.AccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := duo.mutation.RemovedAccountsIDs(); len(nodes) > 0 && !duo.mutation.AccountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   device.AccountsTable,
+			Columns: []string{device.AccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := duo.mutation.AccountsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   device.AccountsTable,
+			Columns: []string{device.AccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {

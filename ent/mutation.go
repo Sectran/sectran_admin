@@ -646,18 +646,18 @@ func (m *AccountMutation) ResetDevices() {
 	m.cleareddevices = false
 }
 
-// SetDepartmentsID sets the "departments" edge to the Device entity by id.
+// SetDepartmentsID sets the "departments" edge to the Department entity by id.
 func (m *AccountMutation) SetDepartmentsID(id uint64) {
 	m.departments = &id
 }
 
-// ClearDepartments clears the "departments" edge to the Device entity.
+// ClearDepartments clears the "departments" edge to the Department entity.
 func (m *AccountMutation) ClearDepartments() {
 	m.cleareddepartments = true
 	m.clearedFields[account.FieldDepartmentID] = struct{}{}
 }
 
-// DepartmentsCleared reports if the "departments" edge to the Device entity was cleared.
+// DepartmentsCleared reports if the "departments" edge to the Department entity was cleared.
 func (m *AccountMutation) DepartmentsCleared() bool {
 	return m.cleareddepartments
 }
@@ -1128,6 +1128,12 @@ type DepartmentMutation struct {
 	users                   map[uint64]struct{}
 	removedusers            map[uint64]struct{}
 	clearedusers            bool
+	devices                 map[uint64]struct{}
+	removeddevices          map[uint64]struct{}
+	cleareddevices          bool
+	accounts                map[uint64]struct{}
+	removedaccounts         map[uint64]struct{}
+	clearedaccounts         bool
 	done                    bool
 	oldValue                func(context.Context) (*Department, error)
 	predicates              []predicate.Department
@@ -1563,6 +1569,114 @@ func (m *DepartmentMutation) ResetUsers() {
 	m.removedusers = nil
 }
 
+// AddDeviceIDs adds the "devices" edge to the Device entity by ids.
+func (m *DepartmentMutation) AddDeviceIDs(ids ...uint64) {
+	if m.devices == nil {
+		m.devices = make(map[uint64]struct{})
+	}
+	for i := range ids {
+		m.devices[ids[i]] = struct{}{}
+	}
+}
+
+// ClearDevices clears the "devices" edge to the Device entity.
+func (m *DepartmentMutation) ClearDevices() {
+	m.cleareddevices = true
+}
+
+// DevicesCleared reports if the "devices" edge to the Device entity was cleared.
+func (m *DepartmentMutation) DevicesCleared() bool {
+	return m.cleareddevices
+}
+
+// RemoveDeviceIDs removes the "devices" edge to the Device entity by IDs.
+func (m *DepartmentMutation) RemoveDeviceIDs(ids ...uint64) {
+	if m.removeddevices == nil {
+		m.removeddevices = make(map[uint64]struct{})
+	}
+	for i := range ids {
+		delete(m.devices, ids[i])
+		m.removeddevices[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedDevices returns the removed IDs of the "devices" edge to the Device entity.
+func (m *DepartmentMutation) RemovedDevicesIDs() (ids []uint64) {
+	for id := range m.removeddevices {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// DevicesIDs returns the "devices" edge IDs in the mutation.
+func (m *DepartmentMutation) DevicesIDs() (ids []uint64) {
+	for id := range m.devices {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetDevices resets all changes to the "devices" edge.
+func (m *DepartmentMutation) ResetDevices() {
+	m.devices = nil
+	m.cleareddevices = false
+	m.removeddevices = nil
+}
+
+// AddAccountIDs adds the "accounts" edge to the Account entity by ids.
+func (m *DepartmentMutation) AddAccountIDs(ids ...uint64) {
+	if m.accounts == nil {
+		m.accounts = make(map[uint64]struct{})
+	}
+	for i := range ids {
+		m.accounts[ids[i]] = struct{}{}
+	}
+}
+
+// ClearAccounts clears the "accounts" edge to the Account entity.
+func (m *DepartmentMutation) ClearAccounts() {
+	m.clearedaccounts = true
+}
+
+// AccountsCleared reports if the "accounts" edge to the Account entity was cleared.
+func (m *DepartmentMutation) AccountsCleared() bool {
+	return m.clearedaccounts
+}
+
+// RemoveAccountIDs removes the "accounts" edge to the Account entity by IDs.
+func (m *DepartmentMutation) RemoveAccountIDs(ids ...uint64) {
+	if m.removedaccounts == nil {
+		m.removedaccounts = make(map[uint64]struct{})
+	}
+	for i := range ids {
+		delete(m.accounts, ids[i])
+		m.removedaccounts[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedAccounts returns the removed IDs of the "accounts" edge to the Account entity.
+func (m *DepartmentMutation) RemovedAccountsIDs() (ids []uint64) {
+	for id := range m.removedaccounts {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// AccountsIDs returns the "accounts" edge IDs in the mutation.
+func (m *DepartmentMutation) AccountsIDs() (ids []uint64) {
+	for id := range m.accounts {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetAccounts resets all changes to the "accounts" edge.
+func (m *DepartmentMutation) ResetAccounts() {
+	m.accounts = nil
+	m.clearedaccounts = false
+	m.removedaccounts = nil
+}
+
 // Where appends a list predicates to the DepartmentMutation builder.
 func (m *DepartmentMutation) Where(ps ...predicate.Department) {
 	m.predicates = append(m.predicates, ps...)
@@ -1813,9 +1927,15 @@ func (m *DepartmentMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *DepartmentMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
 	if m.users != nil {
 		edges = append(edges, department.EdgeUsers)
+	}
+	if m.devices != nil {
+		edges = append(edges, department.EdgeDevices)
+	}
+	if m.accounts != nil {
+		edges = append(edges, department.EdgeAccounts)
 	}
 	return edges
 }
@@ -1830,15 +1950,33 @@ func (m *DepartmentMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case department.EdgeDevices:
+		ids := make([]ent.Value, 0, len(m.devices))
+		for id := range m.devices {
+			ids = append(ids, id)
+		}
+		return ids
+	case department.EdgeAccounts:
+		ids := make([]ent.Value, 0, len(m.accounts))
+		for id := range m.accounts {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *DepartmentMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
 	if m.removedusers != nil {
 		edges = append(edges, department.EdgeUsers)
+	}
+	if m.removeddevices != nil {
+		edges = append(edges, department.EdgeDevices)
+	}
+	if m.removedaccounts != nil {
+		edges = append(edges, department.EdgeAccounts)
 	}
 	return edges
 }
@@ -1853,15 +1991,33 @@ func (m *DepartmentMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case department.EdgeDevices:
+		ids := make([]ent.Value, 0, len(m.removeddevices))
+		for id := range m.removeddevices {
+			ids = append(ids, id)
+		}
+		return ids
+	case department.EdgeAccounts:
+		ids := make([]ent.Value, 0, len(m.removedaccounts))
+		for id := range m.removedaccounts {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *DepartmentMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
 	if m.clearedusers {
 		edges = append(edges, department.EdgeUsers)
+	}
+	if m.cleareddevices {
+		edges = append(edges, department.EdgeDevices)
+	}
+	if m.clearedaccounts {
+		edges = append(edges, department.EdgeAccounts)
 	}
 	return edges
 }
@@ -1872,6 +2028,10 @@ func (m *DepartmentMutation) EdgeCleared(name string) bool {
 	switch name {
 	case department.EdgeUsers:
 		return m.clearedusers
+	case department.EdgeDevices:
+		return m.cleareddevices
+	case department.EdgeAccounts:
+		return m.clearedaccounts
 	}
 	return false
 }
@@ -1890,6 +2050,12 @@ func (m *DepartmentMutation) ResetEdge(name string) error {
 	switch name {
 	case department.EdgeUsers:
 		m.ResetUsers()
+		return nil
+	case department.EdgeDevices:
+		m.ResetDevices()
+		return nil
+	case department.EdgeAccounts:
+		m.ResetAccounts()
 		return nil
 	}
 	return fmt.Errorf("unknown Department edge %s", name)
@@ -1910,6 +2076,9 @@ type DeviceMutation struct {
 	clearedFields      map[string]struct{}
 	departments        *uint64
 	cleareddepartments bool
+	accounts           map[uint64]struct{}
+	removedaccounts    map[uint64]struct{}
+	clearedaccounts    bool
 	done               bool
 	oldValue           func(context.Context) (*Device, error)
 	predicates         []predicate.Device
@@ -2311,6 +2480,60 @@ func (m *DeviceMutation) ResetDepartments() {
 	m.cleareddepartments = false
 }
 
+// AddAccountIDs adds the "accounts" edge to the Account entity by ids.
+func (m *DeviceMutation) AddAccountIDs(ids ...uint64) {
+	if m.accounts == nil {
+		m.accounts = make(map[uint64]struct{})
+	}
+	for i := range ids {
+		m.accounts[ids[i]] = struct{}{}
+	}
+}
+
+// ClearAccounts clears the "accounts" edge to the Account entity.
+func (m *DeviceMutation) ClearAccounts() {
+	m.clearedaccounts = true
+}
+
+// AccountsCleared reports if the "accounts" edge to the Account entity was cleared.
+func (m *DeviceMutation) AccountsCleared() bool {
+	return m.clearedaccounts
+}
+
+// RemoveAccountIDs removes the "accounts" edge to the Account entity by IDs.
+func (m *DeviceMutation) RemoveAccountIDs(ids ...uint64) {
+	if m.removedaccounts == nil {
+		m.removedaccounts = make(map[uint64]struct{})
+	}
+	for i := range ids {
+		delete(m.accounts, ids[i])
+		m.removedaccounts[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedAccounts returns the removed IDs of the "accounts" edge to the Account entity.
+func (m *DeviceMutation) RemovedAccountsIDs() (ids []uint64) {
+	for id := range m.removedaccounts {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// AccountsIDs returns the "accounts" edge IDs in the mutation.
+func (m *DeviceMutation) AccountsIDs() (ids []uint64) {
+	for id := range m.accounts {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetAccounts resets all changes to the "accounts" edge.
+func (m *DeviceMutation) ResetAccounts() {
+	m.accounts = nil
+	m.clearedaccounts = false
+	m.removedaccounts = nil
+}
+
 // Where appends a list predicates to the DeviceMutation builder.
 func (m *DeviceMutation) Where(ps ...predicate.Device) {
 	m.predicates = append(m.predicates, ps...)
@@ -2549,9 +2772,12 @@ func (m *DeviceMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *DeviceMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.departments != nil {
 		edges = append(edges, device.EdgeDepartments)
+	}
+	if m.accounts != nil {
+		edges = append(edges, device.EdgeAccounts)
 	}
 	return edges
 }
@@ -2564,27 +2790,47 @@ func (m *DeviceMutation) AddedIDs(name string) []ent.Value {
 		if id := m.departments; id != nil {
 			return []ent.Value{*id}
 		}
+	case device.EdgeAccounts:
+		ids := make([]ent.Value, 0, len(m.accounts))
+		for id := range m.accounts {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *DeviceMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.removedaccounts != nil {
+		edges = append(edges, device.EdgeAccounts)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *DeviceMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case device.EdgeAccounts:
+		ids := make([]ent.Value, 0, len(m.removedaccounts))
+		for id := range m.removedaccounts {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *DeviceMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.cleareddepartments {
 		edges = append(edges, device.EdgeDepartments)
+	}
+	if m.clearedaccounts {
+		edges = append(edges, device.EdgeAccounts)
 	}
 	return edges
 }
@@ -2595,6 +2841,8 @@ func (m *DeviceMutation) EdgeCleared(name string) bool {
 	switch name {
 	case device.EdgeDepartments:
 		return m.cleareddepartments
+	case device.EdgeAccounts:
+		return m.clearedaccounts
 	}
 	return false
 }
@@ -2616,6 +2864,9 @@ func (m *DeviceMutation) ResetEdge(name string) error {
 	switch name {
 	case device.EdgeDepartments:
 		m.ResetDepartments()
+		return nil
+	case device.EdgeAccounts:
+		m.ResetAccounts()
 		return nil
 	}
 	return fmt.Errorf("unknown Device edge %s", name)

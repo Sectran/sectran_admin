@@ -4,8 +4,10 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
+	"sectran_admin/ent/account"
 	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
 	"sectran_admin/ent/predicate"
@@ -23,6 +25,7 @@ type DeviceQuery struct {
 	inters          []Interceptor
 	predicates      []predicate.Device
 	withDepartments *DepartmentQuery
+	withAccounts    *AccountQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -74,6 +77,28 @@ func (dq *DeviceQuery) QueryDepartments() *DepartmentQuery {
 			sqlgraph.From(device.Table, device.FieldID, selector),
 			sqlgraph.To(department.Table, department.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, device.DepartmentsTable, device.DepartmentsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(dq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryAccounts chains the current query on the "accounts" edge.
+func (dq *DeviceQuery) QueryAccounts() *AccountQuery {
+	query := (&AccountClient{config: dq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := dq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := dq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(device.Table, device.FieldID, selector),
+			sqlgraph.To(account.Table, account.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, device.AccountsTable, device.AccountsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(dq.driver.Dialect(), step)
 		return fromU, nil
@@ -274,6 +299,7 @@ func (dq *DeviceQuery) Clone() *DeviceQuery {
 		inters:          append([]Interceptor{}, dq.inters...),
 		predicates:      append([]predicate.Device{}, dq.predicates...),
 		withDepartments: dq.withDepartments.Clone(),
+		withAccounts:    dq.withAccounts.Clone(),
 		// clone intermediate query.
 		sql:  dq.sql.Clone(),
 		path: dq.path,
@@ -288,6 +314,17 @@ func (dq *DeviceQuery) WithDepartments(opts ...func(*DepartmentQuery)) *DeviceQu
 		opt(query)
 	}
 	dq.withDepartments = query
+	return dq
+}
+
+// WithAccounts tells the query-builder to eager-load the nodes that are connected to
+// the "accounts" edge. The optional arguments are used to configure the query builder of the edge.
+func (dq *DeviceQuery) WithAccounts(opts ...func(*AccountQuery)) *DeviceQuery {
+	query := (&AccountClient{config: dq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	dq.withAccounts = query
 	return dq
 }
 
@@ -369,8 +406,9 @@ func (dq *DeviceQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Devic
 	var (
 		nodes       = []*Device{}
 		_spec       = dq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			dq.withDepartments != nil,
+			dq.withAccounts != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -394,6 +432,13 @@ func (dq *DeviceQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Devic
 	if query := dq.withDepartments; query != nil {
 		if err := dq.loadDepartments(ctx, query, nodes, nil,
 			func(n *Device, e *Department) { n.Edges.Departments = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := dq.withAccounts; query != nil {
+		if err := dq.loadAccounts(ctx, query, nodes,
+			func(n *Device) { n.Edges.Accounts = []*Account{} },
+			func(n *Device, e *Account) { n.Edges.Accounts = append(n.Edges.Accounts, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -426,6 +471,36 @@ func (dq *DeviceQuery) loadDepartments(ctx context.Context, query *DepartmentQue
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
+	}
+	return nil
+}
+func (dq *DeviceQuery) loadAccounts(ctx context.Context, query *AccountQuery, nodes []*Device, init func(*Device), assign func(*Device, *Account)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uint64]*Device)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(account.FieldDeviceID)
+	}
+	query.Where(predicate.Account(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(device.AccountsColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.DeviceID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "device_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }

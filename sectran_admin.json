@@ -1036,6 +1036,12 @@
         "pageSize"
       ],
       "properties": {
+        "deviceId": {
+          "description": "所属设备id",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "DeviceId"
+        },
         "page": {
           "description": "Page number | 第几页",
           "type": "integer",
@@ -1050,15 +1056,17 @@
           "maximum": 100000,
           "x-go-name": "PageSize"
         },
-        "password": {
-          "description": "account password|账号密码",
-          "type": "string",
-          "x-go-name": "Password"
+        "port": {
+          "description": "账号端口",
+          "type": "integer",
+          "format": "uint32",
+          "x-go-name": "Port"
         },
-        "privateKey": {
-          "description": "private_key of the this account.|账号私钥",
-          "type": "string",
-          "x-go-name": "PrivateKey"
+        "protocol": {
+          "description": "账号协议",
+          "type": "integer",
+          "format": "uint8",
+          "x-go-name": "Protocol"
         },
         "username": {
           "description": "account username|账号名称",
@@ -1405,6 +1413,11 @@
           "format": "uint64",
           "x-go-name": "DepartmentId"
         },
+        "deptName": {
+          "description": "the name of device department|设备所属部门名称",
+          "type": "string",
+          "x-go-name": "DeptName"
+        },
         "description": {
           "description": "Description of the device.|设备描述",
           "type": "string",
@@ -1581,6 +1594,7 @@
           "x-go-name": "Id"
         }
       },
+      "x-go-name": "IDReqRefer",
       "x-go-package": "sectran_admin/internal/types"
     },
     "IDsReq": {

@@ -5,6 +5,7 @@ package ent
 import (
 	"fmt"
 	"sectran_admin/ent/account"
+	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
 	"strings"
 	"time"
@@ -49,7 +50,7 @@ type AccountEdges struct {
 	// Devices holds the value of the devices edge.
 	Devices *Device `json:"devices,omitempty"`
 	// Departments holds the value of the departments edge.
-	Departments *Device `json:"departments,omitempty"`
+	Departments *Department `json:"departments,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [2]bool
@@ -68,11 +69,11 @@ func (e AccountEdges) DevicesOrErr() (*Device, error) {
 
 // DepartmentsOrErr returns the Departments value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e AccountEdges) DepartmentsOrErr() (*Device, error) {
+func (e AccountEdges) DepartmentsOrErr() (*Department, error) {
 	if e.Departments != nil {
 		return e.Departments, nil
 	} else if e.loadedTypes[1] {
-		return nil, &NotFoundError{label: device.Label}
+		return nil, &NotFoundError{label: department.Label}
 	}
 	return nil, &NotLoadedError{edge: "departments"}
 }
@@ -188,7 +189,7 @@ func (a *Account) QueryDevices() *DeviceQuery {
 }
 
 // QueryDepartments queries the "departments" edge of the Account entity.
-func (a *Account) QueryDepartments() *DeviceQuery {
+func (a *Account) QueryDepartments() *DepartmentQuery {
 	return NewAccountClient(a.config).QueryDepartments(a)
 }
 

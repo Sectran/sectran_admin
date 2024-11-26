@@ -35,9 +35,9 @@ var (
 				OnDelete:   schema.NoAction,
 			},
 			{
-				Symbol:     "accounts_devices_departments",
+				Symbol:     "accounts_departments_departments",
 				Columns:    []*schema.Column{AccountsColumns[10]},
-				RefColumns: []*schema.Column{DevicesColumns[0]},
+				RefColumns: []*schema.Column{DepartmentsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 		},
@@ -169,7 +169,7 @@ var (
 
 func init() {
 	AccountsTable.ForeignKeys[0].RefTable = DevicesTable
-	AccountsTable.ForeignKeys[1].RefTable = DevicesTable
+	AccountsTable.ForeignKeys[1].RefTable = DepartmentsTable
 	DevicesTable.ForeignKeys[0].RefTable = DepartmentsTable
 	UsersTable.ForeignKeys[0].RefTable = DepartmentsTable
 	UsersTable.ForeignKeys[1].RefTable = RolesTable

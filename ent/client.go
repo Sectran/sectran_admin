@@ -373,13 +373,13 @@ func (c *AccountClient) QueryDevices(a *Account) *DeviceQuery {
 }
 
 // QueryDepartments queries the departments edge of a Account.
-func (c *AccountClient) QueryDepartments(a *Account) *DeviceQuery {
-	query := (&DeviceClient{config: c.config}).Query()
+func (c *AccountClient) QueryDepartments(a *Account) *DepartmentQuery {
+	query := (&DepartmentClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := a.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(account.Table, account.FieldID, id),
-			sqlgraph.To(device.Table, device.FieldID),
+			sqlgraph.To(department.Table, department.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, account.DepartmentsTable, account.DepartmentsColumn),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
@@ -537,6 +537,38 @@ func (c *DepartmentClient) QueryUsers(d *Department) *UserQuery {
 	return query
 }
 
+// QueryDevices queries the devices edge of a Department.
+func (c *DepartmentClient) QueryDevices(d *Department) *DeviceQuery {
+	query := (&DeviceClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := d.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(department.Table, department.FieldID, id),
+			sqlgraph.To(device.Table, device.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, department.DevicesTable, department.DevicesColumn),
+		)
+		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryAccounts queries the accounts edge of a Department.
+func (c *DepartmentClient) QueryAccounts(d *Department) *AccountQuery {
+	query := (&AccountClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := d.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(department.Table, department.FieldID, id),
+			sqlgraph.To(account.Table, account.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, department.AccountsTable, department.AccountsColumn),
+		)
+		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *DepartmentClient) Hooks() []Hook {
 	return c.hooks.Department
@@ -679,6 +711,22 @@ func (c *DeviceClient) QueryDepartments(d *Device) *DepartmentQuery {
 			sqlgraph.From(device.Table, device.FieldID, id),
 			sqlgraph.To(department.Table, department.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, device.DepartmentsTable, device.DepartmentsColumn),
+		)
+		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryAccounts queries the accounts edge of a Device.
+func (c *DeviceClient) QueryAccounts(d *Device) *AccountQuery {
+	query := (&AccountClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := d.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(device.Table, device.FieldID, id),
+			sqlgraph.To(account.Table, account.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, device.AccountsTable, device.AccountsColumn),
 		)
 		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
 		return fromV, nil

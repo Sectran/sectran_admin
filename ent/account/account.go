@@ -49,9 +49,9 @@ const (
 	DevicesColumn = "device_id"
 	// DepartmentsTable is the table that holds the departments relation/edge.
 	DepartmentsTable = "accounts"
-	// DepartmentsInverseTable is the table name for the Device entity.
-	// It exists in this package in order to avoid circular dependency with the "device" package.
-	DepartmentsInverseTable = "devices"
+	// DepartmentsInverseTable is the table name for the Department entity.
+	// It exists in this package in order to avoid circular dependency with the "department" package.
+	DepartmentsInverseTable = "departments"
 	// DepartmentsColumn is the table column denoting the departments relation/edge.
 	DepartmentsColumn = "department_id"
 )

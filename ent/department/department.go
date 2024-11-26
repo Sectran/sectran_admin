@@ -30,6 +30,10 @@ const (
 	FieldParentDepartments = "parent_departments"
 	// EdgeUsers holds the string denoting the users edge name in mutations.
 	EdgeUsers = "users"
+	// EdgeDevices holds the string denoting the devices edge name in mutations.
+	EdgeDevices = "devices"
+	// EdgeAccounts holds the string denoting the accounts edge name in mutations.
+	EdgeAccounts = "accounts"
 	// Table holds the table name of the department in the database.
 	Table = "departments"
 	// UsersTable is the table that holds the users relation/edge.
@@ -39,6 +43,20 @@ const (
 	UsersInverseTable = "users"
 	// UsersColumn is the table column denoting the users relation/edge.
 	UsersColumn = "department_id"
+	// DevicesTable is the table that holds the devices relation/edge.
+	DevicesTable = "devices"
+	// DevicesInverseTable is the table name for the Device entity.
+	// It exists in this package in order to avoid circular dependency with the "device" package.
+	DevicesInverseTable = "devices"
+	// DevicesColumn is the table column denoting the devices relation/edge.
+	DevicesColumn = "department_id"
+	// AccountsTable is the table that holds the accounts relation/edge.
+	AccountsTable = "accounts"
+	// AccountsInverseTable is the table name for the Account entity.
+	// It exists in this package in order to avoid circular dependency with the "account" package.
+	AccountsInverseTable = "accounts"
+	// AccountsColumn is the table column denoting the accounts relation/edge.
+	AccountsColumn = "department_id"
 )
 
 // Columns holds all SQL columns for department fields.
@@ -136,10 +154,52 @@ func ByUsers(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newUsersStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByDevicesCount orders the results by devices count.
+func ByDevicesCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newDevicesStep(), opts...)
+	}
+}
+
+// ByDevices orders the results by devices terms.
+func ByDevices(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newDevicesStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByAccountsCount orders the results by accounts count.
+func ByAccountsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newAccountsStep(), opts...)
+	}
+}
+
+// ByAccounts orders the results by accounts terms.
+func ByAccounts(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAccountsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newUsersStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(UsersInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, true, UsersTable, UsersColumn),
+	)
+}
+func newDevicesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(DevicesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, DevicesTable, DevicesColumn),
+	)
+}
+func newAccountsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AccountsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, AccountsTable, AccountsColumn),
 	)
 }

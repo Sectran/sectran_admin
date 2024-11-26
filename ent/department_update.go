@@ -6,7 +6,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"sectran_admin/ent/account"
 	"sectran_admin/ent/department"
+	"sectran_admin/ent/device"
 	"sectran_admin/ent/predicate"
 	"sectran_admin/ent/user"
 	"time"
@@ -127,6 +129,36 @@ func (du *DepartmentUpdate) AddUsers(u ...*User) *DepartmentUpdate {
 	return du.AddUserIDs(ids...)
 }
 
+// AddDeviceIDs adds the "devices" edge to the Device entity by IDs.
+func (du *DepartmentUpdate) AddDeviceIDs(ids ...uint64) *DepartmentUpdate {
+	du.mutation.AddDeviceIDs(ids...)
+	return du
+}
+
+// AddDevices adds the "devices" edges to the Device entity.
+func (du *DepartmentUpdate) AddDevices(d ...*Device) *DepartmentUpdate {
+	ids := make([]uint64, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return du.AddDeviceIDs(ids...)
+}
+
+// AddAccountIDs adds the "accounts" edge to the Account entity by IDs.
+func (du *DepartmentUpdate) AddAccountIDs(ids ...uint64) *DepartmentUpdate {
+	du.mutation.AddAccountIDs(ids...)
+	return du
+}
+
+// AddAccounts adds the "accounts" edges to the Account entity.
+func (du *DepartmentUpdate) AddAccounts(a ...*Account) *DepartmentUpdate {
+	ids := make([]uint64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return du.AddAccountIDs(ids...)
+}
+
 // Mutation returns the DepartmentMutation object of the builder.
 func (du *DepartmentUpdate) Mutation() *DepartmentMutation {
 	return du.mutation
@@ -151,6 +183,48 @@ func (du *DepartmentUpdate) RemoveUsers(u ...*User) *DepartmentUpdate {
 		ids[i] = u[i].ID
 	}
 	return du.RemoveUserIDs(ids...)
+}
+
+// ClearDevices clears all "devices" edges to the Device entity.
+func (du *DepartmentUpdate) ClearDevices() *DepartmentUpdate {
+	du.mutation.ClearDevices()
+	return du
+}
+
+// RemoveDeviceIDs removes the "devices" edge to Device entities by IDs.
+func (du *DepartmentUpdate) RemoveDeviceIDs(ids ...uint64) *DepartmentUpdate {
+	du.mutation.RemoveDeviceIDs(ids...)
+	return du
+}
+
+// RemoveDevices removes "devices" edges to Device entities.
+func (du *DepartmentUpdate) RemoveDevices(d ...*Device) *DepartmentUpdate {
+	ids := make([]uint64, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return du.RemoveDeviceIDs(ids...)
+}
+
+// ClearAccounts clears all "accounts" edges to the Account entity.
+func (du *DepartmentUpdate) ClearAccounts() *DepartmentUpdate {
+	du.mutation.ClearAccounts()
+	return du
+}
+
+// RemoveAccountIDs removes the "accounts" edge to Account entities by IDs.
+func (du *DepartmentUpdate) RemoveAccountIDs(ids ...uint64) *DepartmentUpdate {
+	du.mutation.RemoveAccountIDs(ids...)
+	return du
+}
+
+// RemoveAccounts removes "accounts" edges to Account entities.
+func (du *DepartmentUpdate) RemoveAccounts(a ...*Account) *DepartmentUpdate {
+	ids := make([]uint64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return du.RemoveAccountIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -292,6 +366,96 @@ func (du *DepartmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if du.mutation.DevicesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.DevicesTable,
+			Columns: []string{department.DevicesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := du.mutation.RemovedDevicesIDs(); len(nodes) > 0 && !du.mutation.DevicesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.DevicesTable,
+			Columns: []string{department.DevicesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := du.mutation.DevicesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.DevicesTable,
+			Columns: []string{department.DevicesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if du.mutation.AccountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.AccountsTable,
+			Columns: []string{department.AccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := du.mutation.RemovedAccountsIDs(); len(nodes) > 0 && !du.mutation.AccountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.AccountsTable,
+			Columns: []string{department.AccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := du.mutation.AccountsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.AccountsTable,
+			Columns: []string{department.AccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, du.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{department.Label}
@@ -410,6 +574,36 @@ func (duo *DepartmentUpdateOne) AddUsers(u ...*User) *DepartmentUpdateOne {
 	return duo.AddUserIDs(ids...)
 }
 
+// AddDeviceIDs adds the "devices" edge to the Device entity by IDs.
+func (duo *DepartmentUpdateOne) AddDeviceIDs(ids ...uint64) *DepartmentUpdateOne {
+	duo.mutation.AddDeviceIDs(ids...)
+	return duo
+}
+
+// AddDevices adds the "devices" edges to the Device entity.
+func (duo *DepartmentUpdateOne) AddDevices(d ...*Device) *DepartmentUpdateOne {
+	ids := make([]uint64, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return duo.AddDeviceIDs(ids...)
+}
+
+// AddAccountIDs adds the "accounts" edge to the Account entity by IDs.
+func (duo *DepartmentUpdateOne) AddAccountIDs(ids ...uint64) *DepartmentUpdateOne {
+	duo.mutation.AddAccountIDs(ids...)
+	return duo
+}
+
+// AddAccounts adds the "accounts" edges to the Account entity.
+func (duo *DepartmentUpdateOne) AddAccounts(a ...*Account) *DepartmentUpdateOne {
+	ids := make([]uint64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return duo.AddAccountIDs(ids...)
+}
+
 // Mutation returns the DepartmentMutation object of the builder.
 func (duo *DepartmentUpdateOne) Mutation() *DepartmentMutation {
 	return duo.mutation
@@ -434,6 +628,48 @@ func (duo *DepartmentUpdateOne) RemoveUsers(u ...*User) *DepartmentUpdateOne {
 		ids[i] = u[i].ID
 	}
 	return duo.RemoveUserIDs(ids...)
+}
+
+// ClearDevices clears all "devices" edges to the Device entity.
+func (duo *DepartmentUpdateOne) ClearDevices() *DepartmentUpdateOne {
+	duo.mutation.ClearDevices()
+	return duo
+}
+
+// RemoveDeviceIDs removes the "devices" edge to Device entities by IDs.
+func (duo *DepartmentUpdateOne) RemoveDeviceIDs(ids ...uint64) *DepartmentUpdateOne {
+	duo.mutation.RemoveDeviceIDs(ids...)
+	return duo
+}
+
+// RemoveDevices removes "devices" edges to Device entities.
+func (duo *DepartmentUpdateOne) RemoveDevices(d ...*Device) *DepartmentUpdateOne {
+	ids := make([]uint64, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return duo.RemoveDeviceIDs(ids...)
+}
+
+// ClearAccounts clears all "accounts" edges to the Account entity.
+func (duo *DepartmentUpdateOne) ClearAccounts() *DepartmentUpdateOne {
+	duo.mutation.ClearAccounts()
+	return duo
+}
+
+// RemoveAccountIDs removes the "accounts" edge to Account entities by IDs.
+func (duo *DepartmentUpdateOne) RemoveAccountIDs(ids ...uint64) *DepartmentUpdateOne {
+	duo.mutation.RemoveAccountIDs(ids...)
+	return duo
+}
+
+// RemoveAccounts removes "accounts" edges to Account entities.
+func (duo *DepartmentUpdateOne) RemoveAccounts(a ...*Account) *DepartmentUpdateOne {
+	ids := make([]uint64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return duo.RemoveAccountIDs(ids...)
 }
 
 // Where appends a list predicates to the DepartmentUpdate builder.
@@ -598,6 +834,96 @@ func (duo *DepartmentUpdateOne) sqlSave(ctx context.Context) (_node *Department,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if duo.mutation.DevicesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.DevicesTable,
+			Columns: []string{department.DevicesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := duo.mutation.RemovedDevicesIDs(); len(nodes) > 0 && !duo.mutation.DevicesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.DevicesTable,
+			Columns: []string{department.DevicesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := duo.mutation.DevicesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.DevicesTable,
+			Columns: []string{department.DevicesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if duo.mutation.AccountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.AccountsTable,
+			Columns: []string{department.AccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := duo.mutation.RemovedAccountsIDs(); len(nodes) > 0 && !duo.mutation.AccountsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.AccountsTable,
+			Columns: []string{department.AccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := duo.mutation.AccountsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   department.AccountsTable,
+			Columns: []string{department.AccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {

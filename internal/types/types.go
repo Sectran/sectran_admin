@@ -285,6 +285,8 @@ type AccountInfo struct {
 	PrivateKey *string `json:"privateKey,optional"`
 	// account belong to|账号所属设备
 	DeviceId *uint64 `json:"deviceId,optional"`
+	// account lable ids|账号标签ID集合
+	Lables *string `json:"lables,optional"`
 }
 
 // The response data of account list | Account列表数据

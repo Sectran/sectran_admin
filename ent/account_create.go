@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"sectran_admin/ent/account"
+	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
 	"time"
 
@@ -138,14 +139,14 @@ func (ac *AccountCreate) SetDevices(d *Device) *AccountCreate {
 	return ac.SetDevicesID(d.ID)
 }
 
-// SetDepartmentsID sets the "departments" edge to the Device entity by ID.
+// SetDepartmentsID sets the "departments" edge to the Department entity by ID.
 func (ac *AccountCreate) SetDepartmentsID(id uint64) *AccountCreate {
 	ac.mutation.SetDepartmentsID(id)
 	return ac
 }
 
-// SetDepartments sets the "departments" edge to the Device entity.
-func (ac *AccountCreate) SetDepartments(d *Device) *AccountCreate {
+// SetDepartments sets the "departments" edge to the Department entity.
+func (ac *AccountCreate) SetDepartments(d *Department) *AccountCreate {
 	return ac.SetDepartmentsID(d.ID)
 }
 
@@ -352,7 +353,7 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 			Columns: []string{account.DepartmentsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeUint64),
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {

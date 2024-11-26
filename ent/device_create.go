@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"sectran_admin/ent/account"
 	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
 	"time"
@@ -94,6 +95,21 @@ func (dc *DeviceCreate) SetDepartmentsID(id uint64) *DeviceCreate {
 // SetDepartments sets the "departments" edge to the Department entity.
 func (dc *DeviceCreate) SetDepartments(d *Department) *DeviceCreate {
 	return dc.SetDepartmentsID(d.ID)
+}
+
+// AddAccountIDs adds the "accounts" edge to the Account entity by IDs.
+func (dc *DeviceCreate) AddAccountIDs(ids ...uint64) *DeviceCreate {
+	dc.mutation.AddAccountIDs(ids...)
+	return dc
+}
+
+// AddAccounts adds the "accounts" edges to the Account entity.
+func (dc *DeviceCreate) AddAccounts(a ...*Account) *DeviceCreate {
+	ids := make([]uint64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return dc.AddAccountIDs(ids...)
 }
 
 // Mutation returns the DeviceMutation object of the builder.
@@ -263,6 +279,22 @@ func (dc *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.DepartmentID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := dc.mutation.AccountsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   device.AccountsTable,
+			Columns: []string{device.AccountsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

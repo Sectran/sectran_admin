@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"sectran_admin/ent/account"
+	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
 	"sectran_admin/ent/predicate"
 	"time"
@@ -190,14 +191,14 @@ func (au *AccountUpdate) SetDevices(d *Device) *AccountUpdate {
 	return au.SetDevicesID(d.ID)
 }
 
-// SetDepartmentsID sets the "departments" edge to the Device entity by ID.
+// SetDepartmentsID sets the "departments" edge to the Department entity by ID.
 func (au *AccountUpdate) SetDepartmentsID(id uint64) *AccountUpdate {
 	au.mutation.SetDepartmentsID(id)
 	return au
 }
 
-// SetDepartments sets the "departments" edge to the Device entity.
-func (au *AccountUpdate) SetDepartments(d *Device) *AccountUpdate {
+// SetDepartments sets the "departments" edge to the Department entity.
+func (au *AccountUpdate) SetDepartments(d *Department) *AccountUpdate {
 	return au.SetDepartmentsID(d.ID)
 }
 
@@ -212,7 +213,7 @@ func (au *AccountUpdate) ClearDevices() *AccountUpdate {
 	return au
 }
 
-// ClearDepartments clears the "departments" edge to the Device entity.
+// ClearDepartments clears the "departments" edge to the Department entity.
 func (au *AccountUpdate) ClearDepartments() *AccountUpdate {
 	au.mutation.ClearDepartments()
 	return au
@@ -390,7 +391,7 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{account.DepartmentsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeUint64),
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -403,7 +404,7 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{account.DepartmentsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeUint64),
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {
@@ -592,14 +593,14 @@ func (auo *AccountUpdateOne) SetDevices(d *Device) *AccountUpdateOne {
 	return auo.SetDevicesID(d.ID)
 }
 
-// SetDepartmentsID sets the "departments" edge to the Device entity by ID.
+// SetDepartmentsID sets the "departments" edge to the Department entity by ID.
 func (auo *AccountUpdateOne) SetDepartmentsID(id uint64) *AccountUpdateOne {
 	auo.mutation.SetDepartmentsID(id)
 	return auo
 }
 
-// SetDepartments sets the "departments" edge to the Device entity.
-func (auo *AccountUpdateOne) SetDepartments(d *Device) *AccountUpdateOne {
+// SetDepartments sets the "departments" edge to the Department entity.
+func (auo *AccountUpdateOne) SetDepartments(d *Department) *AccountUpdateOne {
 	return auo.SetDepartmentsID(d.ID)
 }
 
@@ -614,7 +615,7 @@ func (auo *AccountUpdateOne) ClearDevices() *AccountUpdateOne {
 	return auo
 }
 
-// ClearDepartments clears the "departments" edge to the Device entity.
+// ClearDepartments clears the "departments" edge to the Department entity.
 func (auo *AccountUpdateOne) ClearDepartments() *AccountUpdateOne {
 	auo.mutation.ClearDepartments()
 	return auo
@@ -822,7 +823,7 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 			Columns: []string{account.DepartmentsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeUint64),
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -835,7 +836,7 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 			Columns: []string{account.DepartmentsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeUint64),
+				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {
