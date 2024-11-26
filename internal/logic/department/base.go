@@ -31,12 +31,7 @@ func GetCurrentDominDeptPrefix(svcCtx *svc.ServiceContext, domain *ent.User) (*s
 		return nil, err
 	}
 
-	prefix := fmt.Sprintf("%s%s%d", domainDept.ParentDepartments, func() string {
-		if domainDept.ParentDepartments == "" {
-			return ""
-		}
-		return ","
-	}(), domainDept.ID)
+	prefix := fmt.Sprintf("%s,%d", domainDept.ParentDepartments, domainDept.ID)
 	return &prefix, nil
 }
 
@@ -63,44 +58,55 @@ func ModifyCheckout(svcCtx *svc.ServiceContext, ctx context.Context, req *types.
 		return types.ErrInternalError
 	}
 
-	prefix := fmt.Sprintf("%s%s%d", pDept.ParentDepartments, func() string {
-		if pDept.ParentDepartments == "" {
-			return ""
-		}
-		return ","
-	}(), pDept.ID)
-	req.ParentDepartments = &prefix
-
-	var sameLevelDeptNames []struct {
-		Name string `json:"name"`
+	//判断当前账号是否对待操作 部门存在访问权限
+	if _, err = DomainDeptAccessed(int(domain.DepartmentID),
+		fmt.Sprintf("%s,%d", pDept.ParentDepartments, *req.ParentDepartmentId)); err != nil {
+		return err
 	}
 
+	if req.Id != nil {
+		reqDept, err := svcCtx.DB.Department.Get(ctx, *req.Id)
+		if err != nil {
+			if _, ok := err.(*ent.NotFoundError); ok {
+				return types.CustomError("父部门不存在，可能已被删除")
+			}
+			return types.ErrInternalError
+		}
+
+		if _, err = DomainDeptAccessed(int(domain.DepartmentID), reqDept.ParentDepartments); err != nil {
+			return err
+		}
+	}
+
+	//同层级部门名称不能重复
+	var prefix string
+	req.ParentDepartments = &prefix
+	if pDept.ParentDepartments == string(pDept.ID) {
+		prefix = pDept.ParentDepartments
+	} else {
+		prefix = fmt.Sprintf("%s,%d", pDept.ParentDepartments, pDept.ID)
+	}
+
+	// 判断是否存在同层级相同名称的部门
 	var predicates []predicate.Department
 	predicates = append(predicates, department.ParentDepartmentsHasPrefix(prefix))
 
-	//只有编辑才会传递ID
+	// 编辑时排除当前自身ID
 	if req.Id != nil {
 		predicates = append(predicates, department.IDNEQ(*req.Id))
 	}
 
-	err = svcCtx.DB.Department.Query().
-		Where(predicates...).
-		Select(department.FieldName).
-		Scan(ctx, &sameLevelDeptNames)
+	exists, err := svcCtx.DB.Department.Query().
+		Where(
+			append(predicates, department.NameEQ(*req.Name))...,
+		).
+		Exist(ctx)
 	if err != nil {
 		return types.ErrInternalError
 	}
 
-	//部门名称不能和同层级的部门名称重复
-	for _, v := range sameLevelDeptNames {
-		if strings.EqualFold(v.Name, *req.Name) {
-			return types.CustomError("当前部门层级已经存在相同名称的部门")
-		}
-	}
-
-	//判断当前账号是否对待操作部门存在访问权限
-	if _, err = DomainDeptAccessed(int(domain.DepartmentID), *req.ParentDepartments); err != nil {
-		return err
+	if exists {
+		return types.CustomError("当前部门层级已经存在相同名称的部门")
 	}
 
 	return nil

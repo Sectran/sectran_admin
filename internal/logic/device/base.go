@@ -29,7 +29,10 @@ func DeviceIdsCheckout(svcCtx *svc.ServiceContext, ctx context.Context, deviceId
 
 	deviceParentDepartments := make([]string, 0)
 	//设备所属部门必须为该主体的子部门
-	err = svcCtx.DB.Department.Query().Where(department.IDIn(deptIds...)).Select(department.FieldParentDepartments).Scan(ctx, &deviceParentDepartments)
+	err = svcCtx.DB.Department.Query().
+		Where(department.IDIn(deptIds...)).
+		Select(department.FieldParentDepartments).
+		Scan(ctx, &deviceParentDepartments)
 	if err != nil {
 		if _, ok := err.(*ent.NotFoundError); ok {
 			return types.CustomError("父部门不存在，可能已被删除")
@@ -37,8 +40,8 @@ func DeviceIdsCheckout(svcCtx *svc.ServiceContext, ctx context.Context, deviceId
 		return types.ErrInternalError
 	}
 
+	//当前主体是否存在权限操作该部门下的设备
 	for _, v := range deviceParentDepartments {
-		//当前主体是否存在权限操作该部门下的设备
 		if _, err = dept.DomainDeptAccessed(int(domain.DepartmentID), v); err != nil {
 			return err
 		}
@@ -74,7 +77,9 @@ func ModifyCheckout(svcCtx *svc.ServiceContext, ctx context.Context, req *types.
 	}
 
 	//验证主体是否能操作设备部门
-	deviceParentDepartments, err := svcCtx.DB.Department.Query().Where(department.ID(*req.DepartmentId)).Select(department.FieldParentDepartments).String(ctx)
+	deviceParentDepartments, err := svcCtx.DB.Department.Query().
+		Where(department.ID(*req.DepartmentId)).
+		Select(department.FieldParentDepartments).String(ctx)
 	if err != nil {
 		if _, ok := err.(*ent.NotFoundError); ok {
 			return types.CustomError("父部门不存在，可能已被删除")
@@ -86,25 +91,21 @@ func ModifyCheckout(svcCtx *svc.ServiceContext, ctx context.Context, req *types.
 		return err
 	}
 
-	//所修改的设备地址同部门中不可以重复
-	var predicates []predicate.Department
-	if len(deviceParentDepartments) > 0 {
-		predicates = append(predicates, department.ParentDepartmentsHasPrefix(deviceParentDepartments))
-	} else {
-		predicates = append(predicates, department.ParentDepartmentsEQ(deviceParentDepartments))
-	}
-
-	//只有编辑才会传递ID
+	// 只有编辑才会传递ID
 	var predicatesDevice []predicate.Device
 	predicatesDevice = append(predicatesDevice, device.HostEQ(*req.Host))
+	predicatesDevice = append(predicatesDevice, device.DepartmentIDEQ(*req.DepartmentId))
 	if req.Id != nil {
 		predicatesDevice = append(predicatesDevice, device.IDNEQ(*req.Id))
 	}
 
-	//同部门层级不允许出现重复的设备地址，不同部门之间可以
-	if c := svcCtx.DB.Device.Query().Where(predicatesDevice...).WithDepartments(func(q *ent.DepartmentQuery) {
-		q.Where(predicates...)
-	}).CountX(ctx); c > 0 {
+	// 同部门层级不允许出现重复的设备地址，不同部门之间可以
+	existName, err := svcCtx.DB.Device.Query().Where(predicatesDevice...).Exist(ctx)
+	if err != nil {
+		return types.ErrInternalError
+	}
+
+	if existName {
 		return types.CustomError("当前部门层级存在地址重复的设备")
 	}
 

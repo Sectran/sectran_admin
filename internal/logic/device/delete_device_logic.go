@@ -2,13 +2,16 @@ package device
 
 import (
 	"context"
+	"fmt"
 
 	"sectran_admin/ent"
+	"sectran_admin/ent/account"
 	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
 	dept "sectran_admin/internal/logic/department"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
+	"sectran_admin/internal/utils/entx"
 
 	"github.com/suyuan32/simple-admin-common/i18n"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -31,37 +34,41 @@ func NewDeleteDeviceLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Dele
 func (l *DeleteDeviceLogic) DeleteDevice(req *types.IDsReq) (*types.BaseMsgResp, error) {
 	domain := l.ctx.Value("request_domain").((*ent.User))
 
-	//校验当前主体是否有权限操作待删除的设备资源
-	for _, v := range req.Ids {
-		//查询当前设备的部门id
-		dDeptId, err := l.svcCtx.DB.Device.Query().
-			Where(device.ID(v)).
-			Select(device.FieldDepartmentID).Int(l.ctx)
-		if err != nil {
-			return nil, types.ErrInternalError
-		}
+	if err := entx.WithTx(l.ctx, l.svcCtx.DB, func(tx *ent.Tx) error {
+		for _, v := range req.Ids {
+			result, err := l.svcCtx.DB.Device.Query().
+				Where(device.ID(v)).
+				WithDepartments(func(q *ent.DepartmentQuery) {
+					q.Select(department.FieldParentDepartments) // 查询所属部门的上级部门集合
+				}).
+				Select(device.FieldName).
+				Only(l.ctx)
+			if err != nil {
+				return err
+			}
 
-		//查询当前设备所属部门的上级部门集合
-		dDeptParent, err := l.svcCtx.DB.Department.Query().
-			Where(department.ID(uint64(dDeptId))).
-			Select(department.FieldParentDepartments).String(l.ctx)
-		if err != nil {
-			return nil, types.ErrInternalError
-		}
+			if _, err = dept.DomainDeptAccessed((int(domain.DepartmentID)),
+				result.Edges.Departments.ParentDepartments); err != nil {
+				return err
+			}
 
-		//判断当前账号是否对待操作部门存在访问权限
-		if _, err = dept.DomainDeptAccessed((int(domain.DepartmentID)), dDeptParent); err != nil {
-			return nil, err
+			existAcc, err := l.svcCtx.DB.Account.Query().Where(account.DepartmentIDEQ(v)).Exist(l.ctx)
+			if err != nil {
+				return types.ErrExsitBindResource
+			}
+			if existAcc {
+				return types.CustomError(fmt.Sprintf("设备【%s】中存在未清理的账号", result.Name))
+			}
+
+			_, err = l.svcCtx.DB.Device.Delete().Where(device.IDIn(req.Ids...)).Exec(l.ctx)
+			if err != nil {
+				return types.ErrInternalError
+			}
 		}
+		return nil
+	}); err != nil {
+		return nil, err
 	}
-
-	_, err := l.svcCtx.DB.Device.Delete().Where(device.IDIn(req.Ids...)).Exec(l.ctx)
-	if err != nil {
-		return nil, types.ErrInternalError
-	}
-
-	//删除设备关联的账号
-	//策略中删除设备
 
 	return &types.BaseMsgResp{Msg: l.svcCtx.Trans.Trans(l.ctx, i18n.DeleteSuccess)}, nil
 }

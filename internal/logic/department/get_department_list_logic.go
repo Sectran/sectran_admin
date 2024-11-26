@@ -2,6 +2,7 @@ package department
 
 import (
 	"context"
+	"fmt"
 
 	"sectran_admin/ent"
 	"sectran_admin/ent/department"
@@ -48,7 +49,8 @@ func (l *GetDepartmentListLogic) GetDepartmentList(req *types.DepartmentListReqR
 			return nil, types.ErrInternalError
 		}
 
-		_, err = DomainDeptAccessed(int(domain.DepartmentID), target.ParentDepartments)
+		_, err = DomainDeptAccessed(int(domain.DepartmentID),
+			fmt.Sprintf("%s,%d", target.ParentDepartments, *req.ParentDeptId))
 		if err != nil {
 			return nil, err
 		}

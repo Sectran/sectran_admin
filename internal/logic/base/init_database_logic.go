@@ -44,7 +44,7 @@ func initDept(ctx *svc.ServiceContext) {
 			SetArea("北京").
 			SetDescription("北京山川科技股份有限公司根部门").
 			SetParentDepartmentID(math.MaxInt - 1).
-			SetParentDepartments("0").
+			SetParentDepartments("1").
 			Save(context.Background())
 		if err != nil {
 			fmt.Printf("项目初始化失败:%s\n", err)

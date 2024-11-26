@@ -25,7 +25,6 @@ func ModifyCheckout(svcCtx *svc.ServiceContext, ctx context.Context, req *types.
 		return types.CustomError("操作的账号部门不存在")
 	}
 
-	// 攻击行为
 	if _, err = dept.DomainDeptAccessed(int(domain.DepartmentID), targetDept.ParentDepartments); err != nil {
 		return err
 	}

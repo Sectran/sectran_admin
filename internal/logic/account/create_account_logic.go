@@ -3,6 +3,7 @@ package account
 import (
 	"context"
 
+	"sectran_admin/ent"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 	"sectran_admin/internal/utils/dberrorhandler"
@@ -27,23 +28,21 @@ func NewCreateAccountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Cre
 }
 
 func (l *CreateAccountLogic) CreateAccount(req *types.AccountInfo) (*types.BaseMsgResp, error) {
-	var (
-		err error
-	)
-
-	if err = ModifyCheckout(l.svcCtx, l.ctx, req); err != nil {
+	domain := l.ctx.Value("request_domain").((*ent.User))
+	if err := ModifyCheckout(l.svcCtx, l.ctx, req); err != nil {
 		return nil, err
 	}
 
-	_, err = l.svcCtx.DB.Account.Create().
+	_, err := l.svcCtx.DB.Account.Create().
 		SetNotNilUsername(req.Username).
 		SetNotNilPort(req.Port).
 		SetNotNilProtocol(req.Protocol).
 		SetNotNilPassword(req.Password).
 		SetNotNilPrivateKey(req.PrivateKey).
+		SetNotNilPrivateKeyPassword(req.PrivateKeyPassword).
 		SetNotNilDeviceID(req.DeviceId).
+		SetDepartmentID(domain.DepartmentID).
 		Save(l.ctx)
-
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
 	}

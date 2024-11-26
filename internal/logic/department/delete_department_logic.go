@@ -66,19 +66,19 @@ func (l *DeleteDepartmentLogic) DeleteDepartment(req *types.IDsReq) (*types.Base
 			}
 
 			//如果当前部门下存在关联用户、资源，不允许删除
-			count, err := l.svcCtx.DB.User.Query().Where(user.DepartmentIDEQ(d)).Exist(l.ctx)
+			ExistUser, err := l.svcCtx.DB.User.Query().Where(user.DepartmentIDEQ(d)).Exist(l.ctx)
 			if err != nil {
 				return types.ErrExsitBindResource
 			}
-			if count {
-				return types.CustomError(fmt.Sprintf("部门【%s】种存在未清理的用户", currentDept.Name))
+			if ExistUser {
+				return types.CustomError(fmt.Sprintf("部门【%s】中存在未清理的用户", currentDept.Name))
 			}
 
-			count, err = l.svcCtx.DB.Device.Query().Where(device.DepartmentIDEQ(d)).Exist(l.ctx)
+			ExistDevice, err := l.svcCtx.DB.Device.Query().Where(device.DepartmentIDEQ(d)).Exist(l.ctx)
 			if err != nil {
 				return types.ErrExsitBindResource
 			}
-			if count {
+			if ExistDevice {
 				return types.CustomError(fmt.Sprintf("部门【%s】中存在未清理的设备", currentDept.Name))
 			}
 
