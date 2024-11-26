@@ -14,29 +14,7 @@ import (
 )
 
 func DeviceIdCheckout(svcCtx *svc.ServiceContext, ctx context.Context, deviceId uint64) error {
-	domain := ctx.Value("request_domain").((*ent.User))
-
-	deptId, err := svcCtx.DB.Device.Query().Where(device.ID(deviceId)).Select(device.FieldDepartmentID).Int(ctx)
-	if err != nil {
-		logx.Errorw("操作设备账号时查询设备部门失败", logx.Field("DeviceId", deviceId))
-		return types.ErrInternalError
-	}
-
-	//设备所属部门必须为该主体的子部门
-	deviceParentDepartments, err := svcCtx.DB.Department.Query().Where(department.ID(uint64(deptId))).Select(department.FieldParentDepartments).String(ctx)
-	if err != nil {
-		if _, ok := err.(*ent.NotFoundError); ok {
-			return types.CustomError("父部门不存在，可能已被删除")
-		}
-		return types.ErrInternalError
-	}
-
-	//当前主体是否存在权限操作该部门下的设备
-	if _, err = dept.DomainDeptAccessed(int(domain.DepartmentID), deviceParentDepartments); err != nil {
-		return err
-	}
-
-	return nil
+	return DeviceIdsCheckout(svcCtx, ctx, []uint64{deviceId})
 }
 
 func DeviceIdsCheckout(svcCtx *svc.ServiceContext, ctx context.Context, deviceIds []uint64) error {

@@ -38,13 +38,7 @@ var ProtocolsMap = [...]string{
 }
 
 func AccountIdCheckout(svcCtx *svc.ServiceContext, ctx context.Context, accountId uint64) error {
-	deviceId, err := svcCtx.DB.Account.Query().Where(account.ID(accountId)).Select(account.FieldDeviceID).Int(ctx)
-	if err != nil {
-		logx.Errorw("操作设备账号时查询设备ID失败", logx.Field("accountId", accountId))
-		return types.ErrInternalError
-	}
-
-	return dev.DeviceIdCheckout(svcCtx, ctx, uint64(deviceId))
+	return AccountIdsCheckout(svcCtx, ctx, []uint64{accountId})
 }
 
 func AccountIdsCheckout(svcCtx *svc.ServiceContext, ctx context.Context, accountIds []uint64) error {

@@ -38,7 +38,11 @@ func (l *GetMenuListAuthorityLogic) GetMenuListAuthority(req *types.AuthorityReq
 	}
 
 	roleIDStr := strconv.FormatUint(role.ID, 10)
-	var policies [][]string = l.svcCtx.Casbin.GetFilteredPolicy(0, roleIDStr)
+	policies, err := l.svcCtx.Casbin.GetFilteredPolicy(0, roleIDStr)
+	if err != nil {
+		return nil, err
+	}
+
 	var list []string = make([]string, 0)
 	for _, v := range policies {
 		name := v[1]

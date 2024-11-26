@@ -930,6 +930,12 @@
           "format": "int64",
           "x-go-name": "CreatedAt"
         },
+        "departmentId": {
+          "description": "account belong to|账号所属部门",
+          "type": "integer",
+          "format": "uint64",
+          "x-go-name": "DepartmentId"
+        },
         "deviceId": {
           "description": "account belong to|账号所属设备",
           "type": "integer",
@@ -941,11 +947,6 @@
           "type": "integer",
           "format": "uint64",
           "x-go-name": "Id"
-        },
-        "lables": {
-          "description": "account lable ids|账号标签ID集合",
-          "type": "string",
-          "x-go-name": "Lables"
         },
         "password": {
           "description": "account password|账号密码",
@@ -962,6 +963,11 @@
           "description": "private_key of the this account.|账号私钥",
           "type": "string",
           "x-go-name": "PrivateKey"
+        },
+        "privateKeyPassword": {
+          "description": "private_key password of the this account.|私钥口令",
+          "type": "string",
+          "x-go-name": "PrivateKeyPassword"
         },
         "protocol": {
           "description": "protocol of the this account.|账号协议",
@@ -1036,12 +1042,6 @@
         "pageSize"
       ],
       "properties": {
-        "deviceId": {
-          "description": "所属设备id",
-          "type": "integer",
-          "format": "uint64",
-          "x-go-name": "DeviceId"
-        },
         "page": {
           "description": "Page number | 第几页",
           "type": "integer",
@@ -1056,17 +1056,15 @@
           "maximum": 100000,
           "x-go-name": "PageSize"
         },
-        "port": {
-          "description": "账号端口",
-          "type": "integer",
-          "format": "uint32",
-          "x-go-name": "Port"
+        "password": {
+          "description": "account password|账号密码",
+          "type": "string",
+          "x-go-name": "Password"
         },
-        "protocol": {
-          "description": "账号协议",
-          "type": "integer",
-          "format": "uint8",
-          "x-go-name": "Protocol"
+        "privateKey": {
+          "description": "private_key of the this account.|账号私钥",
+          "type": "string",
+          "x-go-name": "PrivateKey"
         },
         "username": {
           "description": "account username|账号名称",
@@ -1234,7 +1232,7 @@
       "x-go-package": "sectran_admin/internal/types"
     },
     "DepartmentInfo": {
-      "description": "The response data of department information | Department信息",
+      "description": "部门----------------------------\nThe response data of department information | Department信息",
       "type": "object",
       "properties": {
         "area": {
@@ -1252,6 +1250,10 @@
           "description": "Description of the department.|部门描述",
           "type": "string",
           "x-go-name": "Description"
+        },
+        "hasChildren": {
+          "type": "boolean",
+          "x-go-name": "HasChildren"
         },
         "id": {
           "description": "ID",

@@ -283,10 +283,12 @@ type AccountInfo struct {
 	Password *string `json:"password,optional"`
 	// private_key of the this account.|账号私钥
 	PrivateKey *string `json:"privateKey,optional"`
+	// private_key password of the this account.|私钥口令
+	PrivateKeyPassword *string `json:"privateKeyPassword,optional"`
 	// account belong to|账号所属设备
 	DeviceId *uint64 `json:"deviceId,optional"`
-	// account lable ids|账号标签ID集合
-	Lables *string `json:"lables,optional"`
+	// account belong to|账号所属部门
+	DepartmentId *uint64 `json:"departmentId,optional"`
 }
 
 // The response data of account list | Account列表数据

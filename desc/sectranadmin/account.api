@@ -1,94 +1,97 @@
 import "../base.api"
 
 type (
-    // The response data of account information | Account信息
-    AccountInfo {
-        BaseIDInfo
+	// The data of account information | Account信息
+	AccountInfo {
+		BaseIDInfo
 
-        // account username|账号名称 
-        Username  *string `json:"username,optional"`
+		// account username|账号名称
+		Username *string `json:"username,optional"`
 
-        // account port|端口 
-        Port  *uint32 `json:"port,optional"`
+		// account port|端口
+		Port *uint32 `json:"port,optional"`
 
-        // protocol of the this account.|账号协议 
-        Protocol  *uint8 `json:"protocol,optional"`
+		// protocol of the this account.|账号协议
+		Protocol *uint8 `json:"protocol,optional"`
 
-        // account password|账号密码 
-        Password  *string `json:"password,optional"`
+		// account password|账号密码
+		Password *string `json:"password,optional"`
 
-        // private_key of the this account.|账号私钥 
-        PrivateKey  *string `json:"privateKey,optional"`
+		// private_key of the this account.|账号私钥
+		PrivateKey *string `json:"privateKey,optional"`
 
-        // account belong to|账号所属设备 
-        DeviceId  *uint64 `json:"deviceId,optional"`
+		// private_key password of the this account.|私钥口令
+		PrivateKeyPassword *string `json:"privateKeyPassword,optional"`
 
-        // account lable ids|账号标签ID集合 
-        Lables  *string `json:"lables,optional"`
-    }
+		// account belong to|账号所属设备
+		DeviceId *uint64 `json:"deviceId,optional"`
 
-    // The response data of account list | Account列表数据
-    AccountListResp {
-        BaseDataInfo
+		// account belong to|账号所属部门
+		DepartmentId *uint64 `json:"departmentId,optional"`
+	}
 
-        // Account list data | Account列表数据
-        Data AccountListInfo `json:"data"`
-    }
+	// The response data of account list | Account信息列表数据
+	AccountListResp {
+		BaseDataInfo
 
-    // Account list data | Account列表数据
-    AccountListInfo {
-        BaseListInfo
+		// The account list data | Account信息列表数据
+		Data AccountListInfo `json:"data"`
+	}
 
-        // The API list data | Account列表数据
-        Data  []AccountInfo  `json:"data"`
-    }
+	// The account list data | Account信息列表数据
+	AccountListInfo {
+		BaseListInfo
 
-    // Get account list request params | Account列表请求参数
-    AccountListReq {
-        PageInfo
+		// The account list data | Account信息列表数据
+		Data []AccountInfo `json:"data"`
+	}
 
-        // account username|账号名称 
-        Username  *string `json:"username,optional"`
+	// Get account list request params | Account信息列表请求参数
+	AccountListReq {
+		PageInfo
 
-        // account password|账号密码 
-        Password  *string `json:"password,optional"`
+		// account username|账号名称
+		Username *string `json:"username,optional"`
 
-        // private_key of the this account.|账号私钥 
-        PrivateKey  *string `json:"privateKey,optional"`
-    }
+		// account password|账号密码
+		Password *string `json:"password,optional"`
 
-    // Account information response | Account信息返回体
-    AccountInfoResp {
-        BaseDataInfo
+		// private_key of the this account.|账号私钥
+		PrivateKey *string `json:"privateKey,optional"`
+	}
 
-        // Account information | Account数据
-        Data AccountInfo `json:"data"`
-    }
+	// The account information response | Account信息返回体
+	AccountInfoResp {
+		BaseDataInfo
+
+		// account information | Account信息数据
+		Data AccountInfo `json:"data"`
+	}
 )
 
 @server(
-    group: account
-    middleware: Authority
+	group: account
+	middleware: Authority
 )
 
 service SectranAdmin {
-    // Create account information | 创建Account
-    @handler createAccount
-    post /account/create (AccountInfo) returns (BaseMsgResp)
+	// Create account information | 创建Account信息
+	@handler createAccount
+	post /account/create (AccountInfo) returns (BaseMsgResp)
 
-    // Update account information | 更新Account
-    @handler updateAccount
-    post /account/update (AccountInfo) returns (BaseMsgResp)
+	// Update account information | 更新Account信息
+	@handler updateAccount
+	post /account/update (AccountInfo) returns (BaseMsgResp)
 
-    // Delete account information | 删除Account信息
-    @handler deleteAccount
-    post /account/delete (IDsReq) returns (BaseMsgResp)
+	// Delete account information | 删除Account信息
+	@handler deleteAccount
+	post /account/delete (IDsReq) returns (BaseMsgResp)
 
-    // Get account list | 获取Account列表
-    @handler getAccountList
-    post /account/list (AccountListReq) returns (AccountListResp)
+	// Get account list | 获取Account信息列表
+	@handler getAccountList
+	post /account/list (AccountListReq) returns (AccountListResp)
 
-    // Get account by ID | 通过ID获取Account
-    @handler getAccountById
-    post /account (IDReq) returns (AccountInfoResp)
+	// Get account by ID | 通过ID获取Account信息
+	@handler getAccountById
+	post /account (IDReq) returns (AccountInfoResp)
 }

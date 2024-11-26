@@ -3,8 +3,11 @@ package account
 import (
 	"context"
 
+	"sectran_admin/ent"
 	"sectran_admin/ent/account"
+	"sectran_admin/ent/department"
 	"sectran_admin/ent/predicate"
+	deptLogic "sectran_admin/internal/logic/department"
 	"sectran_admin/internal/svc"
 	"sectran_admin/internal/types"
 	"sectran_admin/internal/utils/dberrorhandler"
@@ -30,7 +33,16 @@ func NewGetAccountListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 }
 
 func (l *GetAccountListLogic) GetAccountList(req *types.AccountListReqRefer) (*types.AccountListResp, error) {
+	domain := l.ctx.Value("request_domain").((*ent.User))
 	var predicates []predicate.Account
+
+	prefix, err := deptLogic.GetCurrentDominDeptPrefix(l.svcCtx, domain)
+	if err != nil {
+		dberrorhandler.DefaultEntError(l.Logger, err, req)
+	}
+	predicates = append(predicates, //查询所有子部门下的设备
+		account.HasDepartmentsWith(department.ParentDepartmentsHasPrefix(*prefix)))
+
 	if req.Username != nil {
 		predicates = append(predicates, account.UsernameContains(*req.Username))
 	}

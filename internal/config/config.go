@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/suyuan32/simple-admin-common/config"
+	"github.com/suyuan32/simple-admin-common/i18n"
 	"github.com/suyuan32/simple-admin-common/plugins/casbin"
 	"github.com/zeromicro/go-zero/rest"
 )
@@ -15,6 +16,7 @@ type Config struct {
 	RedisConf          config.RedisConf
 	CasbinConf         casbin.CasbinConf
 	DatabaseConf       config.DatabaseConf
+	I18nConf           i18n.Conf
 }
 
 type UploadConf struct {

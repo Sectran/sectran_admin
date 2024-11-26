@@ -36,7 +36,11 @@ func (l *UpdateApiAuthorityLogic) UpdateApiAuthority(req *types.UpdateApiAuthori
 	roleIDStr := strconv.FormatUint(role.ID, 10)
 
 	// clear old policies
-	var oldPolicies [][]string = l.svcCtx.Casbin.GetFilteredPolicy(0, roleIDStr)
+	oldPolicies, err := l.svcCtx.Casbin.GetFilteredPolicy(0, roleIDStr)
+	if err != nil {
+		return nil, err
+	}
+
 	if len(oldPolicies) != 0 {
 		removeResult, err := l.svcCtx.Casbin.RemoveFilteredPolicy(0, roleIDStr)
 		if err != nil {

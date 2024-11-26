@@ -63,6 +63,7 @@ func (l *GetAccountByIdLogic) GetAccountById(req *types.IDReqRefer) (*types.Acco
 	if req.Detail {
 		resp.Data.Password = &data.Password
 		resp.Data.PrivateKey = &data.PrivateKey
+		resp.Data.PrivateKeyPassword = &data.PrivateKeyPassword
 	}
 
 	return resp, nil
