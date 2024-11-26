@@ -56,7 +56,6 @@ func (l *DeleteUserLogic) DeleteUser(req *types.IDsReq) (*types.BaseMsgResp, err
 		}
 	}
 
-	//todo:被删除的用户如果是在线状态应该强制下线
 	_, err := l.svcCtx.DB.User.Delete().Where(user.IDIn(req.Ids...)).Exec(l.ctx)
 
 	if err != nil {
