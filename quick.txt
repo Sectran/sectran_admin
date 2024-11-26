@@ -1,7 +1,0 @@
-#创建空白schema
-goctls extra ent schema -m xxx
-
-操作日志
-登录日志
-访问日志
-审计日志

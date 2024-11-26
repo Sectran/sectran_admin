@@ -63,7 +63,7 @@ func initRole(ctx *svc.ServiceContext) {
 
 	if c == 0 {
 		_, err := ctx.DB.Role.Create().
-			SetName("开发者管理员").
+			SetName("开发者").
 			SetWeight(0).Save(srvCtx)
 		if err != nil {
 			fmt.Printf("项目初始化失败:%s\n", err)
@@ -83,7 +83,7 @@ func initUser(ctx *svc.ServiceContext) {
 	if c == 0 {
 		_, err := ctx.DB.User.Create().
 			SetAccount("administrator").
-			SetName("admin").
+			SetName("开发者管理员").
 			SetDepartmentID(1).
 			SetRoleID(1).
 			SetPassword("0okm)OKM").
