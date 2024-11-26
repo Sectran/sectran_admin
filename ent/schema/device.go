@@ -45,8 +45,7 @@ func (Device) Fields() []ent.Field {
 // Edges of the Device.
 func (Device) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("departments", Department.Type).Unique().Field("department_id"),
-		edge.From("accounts", Account.Type).Ref("devices"),
+		edge.To("departments", Department.Type).Required().Unique().Field("department_id"),
 	}
 }
 

@@ -16,9 +16,11 @@ var (
 		{Name: "username", Type: field.TypeString, Size: 16, Comment: "account username|账号名称"},
 		{Name: "port", Type: field.TypeUint32, Comment: "account port|端口"},
 		{Name: "protocol", Type: field.TypeUint8, Comment: "protocol of the this account.|账号协议"},
-		{Name: "password", Type: field.TypeString, Size: 128, Comment: "account password|账号密码"},
-		{Name: "private_key", Type: field.TypeString, Size: 4096, Comment: "private_key of the this account.|账号私钥"},
-		{Name: "device_id", Type: field.TypeUint64, Nullable: true, Comment: "account belong to|账号所属设备"},
+		{Name: "password", Type: field.TypeString, Nullable: true, Size: 128, Comment: "account password|账号密码"},
+		{Name: "private_key", Type: field.TypeString, Nullable: true, Size: 4096, Comment: "private_key of the this account.|账号私钥"},
+		{Name: "private_key_password", Type: field.TypeString, Nullable: true, Size: 4096, Comment: "private_key password of the this account.|私钥口令"},
+		{Name: "device_id", Type: field.TypeUint64, Comment: "account belong to|账号所属设备"},
+		{Name: "department_id", Type: field.TypeUint64, Comment: "account belong to|账号所属部门"},
 	}
 	// AccountsTable holds the schema information for the "accounts" table.
 	AccountsTable = &schema.Table{
@@ -28,9 +30,15 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "accounts_devices_devices",
-				Columns:    []*schema.Column{AccountsColumns[8]},
+				Columns:    []*schema.Column{AccountsColumns[9]},
 				RefColumns: []*schema.Column{DevicesColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "accounts_devices_departments",
+				Columns:    []*schema.Column{AccountsColumns[10]},
+				RefColumns: []*schema.Column{DevicesColumns[0]},
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}
@@ -60,7 +68,7 @@ var (
 		{Name: "host", Type: field.TypeString, Size: 64, Comment: "login host|设备地址"},
 		{Name: "type", Type: field.TypeString, Size: 64, Comment: "type of the device.|设备类型"},
 		{Name: "description", Type: field.TypeString, Size: 128, Comment: "Description of the device.|设备描述"},
-		{Name: "department_id", Type: field.TypeUint64, Nullable: true, Comment: "ID of the device's department.|设备所属部门"},
+		{Name: "department_id", Type: field.TypeUint64, Comment: "ID of the device's department.|设备所属部门"},
 	}
 	// DevicesTable holds the schema information for the "devices" table.
 	DevicesTable = &schema.Table{
@@ -72,7 +80,7 @@ var (
 				Symbol:     "devices_departments_departments",
 				Columns:    []*schema.Column{DevicesColumns[7]},
 				RefColumns: []*schema.Column{DepartmentsColumns[0]},
-				OnDelete:   schema.SetNull,
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}
@@ -161,6 +169,7 @@ var (
 
 func init() {
 	AccountsTable.ForeignKeys[0].RefTable = DevicesTable
+	AccountsTable.ForeignKeys[1].RefTable = DevicesTable
 	DevicesTable.ForeignKeys[0].RefTable = DepartmentsTable
 	UsersTable.ForeignKeys[0].RefTable = DepartmentsTable
 	UsersTable.ForeignKeys[1].RefTable = RolesTable

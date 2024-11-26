@@ -6,7 +6,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"sectran_admin/ent/account"
 	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
 	"sectran_admin/ent/predicate"
@@ -64,12 +63,6 @@ func (du *DeviceUpdate) SetNillableDepartmentID(u *uint64) *DeviceUpdate {
 	return du
 }
 
-// ClearDepartmentID clears the value of the "department_id" field.
-func (du *DeviceUpdate) ClearDepartmentID() *DeviceUpdate {
-	du.mutation.ClearDepartmentID()
-	return du
-}
-
 // SetHost sets the "host" field.
 func (du *DeviceUpdate) SetHost(s string) *DeviceUpdate {
 	du.mutation.SetHost(s)
@@ -118,32 +111,9 @@ func (du *DeviceUpdate) SetDepartmentsID(id uint64) *DeviceUpdate {
 	return du
 }
 
-// SetNillableDepartmentsID sets the "departments" edge to the Department entity by ID if the given value is not nil.
-func (du *DeviceUpdate) SetNillableDepartmentsID(id *uint64) *DeviceUpdate {
-	if id != nil {
-		du = du.SetDepartmentsID(*id)
-	}
-	return du
-}
-
 // SetDepartments sets the "departments" edge to the Department entity.
 func (du *DeviceUpdate) SetDepartments(d *Department) *DeviceUpdate {
 	return du.SetDepartmentsID(d.ID)
-}
-
-// AddAccountIDs adds the "accounts" edge to the Account entity by IDs.
-func (du *DeviceUpdate) AddAccountIDs(ids ...uint64) *DeviceUpdate {
-	du.mutation.AddAccountIDs(ids...)
-	return du
-}
-
-// AddAccounts adds the "accounts" edges to the Account entity.
-func (du *DeviceUpdate) AddAccounts(a ...*Account) *DeviceUpdate {
-	ids := make([]uint64, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return du.AddAccountIDs(ids...)
 }
 
 // Mutation returns the DeviceMutation object of the builder.
@@ -155,27 +125,6 @@ func (du *DeviceUpdate) Mutation() *DeviceMutation {
 func (du *DeviceUpdate) ClearDepartments() *DeviceUpdate {
 	du.mutation.ClearDepartments()
 	return du
-}
-
-// ClearAccounts clears all "accounts" edges to the Account entity.
-func (du *DeviceUpdate) ClearAccounts() *DeviceUpdate {
-	du.mutation.ClearAccounts()
-	return du
-}
-
-// RemoveAccountIDs removes the "accounts" edge to Account entities by IDs.
-func (du *DeviceUpdate) RemoveAccountIDs(ids ...uint64) *DeviceUpdate {
-	du.mutation.RemoveAccountIDs(ids...)
-	return du
-}
-
-// RemoveAccounts removes "accounts" edges to Account entities.
-func (du *DeviceUpdate) RemoveAccounts(a ...*Account) *DeviceUpdate {
-	ids := make([]uint64, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return du.RemoveAccountIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -241,6 +190,9 @@ func (du *DeviceUpdate) check() error {
 			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Device.description": %w`, err)}
 		}
 	}
+	if _, ok := du.mutation.DepartmentsID(); du.mutation.DepartmentsCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Device.departments"`)
+	}
 	return nil
 }
 
@@ -293,51 +245,6 @@ func (du *DeviceUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if du.mutation.AccountsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   device.AccountsTable,
-			Columns: []string{device.AccountsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := du.mutation.RemovedAccountsIDs(); len(nodes) > 0 && !du.mutation.AccountsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   device.AccountsTable,
-			Columns: []string{device.AccountsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := du.mutation.AccountsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   device.AccountsTable,
-			Columns: []string{device.AccountsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {
@@ -399,12 +306,6 @@ func (duo *DeviceUpdateOne) SetNillableDepartmentID(u *uint64) *DeviceUpdateOne 
 	return duo
 }
 
-// ClearDepartmentID clears the value of the "department_id" field.
-func (duo *DeviceUpdateOne) ClearDepartmentID() *DeviceUpdateOne {
-	duo.mutation.ClearDepartmentID()
-	return duo
-}
-
 // SetHost sets the "host" field.
 func (duo *DeviceUpdateOne) SetHost(s string) *DeviceUpdateOne {
 	duo.mutation.SetHost(s)
@@ -453,32 +354,9 @@ func (duo *DeviceUpdateOne) SetDepartmentsID(id uint64) *DeviceUpdateOne {
 	return duo
 }
 
-// SetNillableDepartmentsID sets the "departments" edge to the Department entity by ID if the given value is not nil.
-func (duo *DeviceUpdateOne) SetNillableDepartmentsID(id *uint64) *DeviceUpdateOne {
-	if id != nil {
-		duo = duo.SetDepartmentsID(*id)
-	}
-	return duo
-}
-
 // SetDepartments sets the "departments" edge to the Department entity.
 func (duo *DeviceUpdateOne) SetDepartments(d *Department) *DeviceUpdateOne {
 	return duo.SetDepartmentsID(d.ID)
-}
-
-// AddAccountIDs adds the "accounts" edge to the Account entity by IDs.
-func (duo *DeviceUpdateOne) AddAccountIDs(ids ...uint64) *DeviceUpdateOne {
-	duo.mutation.AddAccountIDs(ids...)
-	return duo
-}
-
-// AddAccounts adds the "accounts" edges to the Account entity.
-func (duo *DeviceUpdateOne) AddAccounts(a ...*Account) *DeviceUpdateOne {
-	ids := make([]uint64, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return duo.AddAccountIDs(ids...)
 }
 
 // Mutation returns the DeviceMutation object of the builder.
@@ -490,27 +368,6 @@ func (duo *DeviceUpdateOne) Mutation() *DeviceMutation {
 func (duo *DeviceUpdateOne) ClearDepartments() *DeviceUpdateOne {
 	duo.mutation.ClearDepartments()
 	return duo
-}
-
-// ClearAccounts clears all "accounts" edges to the Account entity.
-func (duo *DeviceUpdateOne) ClearAccounts() *DeviceUpdateOne {
-	duo.mutation.ClearAccounts()
-	return duo
-}
-
-// RemoveAccountIDs removes the "accounts" edge to Account entities by IDs.
-func (duo *DeviceUpdateOne) RemoveAccountIDs(ids ...uint64) *DeviceUpdateOne {
-	duo.mutation.RemoveAccountIDs(ids...)
-	return duo
-}
-
-// RemoveAccounts removes "accounts" edges to Account entities.
-func (duo *DeviceUpdateOne) RemoveAccounts(a ...*Account) *DeviceUpdateOne {
-	ids := make([]uint64, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return duo.RemoveAccountIDs(ids...)
 }
 
 // Where appends a list predicates to the DeviceUpdate builder.
@@ -589,6 +446,9 @@ func (duo *DeviceUpdateOne) check() error {
 			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Device.description": %w`, err)}
 		}
 	}
+	if _, ok := duo.mutation.DepartmentsID(); duo.mutation.DepartmentsCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Device.departments"`)
+	}
 	return nil
 }
 
@@ -658,51 +518,6 @@ func (duo *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err err
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(department.FieldID, field.TypeUint64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if duo.mutation.AccountsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   device.AccountsTable,
-			Columns: []string{device.AccountsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := duo.mutation.RemovedAccountsIDs(); len(nodes) > 0 && !duo.mutation.AccountsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   device.AccountsTable,
-			Columns: []string{device.AccountsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := duo.mutation.AccountsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   device.AccountsTable,
-			Columns: []string{device.AccountsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
 			},
 		}
 		for _, k := range nodes {

@@ -40,24 +40,27 @@ const (
 // AccountMutation represents an operation that mutates the Account nodes in the graph.
 type AccountMutation struct {
 	config
-	op             Op
-	typ            string
-	id             *uint64
-	created_at     *time.Time
-	updated_at     *time.Time
-	username       *string
-	port           *uint32
-	addport        *int32
-	protocol       *uint8
-	addprotocol    *int8
-	password       *string
-	private_key    *string
-	clearedFields  map[string]struct{}
-	devices        *uint64
-	cleareddevices bool
-	done           bool
-	oldValue       func(context.Context) (*Account, error)
-	predicates     []predicate.Account
+	op                   Op
+	typ                  string
+	id                   *uint64
+	created_at           *time.Time
+	updated_at           *time.Time
+	username             *string
+	port                 *uint32
+	addport              *int32
+	protocol             *uint8
+	addprotocol          *int8
+	password             *string
+	private_key          *string
+	private_key_password *string
+	clearedFields        map[string]struct{}
+	devices              *uint64
+	cleareddevices       bool
+	departments          *uint64
+	cleareddepartments   bool
+	done                 bool
+	oldValue             func(context.Context) (*Account, error)
+	predicates           []predicate.Account
 }
 
 var _ ent.Mutation = (*AccountMutation)(nil)
@@ -415,9 +418,22 @@ func (m *AccountMutation) OldPassword(ctx context.Context) (v string, err error)
 	return oldValue.Password, nil
 }
 
+// ClearPassword clears the value of the "password" field.
+func (m *AccountMutation) ClearPassword() {
+	m.password = nil
+	m.clearedFields[account.FieldPassword] = struct{}{}
+}
+
+// PasswordCleared returns if the "password" field was cleared in this mutation.
+func (m *AccountMutation) PasswordCleared() bool {
+	_, ok := m.clearedFields[account.FieldPassword]
+	return ok
+}
+
 // ResetPassword resets all changes to the "password" field.
 func (m *AccountMutation) ResetPassword() {
 	m.password = nil
+	delete(m.clearedFields, account.FieldPassword)
 }
 
 // SetPrivateKey sets the "private_key" field.
@@ -451,9 +467,71 @@ func (m *AccountMutation) OldPrivateKey(ctx context.Context) (v string, err erro
 	return oldValue.PrivateKey, nil
 }
 
+// ClearPrivateKey clears the value of the "private_key" field.
+func (m *AccountMutation) ClearPrivateKey() {
+	m.private_key = nil
+	m.clearedFields[account.FieldPrivateKey] = struct{}{}
+}
+
+// PrivateKeyCleared returns if the "private_key" field was cleared in this mutation.
+func (m *AccountMutation) PrivateKeyCleared() bool {
+	_, ok := m.clearedFields[account.FieldPrivateKey]
+	return ok
+}
+
 // ResetPrivateKey resets all changes to the "private_key" field.
 func (m *AccountMutation) ResetPrivateKey() {
 	m.private_key = nil
+	delete(m.clearedFields, account.FieldPrivateKey)
+}
+
+// SetPrivateKeyPassword sets the "private_key_password" field.
+func (m *AccountMutation) SetPrivateKeyPassword(s string) {
+	m.private_key_password = &s
+}
+
+// PrivateKeyPassword returns the value of the "private_key_password" field in the mutation.
+func (m *AccountMutation) PrivateKeyPassword() (r string, exists bool) {
+	v := m.private_key_password
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPrivateKeyPassword returns the old "private_key_password" field's value of the Account entity.
+// If the Account object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AccountMutation) OldPrivateKeyPassword(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPrivateKeyPassword is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPrivateKeyPassword requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPrivateKeyPassword: %w", err)
+	}
+	return oldValue.PrivateKeyPassword, nil
+}
+
+// ClearPrivateKeyPassword clears the value of the "private_key_password" field.
+func (m *AccountMutation) ClearPrivateKeyPassword() {
+	m.private_key_password = nil
+	m.clearedFields[account.FieldPrivateKeyPassword] = struct{}{}
+}
+
+// PrivateKeyPasswordCleared returns if the "private_key_password" field was cleared in this mutation.
+func (m *AccountMutation) PrivateKeyPasswordCleared() bool {
+	_, ok := m.clearedFields[account.FieldPrivateKeyPassword]
+	return ok
+}
+
+// ResetPrivateKeyPassword resets all changes to the "private_key_password" field.
+func (m *AccountMutation) ResetPrivateKeyPassword() {
+	m.private_key_password = nil
+	delete(m.clearedFields, account.FieldPrivateKeyPassword)
 }
 
 // SetDeviceID sets the "device_id" field.
@@ -487,22 +565,45 @@ func (m *AccountMutation) OldDeviceID(ctx context.Context) (v uint64, err error)
 	return oldValue.DeviceID, nil
 }
 
-// ClearDeviceID clears the value of the "device_id" field.
-func (m *AccountMutation) ClearDeviceID() {
-	m.devices = nil
-	m.clearedFields[account.FieldDeviceID] = struct{}{}
-}
-
-// DeviceIDCleared returns if the "device_id" field was cleared in this mutation.
-func (m *AccountMutation) DeviceIDCleared() bool {
-	_, ok := m.clearedFields[account.FieldDeviceID]
-	return ok
-}
-
 // ResetDeviceID resets all changes to the "device_id" field.
 func (m *AccountMutation) ResetDeviceID() {
 	m.devices = nil
-	delete(m.clearedFields, account.FieldDeviceID)
+}
+
+// SetDepartmentID sets the "department_id" field.
+func (m *AccountMutation) SetDepartmentID(u uint64) {
+	m.departments = &u
+}
+
+// DepartmentID returns the value of the "department_id" field in the mutation.
+func (m *AccountMutation) DepartmentID() (r uint64, exists bool) {
+	v := m.departments
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDepartmentID returns the old "department_id" field's value of the Account entity.
+// If the Account object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AccountMutation) OldDepartmentID(ctx context.Context) (v uint64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDepartmentID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDepartmentID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDepartmentID: %w", err)
+	}
+	return oldValue.DepartmentID, nil
+}
+
+// ResetDepartmentID resets all changes to the "department_id" field.
+func (m *AccountMutation) ResetDepartmentID() {
+	m.departments = nil
 }
 
 // SetDevicesID sets the "devices" edge to the Device entity by id.
@@ -518,7 +619,7 @@ func (m *AccountMutation) ClearDevices() {
 
 // DevicesCleared reports if the "devices" edge to the Device entity was cleared.
 func (m *AccountMutation) DevicesCleared() bool {
-	return m.DeviceIDCleared() || m.cleareddevices
+	return m.cleareddevices
 }
 
 // DevicesID returns the "devices" edge ID in the mutation.
@@ -543,6 +644,46 @@ func (m *AccountMutation) DevicesIDs() (ids []uint64) {
 func (m *AccountMutation) ResetDevices() {
 	m.devices = nil
 	m.cleareddevices = false
+}
+
+// SetDepartmentsID sets the "departments" edge to the Device entity by id.
+func (m *AccountMutation) SetDepartmentsID(id uint64) {
+	m.departments = &id
+}
+
+// ClearDepartments clears the "departments" edge to the Device entity.
+func (m *AccountMutation) ClearDepartments() {
+	m.cleareddepartments = true
+	m.clearedFields[account.FieldDepartmentID] = struct{}{}
+}
+
+// DepartmentsCleared reports if the "departments" edge to the Device entity was cleared.
+func (m *AccountMutation) DepartmentsCleared() bool {
+	return m.cleareddepartments
+}
+
+// DepartmentsID returns the "departments" edge ID in the mutation.
+func (m *AccountMutation) DepartmentsID() (id uint64, exists bool) {
+	if m.departments != nil {
+		return *m.departments, true
+	}
+	return
+}
+
+// DepartmentsIDs returns the "departments" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// DepartmentsID instead. It exists only for internal usage by the builders.
+func (m *AccountMutation) DepartmentsIDs() (ids []uint64) {
+	if id := m.departments; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetDepartments resets all changes to the "departments" edge.
+func (m *AccountMutation) ResetDepartments() {
+	m.departments = nil
+	m.cleareddepartments = false
 }
 
 // Where appends a list predicates to the AccountMutation builder.
@@ -579,7 +720,7 @@ func (m *AccountMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AccountMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 10)
 	if m.created_at != nil {
 		fields = append(fields, account.FieldCreatedAt)
 	}
@@ -601,8 +742,14 @@ func (m *AccountMutation) Fields() []string {
 	if m.private_key != nil {
 		fields = append(fields, account.FieldPrivateKey)
 	}
+	if m.private_key_password != nil {
+		fields = append(fields, account.FieldPrivateKeyPassword)
+	}
 	if m.devices != nil {
 		fields = append(fields, account.FieldDeviceID)
+	}
+	if m.departments != nil {
+		fields = append(fields, account.FieldDepartmentID)
 	}
 	return fields
 }
@@ -626,8 +773,12 @@ func (m *AccountMutation) Field(name string) (ent.Value, bool) {
 		return m.Password()
 	case account.FieldPrivateKey:
 		return m.PrivateKey()
+	case account.FieldPrivateKeyPassword:
+		return m.PrivateKeyPassword()
 	case account.FieldDeviceID:
 		return m.DeviceID()
+	case account.FieldDepartmentID:
+		return m.DepartmentID()
 	}
 	return nil, false
 }
@@ -651,8 +802,12 @@ func (m *AccountMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldPassword(ctx)
 	case account.FieldPrivateKey:
 		return m.OldPrivateKey(ctx)
+	case account.FieldPrivateKeyPassword:
+		return m.OldPrivateKeyPassword(ctx)
 	case account.FieldDeviceID:
 		return m.OldDeviceID(ctx)
+	case account.FieldDepartmentID:
+		return m.OldDepartmentID(ctx)
 	}
 	return nil, fmt.Errorf("unknown Account field %s", name)
 }
@@ -711,12 +866,26 @@ func (m *AccountMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetPrivateKey(v)
 		return nil
+	case account.FieldPrivateKeyPassword:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPrivateKeyPassword(v)
+		return nil
 	case account.FieldDeviceID:
 		v, ok := value.(uint64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeviceID(v)
+		return nil
+	case account.FieldDepartmentID:
+		v, ok := value.(uint64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDepartmentID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Account field %s", name)
@@ -775,8 +944,14 @@ func (m *AccountMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *AccountMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(account.FieldDeviceID) {
-		fields = append(fields, account.FieldDeviceID)
+	if m.FieldCleared(account.FieldPassword) {
+		fields = append(fields, account.FieldPassword)
+	}
+	if m.FieldCleared(account.FieldPrivateKey) {
+		fields = append(fields, account.FieldPrivateKey)
+	}
+	if m.FieldCleared(account.FieldPrivateKeyPassword) {
+		fields = append(fields, account.FieldPrivateKeyPassword)
 	}
 	return fields
 }
@@ -792,8 +967,14 @@ func (m *AccountMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *AccountMutation) ClearField(name string) error {
 	switch name {
-	case account.FieldDeviceID:
-		m.ClearDeviceID()
+	case account.FieldPassword:
+		m.ClearPassword()
+		return nil
+	case account.FieldPrivateKey:
+		m.ClearPrivateKey()
+		return nil
+	case account.FieldPrivateKeyPassword:
+		m.ClearPrivateKeyPassword()
 		return nil
 	}
 	return fmt.Errorf("unknown Account nullable field %s", name)
@@ -824,8 +1005,14 @@ func (m *AccountMutation) ResetField(name string) error {
 	case account.FieldPrivateKey:
 		m.ResetPrivateKey()
 		return nil
+	case account.FieldPrivateKeyPassword:
+		m.ResetPrivateKeyPassword()
+		return nil
 	case account.FieldDeviceID:
 		m.ResetDeviceID()
+		return nil
+	case account.FieldDepartmentID:
+		m.ResetDepartmentID()
 		return nil
 	}
 	return fmt.Errorf("unknown Account field %s", name)
@@ -833,9 +1020,12 @@ func (m *AccountMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AccountMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.devices != nil {
 		edges = append(edges, account.EdgeDevices)
+	}
+	if m.departments != nil {
+		edges = append(edges, account.EdgeDepartments)
 	}
 	return edges
 }
@@ -848,13 +1038,17 @@ func (m *AccountMutation) AddedIDs(name string) []ent.Value {
 		if id := m.devices; id != nil {
 			return []ent.Value{*id}
 		}
+	case account.EdgeDepartments:
+		if id := m.departments; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AccountMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
@@ -866,9 +1060,12 @@ func (m *AccountMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AccountMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.cleareddevices {
 		edges = append(edges, account.EdgeDevices)
+	}
+	if m.cleareddepartments {
+		edges = append(edges, account.EdgeDepartments)
 	}
 	return edges
 }
@@ -879,6 +1076,8 @@ func (m *AccountMutation) EdgeCleared(name string) bool {
 	switch name {
 	case account.EdgeDevices:
 		return m.cleareddevices
+	case account.EdgeDepartments:
+		return m.cleareddepartments
 	}
 	return false
 }
@@ -890,6 +1089,9 @@ func (m *AccountMutation) ClearEdge(name string) error {
 	case account.EdgeDevices:
 		m.ClearDevices()
 		return nil
+	case account.EdgeDepartments:
+		m.ClearDepartments()
+		return nil
 	}
 	return fmt.Errorf("unknown Account unique edge %s", name)
 }
@@ -900,6 +1102,9 @@ func (m *AccountMutation) ResetEdge(name string) error {
 	switch name {
 	case account.EdgeDevices:
 		m.ResetDevices()
+		return nil
+	case account.EdgeDepartments:
+		m.ResetDepartments()
 		return nil
 	}
 	return fmt.Errorf("unknown Account edge %s", name)
@@ -1705,9 +1910,6 @@ type DeviceMutation struct {
 	clearedFields      map[string]struct{}
 	departments        *uint64
 	cleareddepartments bool
-	accounts           map[uint64]struct{}
-	removedaccounts    map[uint64]struct{}
-	clearedaccounts    bool
 	done               bool
 	oldValue           func(context.Context) (*Device, error)
 	predicates         []predicate.Device
@@ -1956,22 +2158,9 @@ func (m *DeviceMutation) OldDepartmentID(ctx context.Context) (v uint64, err err
 	return oldValue.DepartmentID, nil
 }
 
-// ClearDepartmentID clears the value of the "department_id" field.
-func (m *DeviceMutation) ClearDepartmentID() {
-	m.departments = nil
-	m.clearedFields[device.FieldDepartmentID] = struct{}{}
-}
-
-// DepartmentIDCleared returns if the "department_id" field was cleared in this mutation.
-func (m *DeviceMutation) DepartmentIDCleared() bool {
-	_, ok := m.clearedFields[device.FieldDepartmentID]
-	return ok
-}
-
 // ResetDepartmentID resets all changes to the "department_id" field.
 func (m *DeviceMutation) ResetDepartmentID() {
 	m.departments = nil
-	delete(m.clearedFields, device.FieldDepartmentID)
 }
 
 // SetHost sets the "host" field.
@@ -2095,7 +2284,7 @@ func (m *DeviceMutation) ClearDepartments() {
 
 // DepartmentsCleared reports if the "departments" edge to the Department entity was cleared.
 func (m *DeviceMutation) DepartmentsCleared() bool {
-	return m.DepartmentIDCleared() || m.cleareddepartments
+	return m.cleareddepartments
 }
 
 // DepartmentsID returns the "departments" edge ID in the mutation.
@@ -2120,60 +2309,6 @@ func (m *DeviceMutation) DepartmentsIDs() (ids []uint64) {
 func (m *DeviceMutation) ResetDepartments() {
 	m.departments = nil
 	m.cleareddepartments = false
-}
-
-// AddAccountIDs adds the "accounts" edge to the Account entity by ids.
-func (m *DeviceMutation) AddAccountIDs(ids ...uint64) {
-	if m.accounts == nil {
-		m.accounts = make(map[uint64]struct{})
-	}
-	for i := range ids {
-		m.accounts[ids[i]] = struct{}{}
-	}
-}
-
-// ClearAccounts clears the "accounts" edge to the Account entity.
-func (m *DeviceMutation) ClearAccounts() {
-	m.clearedaccounts = true
-}
-
-// AccountsCleared reports if the "accounts" edge to the Account entity was cleared.
-func (m *DeviceMutation) AccountsCleared() bool {
-	return m.clearedaccounts
-}
-
-// RemoveAccountIDs removes the "accounts" edge to the Account entity by IDs.
-func (m *DeviceMutation) RemoveAccountIDs(ids ...uint64) {
-	if m.removedaccounts == nil {
-		m.removedaccounts = make(map[uint64]struct{})
-	}
-	for i := range ids {
-		delete(m.accounts, ids[i])
-		m.removedaccounts[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedAccounts returns the removed IDs of the "accounts" edge to the Account entity.
-func (m *DeviceMutation) RemovedAccountsIDs() (ids []uint64) {
-	for id := range m.removedaccounts {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// AccountsIDs returns the "accounts" edge IDs in the mutation.
-func (m *DeviceMutation) AccountsIDs() (ids []uint64) {
-	for id := range m.accounts {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetAccounts resets all changes to the "accounts" edge.
-func (m *DeviceMutation) ResetAccounts() {
-	m.accounts = nil
-	m.clearedaccounts = false
-	m.removedaccounts = nil
 }
 
 // Where appends a list predicates to the DeviceMutation builder.
@@ -2367,11 +2502,7 @@ func (m *DeviceMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *DeviceMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(device.FieldDepartmentID) {
-		fields = append(fields, device.FieldDepartmentID)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -2384,11 +2515,6 @@ func (m *DeviceMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *DeviceMutation) ClearField(name string) error {
-	switch name {
-	case device.FieldDepartmentID:
-		m.ClearDepartmentID()
-		return nil
-	}
 	return fmt.Errorf("unknown Device nullable field %s", name)
 }
 
@@ -2423,12 +2549,9 @@ func (m *DeviceMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *DeviceMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 1)
 	if m.departments != nil {
 		edges = append(edges, device.EdgeDepartments)
-	}
-	if m.accounts != nil {
-		edges = append(edges, device.EdgeAccounts)
 	}
 	return edges
 }
@@ -2441,47 +2564,27 @@ func (m *DeviceMutation) AddedIDs(name string) []ent.Value {
 		if id := m.departments; id != nil {
 			return []ent.Value{*id}
 		}
-	case device.EdgeAccounts:
-		ids := make([]ent.Value, 0, len(m.accounts))
-		for id := range m.accounts {
-			ids = append(ids, id)
-		}
-		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *DeviceMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.removedaccounts != nil {
-		edges = append(edges, device.EdgeAccounts)
-	}
+	edges := make([]string, 0, 1)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *DeviceMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case device.EdgeAccounts:
-		ids := make([]ent.Value, 0, len(m.removedaccounts))
-		for id := range m.removedaccounts {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *DeviceMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 1)
 	if m.cleareddepartments {
 		edges = append(edges, device.EdgeDepartments)
-	}
-	if m.clearedaccounts {
-		edges = append(edges, device.EdgeAccounts)
 	}
 	return edges
 }
@@ -2492,8 +2595,6 @@ func (m *DeviceMutation) EdgeCleared(name string) bool {
 	switch name {
 	case device.EdgeDepartments:
 		return m.cleareddepartments
-	case device.EdgeAccounts:
-		return m.clearedaccounts
 	}
 	return false
 }
@@ -2515,9 +2616,6 @@ func (m *DeviceMutation) ResetEdge(name string) error {
 	switch name {
 	case device.EdgeDepartments:
 		m.ResetDepartments()
-		return nil
-	case device.EdgeAccounts:
-		m.ResetAccounts()
 		return nil
 	}
 	return fmt.Errorf("unknown Device edge %s", name)

@@ -90,9 +90,19 @@ func PrivateKey(v string) predicate.Account {
 	return predicate.Account(sql.FieldEQ(FieldPrivateKey, v))
 }
 
+// PrivateKeyPassword applies equality check predicate on the "private_key_password" field. It's identical to PrivateKeyPasswordEQ.
+func PrivateKeyPassword(v string) predicate.Account {
+	return predicate.Account(sql.FieldEQ(FieldPrivateKeyPassword, v))
+}
+
 // DeviceID applies equality check predicate on the "device_id" field. It's identical to DeviceIDEQ.
 func DeviceID(v uint64) predicate.Account {
 	return predicate.Account(sql.FieldEQ(FieldDeviceID, v))
+}
+
+// DepartmentID applies equality check predicate on the "department_id" field. It's identical to DepartmentIDEQ.
+func DepartmentID(v uint64) predicate.Account {
+	return predicate.Account(sql.FieldEQ(FieldDepartmentID, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -375,6 +385,16 @@ func PasswordHasSuffix(v string) predicate.Account {
 	return predicate.Account(sql.FieldHasSuffix(FieldPassword, v))
 }
 
+// PasswordIsNil applies the IsNil predicate on the "password" field.
+func PasswordIsNil() predicate.Account {
+	return predicate.Account(sql.FieldIsNull(FieldPassword))
+}
+
+// PasswordNotNil applies the NotNil predicate on the "password" field.
+func PasswordNotNil() predicate.Account {
+	return predicate.Account(sql.FieldNotNull(FieldPassword))
+}
+
 // PasswordEqualFold applies the EqualFold predicate on the "password" field.
 func PasswordEqualFold(v string) predicate.Account {
 	return predicate.Account(sql.FieldEqualFold(FieldPassword, v))
@@ -440,6 +460,16 @@ func PrivateKeyHasSuffix(v string) predicate.Account {
 	return predicate.Account(sql.FieldHasSuffix(FieldPrivateKey, v))
 }
 
+// PrivateKeyIsNil applies the IsNil predicate on the "private_key" field.
+func PrivateKeyIsNil() predicate.Account {
+	return predicate.Account(sql.FieldIsNull(FieldPrivateKey))
+}
+
+// PrivateKeyNotNil applies the NotNil predicate on the "private_key" field.
+func PrivateKeyNotNil() predicate.Account {
+	return predicate.Account(sql.FieldNotNull(FieldPrivateKey))
+}
+
 // PrivateKeyEqualFold applies the EqualFold predicate on the "private_key" field.
 func PrivateKeyEqualFold(v string) predicate.Account {
 	return predicate.Account(sql.FieldEqualFold(FieldPrivateKey, v))
@@ -448,6 +478,81 @@ func PrivateKeyEqualFold(v string) predicate.Account {
 // PrivateKeyContainsFold applies the ContainsFold predicate on the "private_key" field.
 func PrivateKeyContainsFold(v string) predicate.Account {
 	return predicate.Account(sql.FieldContainsFold(FieldPrivateKey, v))
+}
+
+// PrivateKeyPasswordEQ applies the EQ predicate on the "private_key_password" field.
+func PrivateKeyPasswordEQ(v string) predicate.Account {
+	return predicate.Account(sql.FieldEQ(FieldPrivateKeyPassword, v))
+}
+
+// PrivateKeyPasswordNEQ applies the NEQ predicate on the "private_key_password" field.
+func PrivateKeyPasswordNEQ(v string) predicate.Account {
+	return predicate.Account(sql.FieldNEQ(FieldPrivateKeyPassword, v))
+}
+
+// PrivateKeyPasswordIn applies the In predicate on the "private_key_password" field.
+func PrivateKeyPasswordIn(vs ...string) predicate.Account {
+	return predicate.Account(sql.FieldIn(FieldPrivateKeyPassword, vs...))
+}
+
+// PrivateKeyPasswordNotIn applies the NotIn predicate on the "private_key_password" field.
+func PrivateKeyPasswordNotIn(vs ...string) predicate.Account {
+	return predicate.Account(sql.FieldNotIn(FieldPrivateKeyPassword, vs...))
+}
+
+// PrivateKeyPasswordGT applies the GT predicate on the "private_key_password" field.
+func PrivateKeyPasswordGT(v string) predicate.Account {
+	return predicate.Account(sql.FieldGT(FieldPrivateKeyPassword, v))
+}
+
+// PrivateKeyPasswordGTE applies the GTE predicate on the "private_key_password" field.
+func PrivateKeyPasswordGTE(v string) predicate.Account {
+	return predicate.Account(sql.FieldGTE(FieldPrivateKeyPassword, v))
+}
+
+// PrivateKeyPasswordLT applies the LT predicate on the "private_key_password" field.
+func PrivateKeyPasswordLT(v string) predicate.Account {
+	return predicate.Account(sql.FieldLT(FieldPrivateKeyPassword, v))
+}
+
+// PrivateKeyPasswordLTE applies the LTE predicate on the "private_key_password" field.
+func PrivateKeyPasswordLTE(v string) predicate.Account {
+	return predicate.Account(sql.FieldLTE(FieldPrivateKeyPassword, v))
+}
+
+// PrivateKeyPasswordContains applies the Contains predicate on the "private_key_password" field.
+func PrivateKeyPasswordContains(v string) predicate.Account {
+	return predicate.Account(sql.FieldContains(FieldPrivateKeyPassword, v))
+}
+
+// PrivateKeyPasswordHasPrefix applies the HasPrefix predicate on the "private_key_password" field.
+func PrivateKeyPasswordHasPrefix(v string) predicate.Account {
+	return predicate.Account(sql.FieldHasPrefix(FieldPrivateKeyPassword, v))
+}
+
+// PrivateKeyPasswordHasSuffix applies the HasSuffix predicate on the "private_key_password" field.
+func PrivateKeyPasswordHasSuffix(v string) predicate.Account {
+	return predicate.Account(sql.FieldHasSuffix(FieldPrivateKeyPassword, v))
+}
+
+// PrivateKeyPasswordIsNil applies the IsNil predicate on the "private_key_password" field.
+func PrivateKeyPasswordIsNil() predicate.Account {
+	return predicate.Account(sql.FieldIsNull(FieldPrivateKeyPassword))
+}
+
+// PrivateKeyPasswordNotNil applies the NotNil predicate on the "private_key_password" field.
+func PrivateKeyPasswordNotNil() predicate.Account {
+	return predicate.Account(sql.FieldNotNull(FieldPrivateKeyPassword))
+}
+
+// PrivateKeyPasswordEqualFold applies the EqualFold predicate on the "private_key_password" field.
+func PrivateKeyPasswordEqualFold(v string) predicate.Account {
+	return predicate.Account(sql.FieldEqualFold(FieldPrivateKeyPassword, v))
+}
+
+// PrivateKeyPasswordContainsFold applies the ContainsFold predicate on the "private_key_password" field.
+func PrivateKeyPasswordContainsFold(v string) predicate.Account {
+	return predicate.Account(sql.FieldContainsFold(FieldPrivateKeyPassword, v))
 }
 
 // DeviceIDEQ applies the EQ predicate on the "device_id" field.
@@ -470,14 +575,24 @@ func DeviceIDNotIn(vs ...uint64) predicate.Account {
 	return predicate.Account(sql.FieldNotIn(FieldDeviceID, vs...))
 }
 
-// DeviceIDIsNil applies the IsNil predicate on the "device_id" field.
-func DeviceIDIsNil() predicate.Account {
-	return predicate.Account(sql.FieldIsNull(FieldDeviceID))
+// DepartmentIDEQ applies the EQ predicate on the "department_id" field.
+func DepartmentIDEQ(v uint64) predicate.Account {
+	return predicate.Account(sql.FieldEQ(FieldDepartmentID, v))
 }
 
-// DeviceIDNotNil applies the NotNil predicate on the "device_id" field.
-func DeviceIDNotNil() predicate.Account {
-	return predicate.Account(sql.FieldNotNull(FieldDeviceID))
+// DepartmentIDNEQ applies the NEQ predicate on the "department_id" field.
+func DepartmentIDNEQ(v uint64) predicate.Account {
+	return predicate.Account(sql.FieldNEQ(FieldDepartmentID, v))
+}
+
+// DepartmentIDIn applies the In predicate on the "department_id" field.
+func DepartmentIDIn(vs ...uint64) predicate.Account {
+	return predicate.Account(sql.FieldIn(FieldDepartmentID, vs...))
+}
+
+// DepartmentIDNotIn applies the NotIn predicate on the "department_id" field.
+func DepartmentIDNotIn(vs ...uint64) predicate.Account {
+	return predicate.Account(sql.FieldNotIn(FieldDepartmentID, vs...))
 }
 
 // HasDevices applies the HasEdge predicate on the "devices" edge.
@@ -495,6 +610,29 @@ func HasDevices() predicate.Account {
 func HasDevicesWith(preds ...predicate.Device) predicate.Account {
 	return predicate.Account(func(s *sql.Selector) {
 		step := newDevicesStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasDepartments applies the HasEdge predicate on the "departments" edge.
+func HasDepartments() predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, DepartmentsTable, DepartmentsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasDepartmentsWith applies the HasEdge predicate on the "departments" edge with a given conditions (other predicates).
+func HasDepartmentsWith(preds ...predicate.Device) predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		step := newDepartmentsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

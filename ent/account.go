@@ -32,8 +32,12 @@ type Account struct {
 	Password string `json:"password,omitempty"`
 	// private_key of the this account.|账号私钥
 	PrivateKey string `json:"private_key,omitempty"`
+	// private_key password of the this account.|私钥口令
+	PrivateKeyPassword string `json:"private_key_password,omitempty"`
 	// account belong to|账号所属设备
 	DeviceID uint64 `json:"device_id,omitempty"`
+	// account belong to|账号所属部门
+	DepartmentID uint64 `json:"department_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AccountQuery when eager-loading is set.
 	Edges        AccountEdges `json:"edges"`
@@ -44,9 +48,11 @@ type Account struct {
 type AccountEdges struct {
 	// Devices holds the value of the devices edge.
 	Devices *Device `json:"devices,omitempty"`
+	// Departments holds the value of the departments edge.
+	Departments *Device `json:"departments,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 }
 
 // DevicesOrErr returns the Devices value or an error if the edge
@@ -60,14 +66,25 @@ func (e AccountEdges) DevicesOrErr() (*Device, error) {
 	return nil, &NotLoadedError{edge: "devices"}
 }
 
+// DepartmentsOrErr returns the Departments value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e AccountEdges) DepartmentsOrErr() (*Device, error) {
+	if e.Departments != nil {
+		return e.Departments, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: device.Label}
+	}
+	return nil, &NotLoadedError{edge: "departments"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Account) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case account.FieldID, account.FieldPort, account.FieldProtocol, account.FieldDeviceID:
+		case account.FieldID, account.FieldPort, account.FieldProtocol, account.FieldDeviceID, account.FieldDepartmentID:
 			values[i] = new(sql.NullInt64)
-		case account.FieldUsername, account.FieldPassword, account.FieldPrivateKey:
+		case account.FieldUsername, account.FieldPassword, account.FieldPrivateKey, account.FieldPrivateKeyPassword:
 			values[i] = new(sql.NullString)
 		case account.FieldCreatedAt, account.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -134,11 +151,23 @@ func (a *Account) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				a.PrivateKey = value.String
 			}
+		case account.FieldPrivateKeyPassword:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field private_key_password", values[i])
+			} else if value.Valid {
+				a.PrivateKeyPassword = value.String
+			}
 		case account.FieldDeviceID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field device_id", values[i])
 			} else if value.Valid {
 				a.DeviceID = uint64(value.Int64)
+			}
+		case account.FieldDepartmentID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field department_id", values[i])
+			} else if value.Valid {
+				a.DepartmentID = uint64(value.Int64)
 			}
 		default:
 			a.selectValues.Set(columns[i], values[i])
@@ -156,6 +185,11 @@ func (a *Account) Value(name string) (ent.Value, error) {
 // QueryDevices queries the "devices" edge of the Account entity.
 func (a *Account) QueryDevices() *DeviceQuery {
 	return NewAccountClient(a.config).QueryDevices(a)
+}
+
+// QueryDepartments queries the "departments" edge of the Account entity.
+func (a *Account) QueryDepartments() *DeviceQuery {
+	return NewAccountClient(a.config).QueryDepartments(a)
 }
 
 // Update returns a builder for updating this Account.
@@ -202,8 +236,14 @@ func (a *Account) String() string {
 	builder.WriteString("private_key=")
 	builder.WriteString(a.PrivateKey)
 	builder.WriteString(", ")
+	builder.WriteString("private_key_password=")
+	builder.WriteString(a.PrivateKeyPassword)
+	builder.WriteString(", ")
 	builder.WriteString("device_id=")
 	builder.WriteString(fmt.Sprintf("%v", a.DeviceID))
+	builder.WriteString(", ")
+	builder.WriteString("department_id=")
+	builder.WriteString(fmt.Sprintf("%v", a.DepartmentID))
 	builder.WriteByte(')')
 	return builder.String()
 }

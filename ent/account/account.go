@@ -28,10 +28,16 @@ const (
 	FieldPassword = "password"
 	// FieldPrivateKey holds the string denoting the private_key field in the database.
 	FieldPrivateKey = "private_key"
+	// FieldPrivateKeyPassword holds the string denoting the private_key_password field in the database.
+	FieldPrivateKeyPassword = "private_key_password"
 	// FieldDeviceID holds the string denoting the device_id field in the database.
 	FieldDeviceID = "device_id"
+	// FieldDepartmentID holds the string denoting the department_id field in the database.
+	FieldDepartmentID = "department_id"
 	// EdgeDevices holds the string denoting the devices edge name in mutations.
 	EdgeDevices = "devices"
+	// EdgeDepartments holds the string denoting the departments edge name in mutations.
+	EdgeDepartments = "departments"
 	// Table holds the table name of the account in the database.
 	Table = "accounts"
 	// DevicesTable is the table that holds the devices relation/edge.
@@ -41,6 +47,13 @@ const (
 	DevicesInverseTable = "devices"
 	// DevicesColumn is the table column denoting the devices relation/edge.
 	DevicesColumn = "device_id"
+	// DepartmentsTable is the table that holds the departments relation/edge.
+	DepartmentsTable = "accounts"
+	// DepartmentsInverseTable is the table name for the Device entity.
+	// It exists in this package in order to avoid circular dependency with the "device" package.
+	DepartmentsInverseTable = "devices"
+	// DepartmentsColumn is the table column denoting the departments relation/edge.
+	DepartmentsColumn = "department_id"
 )
 
 // Columns holds all SQL columns for account fields.
@@ -53,7 +66,9 @@ var Columns = []string{
 	FieldProtocol,
 	FieldPassword,
 	FieldPrivateKey,
+	FieldPrivateKeyPassword,
 	FieldDeviceID,
+	FieldDepartmentID,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -83,8 +98,12 @@ var (
 	PasswordValidator func(string) error
 	// PrivateKeyValidator is a validator for the "private_key" field. It is called by the builders before save.
 	PrivateKeyValidator func(string) error
+	// PrivateKeyPasswordValidator is a validator for the "private_key_password" field. It is called by the builders before save.
+	PrivateKeyPasswordValidator func(string) error
 	// DeviceIDValidator is a validator for the "device_id" field. It is called by the builders before save.
 	DeviceIDValidator func(uint64) error
+	// DepartmentIDValidator is a validator for the "department_id" field. It is called by the builders before save.
+	DepartmentIDValidator func(uint64) error
 )
 
 // OrderOption defines the ordering options for the Account queries.
@@ -130,9 +149,19 @@ func ByPrivateKey(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPrivateKey, opts...).ToFunc()
 }
 
+// ByPrivateKeyPassword orders the results by the private_key_password field.
+func ByPrivateKeyPassword(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPrivateKeyPassword, opts...).ToFunc()
+}
+
 // ByDeviceID orders the results by the device_id field.
 func ByDeviceID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDeviceID, opts...).ToFunc()
+}
+
+// ByDepartmentID orders the results by the department_id field.
+func ByDepartmentID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDepartmentID, opts...).ToFunc()
 }
 
 // ByDevicesField orders the results by devices field.
@@ -141,10 +170,24 @@ func ByDevicesField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newDevicesStep(), sql.OrderByField(field, opts...))
 	}
 }
+
+// ByDepartmentsField orders the results by departments field.
+func ByDepartmentsField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newDepartmentsStep(), sql.OrderByField(field, opts...))
+	}
+}
 func newDevicesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(DevicesInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, false, DevicesTable, DevicesColumn),
+	)
+}
+func newDepartmentsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(DepartmentsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, DepartmentsTable, DepartmentsColumn),
 	)
 }

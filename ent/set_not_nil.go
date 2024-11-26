@@ -149,6 +149,30 @@ func (a *AccountCreate) SetNotNilPrivateKey(value *string) *AccountCreate {
 }
 
 // set field if value's pointer is not nil.
+func (a *AccountUpdate) SetNotNilPrivateKeyPassword(value *string) *AccountUpdate {
+	if value != nil {
+		return a.SetPrivateKeyPassword(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountUpdateOne) SetNotNilPrivateKeyPassword(value *string) *AccountUpdateOne {
+	if value != nil {
+		return a.SetPrivateKeyPassword(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountCreate) SetNotNilPrivateKeyPassword(value *string) *AccountCreate {
+	if value != nil {
+		return a.SetPrivateKeyPassword(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
 func (a *AccountUpdate) SetNotNilDeviceID(value *uint64) *AccountUpdate {
 	if value != nil {
 		return a.SetDeviceID(*value)
@@ -168,6 +192,30 @@ func (a *AccountUpdateOne) SetNotNilDeviceID(value *uint64) *AccountUpdateOne {
 func (a *AccountCreate) SetNotNilDeviceID(value *uint64) *AccountCreate {
 	if value != nil {
 		return a.SetDeviceID(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountUpdate) SetNotNilDepartmentID(value *uint64) *AccountUpdate {
+	if value != nil {
+		return a.SetDepartmentID(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountUpdateOne) SetNotNilDepartmentID(value *uint64) *AccountUpdateOne {
+	if value != nil {
+		return a.SetDepartmentID(*value)
+	}
+	return a
+}
+
+// set field if value's pointer is not nil.
+func (a *AccountCreate) SetNotNilDepartmentID(value *uint64) *AccountCreate {
+	if value != nil {
+		return a.SetDepartmentID(*value)
 	}
 	return a
 }

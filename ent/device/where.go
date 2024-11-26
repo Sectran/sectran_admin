@@ -255,16 +255,6 @@ func DepartmentIDNotIn(vs ...uint64) predicate.Device {
 	return predicate.Device(sql.FieldNotIn(FieldDepartmentID, vs...))
 }
 
-// DepartmentIDIsNil applies the IsNil predicate on the "department_id" field.
-func DepartmentIDIsNil() predicate.Device {
-	return predicate.Device(sql.FieldIsNull(FieldDepartmentID))
-}
-
-// DepartmentIDNotNil applies the NotNil predicate on the "department_id" field.
-func DepartmentIDNotNil() predicate.Device {
-	return predicate.Device(sql.FieldNotNull(FieldDepartmentID))
-}
-
 // HostEQ applies the EQ predicate on the "host" field.
 func HostEQ(v string) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldHost, v))
@@ -475,29 +465,6 @@ func HasDepartments() predicate.Device {
 func HasDepartmentsWith(preds ...predicate.Department) predicate.Device {
 	return predicate.Device(func(s *sql.Selector) {
 		step := newDepartmentsStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasAccounts applies the HasEdge predicate on the "accounts" edge.
-func HasAccounts() predicate.Device {
-	return predicate.Device(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, AccountsTable, AccountsColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasAccountsWith applies the HasEdge predicate on the "accounts" edge with a given conditions (other predicates).
-func HasAccountsWith(preds ...predicate.Account) predicate.Device {
-	return predicate.Device(func(s *sql.Selector) {
-		step := newAccountsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

@@ -70,8 +70,8 @@ func (Account) Fields() []ent.Field {
 // Edges of the Account.
 func (Account) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("devices", Device.Type).Unique().Field("device_id"),
-		edge.To("departments", Device.Type).Unique().Field("department_id"),
+		edge.To("devices", Device.Type).Required().Unique().Field("device_id"),
+		edge.To("departments", Device.Type).Required().Unique().Field("department_id"),
 	}
 }
 

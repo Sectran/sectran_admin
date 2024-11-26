@@ -73,9 +73,39 @@ func (ac *AccountCreate) SetPassword(s string) *AccountCreate {
 	return ac
 }
 
+// SetNillablePassword sets the "password" field if the given value is not nil.
+func (ac *AccountCreate) SetNillablePassword(s *string) *AccountCreate {
+	if s != nil {
+		ac.SetPassword(*s)
+	}
+	return ac
+}
+
 // SetPrivateKey sets the "private_key" field.
 func (ac *AccountCreate) SetPrivateKey(s string) *AccountCreate {
 	ac.mutation.SetPrivateKey(s)
+	return ac
+}
+
+// SetNillablePrivateKey sets the "private_key" field if the given value is not nil.
+func (ac *AccountCreate) SetNillablePrivateKey(s *string) *AccountCreate {
+	if s != nil {
+		ac.SetPrivateKey(*s)
+	}
+	return ac
+}
+
+// SetPrivateKeyPassword sets the "private_key_password" field.
+func (ac *AccountCreate) SetPrivateKeyPassword(s string) *AccountCreate {
+	ac.mutation.SetPrivateKeyPassword(s)
+	return ac
+}
+
+// SetNillablePrivateKeyPassword sets the "private_key_password" field if the given value is not nil.
+func (ac *AccountCreate) SetNillablePrivateKeyPassword(s *string) *AccountCreate {
+	if s != nil {
+		ac.SetPrivateKeyPassword(*s)
+	}
 	return ac
 }
 
@@ -85,11 +115,9 @@ func (ac *AccountCreate) SetDeviceID(u uint64) *AccountCreate {
 	return ac
 }
 
-// SetNillableDeviceID sets the "device_id" field if the given value is not nil.
-func (ac *AccountCreate) SetNillableDeviceID(u *uint64) *AccountCreate {
-	if u != nil {
-		ac.SetDeviceID(*u)
-	}
+// SetDepartmentID sets the "department_id" field.
+func (ac *AccountCreate) SetDepartmentID(u uint64) *AccountCreate {
+	ac.mutation.SetDepartmentID(u)
 	return ac
 }
 
@@ -105,17 +133,20 @@ func (ac *AccountCreate) SetDevicesID(id uint64) *AccountCreate {
 	return ac
 }
 
-// SetNillableDevicesID sets the "devices" edge to the Device entity by ID if the given value is not nil.
-func (ac *AccountCreate) SetNillableDevicesID(id *uint64) *AccountCreate {
-	if id != nil {
-		ac = ac.SetDevicesID(*id)
-	}
-	return ac
-}
-
 // SetDevices sets the "devices" edge to the Device entity.
 func (ac *AccountCreate) SetDevices(d *Device) *AccountCreate {
 	return ac.SetDevicesID(d.ID)
+}
+
+// SetDepartmentsID sets the "departments" edge to the Device entity by ID.
+func (ac *AccountCreate) SetDepartmentsID(id uint64) *AccountCreate {
+	ac.mutation.SetDepartmentsID(id)
+	return ac
+}
+
+// SetDepartments sets the "departments" edge to the Device entity.
+func (ac *AccountCreate) SetDepartments(d *Device) *AccountCreate {
+	return ac.SetDepartmentsID(d.ID)
 }
 
 // Mutation returns the AccountMutation object of the builder.
@@ -195,26 +226,42 @@ func (ac *AccountCreate) check() error {
 			return &ValidationError{Name: "protocol", err: fmt.Errorf(`ent: validator failed for field "Account.protocol": %w`, err)}
 		}
 	}
-	if _, ok := ac.mutation.Password(); !ok {
-		return &ValidationError{Name: "password", err: errors.New(`ent: missing required field "Account.password"`)}
-	}
 	if v, ok := ac.mutation.Password(); ok {
 		if err := account.PasswordValidator(v); err != nil {
 			return &ValidationError{Name: "password", err: fmt.Errorf(`ent: validator failed for field "Account.password": %w`, err)}
 		}
-	}
-	if _, ok := ac.mutation.PrivateKey(); !ok {
-		return &ValidationError{Name: "private_key", err: errors.New(`ent: missing required field "Account.private_key"`)}
 	}
 	if v, ok := ac.mutation.PrivateKey(); ok {
 		if err := account.PrivateKeyValidator(v); err != nil {
 			return &ValidationError{Name: "private_key", err: fmt.Errorf(`ent: validator failed for field "Account.private_key": %w`, err)}
 		}
 	}
+	if v, ok := ac.mutation.PrivateKeyPassword(); ok {
+		if err := account.PrivateKeyPasswordValidator(v); err != nil {
+			return &ValidationError{Name: "private_key_password", err: fmt.Errorf(`ent: validator failed for field "Account.private_key_password": %w`, err)}
+		}
+	}
+	if _, ok := ac.mutation.DeviceID(); !ok {
+		return &ValidationError{Name: "device_id", err: errors.New(`ent: missing required field "Account.device_id"`)}
+	}
 	if v, ok := ac.mutation.DeviceID(); ok {
 		if err := account.DeviceIDValidator(v); err != nil {
 			return &ValidationError{Name: "device_id", err: fmt.Errorf(`ent: validator failed for field "Account.device_id": %w`, err)}
 		}
+	}
+	if _, ok := ac.mutation.DepartmentID(); !ok {
+		return &ValidationError{Name: "department_id", err: errors.New(`ent: missing required field "Account.department_id"`)}
+	}
+	if v, ok := ac.mutation.DepartmentID(); ok {
+		if err := account.DepartmentIDValidator(v); err != nil {
+			return &ValidationError{Name: "department_id", err: fmt.Errorf(`ent: validator failed for field "Account.department_id": %w`, err)}
+		}
+	}
+	if _, ok := ac.mutation.DevicesID(); !ok {
+		return &ValidationError{Name: "devices", err: errors.New(`ent: missing required edge "Account.devices"`)}
+	}
+	if _, ok := ac.mutation.DepartmentsID(); !ok {
+		return &ValidationError{Name: "departments", err: errors.New(`ent: missing required edge "Account.departments"`)}
 	}
 	return nil
 }
@@ -276,6 +323,10 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 		_spec.SetField(account.FieldPrivateKey, field.TypeString, value)
 		_node.PrivateKey = value
 	}
+	if value, ok := ac.mutation.PrivateKeyPassword(); ok {
+		_spec.SetField(account.FieldPrivateKeyPassword, field.TypeString, value)
+		_node.PrivateKeyPassword = value
+	}
 	if nodes := ac.mutation.DevicesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -291,6 +342,23 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.DeviceID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.DepartmentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   account.DepartmentsTable,
+			Columns: []string{account.DepartmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.DepartmentID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

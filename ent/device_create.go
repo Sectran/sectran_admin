@@ -6,7 +6,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"sectran_admin/ent/account"
 	"sectran_admin/ent/department"
 	"sectran_admin/ent/device"
 	"time"
@@ -62,14 +61,6 @@ func (dc *DeviceCreate) SetDepartmentID(u uint64) *DeviceCreate {
 	return dc
 }
 
-// SetNillableDepartmentID sets the "department_id" field if the given value is not nil.
-func (dc *DeviceCreate) SetNillableDepartmentID(u *uint64) *DeviceCreate {
-	if u != nil {
-		dc.SetDepartmentID(*u)
-	}
-	return dc
-}
-
 // SetHost sets the "host" field.
 func (dc *DeviceCreate) SetHost(s string) *DeviceCreate {
 	dc.mutation.SetHost(s)
@@ -100,32 +91,9 @@ func (dc *DeviceCreate) SetDepartmentsID(id uint64) *DeviceCreate {
 	return dc
 }
 
-// SetNillableDepartmentsID sets the "departments" edge to the Department entity by ID if the given value is not nil.
-func (dc *DeviceCreate) SetNillableDepartmentsID(id *uint64) *DeviceCreate {
-	if id != nil {
-		dc = dc.SetDepartmentsID(*id)
-	}
-	return dc
-}
-
 // SetDepartments sets the "departments" edge to the Department entity.
 func (dc *DeviceCreate) SetDepartments(d *Department) *DeviceCreate {
 	return dc.SetDepartmentsID(d.ID)
-}
-
-// AddAccountIDs adds the "accounts" edge to the Account entity by IDs.
-func (dc *DeviceCreate) AddAccountIDs(ids ...uint64) *DeviceCreate {
-	dc.mutation.AddAccountIDs(ids...)
-	return dc
-}
-
-// AddAccounts adds the "accounts" edges to the Account entity.
-func (dc *DeviceCreate) AddAccounts(a ...*Account) *DeviceCreate {
-	ids := make([]uint64, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return dc.AddAccountIDs(ids...)
 }
 
 // Mutation returns the DeviceMutation object of the builder.
@@ -189,6 +157,9 @@ func (dc *DeviceCreate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Device.name": %w`, err)}
 		}
 	}
+	if _, ok := dc.mutation.DepartmentID(); !ok {
+		return &ValidationError{Name: "department_id", err: errors.New(`ent: missing required field "Device.department_id"`)}
+	}
 	if v, ok := dc.mutation.DepartmentID(); ok {
 		if err := device.DepartmentIDValidator(v); err != nil {
 			return &ValidationError{Name: "department_id", err: fmt.Errorf(`ent: validator failed for field "Device.department_id": %w`, err)}
@@ -217,6 +188,9 @@ func (dc *DeviceCreate) check() error {
 		if err := device.DescriptionValidator(v); err != nil {
 			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Device.description": %w`, err)}
 		}
+	}
+	if _, ok := dc.mutation.DepartmentsID(); !ok {
+		return &ValidationError{Name: "departments", err: errors.New(`ent: missing required edge "Device.departments"`)}
 	}
 	return nil
 }
@@ -289,22 +263,6 @@ func (dc *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.DepartmentID = nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := dc.mutation.AccountsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   device.AccountsTable,
-			Columns: []string{device.AccountsColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeUint64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

@@ -105,6 +105,12 @@ func (au *AccountUpdate) SetNillablePassword(s *string) *AccountUpdate {
 	return au
 }
 
+// ClearPassword clears the value of the "password" field.
+func (au *AccountUpdate) ClearPassword() *AccountUpdate {
+	au.mutation.ClearPassword()
+	return au
+}
+
 // SetPrivateKey sets the "private_key" field.
 func (au *AccountUpdate) SetPrivateKey(s string) *AccountUpdate {
 	au.mutation.SetPrivateKey(s)
@@ -116,6 +122,32 @@ func (au *AccountUpdate) SetNillablePrivateKey(s *string) *AccountUpdate {
 	if s != nil {
 		au.SetPrivateKey(*s)
 	}
+	return au
+}
+
+// ClearPrivateKey clears the value of the "private_key" field.
+func (au *AccountUpdate) ClearPrivateKey() *AccountUpdate {
+	au.mutation.ClearPrivateKey()
+	return au
+}
+
+// SetPrivateKeyPassword sets the "private_key_password" field.
+func (au *AccountUpdate) SetPrivateKeyPassword(s string) *AccountUpdate {
+	au.mutation.SetPrivateKeyPassword(s)
+	return au
+}
+
+// SetNillablePrivateKeyPassword sets the "private_key_password" field if the given value is not nil.
+func (au *AccountUpdate) SetNillablePrivateKeyPassword(s *string) *AccountUpdate {
+	if s != nil {
+		au.SetPrivateKeyPassword(*s)
+	}
+	return au
+}
+
+// ClearPrivateKeyPassword clears the value of the "private_key_password" field.
+func (au *AccountUpdate) ClearPrivateKeyPassword() *AccountUpdate {
+	au.mutation.ClearPrivateKeyPassword()
 	return au
 }
 
@@ -133,9 +165,17 @@ func (au *AccountUpdate) SetNillableDeviceID(u *uint64) *AccountUpdate {
 	return au
 }
 
-// ClearDeviceID clears the value of the "device_id" field.
-func (au *AccountUpdate) ClearDeviceID() *AccountUpdate {
-	au.mutation.ClearDeviceID()
+// SetDepartmentID sets the "department_id" field.
+func (au *AccountUpdate) SetDepartmentID(u uint64) *AccountUpdate {
+	au.mutation.SetDepartmentID(u)
+	return au
+}
+
+// SetNillableDepartmentID sets the "department_id" field if the given value is not nil.
+func (au *AccountUpdate) SetNillableDepartmentID(u *uint64) *AccountUpdate {
+	if u != nil {
+		au.SetDepartmentID(*u)
+	}
 	return au
 }
 
@@ -145,17 +185,20 @@ func (au *AccountUpdate) SetDevicesID(id uint64) *AccountUpdate {
 	return au
 }
 
-// SetNillableDevicesID sets the "devices" edge to the Device entity by ID if the given value is not nil.
-func (au *AccountUpdate) SetNillableDevicesID(id *uint64) *AccountUpdate {
-	if id != nil {
-		au = au.SetDevicesID(*id)
-	}
-	return au
-}
-
 // SetDevices sets the "devices" edge to the Device entity.
 func (au *AccountUpdate) SetDevices(d *Device) *AccountUpdate {
 	return au.SetDevicesID(d.ID)
+}
+
+// SetDepartmentsID sets the "departments" edge to the Device entity by ID.
+func (au *AccountUpdate) SetDepartmentsID(id uint64) *AccountUpdate {
+	au.mutation.SetDepartmentsID(id)
+	return au
+}
+
+// SetDepartments sets the "departments" edge to the Device entity.
+func (au *AccountUpdate) SetDepartments(d *Device) *AccountUpdate {
+	return au.SetDepartmentsID(d.ID)
 }
 
 // Mutation returns the AccountMutation object of the builder.
@@ -166,6 +209,12 @@ func (au *AccountUpdate) Mutation() *AccountMutation {
 // ClearDevices clears the "devices" edge to the Device entity.
 func (au *AccountUpdate) ClearDevices() *AccountUpdate {
 	au.mutation.ClearDevices()
+	return au
+}
+
+// ClearDepartments clears the "departments" edge to the Device entity.
+func (au *AccountUpdate) ClearDepartments() *AccountUpdate {
+	au.mutation.ClearDepartments()
 	return au
 }
 
@@ -232,10 +281,26 @@ func (au *AccountUpdate) check() error {
 			return &ValidationError{Name: "private_key", err: fmt.Errorf(`ent: validator failed for field "Account.private_key": %w`, err)}
 		}
 	}
+	if v, ok := au.mutation.PrivateKeyPassword(); ok {
+		if err := account.PrivateKeyPasswordValidator(v); err != nil {
+			return &ValidationError{Name: "private_key_password", err: fmt.Errorf(`ent: validator failed for field "Account.private_key_password": %w`, err)}
+		}
+	}
 	if v, ok := au.mutation.DeviceID(); ok {
 		if err := account.DeviceIDValidator(v); err != nil {
 			return &ValidationError{Name: "device_id", err: fmt.Errorf(`ent: validator failed for field "Account.device_id": %w`, err)}
 		}
+	}
+	if v, ok := au.mutation.DepartmentID(); ok {
+		if err := account.DepartmentIDValidator(v); err != nil {
+			return &ValidationError{Name: "department_id", err: fmt.Errorf(`ent: validator failed for field "Account.department_id": %w`, err)}
+		}
+	}
+	if _, ok := au.mutation.DevicesID(); au.mutation.DevicesCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Account.devices"`)
+	}
+	if _, ok := au.mutation.DepartmentsID(); au.mutation.DepartmentsCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Account.departments"`)
 	}
 	return nil
 }
@@ -273,8 +338,20 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := au.mutation.Password(); ok {
 		_spec.SetField(account.FieldPassword, field.TypeString, value)
 	}
+	if au.mutation.PasswordCleared() {
+		_spec.ClearField(account.FieldPassword, field.TypeString)
+	}
 	if value, ok := au.mutation.PrivateKey(); ok {
 		_spec.SetField(account.FieldPrivateKey, field.TypeString, value)
+	}
+	if au.mutation.PrivateKeyCleared() {
+		_spec.ClearField(account.FieldPrivateKey, field.TypeString)
+	}
+	if value, ok := au.mutation.PrivateKeyPassword(); ok {
+		_spec.SetField(account.FieldPrivateKeyPassword, field.TypeString, value)
+	}
+	if au.mutation.PrivateKeyPasswordCleared() {
+		_spec.ClearField(account.FieldPrivateKeyPassword, field.TypeString)
 	}
 	if au.mutation.DevicesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -295,6 +372,35 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Inverse: false,
 			Table:   account.DevicesTable,
 			Columns: []string{account.DevicesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if au.mutation.DepartmentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   account.DepartmentsTable,
+			Columns: []string{account.DepartmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.DepartmentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   account.DepartmentsTable,
+			Columns: []string{account.DepartmentsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeUint64),
@@ -401,6 +507,12 @@ func (auo *AccountUpdateOne) SetNillablePassword(s *string) *AccountUpdateOne {
 	return auo
 }
 
+// ClearPassword clears the value of the "password" field.
+func (auo *AccountUpdateOne) ClearPassword() *AccountUpdateOne {
+	auo.mutation.ClearPassword()
+	return auo
+}
+
 // SetPrivateKey sets the "private_key" field.
 func (auo *AccountUpdateOne) SetPrivateKey(s string) *AccountUpdateOne {
 	auo.mutation.SetPrivateKey(s)
@@ -412,6 +524,32 @@ func (auo *AccountUpdateOne) SetNillablePrivateKey(s *string) *AccountUpdateOne 
 	if s != nil {
 		auo.SetPrivateKey(*s)
 	}
+	return auo
+}
+
+// ClearPrivateKey clears the value of the "private_key" field.
+func (auo *AccountUpdateOne) ClearPrivateKey() *AccountUpdateOne {
+	auo.mutation.ClearPrivateKey()
+	return auo
+}
+
+// SetPrivateKeyPassword sets the "private_key_password" field.
+func (auo *AccountUpdateOne) SetPrivateKeyPassword(s string) *AccountUpdateOne {
+	auo.mutation.SetPrivateKeyPassword(s)
+	return auo
+}
+
+// SetNillablePrivateKeyPassword sets the "private_key_password" field if the given value is not nil.
+func (auo *AccountUpdateOne) SetNillablePrivateKeyPassword(s *string) *AccountUpdateOne {
+	if s != nil {
+		auo.SetPrivateKeyPassword(*s)
+	}
+	return auo
+}
+
+// ClearPrivateKeyPassword clears the value of the "private_key_password" field.
+func (auo *AccountUpdateOne) ClearPrivateKeyPassword() *AccountUpdateOne {
+	auo.mutation.ClearPrivateKeyPassword()
 	return auo
 }
 
@@ -429,9 +567,17 @@ func (auo *AccountUpdateOne) SetNillableDeviceID(u *uint64) *AccountUpdateOne {
 	return auo
 }
 
-// ClearDeviceID clears the value of the "device_id" field.
-func (auo *AccountUpdateOne) ClearDeviceID() *AccountUpdateOne {
-	auo.mutation.ClearDeviceID()
+// SetDepartmentID sets the "department_id" field.
+func (auo *AccountUpdateOne) SetDepartmentID(u uint64) *AccountUpdateOne {
+	auo.mutation.SetDepartmentID(u)
+	return auo
+}
+
+// SetNillableDepartmentID sets the "department_id" field if the given value is not nil.
+func (auo *AccountUpdateOne) SetNillableDepartmentID(u *uint64) *AccountUpdateOne {
+	if u != nil {
+		auo.SetDepartmentID(*u)
+	}
 	return auo
 }
 
@@ -441,17 +587,20 @@ func (auo *AccountUpdateOne) SetDevicesID(id uint64) *AccountUpdateOne {
 	return auo
 }
 
-// SetNillableDevicesID sets the "devices" edge to the Device entity by ID if the given value is not nil.
-func (auo *AccountUpdateOne) SetNillableDevicesID(id *uint64) *AccountUpdateOne {
-	if id != nil {
-		auo = auo.SetDevicesID(*id)
-	}
-	return auo
-}
-
 // SetDevices sets the "devices" edge to the Device entity.
 func (auo *AccountUpdateOne) SetDevices(d *Device) *AccountUpdateOne {
 	return auo.SetDevicesID(d.ID)
+}
+
+// SetDepartmentsID sets the "departments" edge to the Device entity by ID.
+func (auo *AccountUpdateOne) SetDepartmentsID(id uint64) *AccountUpdateOne {
+	auo.mutation.SetDepartmentsID(id)
+	return auo
+}
+
+// SetDepartments sets the "departments" edge to the Device entity.
+func (auo *AccountUpdateOne) SetDepartments(d *Device) *AccountUpdateOne {
+	return auo.SetDepartmentsID(d.ID)
 }
 
 // Mutation returns the AccountMutation object of the builder.
@@ -462,6 +611,12 @@ func (auo *AccountUpdateOne) Mutation() *AccountMutation {
 // ClearDevices clears the "devices" edge to the Device entity.
 func (auo *AccountUpdateOne) ClearDevices() *AccountUpdateOne {
 	auo.mutation.ClearDevices()
+	return auo
+}
+
+// ClearDepartments clears the "departments" edge to the Device entity.
+func (auo *AccountUpdateOne) ClearDepartments() *AccountUpdateOne {
+	auo.mutation.ClearDepartments()
 	return auo
 }
 
@@ -541,10 +696,26 @@ func (auo *AccountUpdateOne) check() error {
 			return &ValidationError{Name: "private_key", err: fmt.Errorf(`ent: validator failed for field "Account.private_key": %w`, err)}
 		}
 	}
+	if v, ok := auo.mutation.PrivateKeyPassword(); ok {
+		if err := account.PrivateKeyPasswordValidator(v); err != nil {
+			return &ValidationError{Name: "private_key_password", err: fmt.Errorf(`ent: validator failed for field "Account.private_key_password": %w`, err)}
+		}
+	}
 	if v, ok := auo.mutation.DeviceID(); ok {
 		if err := account.DeviceIDValidator(v); err != nil {
 			return &ValidationError{Name: "device_id", err: fmt.Errorf(`ent: validator failed for field "Account.device_id": %w`, err)}
 		}
+	}
+	if v, ok := auo.mutation.DepartmentID(); ok {
+		if err := account.DepartmentIDValidator(v); err != nil {
+			return &ValidationError{Name: "department_id", err: fmt.Errorf(`ent: validator failed for field "Account.department_id": %w`, err)}
+		}
+	}
+	if _, ok := auo.mutation.DevicesID(); auo.mutation.DevicesCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Account.devices"`)
+	}
+	if _, ok := auo.mutation.DepartmentsID(); auo.mutation.DepartmentsCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Account.departments"`)
 	}
 	return nil
 }
@@ -599,8 +770,20 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 	if value, ok := auo.mutation.Password(); ok {
 		_spec.SetField(account.FieldPassword, field.TypeString, value)
 	}
+	if auo.mutation.PasswordCleared() {
+		_spec.ClearField(account.FieldPassword, field.TypeString)
+	}
 	if value, ok := auo.mutation.PrivateKey(); ok {
 		_spec.SetField(account.FieldPrivateKey, field.TypeString, value)
+	}
+	if auo.mutation.PrivateKeyCleared() {
+		_spec.ClearField(account.FieldPrivateKey, field.TypeString)
+	}
+	if value, ok := auo.mutation.PrivateKeyPassword(); ok {
+		_spec.SetField(account.FieldPrivateKeyPassword, field.TypeString, value)
+	}
+	if auo.mutation.PrivateKeyPasswordCleared() {
+		_spec.ClearField(account.FieldPrivateKeyPassword, field.TypeString)
 	}
 	if auo.mutation.DevicesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -621,6 +804,35 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 			Inverse: false,
 			Table:   account.DevicesTable,
 			Columns: []string{account.DevicesColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeUint64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if auo.mutation.DepartmentsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   account.DepartmentsTable,
+			Columns: []string{account.DepartmentsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeUint64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.DepartmentsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   account.DepartmentsTable,
+			Columns: []string{account.DepartmentsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeUint64),

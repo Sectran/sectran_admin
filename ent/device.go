@@ -42,11 +42,9 @@ type Device struct {
 type DeviceEdges struct {
 	// Departments holds the value of the departments edge.
 	Departments *Department `json:"departments,omitempty"`
-	// Accounts holds the value of the accounts edge.
-	Accounts []*Account `json:"accounts,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [1]bool
 }
 
 // DepartmentsOrErr returns the Departments value or an error if the edge
@@ -58,15 +56,6 @@ func (e DeviceEdges) DepartmentsOrErr() (*Department, error) {
 		return nil, &NotFoundError{label: department.Label}
 	}
 	return nil, &NotLoadedError{edge: "departments"}
-}
-
-// AccountsOrErr returns the Accounts value or an error if the edge
-// was not loaded in eager-loading.
-func (e DeviceEdges) AccountsOrErr() ([]*Account, error) {
-	if e.loadedTypes[1] {
-		return e.Accounts, nil
-	}
-	return nil, &NotLoadedError{edge: "accounts"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -159,11 +148,6 @@ func (d *Device) Value(name string) (ent.Value, error) {
 // QueryDepartments queries the "departments" edge of the Device entity.
 func (d *Device) QueryDepartments() *DepartmentQuery {
 	return NewDeviceClient(d.config).QueryDepartments(d)
-}
-
-// QueryAccounts queries the "accounts" edge of the Device entity.
-func (d *Device) QueryAccounts() *AccountQuery {
-	return NewDeviceClient(d.config).QueryAccounts(d)
 }
 
 // Update returns a builder for updating this Device.

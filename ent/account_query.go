@@ -18,11 +18,12 @@ import (
 // AccountQuery is the builder for querying Account entities.
 type AccountQuery struct {
 	config
-	ctx         *QueryContext
-	order       []account.OrderOption
-	inters      []Interceptor
-	predicates  []predicate.Account
-	withDevices *DeviceQuery
+	ctx             *QueryContext
+	order           []account.OrderOption
+	inters          []Interceptor
+	predicates      []predicate.Account
+	withDevices     *DeviceQuery
+	withDepartments *DeviceQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -74,6 +75,28 @@ func (aq *AccountQuery) QueryDevices() *DeviceQuery {
 			sqlgraph.From(account.Table, account.FieldID, selector),
 			sqlgraph.To(device.Table, device.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, account.DevicesTable, account.DevicesColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryDepartments chains the current query on the "departments" edge.
+func (aq *AccountQuery) QueryDepartments() *DeviceQuery {
+	query := (&DeviceClient{config: aq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := aq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := aq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(account.Table, account.FieldID, selector),
+			sqlgraph.To(device.Table, device.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, account.DepartmentsTable, account.DepartmentsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
 		return fromU, nil
@@ -268,12 +291,13 @@ func (aq *AccountQuery) Clone() *AccountQuery {
 		return nil
 	}
 	return &AccountQuery{
-		config:      aq.config,
-		ctx:         aq.ctx.Clone(),
-		order:       append([]account.OrderOption{}, aq.order...),
-		inters:      append([]Interceptor{}, aq.inters...),
-		predicates:  append([]predicate.Account{}, aq.predicates...),
-		withDevices: aq.withDevices.Clone(),
+		config:          aq.config,
+		ctx:             aq.ctx.Clone(),
+		order:           append([]account.OrderOption{}, aq.order...),
+		inters:          append([]Interceptor{}, aq.inters...),
+		predicates:      append([]predicate.Account{}, aq.predicates...),
+		withDevices:     aq.withDevices.Clone(),
+		withDepartments: aq.withDepartments.Clone(),
 		// clone intermediate query.
 		sql:  aq.sql.Clone(),
 		path: aq.path,
@@ -288,6 +312,17 @@ func (aq *AccountQuery) WithDevices(opts ...func(*DeviceQuery)) *AccountQuery {
 		opt(query)
 	}
 	aq.withDevices = query
+	return aq
+}
+
+// WithDepartments tells the query-builder to eager-load the nodes that are connected to
+// the "departments" edge. The optional arguments are used to configure the query builder of the edge.
+func (aq *AccountQuery) WithDepartments(opts ...func(*DeviceQuery)) *AccountQuery {
+	query := (&DeviceClient{config: aq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	aq.withDepartments = query
 	return aq
 }
 
@@ -369,8 +404,9 @@ func (aq *AccountQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Acco
 	var (
 		nodes       = []*Account{}
 		_spec       = aq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			aq.withDevices != nil,
+			aq.withDepartments != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -394,6 +430,12 @@ func (aq *AccountQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Acco
 	if query := aq.withDevices; query != nil {
 		if err := aq.loadDevices(ctx, query, nodes, nil,
 			func(n *Account, e *Device) { n.Edges.Devices = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := aq.withDepartments; query != nil {
+		if err := aq.loadDepartments(ctx, query, nodes, nil,
+			func(n *Account, e *Device) { n.Edges.Departments = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -429,6 +471,35 @@ func (aq *AccountQuery) loadDevices(ctx context.Context, query *DeviceQuery, nod
 	}
 	return nil
 }
+func (aq *AccountQuery) loadDepartments(ctx context.Context, query *DeviceQuery, nodes []*Account, init func(*Account), assign func(*Account, *Device)) error {
+	ids := make([]uint64, 0, len(nodes))
+	nodeids := make(map[uint64][]*Account)
+	for i := range nodes {
+		fk := nodes[i].DepartmentID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(device.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "department_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 
 func (aq *AccountQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := aq.querySpec()
@@ -457,6 +528,9 @@ func (aq *AccountQuery) querySpec() *sqlgraph.QuerySpec {
 		}
 		if aq.withDevices != nil {
 			_spec.Node.AddColumnOnce(account.FieldDeviceID)
+		}
+		if aq.withDepartments != nil {
+			_spec.Node.AddColumnOnce(account.FieldDepartmentID)
 		}
 	}
 	if ps := aq.predicates; len(ps) > 0 {
