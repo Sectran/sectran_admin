@@ -9,6 +9,7 @@ import (
 	"sectran_admin/ent/labletree"
 	"sectran_admin/ent/predicate"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -60,7 +61,7 @@ func (ltq *LableTreeQuery) Order(o ...labletree.OrderOption) *LableTreeQuery {
 // First returns the first LableTree entity from the query.
 // Returns a *NotFoundError when no LableTree was found.
 func (ltq *LableTreeQuery) First(ctx context.Context) (*LableTree, error) {
-	nodes, err := ltq.Limit(1).All(setContextOp(ctx, ltq.ctx, "First"))
+	nodes, err := ltq.Limit(1).All(setContextOp(ctx, ltq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +84,7 @@ func (ltq *LableTreeQuery) FirstX(ctx context.Context) *LableTree {
 // Returns a *NotFoundError when no LableTree ID was found.
 func (ltq *LableTreeQuery) FirstID(ctx context.Context) (id uint64, err error) {
 	var ids []uint64
-	if ids, err = ltq.Limit(1).IDs(setContextOp(ctx, ltq.ctx, "FirstID")); err != nil {
+	if ids, err = ltq.Limit(1).IDs(setContextOp(ctx, ltq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -106,7 +107,7 @@ func (ltq *LableTreeQuery) FirstIDX(ctx context.Context) uint64 {
 // Returns a *NotSingularError when more than one LableTree entity is found.
 // Returns a *NotFoundError when no LableTree entities are found.
 func (ltq *LableTreeQuery) Only(ctx context.Context) (*LableTree, error) {
-	nodes, err := ltq.Limit(2).All(setContextOp(ctx, ltq.ctx, "Only"))
+	nodes, err := ltq.Limit(2).All(setContextOp(ctx, ltq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +135,7 @@ func (ltq *LableTreeQuery) OnlyX(ctx context.Context) *LableTree {
 // Returns a *NotFoundError when no entities are found.
 func (ltq *LableTreeQuery) OnlyID(ctx context.Context) (id uint64, err error) {
 	var ids []uint64
-	if ids, err = ltq.Limit(2).IDs(setContextOp(ctx, ltq.ctx, "OnlyID")); err != nil {
+	if ids, err = ltq.Limit(2).IDs(setContextOp(ctx, ltq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -159,7 +160,7 @@ func (ltq *LableTreeQuery) OnlyIDX(ctx context.Context) uint64 {
 
 // All executes the query and returns a list of LableTrees.
 func (ltq *LableTreeQuery) All(ctx context.Context) ([]*LableTree, error) {
-	ctx = setContextOp(ctx, ltq.ctx, "All")
+	ctx = setContextOp(ctx, ltq.ctx, ent.OpQueryAll)
 	if err := ltq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -181,7 +182,7 @@ func (ltq *LableTreeQuery) IDs(ctx context.Context) (ids []uint64, err error) {
 	if ltq.ctx.Unique == nil && ltq.path != nil {
 		ltq.Unique(true)
 	}
-	ctx = setContextOp(ctx, ltq.ctx, "IDs")
+	ctx = setContextOp(ctx, ltq.ctx, ent.OpQueryIDs)
 	if err = ltq.Select(labletree.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -199,7 +200,7 @@ func (ltq *LableTreeQuery) IDsX(ctx context.Context) []uint64 {
 
 // Count returns the count of the given query.
 func (ltq *LableTreeQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, ltq.ctx, "Count")
+	ctx = setContextOp(ctx, ltq.ctx, ent.OpQueryCount)
 	if err := ltq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -217,7 +218,7 @@ func (ltq *LableTreeQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (ltq *LableTreeQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, ltq.ctx, "Exist")
+	ctx = setContextOp(ctx, ltq.ctx, ent.OpQueryExist)
 	switch _, err := ltq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -449,7 +450,7 @@ func (ltgb *LableTreeGroupBy) Aggregate(fns ...AggregateFunc) *LableTreeGroupBy 
 
 // Scan applies the selector query and scans the result into the given value.
 func (ltgb *LableTreeGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ltgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, ltgb.build.ctx, ent.OpQueryGroupBy)
 	if err := ltgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -497,7 +498,7 @@ func (lts *LableTreeSelect) Aggregate(fns ...AggregateFunc) *LableTreeSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (lts *LableTreeSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, lts.ctx, "Select")
+	ctx = setContextOp(ctx, lts.ctx, ent.OpQuerySelect)
 	if err := lts.prepareQuery(ctx); err != nil {
 		return err
 	}

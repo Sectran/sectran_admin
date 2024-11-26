@@ -297,10 +297,10 @@ func (au *AccountUpdate) check() error {
 			return &ValidationError{Name: "department_id", err: fmt.Errorf(`ent: validator failed for field "Account.department_id": %w`, err)}
 		}
 	}
-	if _, ok := au.mutation.DevicesID(); au.mutation.DevicesCleared() && !ok {
+	if au.mutation.DevicesCleared() && len(au.mutation.DevicesIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Account.devices"`)
 	}
-	if _, ok := au.mutation.DepartmentsID(); au.mutation.DepartmentsCleared() && !ok {
+	if au.mutation.DepartmentsCleared() && len(au.mutation.DepartmentsIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Account.departments"`)
 	}
 	return nil
@@ -712,10 +712,10 @@ func (auo *AccountUpdateOne) check() error {
 			return &ValidationError{Name: "department_id", err: fmt.Errorf(`ent: validator failed for field "Account.department_id": %w`, err)}
 		}
 	}
-	if _, ok := auo.mutation.DevicesID(); auo.mutation.DevicesCleared() && !ok {
+	if auo.mutation.DevicesCleared() && len(auo.mutation.DevicesIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Account.devices"`)
 	}
-	if _, ok := auo.mutation.DepartmentsID(); auo.mutation.DepartmentsCleared() && !ok {
+	if auo.mutation.DepartmentsCleared() && len(auo.mutation.DepartmentsIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Account.departments"`)
 	}
 	return nil

@@ -258,10 +258,10 @@ func (ac *AccountCreate) check() error {
 			return &ValidationError{Name: "department_id", err: fmt.Errorf(`ent: validator failed for field "Account.department_id": %w`, err)}
 		}
 	}
-	if _, ok := ac.mutation.DevicesID(); !ok {
+	if len(ac.mutation.DevicesIDs()) == 0 {
 		return &ValidationError{Name: "devices", err: errors.New(`ent: missing required edge "Account.devices"`)}
 	}
-	if _, ok := ac.mutation.DepartmentsID(); !ok {
+	if len(ac.mutation.DepartmentsIDs()) == 0 {
 		return &ValidationError{Name: "departments", err: errors.New(`ent: missing required edge "Account.departments"`)}
 	}
 	return nil

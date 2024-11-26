@@ -205,7 +205,7 @@ func (dc *DeviceCreate) check() error {
 			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Device.description": %w`, err)}
 		}
 	}
-	if _, ok := dc.mutation.DepartmentsID(); !ok {
+	if len(dc.mutation.DepartmentsIDs()) == 0 {
 		return &ValidationError{Name: "departments", err: errors.New(`ent: missing required edge "Device.departments"`)}
 	}
 	return nil

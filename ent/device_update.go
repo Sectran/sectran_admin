@@ -227,7 +227,7 @@ func (du *DeviceUpdate) check() error {
 			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Device.description": %w`, err)}
 		}
 	}
-	if _, ok := du.mutation.DepartmentsID(); du.mutation.DepartmentsCleared() && !ok {
+	if du.mutation.DepartmentsCleared() && len(du.mutation.DepartmentsIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Device.departments"`)
 	}
 	return nil
@@ -564,7 +564,7 @@ func (duo *DeviceUpdateOne) check() error {
 			return &ValidationError{Name: "description", err: fmt.Errorf(`ent: validator failed for field "Device.description": %w`, err)}
 		}
 	}
-	if _, ok := duo.mutation.DepartmentsID(); duo.mutation.DepartmentsCleared() && !ok {
+	if duo.mutation.DepartmentsCleared() && len(duo.mutation.DepartmentsIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Device.departments"`)
 	}
 	return nil

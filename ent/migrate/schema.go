@@ -11,8 +11,8 @@ var (
 	// AccountsColumns holds the columns for the "accounts" table.
 	AccountsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
-		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
-		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "username", Type: field.TypeString, Size: 16, Comment: "account username|账号名称"},
 		{Name: "port", Type: field.TypeUint32, Comment: "account port|端口"},
 		{Name: "protocol", Type: field.TypeUint8, Comment: "protocol of the this account.|账号协议"},
@@ -45,8 +45,8 @@ var (
 	// DepartmentsColumns holds the columns for the "departments" table.
 	DepartmentsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
-		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
-		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "name", Type: field.TypeString, Size: 64, Comment: "The name of the department.|部门名称"},
 		{Name: "area", Type: field.TypeString, Size: 128, Comment: "The area where the department is located.|部门所在地区"},
 		{Name: "description", Type: field.TypeString, Size: 128, Comment: "Description of the department.|部门描述"},
@@ -62,8 +62,8 @@ var (
 	// DevicesColumns holds the columns for the "devices" table.
 	DevicesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
-		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
-		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "name", Type: field.TypeString, Size: 128, Comment: "The name of the device.|设备名称"},
 		{Name: "host", Type: field.TypeString, Size: 64, Comment: "login host|设备地址"},
 		{Name: "type", Type: field.TypeString, Size: 64, Comment: "type of the device.|设备类型"},
@@ -87,8 +87,8 @@ var (
 	// LableTreesColumns holds the columns for the "lable_trees" table.
 	LableTreesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
-		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
-		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "name", Type: field.TypeString, Size: 64, Comment: "lable name|标签名称"},
 		{Name: "type", Type: field.TypeUint, Comment: "lable type|标签类型（分组标签、控制标签、授权标签）"},
 		{Name: "icon", Type: field.TypeString, Size: 32, Comment: "lable icon|标签图标"},
@@ -110,8 +110,8 @@ var (
 	// RolesColumns holds the columns for the "roles" table.
 	RolesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
-		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
-		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "name", Type: field.TypeString, Unique: true, Size: 32, Comment: "The name of the role.|角色名称"},
 		{Name: "weight", Type: field.TypeInt, Comment: "The weight of the role. Smaller values indicate higher priority.|角色优先级，值越小优先级越高"},
 	}
@@ -124,8 +124,8 @@ var (
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
-		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建日期"},
-		{Name: "updated_at", Type: field.TypeTime, Comment: "Update Time | 修改日期"},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "account", Type: field.TypeString, Unique: true, Size: 64, Comment: "User account.|用户账号"},
 		{Name: "name", Type: field.TypeString, Size: 64, Comment: "User name.|用户姓名"},
 		{Name: "password", Type: field.TypeString, Size: 128, Comment: "User password.|用户密码"},

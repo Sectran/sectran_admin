@@ -4,6 +4,7 @@ package enttest
 
 import (
 	"context"
+
 	"sectran_admin/ent"
 	// required by schema hooks.
 	_ "sectran_admin/ent/runtime"
