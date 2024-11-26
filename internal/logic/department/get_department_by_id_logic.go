@@ -28,22 +28,10 @@ func NewGetDepartmentByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 func (l *GetDepartmentByIdLogic) GetDepartmentById(req *types.IDReq) (*types.DepartmentInfoResp, error) {
-	var (
-		err  error
-		data *ent.Department
-	)
-
-	defer func(e *error) {
-		if *e != nil {
-			logx.Errorw("there's an error while get department by id", logx.Field("err", *e))
-		}
-	}(&err)
-
-	//查询当前主体的部门、获取到他父亲部门的部门前缀
 	domain := l.ctx.Value("request_domain").((*ent.User))
 
 	//查询目标的部门
-	data, err = l.svcCtx.DB.Department.Get(l.ctx, req.Id)
+	data, err := l.svcCtx.DB.Department.Get(l.ctx, req.Id)
 	if err != nil {
 		if _, ok := err.(*ent.NotFoundError); ok {
 			return nil, types.CustomError("查询的部门不存在")
