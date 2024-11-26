@@ -23,30 +23,26 @@ type LableTree struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// lable name|标签名称
 	Name string `json:"name,omitempty"`
-	// lable type|标签类型
+	// lable type|标签类型（分组标签、控制标签、授权标签）
 	Type uint `json:"type,omitempty"`
 	// lable icon|标签图标
 	Icon string `json:"icon,omitempty"`
 	// lable content|标签内容
 	Content string `json:"content,omitempty"`
+	// lable ownership Level (Department Level/User Level)|标签所有权级别（部门级别/用户级别）
+	Ownership uint8 `json:"ownership,omitempty"`
+	// lable owner,user ID,dept ID|标签所属者,用户ID,部门ID
+	OwnerID uint64 `json:"owner_id,omitempty"`
 	// parent lable id|父标签id
-	ParentLable uint64 `json:"parent_lable,omitempty"`
-	// lable target type|标签目标类型
-	LableTargetType uint16 `json:"lable_target_type,omitempty"`
-	// parent lables id,split by ','|父标签id集合升序排列,逗号分隔
-	ParentLables string `json:"parent_lables,omitempty"`
-	// lable owner,user ID|标签所属者,用户ID
-	LableOwner uint64 `json:"lable_owner,omitempty"`
-	// child lable can inherit parents|标签是否可以继承
-	Inherit bool `json:"inherit,omitempty"`
-	// related labels id,split by ','|关联标签id集合升序排列,逗号分隔
-	RelatedLables string `json:"related_lables,omitempty"`
+	ParentID uint64 `json:"parent_id,omitempty"`
 	// label description|标签描述
 	Description string `json:"description,omitempty"`
-	// label extented|标签拓展
-	Ext1 string `json:"ext1,omitempty"`
-	// label extented|标签拓展
-	Ext2         string `json:"ext2,omitempty"`
+	// lable target type|标签目标类型
+	TargetType uint16 `json:"target_type,omitempty"`
+	// parent lables id,split by ',',lable tree deep cannot gather than 32|父标签id集合升序排列,逗号分隔,限制最多不可超过64级
+	Parents string `json:"parents,omitempty"`
+	// child lable can inherit parents|标签是否可以继承
+	Inherit      bool `json:"inherit,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -57,9 +53,9 @@ func (*LableTree) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case labletree.FieldInherit:
 			values[i] = new(sql.NullBool)
-		case labletree.FieldID, labletree.FieldType, labletree.FieldParentLable, labletree.FieldLableTargetType, labletree.FieldLableOwner:
+		case labletree.FieldID, labletree.FieldType, labletree.FieldOwnership, labletree.FieldOwnerID, labletree.FieldParentID, labletree.FieldTargetType:
 			values[i] = new(sql.NullInt64)
-		case labletree.FieldName, labletree.FieldIcon, labletree.FieldContent, labletree.FieldParentLables, labletree.FieldRelatedLables, labletree.FieldDescription, labletree.FieldExt1, labletree.FieldExt2:
+		case labletree.FieldName, labletree.FieldIcon, labletree.FieldContent, labletree.FieldDescription, labletree.FieldParents:
 			values[i] = new(sql.NullString)
 		case labletree.FieldCreatedAt, labletree.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -120,41 +116,23 @@ func (lt *LableTree) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				lt.Content = value.String
 			}
-		case labletree.FieldParentLable:
+		case labletree.FieldOwnership:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field parent_lable", values[i])
+				return fmt.Errorf("unexpected type %T for field ownership", values[i])
 			} else if value.Valid {
-				lt.ParentLable = uint64(value.Int64)
+				lt.Ownership = uint8(value.Int64)
 			}
-		case labletree.FieldLableTargetType:
+		case labletree.FieldOwnerID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field lable_target_type", values[i])
+				return fmt.Errorf("unexpected type %T for field owner_id", values[i])
 			} else if value.Valid {
-				lt.LableTargetType = uint16(value.Int64)
+				lt.OwnerID = uint64(value.Int64)
 			}
-		case labletree.FieldParentLables:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field parent_lables", values[i])
-			} else if value.Valid {
-				lt.ParentLables = value.String
-			}
-		case labletree.FieldLableOwner:
+		case labletree.FieldParentID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field lable_owner", values[i])
+				return fmt.Errorf("unexpected type %T for field parent_id", values[i])
 			} else if value.Valid {
-				lt.LableOwner = uint64(value.Int64)
-			}
-		case labletree.FieldInherit:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field inherit", values[i])
-			} else if value.Valid {
-				lt.Inherit = value.Bool
-			}
-		case labletree.FieldRelatedLables:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field related_lables", values[i])
-			} else if value.Valid {
-				lt.RelatedLables = value.String
+				lt.ParentID = uint64(value.Int64)
 			}
 		case labletree.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -162,17 +140,23 @@ func (lt *LableTree) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				lt.Description = value.String
 			}
-		case labletree.FieldExt1:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field ext1", values[i])
+		case labletree.FieldTargetType:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field target_type", values[i])
 			} else if value.Valid {
-				lt.Ext1 = value.String
+				lt.TargetType = uint16(value.Int64)
 			}
-		case labletree.FieldExt2:
+		case labletree.FieldParents:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field ext2", values[i])
+				return fmt.Errorf("unexpected type %T for field parents", values[i])
 			} else if value.Valid {
-				lt.Ext2 = value.String
+				lt.Parents = value.String
+			}
+		case labletree.FieldInherit:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field inherit", values[i])
+			} else if value.Valid {
+				lt.Inherit = value.Bool
 			}
 		default:
 			lt.selectValues.Set(columns[i], values[i])
@@ -228,32 +212,26 @@ func (lt *LableTree) String() string {
 	builder.WriteString("content=")
 	builder.WriteString(lt.Content)
 	builder.WriteString(", ")
-	builder.WriteString("parent_lable=")
-	builder.WriteString(fmt.Sprintf("%v", lt.ParentLable))
+	builder.WriteString("ownership=")
+	builder.WriteString(fmt.Sprintf("%v", lt.Ownership))
 	builder.WriteString(", ")
-	builder.WriteString("lable_target_type=")
-	builder.WriteString(fmt.Sprintf("%v", lt.LableTargetType))
+	builder.WriteString("owner_id=")
+	builder.WriteString(fmt.Sprintf("%v", lt.OwnerID))
 	builder.WriteString(", ")
-	builder.WriteString("parent_lables=")
-	builder.WriteString(lt.ParentLables)
-	builder.WriteString(", ")
-	builder.WriteString("lable_owner=")
-	builder.WriteString(fmt.Sprintf("%v", lt.LableOwner))
-	builder.WriteString(", ")
-	builder.WriteString("inherit=")
-	builder.WriteString(fmt.Sprintf("%v", lt.Inherit))
-	builder.WriteString(", ")
-	builder.WriteString("related_lables=")
-	builder.WriteString(lt.RelatedLables)
+	builder.WriteString("parent_id=")
+	builder.WriteString(fmt.Sprintf("%v", lt.ParentID))
 	builder.WriteString(", ")
 	builder.WriteString("description=")
 	builder.WriteString(lt.Description)
 	builder.WriteString(", ")
-	builder.WriteString("ext1=")
-	builder.WriteString(lt.Ext1)
+	builder.WriteString("target_type=")
+	builder.WriteString(fmt.Sprintf("%v", lt.TargetType))
 	builder.WriteString(", ")
-	builder.WriteString("ext2=")
-	builder.WriteString(lt.Ext2)
+	builder.WriteString("parents=")
+	builder.WriteString(lt.Parents)
+	builder.WriteString(", ")
+	builder.WriteString("inherit=")
+	builder.WriteString(fmt.Sprintf("%v", lt.Inherit))
 	builder.WriteByte(')')
 	return builder.String()
 }

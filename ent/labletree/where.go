@@ -84,34 +84,19 @@ func Content(v string) predicate.LableTree {
 	return predicate.LableTree(sql.FieldEQ(FieldContent, v))
 }
 
-// ParentLable applies equality check predicate on the "parent_lable" field. It's identical to ParentLableEQ.
-func ParentLable(v uint64) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEQ(FieldParentLable, v))
+// Ownership applies equality check predicate on the "ownership" field. It's identical to OwnershipEQ.
+func Ownership(v uint8) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldOwnership, v))
 }
 
-// LableTargetType applies equality check predicate on the "lable_target_type" field. It's identical to LableTargetTypeEQ.
-func LableTargetType(v uint16) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEQ(FieldLableTargetType, v))
+// OwnerID applies equality check predicate on the "owner_id" field. It's identical to OwnerIDEQ.
+func OwnerID(v uint64) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldOwnerID, v))
 }
 
-// ParentLables applies equality check predicate on the "parent_lables" field. It's identical to ParentLablesEQ.
-func ParentLables(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEQ(FieldParentLables, v))
-}
-
-// LableOwner applies equality check predicate on the "lable_owner" field. It's identical to LableOwnerEQ.
-func LableOwner(v uint64) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEQ(FieldLableOwner, v))
-}
-
-// Inherit applies equality check predicate on the "inherit" field. It's identical to InheritEQ.
-func Inherit(v bool) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEQ(FieldInherit, v))
-}
-
-// RelatedLables applies equality check predicate on the "related_lables" field. It's identical to RelatedLablesEQ.
-func RelatedLables(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEQ(FieldRelatedLables, v))
+// ParentID applies equality check predicate on the "parent_id" field. It's identical to ParentIDEQ.
+func ParentID(v uint64) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldParentID, v))
 }
 
 // Description applies equality check predicate on the "description" field. It's identical to DescriptionEQ.
@@ -119,14 +104,19 @@ func Description(v string) predicate.LableTree {
 	return predicate.LableTree(sql.FieldEQ(FieldDescription, v))
 }
 
-// Ext1 applies equality check predicate on the "ext1" field. It's identical to Ext1EQ.
-func Ext1(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEQ(FieldExt1, v))
+// TargetType applies equality check predicate on the "target_type" field. It's identical to TargetTypeEQ.
+func TargetType(v uint16) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldTargetType, v))
 }
 
-// Ext2 applies equality check predicate on the "ext2" field. It's identical to Ext2EQ.
-func Ext2(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEQ(FieldExt2, v))
+// Parents applies equality check predicate on the "parents" field. It's identical to ParentsEQ.
+func Parents(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldParents, v))
+}
+
+// Inherit applies equality check predicate on the "inherit" field. It's identical to InheritEQ.
+func Inherit(v bool) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldInherit, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -444,264 +434,124 @@ func ContentContainsFold(v string) predicate.LableTree {
 	return predicate.LableTree(sql.FieldContainsFold(FieldContent, v))
 }
 
-// ParentLableEQ applies the EQ predicate on the "parent_lable" field.
-func ParentLableEQ(v uint64) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEQ(FieldParentLable, v))
+// OwnershipEQ applies the EQ predicate on the "ownership" field.
+func OwnershipEQ(v uint8) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldOwnership, v))
 }
 
-// ParentLableNEQ applies the NEQ predicate on the "parent_lable" field.
-func ParentLableNEQ(v uint64) predicate.LableTree {
-	return predicate.LableTree(sql.FieldNEQ(FieldParentLable, v))
+// OwnershipNEQ applies the NEQ predicate on the "ownership" field.
+func OwnershipNEQ(v uint8) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNEQ(FieldOwnership, v))
 }
 
-// ParentLableIn applies the In predicate on the "parent_lable" field.
-func ParentLableIn(vs ...uint64) predicate.LableTree {
-	return predicate.LableTree(sql.FieldIn(FieldParentLable, vs...))
+// OwnershipIn applies the In predicate on the "ownership" field.
+func OwnershipIn(vs ...uint8) predicate.LableTree {
+	return predicate.LableTree(sql.FieldIn(FieldOwnership, vs...))
 }
 
-// ParentLableNotIn applies the NotIn predicate on the "parent_lable" field.
-func ParentLableNotIn(vs ...uint64) predicate.LableTree {
-	return predicate.LableTree(sql.FieldNotIn(FieldParentLable, vs...))
+// OwnershipNotIn applies the NotIn predicate on the "ownership" field.
+func OwnershipNotIn(vs ...uint8) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNotIn(FieldOwnership, vs...))
 }
 
-// ParentLableGT applies the GT predicate on the "parent_lable" field.
-func ParentLableGT(v uint64) predicate.LableTree {
-	return predicate.LableTree(sql.FieldGT(FieldParentLable, v))
+// OwnershipGT applies the GT predicate on the "ownership" field.
+func OwnershipGT(v uint8) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGT(FieldOwnership, v))
 }
 
-// ParentLableGTE applies the GTE predicate on the "parent_lable" field.
-func ParentLableGTE(v uint64) predicate.LableTree {
-	return predicate.LableTree(sql.FieldGTE(FieldParentLable, v))
+// OwnershipGTE applies the GTE predicate on the "ownership" field.
+func OwnershipGTE(v uint8) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGTE(FieldOwnership, v))
 }
 
-// ParentLableLT applies the LT predicate on the "parent_lable" field.
-func ParentLableLT(v uint64) predicate.LableTree {
-	return predicate.LableTree(sql.FieldLT(FieldParentLable, v))
+// OwnershipLT applies the LT predicate on the "ownership" field.
+func OwnershipLT(v uint8) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLT(FieldOwnership, v))
 }
 
-// ParentLableLTE applies the LTE predicate on the "parent_lable" field.
-func ParentLableLTE(v uint64) predicate.LableTree {
-	return predicate.LableTree(sql.FieldLTE(FieldParentLable, v))
+// OwnershipLTE applies the LTE predicate on the "ownership" field.
+func OwnershipLTE(v uint8) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLTE(FieldOwnership, v))
 }
 
-// LableTargetTypeEQ applies the EQ predicate on the "lable_target_type" field.
-func LableTargetTypeEQ(v uint16) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEQ(FieldLableTargetType, v))
+// OwnerIDEQ applies the EQ predicate on the "owner_id" field.
+func OwnerIDEQ(v uint64) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldOwnerID, v))
 }
 
-// LableTargetTypeNEQ applies the NEQ predicate on the "lable_target_type" field.
-func LableTargetTypeNEQ(v uint16) predicate.LableTree {
-	return predicate.LableTree(sql.FieldNEQ(FieldLableTargetType, v))
+// OwnerIDNEQ applies the NEQ predicate on the "owner_id" field.
+func OwnerIDNEQ(v uint64) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNEQ(FieldOwnerID, v))
 }
 
-// LableTargetTypeIn applies the In predicate on the "lable_target_type" field.
-func LableTargetTypeIn(vs ...uint16) predicate.LableTree {
-	return predicate.LableTree(sql.FieldIn(FieldLableTargetType, vs...))
+// OwnerIDIn applies the In predicate on the "owner_id" field.
+func OwnerIDIn(vs ...uint64) predicate.LableTree {
+	return predicate.LableTree(sql.FieldIn(FieldOwnerID, vs...))
 }
 
-// LableTargetTypeNotIn applies the NotIn predicate on the "lable_target_type" field.
-func LableTargetTypeNotIn(vs ...uint16) predicate.LableTree {
-	return predicate.LableTree(sql.FieldNotIn(FieldLableTargetType, vs...))
+// OwnerIDNotIn applies the NotIn predicate on the "owner_id" field.
+func OwnerIDNotIn(vs ...uint64) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNotIn(FieldOwnerID, vs...))
 }
 
-// LableTargetTypeGT applies the GT predicate on the "lable_target_type" field.
-func LableTargetTypeGT(v uint16) predicate.LableTree {
-	return predicate.LableTree(sql.FieldGT(FieldLableTargetType, v))
+// OwnerIDGT applies the GT predicate on the "owner_id" field.
+func OwnerIDGT(v uint64) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGT(FieldOwnerID, v))
 }
 
-// LableTargetTypeGTE applies the GTE predicate on the "lable_target_type" field.
-func LableTargetTypeGTE(v uint16) predicate.LableTree {
-	return predicate.LableTree(sql.FieldGTE(FieldLableTargetType, v))
+// OwnerIDGTE applies the GTE predicate on the "owner_id" field.
+func OwnerIDGTE(v uint64) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGTE(FieldOwnerID, v))
 }
 
-// LableTargetTypeLT applies the LT predicate on the "lable_target_type" field.
-func LableTargetTypeLT(v uint16) predicate.LableTree {
-	return predicate.LableTree(sql.FieldLT(FieldLableTargetType, v))
+// OwnerIDLT applies the LT predicate on the "owner_id" field.
+func OwnerIDLT(v uint64) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLT(FieldOwnerID, v))
 }
 
-// LableTargetTypeLTE applies the LTE predicate on the "lable_target_type" field.
-func LableTargetTypeLTE(v uint16) predicate.LableTree {
-	return predicate.LableTree(sql.FieldLTE(FieldLableTargetType, v))
+// OwnerIDLTE applies the LTE predicate on the "owner_id" field.
+func OwnerIDLTE(v uint64) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLTE(FieldOwnerID, v))
 }
 
-// ParentLablesEQ applies the EQ predicate on the "parent_lables" field.
-func ParentLablesEQ(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEQ(FieldParentLables, v))
+// ParentIDEQ applies the EQ predicate on the "parent_id" field.
+func ParentIDEQ(v uint64) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldParentID, v))
 }
 
-// ParentLablesNEQ applies the NEQ predicate on the "parent_lables" field.
-func ParentLablesNEQ(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldNEQ(FieldParentLables, v))
+// ParentIDNEQ applies the NEQ predicate on the "parent_id" field.
+func ParentIDNEQ(v uint64) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNEQ(FieldParentID, v))
 }
 
-// ParentLablesIn applies the In predicate on the "parent_lables" field.
-func ParentLablesIn(vs ...string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldIn(FieldParentLables, vs...))
+// ParentIDIn applies the In predicate on the "parent_id" field.
+func ParentIDIn(vs ...uint64) predicate.LableTree {
+	return predicate.LableTree(sql.FieldIn(FieldParentID, vs...))
 }
 
-// ParentLablesNotIn applies the NotIn predicate on the "parent_lables" field.
-func ParentLablesNotIn(vs ...string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldNotIn(FieldParentLables, vs...))
+// ParentIDNotIn applies the NotIn predicate on the "parent_id" field.
+func ParentIDNotIn(vs ...uint64) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNotIn(FieldParentID, vs...))
 }
 
-// ParentLablesGT applies the GT predicate on the "parent_lables" field.
-func ParentLablesGT(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldGT(FieldParentLables, v))
+// ParentIDGT applies the GT predicate on the "parent_id" field.
+func ParentIDGT(v uint64) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGT(FieldParentID, v))
 }
 
-// ParentLablesGTE applies the GTE predicate on the "parent_lables" field.
-func ParentLablesGTE(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldGTE(FieldParentLables, v))
+// ParentIDGTE applies the GTE predicate on the "parent_id" field.
+func ParentIDGTE(v uint64) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGTE(FieldParentID, v))
 }
 
-// ParentLablesLT applies the LT predicate on the "parent_lables" field.
-func ParentLablesLT(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldLT(FieldParentLables, v))
+// ParentIDLT applies the LT predicate on the "parent_id" field.
+func ParentIDLT(v uint64) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLT(FieldParentID, v))
 }
 
-// ParentLablesLTE applies the LTE predicate on the "parent_lables" field.
-func ParentLablesLTE(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldLTE(FieldParentLables, v))
-}
-
-// ParentLablesContains applies the Contains predicate on the "parent_lables" field.
-func ParentLablesContains(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldContains(FieldParentLables, v))
-}
-
-// ParentLablesHasPrefix applies the HasPrefix predicate on the "parent_lables" field.
-func ParentLablesHasPrefix(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldHasPrefix(FieldParentLables, v))
-}
-
-// ParentLablesHasSuffix applies the HasSuffix predicate on the "parent_lables" field.
-func ParentLablesHasSuffix(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldHasSuffix(FieldParentLables, v))
-}
-
-// ParentLablesEqualFold applies the EqualFold predicate on the "parent_lables" field.
-func ParentLablesEqualFold(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEqualFold(FieldParentLables, v))
-}
-
-// ParentLablesContainsFold applies the ContainsFold predicate on the "parent_lables" field.
-func ParentLablesContainsFold(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldContainsFold(FieldParentLables, v))
-}
-
-// LableOwnerEQ applies the EQ predicate on the "lable_owner" field.
-func LableOwnerEQ(v uint64) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEQ(FieldLableOwner, v))
-}
-
-// LableOwnerNEQ applies the NEQ predicate on the "lable_owner" field.
-func LableOwnerNEQ(v uint64) predicate.LableTree {
-	return predicate.LableTree(sql.FieldNEQ(FieldLableOwner, v))
-}
-
-// LableOwnerIn applies the In predicate on the "lable_owner" field.
-func LableOwnerIn(vs ...uint64) predicate.LableTree {
-	return predicate.LableTree(sql.FieldIn(FieldLableOwner, vs...))
-}
-
-// LableOwnerNotIn applies the NotIn predicate on the "lable_owner" field.
-func LableOwnerNotIn(vs ...uint64) predicate.LableTree {
-	return predicate.LableTree(sql.FieldNotIn(FieldLableOwner, vs...))
-}
-
-// LableOwnerGT applies the GT predicate on the "lable_owner" field.
-func LableOwnerGT(v uint64) predicate.LableTree {
-	return predicate.LableTree(sql.FieldGT(FieldLableOwner, v))
-}
-
-// LableOwnerGTE applies the GTE predicate on the "lable_owner" field.
-func LableOwnerGTE(v uint64) predicate.LableTree {
-	return predicate.LableTree(sql.FieldGTE(FieldLableOwner, v))
-}
-
-// LableOwnerLT applies the LT predicate on the "lable_owner" field.
-func LableOwnerLT(v uint64) predicate.LableTree {
-	return predicate.LableTree(sql.FieldLT(FieldLableOwner, v))
-}
-
-// LableOwnerLTE applies the LTE predicate on the "lable_owner" field.
-func LableOwnerLTE(v uint64) predicate.LableTree {
-	return predicate.LableTree(sql.FieldLTE(FieldLableOwner, v))
-}
-
-// InheritEQ applies the EQ predicate on the "inherit" field.
-func InheritEQ(v bool) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEQ(FieldInherit, v))
-}
-
-// InheritNEQ applies the NEQ predicate on the "inherit" field.
-func InheritNEQ(v bool) predicate.LableTree {
-	return predicate.LableTree(sql.FieldNEQ(FieldInherit, v))
-}
-
-// RelatedLablesEQ applies the EQ predicate on the "related_lables" field.
-func RelatedLablesEQ(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEQ(FieldRelatedLables, v))
-}
-
-// RelatedLablesNEQ applies the NEQ predicate on the "related_lables" field.
-func RelatedLablesNEQ(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldNEQ(FieldRelatedLables, v))
-}
-
-// RelatedLablesIn applies the In predicate on the "related_lables" field.
-func RelatedLablesIn(vs ...string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldIn(FieldRelatedLables, vs...))
-}
-
-// RelatedLablesNotIn applies the NotIn predicate on the "related_lables" field.
-func RelatedLablesNotIn(vs ...string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldNotIn(FieldRelatedLables, vs...))
-}
-
-// RelatedLablesGT applies the GT predicate on the "related_lables" field.
-func RelatedLablesGT(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldGT(FieldRelatedLables, v))
-}
-
-// RelatedLablesGTE applies the GTE predicate on the "related_lables" field.
-func RelatedLablesGTE(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldGTE(FieldRelatedLables, v))
-}
-
-// RelatedLablesLT applies the LT predicate on the "related_lables" field.
-func RelatedLablesLT(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldLT(FieldRelatedLables, v))
-}
-
-// RelatedLablesLTE applies the LTE predicate on the "related_lables" field.
-func RelatedLablesLTE(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldLTE(FieldRelatedLables, v))
-}
-
-// RelatedLablesContains applies the Contains predicate on the "related_lables" field.
-func RelatedLablesContains(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldContains(FieldRelatedLables, v))
-}
-
-// RelatedLablesHasPrefix applies the HasPrefix predicate on the "related_lables" field.
-func RelatedLablesHasPrefix(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldHasPrefix(FieldRelatedLables, v))
-}
-
-// RelatedLablesHasSuffix applies the HasSuffix predicate on the "related_lables" field.
-func RelatedLablesHasSuffix(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldHasSuffix(FieldRelatedLables, v))
-}
-
-// RelatedLablesEqualFold applies the EqualFold predicate on the "related_lables" field.
-func RelatedLablesEqualFold(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEqualFold(FieldRelatedLables, v))
-}
-
-// RelatedLablesContainsFold applies the ContainsFold predicate on the "related_lables" field.
-func RelatedLablesContainsFold(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldContainsFold(FieldRelatedLables, v))
+// ParentIDLTE applies the LTE predicate on the "parent_id" field.
+func ParentIDLTE(v uint64) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLTE(FieldParentID, v))
 }
 
 // DescriptionEQ applies the EQ predicate on the "description" field.
@@ -769,134 +619,119 @@ func DescriptionContainsFold(v string) predicate.LableTree {
 	return predicate.LableTree(sql.FieldContainsFold(FieldDescription, v))
 }
 
-// Ext1EQ applies the EQ predicate on the "ext1" field.
-func Ext1EQ(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEQ(FieldExt1, v))
+// TargetTypeEQ applies the EQ predicate on the "target_type" field.
+func TargetTypeEQ(v uint16) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldTargetType, v))
 }
 
-// Ext1NEQ applies the NEQ predicate on the "ext1" field.
-func Ext1NEQ(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldNEQ(FieldExt1, v))
+// TargetTypeNEQ applies the NEQ predicate on the "target_type" field.
+func TargetTypeNEQ(v uint16) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNEQ(FieldTargetType, v))
 }
 
-// Ext1In applies the In predicate on the "ext1" field.
-func Ext1In(vs ...string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldIn(FieldExt1, vs...))
+// TargetTypeIn applies the In predicate on the "target_type" field.
+func TargetTypeIn(vs ...uint16) predicate.LableTree {
+	return predicate.LableTree(sql.FieldIn(FieldTargetType, vs...))
 }
 
-// Ext1NotIn applies the NotIn predicate on the "ext1" field.
-func Ext1NotIn(vs ...string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldNotIn(FieldExt1, vs...))
+// TargetTypeNotIn applies the NotIn predicate on the "target_type" field.
+func TargetTypeNotIn(vs ...uint16) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNotIn(FieldTargetType, vs...))
 }
 
-// Ext1GT applies the GT predicate on the "ext1" field.
-func Ext1GT(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldGT(FieldExt1, v))
+// TargetTypeGT applies the GT predicate on the "target_type" field.
+func TargetTypeGT(v uint16) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGT(FieldTargetType, v))
 }
 
-// Ext1GTE applies the GTE predicate on the "ext1" field.
-func Ext1GTE(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldGTE(FieldExt1, v))
+// TargetTypeGTE applies the GTE predicate on the "target_type" field.
+func TargetTypeGTE(v uint16) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGTE(FieldTargetType, v))
 }
 
-// Ext1LT applies the LT predicate on the "ext1" field.
-func Ext1LT(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldLT(FieldExt1, v))
+// TargetTypeLT applies the LT predicate on the "target_type" field.
+func TargetTypeLT(v uint16) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLT(FieldTargetType, v))
 }
 
-// Ext1LTE applies the LTE predicate on the "ext1" field.
-func Ext1LTE(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldLTE(FieldExt1, v))
+// TargetTypeLTE applies the LTE predicate on the "target_type" field.
+func TargetTypeLTE(v uint16) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLTE(FieldTargetType, v))
 }
 
-// Ext1Contains applies the Contains predicate on the "ext1" field.
-func Ext1Contains(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldContains(FieldExt1, v))
+// ParentsEQ applies the EQ predicate on the "parents" field.
+func ParentsEQ(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldParents, v))
 }
 
-// Ext1HasPrefix applies the HasPrefix predicate on the "ext1" field.
-func Ext1HasPrefix(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldHasPrefix(FieldExt1, v))
+// ParentsNEQ applies the NEQ predicate on the "parents" field.
+func ParentsNEQ(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNEQ(FieldParents, v))
 }
 
-// Ext1HasSuffix applies the HasSuffix predicate on the "ext1" field.
-func Ext1HasSuffix(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldHasSuffix(FieldExt1, v))
+// ParentsIn applies the In predicate on the "parents" field.
+func ParentsIn(vs ...string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldIn(FieldParents, vs...))
 }
 
-// Ext1EqualFold applies the EqualFold predicate on the "ext1" field.
-func Ext1EqualFold(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEqualFold(FieldExt1, v))
+// ParentsNotIn applies the NotIn predicate on the "parents" field.
+func ParentsNotIn(vs ...string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNotIn(FieldParents, vs...))
 }
 
-// Ext1ContainsFold applies the ContainsFold predicate on the "ext1" field.
-func Ext1ContainsFold(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldContainsFold(FieldExt1, v))
+// ParentsGT applies the GT predicate on the "parents" field.
+func ParentsGT(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGT(FieldParents, v))
 }
 
-// Ext2EQ applies the EQ predicate on the "ext2" field.
-func Ext2EQ(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEQ(FieldExt2, v))
+// ParentsGTE applies the GTE predicate on the "parents" field.
+func ParentsGTE(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldGTE(FieldParents, v))
 }
 
-// Ext2NEQ applies the NEQ predicate on the "ext2" field.
-func Ext2NEQ(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldNEQ(FieldExt2, v))
+// ParentsLT applies the LT predicate on the "parents" field.
+func ParentsLT(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLT(FieldParents, v))
 }
 
-// Ext2In applies the In predicate on the "ext2" field.
-func Ext2In(vs ...string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldIn(FieldExt2, vs...))
+// ParentsLTE applies the LTE predicate on the "parents" field.
+func ParentsLTE(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldLTE(FieldParents, v))
 }
 
-// Ext2NotIn applies the NotIn predicate on the "ext2" field.
-func Ext2NotIn(vs ...string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldNotIn(FieldExt2, vs...))
+// ParentsContains applies the Contains predicate on the "parents" field.
+func ParentsContains(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldContains(FieldParents, v))
 }
 
-// Ext2GT applies the GT predicate on the "ext2" field.
-func Ext2GT(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldGT(FieldExt2, v))
+// ParentsHasPrefix applies the HasPrefix predicate on the "parents" field.
+func ParentsHasPrefix(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldHasPrefix(FieldParents, v))
 }
 
-// Ext2GTE applies the GTE predicate on the "ext2" field.
-func Ext2GTE(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldGTE(FieldExt2, v))
+// ParentsHasSuffix applies the HasSuffix predicate on the "parents" field.
+func ParentsHasSuffix(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldHasSuffix(FieldParents, v))
 }
 
-// Ext2LT applies the LT predicate on the "ext2" field.
-func Ext2LT(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldLT(FieldExt2, v))
+// ParentsEqualFold applies the EqualFold predicate on the "parents" field.
+func ParentsEqualFold(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEqualFold(FieldParents, v))
 }
 
-// Ext2LTE applies the LTE predicate on the "ext2" field.
-func Ext2LTE(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldLTE(FieldExt2, v))
+// ParentsContainsFold applies the ContainsFold predicate on the "parents" field.
+func ParentsContainsFold(v string) predicate.LableTree {
+	return predicate.LableTree(sql.FieldContainsFold(FieldParents, v))
 }
 
-// Ext2Contains applies the Contains predicate on the "ext2" field.
-func Ext2Contains(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldContains(FieldExt2, v))
+// InheritEQ applies the EQ predicate on the "inherit" field.
+func InheritEQ(v bool) predicate.LableTree {
+	return predicate.LableTree(sql.FieldEQ(FieldInherit, v))
 }
 
-// Ext2HasPrefix applies the HasPrefix predicate on the "ext2" field.
-func Ext2HasPrefix(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldHasPrefix(FieldExt2, v))
-}
-
-// Ext2HasSuffix applies the HasSuffix predicate on the "ext2" field.
-func Ext2HasSuffix(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldHasSuffix(FieldExt2, v))
-}
-
-// Ext2EqualFold applies the EqualFold predicate on the "ext2" field.
-func Ext2EqualFold(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldEqualFold(FieldExt2, v))
-}
-
-// Ext2ContainsFold applies the ContainsFold predicate on the "ext2" field.
-func Ext2ContainsFold(v string) predicate.LableTree {
-	return predicate.LableTree(sql.FieldContainsFold(FieldExt2, v))
+// InheritNEQ applies the NEQ predicate on the "inherit" field.
+func InheritNEQ(v bool) predicate.LableTree {
+	return predicate.LableTree(sql.FieldNEQ(FieldInherit, v))
 }
 
 // And groups predicates with the AND operator between them.

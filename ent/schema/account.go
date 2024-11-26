@@ -42,16 +42,26 @@ func (Account) Fields() []ent.Field {
 			Comment("protocol of the this account.|账号协议").
 			Annotations(entsql.WithComments(true)),
 		field.String("password").
+			Optional().
 			Comment("account password|账号密码").
 			MaxLen(128).
 			Annotations(entsql.WithComments(true)),
 		field.String("private_key").
+			Optional().
 			Comment("private_key of the this account.|账号私钥").
 			MaxLen(4096).
 			Annotations(entsql.WithComments(true)),
-		field.Uint64("device_id").
+		field.String("private_key_password").
 			Optional().
+			Comment("private_key password of the this account.|私钥口令").
+			MaxLen(4096).
+			Annotations(entsql.WithComments(true)),
+		field.Uint64("device_id").
 			Comment("account belong to|账号所属设备").
+			Min(1).
+			Annotations(entsql.WithComments(true)),
+		field.Uint64("department_id").
+			Comment("account belong to|账号所属部门").
 			Min(1).
 			Annotations(entsql.WithComments(true)),
 	}
@@ -61,6 +71,7 @@ func (Account) Fields() []ent.Field {
 func (Account) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("devices", Device.Type).Unique().Field("device_id"),
+		edge.To("departments", Device.Type).Unique().Field("department_id"),
 	}
 }
 

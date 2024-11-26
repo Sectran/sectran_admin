@@ -22,7 +22,6 @@ func (Device) Fields() []ent.Field {
 			MaxLen(128).
 			Annotations(entsql.WithComments(true)),
 		field.Uint64("department_id").
-			Optional().
 			Min(1).
 			Comment("ID of the device's department.|设备所属部门").
 			Annotations(entsql.WithComments(true)),

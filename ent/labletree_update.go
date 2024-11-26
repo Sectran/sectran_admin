@@ -97,108 +97,66 @@ func (ltu *LableTreeUpdate) SetNillableContent(s *string) *LableTreeUpdate {
 	return ltu
 }
 
-// SetParentLable sets the "parent_lable" field.
-func (ltu *LableTreeUpdate) SetParentLable(u uint64) *LableTreeUpdate {
-	ltu.mutation.ResetParentLable()
-	ltu.mutation.SetParentLable(u)
+// SetOwnership sets the "ownership" field.
+func (ltu *LableTreeUpdate) SetOwnership(u uint8) *LableTreeUpdate {
+	ltu.mutation.ResetOwnership()
+	ltu.mutation.SetOwnership(u)
 	return ltu
 }
 
-// SetNillableParentLable sets the "parent_lable" field if the given value is not nil.
-func (ltu *LableTreeUpdate) SetNillableParentLable(u *uint64) *LableTreeUpdate {
+// SetNillableOwnership sets the "ownership" field if the given value is not nil.
+func (ltu *LableTreeUpdate) SetNillableOwnership(u *uint8) *LableTreeUpdate {
 	if u != nil {
-		ltu.SetParentLable(*u)
+		ltu.SetOwnership(*u)
 	}
 	return ltu
 }
 
-// AddParentLable adds u to the "parent_lable" field.
-func (ltu *LableTreeUpdate) AddParentLable(u int64) *LableTreeUpdate {
-	ltu.mutation.AddParentLable(u)
+// AddOwnership adds u to the "ownership" field.
+func (ltu *LableTreeUpdate) AddOwnership(u int8) *LableTreeUpdate {
+	ltu.mutation.AddOwnership(u)
 	return ltu
 }
 
-// SetLableTargetType sets the "lable_target_type" field.
-func (ltu *LableTreeUpdate) SetLableTargetType(u uint16) *LableTreeUpdate {
-	ltu.mutation.ResetLableTargetType()
-	ltu.mutation.SetLableTargetType(u)
+// SetOwnerID sets the "owner_id" field.
+func (ltu *LableTreeUpdate) SetOwnerID(u uint64) *LableTreeUpdate {
+	ltu.mutation.ResetOwnerID()
+	ltu.mutation.SetOwnerID(u)
 	return ltu
 }
 
-// SetNillableLableTargetType sets the "lable_target_type" field if the given value is not nil.
-func (ltu *LableTreeUpdate) SetNillableLableTargetType(u *uint16) *LableTreeUpdate {
+// SetNillableOwnerID sets the "owner_id" field if the given value is not nil.
+func (ltu *LableTreeUpdate) SetNillableOwnerID(u *uint64) *LableTreeUpdate {
 	if u != nil {
-		ltu.SetLableTargetType(*u)
+		ltu.SetOwnerID(*u)
 	}
 	return ltu
 }
 
-// AddLableTargetType adds u to the "lable_target_type" field.
-func (ltu *LableTreeUpdate) AddLableTargetType(u int16) *LableTreeUpdate {
-	ltu.mutation.AddLableTargetType(u)
+// AddOwnerID adds u to the "owner_id" field.
+func (ltu *LableTreeUpdate) AddOwnerID(u int64) *LableTreeUpdate {
+	ltu.mutation.AddOwnerID(u)
 	return ltu
 }
 
-// SetParentLables sets the "parent_lables" field.
-func (ltu *LableTreeUpdate) SetParentLables(s string) *LableTreeUpdate {
-	ltu.mutation.SetParentLables(s)
+// SetParentID sets the "parent_id" field.
+func (ltu *LableTreeUpdate) SetParentID(u uint64) *LableTreeUpdate {
+	ltu.mutation.ResetParentID()
+	ltu.mutation.SetParentID(u)
 	return ltu
 }
 
-// SetNillableParentLables sets the "parent_lables" field if the given value is not nil.
-func (ltu *LableTreeUpdate) SetNillableParentLables(s *string) *LableTreeUpdate {
-	if s != nil {
-		ltu.SetParentLables(*s)
-	}
-	return ltu
-}
-
-// SetLableOwner sets the "lable_owner" field.
-func (ltu *LableTreeUpdate) SetLableOwner(u uint64) *LableTreeUpdate {
-	ltu.mutation.ResetLableOwner()
-	ltu.mutation.SetLableOwner(u)
-	return ltu
-}
-
-// SetNillableLableOwner sets the "lable_owner" field if the given value is not nil.
-func (ltu *LableTreeUpdate) SetNillableLableOwner(u *uint64) *LableTreeUpdate {
+// SetNillableParentID sets the "parent_id" field if the given value is not nil.
+func (ltu *LableTreeUpdate) SetNillableParentID(u *uint64) *LableTreeUpdate {
 	if u != nil {
-		ltu.SetLableOwner(*u)
+		ltu.SetParentID(*u)
 	}
 	return ltu
 }
 
-// AddLableOwner adds u to the "lable_owner" field.
-func (ltu *LableTreeUpdate) AddLableOwner(u int64) *LableTreeUpdate {
-	ltu.mutation.AddLableOwner(u)
-	return ltu
-}
-
-// SetInherit sets the "inherit" field.
-func (ltu *LableTreeUpdate) SetInherit(b bool) *LableTreeUpdate {
-	ltu.mutation.SetInherit(b)
-	return ltu
-}
-
-// SetNillableInherit sets the "inherit" field if the given value is not nil.
-func (ltu *LableTreeUpdate) SetNillableInherit(b *bool) *LableTreeUpdate {
-	if b != nil {
-		ltu.SetInherit(*b)
-	}
-	return ltu
-}
-
-// SetRelatedLables sets the "related_lables" field.
-func (ltu *LableTreeUpdate) SetRelatedLables(s string) *LableTreeUpdate {
-	ltu.mutation.SetRelatedLables(s)
-	return ltu
-}
-
-// SetNillableRelatedLables sets the "related_lables" field if the given value is not nil.
-func (ltu *LableTreeUpdate) SetNillableRelatedLables(s *string) *LableTreeUpdate {
-	if s != nil {
-		ltu.SetRelatedLables(*s)
-	}
+// AddParentID adds u to the "parent_id" field.
+func (ltu *LableTreeUpdate) AddParentID(u int64) *LableTreeUpdate {
+	ltu.mutation.AddParentID(u)
 	return ltu
 }
 
@@ -216,30 +174,51 @@ func (ltu *LableTreeUpdate) SetNillableDescription(s *string) *LableTreeUpdate {
 	return ltu
 }
 
-// SetExt1 sets the "ext1" field.
-func (ltu *LableTreeUpdate) SetExt1(s string) *LableTreeUpdate {
-	ltu.mutation.SetExt1(s)
+// SetTargetType sets the "target_type" field.
+func (ltu *LableTreeUpdate) SetTargetType(u uint16) *LableTreeUpdate {
+	ltu.mutation.ResetTargetType()
+	ltu.mutation.SetTargetType(u)
 	return ltu
 }
 
-// SetNillableExt1 sets the "ext1" field if the given value is not nil.
-func (ltu *LableTreeUpdate) SetNillableExt1(s *string) *LableTreeUpdate {
-	if s != nil {
-		ltu.SetExt1(*s)
+// SetNillableTargetType sets the "target_type" field if the given value is not nil.
+func (ltu *LableTreeUpdate) SetNillableTargetType(u *uint16) *LableTreeUpdate {
+	if u != nil {
+		ltu.SetTargetType(*u)
 	}
 	return ltu
 }
 
-// SetExt2 sets the "ext2" field.
-func (ltu *LableTreeUpdate) SetExt2(s string) *LableTreeUpdate {
-	ltu.mutation.SetExt2(s)
+// AddTargetType adds u to the "target_type" field.
+func (ltu *LableTreeUpdate) AddTargetType(u int16) *LableTreeUpdate {
+	ltu.mutation.AddTargetType(u)
 	return ltu
 }
 
-// SetNillableExt2 sets the "ext2" field if the given value is not nil.
-func (ltu *LableTreeUpdate) SetNillableExt2(s *string) *LableTreeUpdate {
+// SetParents sets the "parents" field.
+func (ltu *LableTreeUpdate) SetParents(s string) *LableTreeUpdate {
+	ltu.mutation.SetParents(s)
+	return ltu
+}
+
+// SetNillableParents sets the "parents" field if the given value is not nil.
+func (ltu *LableTreeUpdate) SetNillableParents(s *string) *LableTreeUpdate {
 	if s != nil {
-		ltu.SetExt2(*s)
+		ltu.SetParents(*s)
+	}
+	return ltu
+}
+
+// SetInherit sets the "inherit" field.
+func (ltu *LableTreeUpdate) SetInherit(b bool) *LableTreeUpdate {
+	ltu.mutation.SetInherit(b)
+	return ltu
+}
+
+// SetNillableInherit sets the "inherit" field if the given value is not nil.
+func (ltu *LableTreeUpdate) SetNillableInherit(b *bool) *LableTreeUpdate {
+	if b != nil {
+		ltu.SetInherit(*b)
 	}
 	return ltu
 }
@@ -340,41 +319,38 @@ func (ltu *LableTreeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := ltu.mutation.Content(); ok {
 		_spec.SetField(labletree.FieldContent, field.TypeString, value)
 	}
-	if value, ok := ltu.mutation.ParentLable(); ok {
-		_spec.SetField(labletree.FieldParentLable, field.TypeUint64, value)
+	if value, ok := ltu.mutation.Ownership(); ok {
+		_spec.SetField(labletree.FieldOwnership, field.TypeUint8, value)
 	}
-	if value, ok := ltu.mutation.AddedParentLable(); ok {
-		_spec.AddField(labletree.FieldParentLable, field.TypeUint64, value)
+	if value, ok := ltu.mutation.AddedOwnership(); ok {
+		_spec.AddField(labletree.FieldOwnership, field.TypeUint8, value)
 	}
-	if value, ok := ltu.mutation.LableTargetType(); ok {
-		_spec.SetField(labletree.FieldLableTargetType, field.TypeUint16, value)
+	if value, ok := ltu.mutation.OwnerID(); ok {
+		_spec.SetField(labletree.FieldOwnerID, field.TypeUint64, value)
 	}
-	if value, ok := ltu.mutation.AddedLableTargetType(); ok {
-		_spec.AddField(labletree.FieldLableTargetType, field.TypeUint16, value)
+	if value, ok := ltu.mutation.AddedOwnerID(); ok {
+		_spec.AddField(labletree.FieldOwnerID, field.TypeUint64, value)
 	}
-	if value, ok := ltu.mutation.ParentLables(); ok {
-		_spec.SetField(labletree.FieldParentLables, field.TypeString, value)
+	if value, ok := ltu.mutation.ParentID(); ok {
+		_spec.SetField(labletree.FieldParentID, field.TypeUint64, value)
 	}
-	if value, ok := ltu.mutation.LableOwner(); ok {
-		_spec.SetField(labletree.FieldLableOwner, field.TypeUint64, value)
-	}
-	if value, ok := ltu.mutation.AddedLableOwner(); ok {
-		_spec.AddField(labletree.FieldLableOwner, field.TypeUint64, value)
-	}
-	if value, ok := ltu.mutation.Inherit(); ok {
-		_spec.SetField(labletree.FieldInherit, field.TypeBool, value)
-	}
-	if value, ok := ltu.mutation.RelatedLables(); ok {
-		_spec.SetField(labletree.FieldRelatedLables, field.TypeString, value)
+	if value, ok := ltu.mutation.AddedParentID(); ok {
+		_spec.AddField(labletree.FieldParentID, field.TypeUint64, value)
 	}
 	if value, ok := ltu.mutation.Description(); ok {
 		_spec.SetField(labletree.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := ltu.mutation.Ext1(); ok {
-		_spec.SetField(labletree.FieldExt1, field.TypeString, value)
+	if value, ok := ltu.mutation.TargetType(); ok {
+		_spec.SetField(labletree.FieldTargetType, field.TypeUint16, value)
 	}
-	if value, ok := ltu.mutation.Ext2(); ok {
-		_spec.SetField(labletree.FieldExt2, field.TypeString, value)
+	if value, ok := ltu.mutation.AddedTargetType(); ok {
+		_spec.AddField(labletree.FieldTargetType, field.TypeUint16, value)
+	}
+	if value, ok := ltu.mutation.Parents(); ok {
+		_spec.SetField(labletree.FieldParents, field.TypeString, value)
+	}
+	if value, ok := ltu.mutation.Inherit(); ok {
+		_spec.SetField(labletree.FieldInherit, field.TypeBool, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, ltu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -465,108 +441,66 @@ func (ltuo *LableTreeUpdateOne) SetNillableContent(s *string) *LableTreeUpdateOn
 	return ltuo
 }
 
-// SetParentLable sets the "parent_lable" field.
-func (ltuo *LableTreeUpdateOne) SetParentLable(u uint64) *LableTreeUpdateOne {
-	ltuo.mutation.ResetParentLable()
-	ltuo.mutation.SetParentLable(u)
+// SetOwnership sets the "ownership" field.
+func (ltuo *LableTreeUpdateOne) SetOwnership(u uint8) *LableTreeUpdateOne {
+	ltuo.mutation.ResetOwnership()
+	ltuo.mutation.SetOwnership(u)
 	return ltuo
 }
 
-// SetNillableParentLable sets the "parent_lable" field if the given value is not nil.
-func (ltuo *LableTreeUpdateOne) SetNillableParentLable(u *uint64) *LableTreeUpdateOne {
+// SetNillableOwnership sets the "ownership" field if the given value is not nil.
+func (ltuo *LableTreeUpdateOne) SetNillableOwnership(u *uint8) *LableTreeUpdateOne {
 	if u != nil {
-		ltuo.SetParentLable(*u)
+		ltuo.SetOwnership(*u)
 	}
 	return ltuo
 }
 
-// AddParentLable adds u to the "parent_lable" field.
-func (ltuo *LableTreeUpdateOne) AddParentLable(u int64) *LableTreeUpdateOne {
-	ltuo.mutation.AddParentLable(u)
+// AddOwnership adds u to the "ownership" field.
+func (ltuo *LableTreeUpdateOne) AddOwnership(u int8) *LableTreeUpdateOne {
+	ltuo.mutation.AddOwnership(u)
 	return ltuo
 }
 
-// SetLableTargetType sets the "lable_target_type" field.
-func (ltuo *LableTreeUpdateOne) SetLableTargetType(u uint16) *LableTreeUpdateOne {
-	ltuo.mutation.ResetLableTargetType()
-	ltuo.mutation.SetLableTargetType(u)
+// SetOwnerID sets the "owner_id" field.
+func (ltuo *LableTreeUpdateOne) SetOwnerID(u uint64) *LableTreeUpdateOne {
+	ltuo.mutation.ResetOwnerID()
+	ltuo.mutation.SetOwnerID(u)
 	return ltuo
 }
 
-// SetNillableLableTargetType sets the "lable_target_type" field if the given value is not nil.
-func (ltuo *LableTreeUpdateOne) SetNillableLableTargetType(u *uint16) *LableTreeUpdateOne {
+// SetNillableOwnerID sets the "owner_id" field if the given value is not nil.
+func (ltuo *LableTreeUpdateOne) SetNillableOwnerID(u *uint64) *LableTreeUpdateOne {
 	if u != nil {
-		ltuo.SetLableTargetType(*u)
+		ltuo.SetOwnerID(*u)
 	}
 	return ltuo
 }
 
-// AddLableTargetType adds u to the "lable_target_type" field.
-func (ltuo *LableTreeUpdateOne) AddLableTargetType(u int16) *LableTreeUpdateOne {
-	ltuo.mutation.AddLableTargetType(u)
+// AddOwnerID adds u to the "owner_id" field.
+func (ltuo *LableTreeUpdateOne) AddOwnerID(u int64) *LableTreeUpdateOne {
+	ltuo.mutation.AddOwnerID(u)
 	return ltuo
 }
 
-// SetParentLables sets the "parent_lables" field.
-func (ltuo *LableTreeUpdateOne) SetParentLables(s string) *LableTreeUpdateOne {
-	ltuo.mutation.SetParentLables(s)
+// SetParentID sets the "parent_id" field.
+func (ltuo *LableTreeUpdateOne) SetParentID(u uint64) *LableTreeUpdateOne {
+	ltuo.mutation.ResetParentID()
+	ltuo.mutation.SetParentID(u)
 	return ltuo
 }
 
-// SetNillableParentLables sets the "parent_lables" field if the given value is not nil.
-func (ltuo *LableTreeUpdateOne) SetNillableParentLables(s *string) *LableTreeUpdateOne {
-	if s != nil {
-		ltuo.SetParentLables(*s)
-	}
-	return ltuo
-}
-
-// SetLableOwner sets the "lable_owner" field.
-func (ltuo *LableTreeUpdateOne) SetLableOwner(u uint64) *LableTreeUpdateOne {
-	ltuo.mutation.ResetLableOwner()
-	ltuo.mutation.SetLableOwner(u)
-	return ltuo
-}
-
-// SetNillableLableOwner sets the "lable_owner" field if the given value is not nil.
-func (ltuo *LableTreeUpdateOne) SetNillableLableOwner(u *uint64) *LableTreeUpdateOne {
+// SetNillableParentID sets the "parent_id" field if the given value is not nil.
+func (ltuo *LableTreeUpdateOne) SetNillableParentID(u *uint64) *LableTreeUpdateOne {
 	if u != nil {
-		ltuo.SetLableOwner(*u)
+		ltuo.SetParentID(*u)
 	}
 	return ltuo
 }
 
-// AddLableOwner adds u to the "lable_owner" field.
-func (ltuo *LableTreeUpdateOne) AddLableOwner(u int64) *LableTreeUpdateOne {
-	ltuo.mutation.AddLableOwner(u)
-	return ltuo
-}
-
-// SetInherit sets the "inherit" field.
-func (ltuo *LableTreeUpdateOne) SetInherit(b bool) *LableTreeUpdateOne {
-	ltuo.mutation.SetInherit(b)
-	return ltuo
-}
-
-// SetNillableInherit sets the "inherit" field if the given value is not nil.
-func (ltuo *LableTreeUpdateOne) SetNillableInherit(b *bool) *LableTreeUpdateOne {
-	if b != nil {
-		ltuo.SetInherit(*b)
-	}
-	return ltuo
-}
-
-// SetRelatedLables sets the "related_lables" field.
-func (ltuo *LableTreeUpdateOne) SetRelatedLables(s string) *LableTreeUpdateOne {
-	ltuo.mutation.SetRelatedLables(s)
-	return ltuo
-}
-
-// SetNillableRelatedLables sets the "related_lables" field if the given value is not nil.
-func (ltuo *LableTreeUpdateOne) SetNillableRelatedLables(s *string) *LableTreeUpdateOne {
-	if s != nil {
-		ltuo.SetRelatedLables(*s)
-	}
+// AddParentID adds u to the "parent_id" field.
+func (ltuo *LableTreeUpdateOne) AddParentID(u int64) *LableTreeUpdateOne {
+	ltuo.mutation.AddParentID(u)
 	return ltuo
 }
 
@@ -584,30 +518,51 @@ func (ltuo *LableTreeUpdateOne) SetNillableDescription(s *string) *LableTreeUpda
 	return ltuo
 }
 
-// SetExt1 sets the "ext1" field.
-func (ltuo *LableTreeUpdateOne) SetExt1(s string) *LableTreeUpdateOne {
-	ltuo.mutation.SetExt1(s)
+// SetTargetType sets the "target_type" field.
+func (ltuo *LableTreeUpdateOne) SetTargetType(u uint16) *LableTreeUpdateOne {
+	ltuo.mutation.ResetTargetType()
+	ltuo.mutation.SetTargetType(u)
 	return ltuo
 }
 
-// SetNillableExt1 sets the "ext1" field if the given value is not nil.
-func (ltuo *LableTreeUpdateOne) SetNillableExt1(s *string) *LableTreeUpdateOne {
-	if s != nil {
-		ltuo.SetExt1(*s)
+// SetNillableTargetType sets the "target_type" field if the given value is not nil.
+func (ltuo *LableTreeUpdateOne) SetNillableTargetType(u *uint16) *LableTreeUpdateOne {
+	if u != nil {
+		ltuo.SetTargetType(*u)
 	}
 	return ltuo
 }
 
-// SetExt2 sets the "ext2" field.
-func (ltuo *LableTreeUpdateOne) SetExt2(s string) *LableTreeUpdateOne {
-	ltuo.mutation.SetExt2(s)
+// AddTargetType adds u to the "target_type" field.
+func (ltuo *LableTreeUpdateOne) AddTargetType(u int16) *LableTreeUpdateOne {
+	ltuo.mutation.AddTargetType(u)
 	return ltuo
 }
 
-// SetNillableExt2 sets the "ext2" field if the given value is not nil.
-func (ltuo *LableTreeUpdateOne) SetNillableExt2(s *string) *LableTreeUpdateOne {
+// SetParents sets the "parents" field.
+func (ltuo *LableTreeUpdateOne) SetParents(s string) *LableTreeUpdateOne {
+	ltuo.mutation.SetParents(s)
+	return ltuo
+}
+
+// SetNillableParents sets the "parents" field if the given value is not nil.
+func (ltuo *LableTreeUpdateOne) SetNillableParents(s *string) *LableTreeUpdateOne {
 	if s != nil {
-		ltuo.SetExt2(*s)
+		ltuo.SetParents(*s)
+	}
+	return ltuo
+}
+
+// SetInherit sets the "inherit" field.
+func (ltuo *LableTreeUpdateOne) SetInherit(b bool) *LableTreeUpdateOne {
+	ltuo.mutation.SetInherit(b)
+	return ltuo
+}
+
+// SetNillableInherit sets the "inherit" field if the given value is not nil.
+func (ltuo *LableTreeUpdateOne) SetNillableInherit(b *bool) *LableTreeUpdateOne {
+	if b != nil {
+		ltuo.SetInherit(*b)
 	}
 	return ltuo
 }
@@ -738,41 +693,38 @@ func (ltuo *LableTreeUpdateOne) sqlSave(ctx context.Context) (_node *LableTree, 
 	if value, ok := ltuo.mutation.Content(); ok {
 		_spec.SetField(labletree.FieldContent, field.TypeString, value)
 	}
-	if value, ok := ltuo.mutation.ParentLable(); ok {
-		_spec.SetField(labletree.FieldParentLable, field.TypeUint64, value)
+	if value, ok := ltuo.mutation.Ownership(); ok {
+		_spec.SetField(labletree.FieldOwnership, field.TypeUint8, value)
 	}
-	if value, ok := ltuo.mutation.AddedParentLable(); ok {
-		_spec.AddField(labletree.FieldParentLable, field.TypeUint64, value)
+	if value, ok := ltuo.mutation.AddedOwnership(); ok {
+		_spec.AddField(labletree.FieldOwnership, field.TypeUint8, value)
 	}
-	if value, ok := ltuo.mutation.LableTargetType(); ok {
-		_spec.SetField(labletree.FieldLableTargetType, field.TypeUint16, value)
+	if value, ok := ltuo.mutation.OwnerID(); ok {
+		_spec.SetField(labletree.FieldOwnerID, field.TypeUint64, value)
 	}
-	if value, ok := ltuo.mutation.AddedLableTargetType(); ok {
-		_spec.AddField(labletree.FieldLableTargetType, field.TypeUint16, value)
+	if value, ok := ltuo.mutation.AddedOwnerID(); ok {
+		_spec.AddField(labletree.FieldOwnerID, field.TypeUint64, value)
 	}
-	if value, ok := ltuo.mutation.ParentLables(); ok {
-		_spec.SetField(labletree.FieldParentLables, field.TypeString, value)
+	if value, ok := ltuo.mutation.ParentID(); ok {
+		_spec.SetField(labletree.FieldParentID, field.TypeUint64, value)
 	}
-	if value, ok := ltuo.mutation.LableOwner(); ok {
-		_spec.SetField(labletree.FieldLableOwner, field.TypeUint64, value)
-	}
-	if value, ok := ltuo.mutation.AddedLableOwner(); ok {
-		_spec.AddField(labletree.FieldLableOwner, field.TypeUint64, value)
-	}
-	if value, ok := ltuo.mutation.Inherit(); ok {
-		_spec.SetField(labletree.FieldInherit, field.TypeBool, value)
-	}
-	if value, ok := ltuo.mutation.RelatedLables(); ok {
-		_spec.SetField(labletree.FieldRelatedLables, field.TypeString, value)
+	if value, ok := ltuo.mutation.AddedParentID(); ok {
+		_spec.AddField(labletree.FieldParentID, field.TypeUint64, value)
 	}
 	if value, ok := ltuo.mutation.Description(); ok {
 		_spec.SetField(labletree.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := ltuo.mutation.Ext1(); ok {
-		_spec.SetField(labletree.FieldExt1, field.TypeString, value)
+	if value, ok := ltuo.mutation.TargetType(); ok {
+		_spec.SetField(labletree.FieldTargetType, field.TypeUint16, value)
 	}
-	if value, ok := ltuo.mutation.Ext2(); ok {
-		_spec.SetField(labletree.FieldExt2, field.TypeString, value)
+	if value, ok := ltuo.mutation.AddedTargetType(); ok {
+		_spec.AddField(labletree.FieldTargetType, field.TypeUint16, value)
+	}
+	if value, ok := ltuo.mutation.Parents(); ok {
+		_spec.SetField(labletree.FieldParents, field.TypeString, value)
+	}
+	if value, ok := ltuo.mutation.Inherit(); ok {
+		_spec.SetField(labletree.FieldInherit, field.TypeBool, value)
 	}
 	_node = &LableTree{config: ltuo.config}
 	_spec.Assign = _node.assignValues

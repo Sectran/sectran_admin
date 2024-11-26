@@ -2526,32 +2526,31 @@ func (m *DeviceMutation) ResetEdge(name string) error {
 // LableTreeMutation represents an operation that mutates the LableTree nodes in the graph.
 type LableTreeMutation struct {
 	config
-	op                   Op
-	typ                  string
-	id                   *uint64
-	created_at           *time.Time
-	updated_at           *time.Time
-	name                 *string
-	_type                *uint
-	add_type             *int
-	icon                 *string
-	content              *string
-	parent_lable         *uint64
-	addparent_lable      *int64
-	lable_target_type    *uint16
-	addlable_target_type *int16
-	parent_lables        *string
-	lable_owner          *uint64
-	addlable_owner       *int64
-	inherit              *bool
-	related_lables       *string
-	description          *string
-	ext1                 *string
-	ext2                 *string
-	clearedFields        map[string]struct{}
-	done                 bool
-	oldValue             func(context.Context) (*LableTree, error)
-	predicates           []predicate.LableTree
+	op             Op
+	typ            string
+	id             *uint64
+	created_at     *time.Time
+	updated_at     *time.Time
+	name           *string
+	_type          *uint
+	add_type       *int
+	icon           *string
+	content        *string
+	ownership      *uint8
+	addownership   *int8
+	owner_id       *uint64
+	addowner_id    *int64
+	parent_id      *uint64
+	addparent_id   *int64
+	description    *string
+	target_type    *uint16
+	addtarget_type *int16
+	parents        *string
+	inherit        *bool
+	clearedFields  map[string]struct{}
+	done           bool
+	oldValue       func(context.Context) (*LableTree, error)
+	predicates     []predicate.LableTree
 }
 
 var _ ent.Mutation = (*LableTreeMutation)(nil)
@@ -2894,280 +2893,172 @@ func (m *LableTreeMutation) ResetContent() {
 	m.content = nil
 }
 
-// SetParentLable sets the "parent_lable" field.
-func (m *LableTreeMutation) SetParentLable(u uint64) {
-	m.parent_lable = &u
-	m.addparent_lable = nil
+// SetOwnership sets the "ownership" field.
+func (m *LableTreeMutation) SetOwnership(u uint8) {
+	m.ownership = &u
+	m.addownership = nil
 }
 
-// ParentLable returns the value of the "parent_lable" field in the mutation.
-func (m *LableTreeMutation) ParentLable() (r uint64, exists bool) {
-	v := m.parent_lable
+// Ownership returns the value of the "ownership" field in the mutation.
+func (m *LableTreeMutation) Ownership() (r uint8, exists bool) {
+	v := m.ownership
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldParentLable returns the old "parent_lable" field's value of the LableTree entity.
+// OldOwnership returns the old "ownership" field's value of the LableTree entity.
 // If the LableTree object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LableTreeMutation) OldParentLable(ctx context.Context) (v uint64, err error) {
+func (m *LableTreeMutation) OldOwnership(ctx context.Context) (v uint8, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldParentLable is only allowed on UpdateOne operations")
+		return v, errors.New("OldOwnership is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldParentLable requires an ID field in the mutation")
+		return v, errors.New("OldOwnership requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldParentLable: %w", err)
+		return v, fmt.Errorf("querying old value for OldOwnership: %w", err)
 	}
-	return oldValue.ParentLable, nil
+	return oldValue.Ownership, nil
 }
 
-// AddParentLable adds u to the "parent_lable" field.
-func (m *LableTreeMutation) AddParentLable(u int64) {
-	if m.addparent_lable != nil {
-		*m.addparent_lable += u
+// AddOwnership adds u to the "ownership" field.
+func (m *LableTreeMutation) AddOwnership(u int8) {
+	if m.addownership != nil {
+		*m.addownership += u
 	} else {
-		m.addparent_lable = &u
+		m.addownership = &u
 	}
 }
 
-// AddedParentLable returns the value that was added to the "parent_lable" field in this mutation.
-func (m *LableTreeMutation) AddedParentLable() (r int64, exists bool) {
-	v := m.addparent_lable
+// AddedOwnership returns the value that was added to the "ownership" field in this mutation.
+func (m *LableTreeMutation) AddedOwnership() (r int8, exists bool) {
+	v := m.addownership
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetParentLable resets all changes to the "parent_lable" field.
-func (m *LableTreeMutation) ResetParentLable() {
-	m.parent_lable = nil
-	m.addparent_lable = nil
+// ResetOwnership resets all changes to the "ownership" field.
+func (m *LableTreeMutation) ResetOwnership() {
+	m.ownership = nil
+	m.addownership = nil
 }
 
-// SetLableTargetType sets the "lable_target_type" field.
-func (m *LableTreeMutation) SetLableTargetType(u uint16) {
-	m.lable_target_type = &u
-	m.addlable_target_type = nil
+// SetOwnerID sets the "owner_id" field.
+func (m *LableTreeMutation) SetOwnerID(u uint64) {
+	m.owner_id = &u
+	m.addowner_id = nil
 }
 
-// LableTargetType returns the value of the "lable_target_type" field in the mutation.
-func (m *LableTreeMutation) LableTargetType() (r uint16, exists bool) {
-	v := m.lable_target_type
+// OwnerID returns the value of the "owner_id" field in the mutation.
+func (m *LableTreeMutation) OwnerID() (r uint64, exists bool) {
+	v := m.owner_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLableTargetType returns the old "lable_target_type" field's value of the LableTree entity.
+// OldOwnerID returns the old "owner_id" field's value of the LableTree entity.
 // If the LableTree object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LableTreeMutation) OldLableTargetType(ctx context.Context) (v uint16, err error) {
+func (m *LableTreeMutation) OldOwnerID(ctx context.Context) (v uint64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLableTargetType is only allowed on UpdateOne operations")
+		return v, errors.New("OldOwnerID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLableTargetType requires an ID field in the mutation")
+		return v, errors.New("OldOwnerID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLableTargetType: %w", err)
+		return v, fmt.Errorf("querying old value for OldOwnerID: %w", err)
 	}
-	return oldValue.LableTargetType, nil
+	return oldValue.OwnerID, nil
 }
 
-// AddLableTargetType adds u to the "lable_target_type" field.
-func (m *LableTreeMutation) AddLableTargetType(u int16) {
-	if m.addlable_target_type != nil {
-		*m.addlable_target_type += u
+// AddOwnerID adds u to the "owner_id" field.
+func (m *LableTreeMutation) AddOwnerID(u int64) {
+	if m.addowner_id != nil {
+		*m.addowner_id += u
 	} else {
-		m.addlable_target_type = &u
+		m.addowner_id = &u
 	}
 }
 
-// AddedLableTargetType returns the value that was added to the "lable_target_type" field in this mutation.
-func (m *LableTreeMutation) AddedLableTargetType() (r int16, exists bool) {
-	v := m.addlable_target_type
+// AddedOwnerID returns the value that was added to the "owner_id" field in this mutation.
+func (m *LableTreeMutation) AddedOwnerID() (r int64, exists bool) {
+	v := m.addowner_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetLableTargetType resets all changes to the "lable_target_type" field.
-func (m *LableTreeMutation) ResetLableTargetType() {
-	m.lable_target_type = nil
-	m.addlable_target_type = nil
+// ResetOwnerID resets all changes to the "owner_id" field.
+func (m *LableTreeMutation) ResetOwnerID() {
+	m.owner_id = nil
+	m.addowner_id = nil
 }
 
-// SetParentLables sets the "parent_lables" field.
-func (m *LableTreeMutation) SetParentLables(s string) {
-	m.parent_lables = &s
+// SetParentID sets the "parent_id" field.
+func (m *LableTreeMutation) SetParentID(u uint64) {
+	m.parent_id = &u
+	m.addparent_id = nil
 }
 
-// ParentLables returns the value of the "parent_lables" field in the mutation.
-func (m *LableTreeMutation) ParentLables() (r string, exists bool) {
-	v := m.parent_lables
+// ParentID returns the value of the "parent_id" field in the mutation.
+func (m *LableTreeMutation) ParentID() (r uint64, exists bool) {
+	v := m.parent_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldParentLables returns the old "parent_lables" field's value of the LableTree entity.
+// OldParentID returns the old "parent_id" field's value of the LableTree entity.
 // If the LableTree object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LableTreeMutation) OldParentLables(ctx context.Context) (v string, err error) {
+func (m *LableTreeMutation) OldParentID(ctx context.Context) (v uint64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldParentLables is only allowed on UpdateOne operations")
+		return v, errors.New("OldParentID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldParentLables requires an ID field in the mutation")
+		return v, errors.New("OldParentID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldParentLables: %w", err)
+		return v, fmt.Errorf("querying old value for OldParentID: %w", err)
 	}
-	return oldValue.ParentLables, nil
+	return oldValue.ParentID, nil
 }
 
-// ResetParentLables resets all changes to the "parent_lables" field.
-func (m *LableTreeMutation) ResetParentLables() {
-	m.parent_lables = nil
-}
-
-// SetLableOwner sets the "lable_owner" field.
-func (m *LableTreeMutation) SetLableOwner(u uint64) {
-	m.lable_owner = &u
-	m.addlable_owner = nil
-}
-
-// LableOwner returns the value of the "lable_owner" field in the mutation.
-func (m *LableTreeMutation) LableOwner() (r uint64, exists bool) {
-	v := m.lable_owner
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldLableOwner returns the old "lable_owner" field's value of the LableTree entity.
-// If the LableTree object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LableTreeMutation) OldLableOwner(ctx context.Context) (v uint64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLableOwner is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLableOwner requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLableOwner: %w", err)
-	}
-	return oldValue.LableOwner, nil
-}
-
-// AddLableOwner adds u to the "lable_owner" field.
-func (m *LableTreeMutation) AddLableOwner(u int64) {
-	if m.addlable_owner != nil {
-		*m.addlable_owner += u
+// AddParentID adds u to the "parent_id" field.
+func (m *LableTreeMutation) AddParentID(u int64) {
+	if m.addparent_id != nil {
+		*m.addparent_id += u
 	} else {
-		m.addlable_owner = &u
+		m.addparent_id = &u
 	}
 }
 
-// AddedLableOwner returns the value that was added to the "lable_owner" field in this mutation.
-func (m *LableTreeMutation) AddedLableOwner() (r int64, exists bool) {
-	v := m.addlable_owner
+// AddedParentID returns the value that was added to the "parent_id" field in this mutation.
+func (m *LableTreeMutation) AddedParentID() (r int64, exists bool) {
+	v := m.addparent_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetLableOwner resets all changes to the "lable_owner" field.
-func (m *LableTreeMutation) ResetLableOwner() {
-	m.lable_owner = nil
-	m.addlable_owner = nil
-}
-
-// SetInherit sets the "inherit" field.
-func (m *LableTreeMutation) SetInherit(b bool) {
-	m.inherit = &b
-}
-
-// Inherit returns the value of the "inherit" field in the mutation.
-func (m *LableTreeMutation) Inherit() (r bool, exists bool) {
-	v := m.inherit
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldInherit returns the old "inherit" field's value of the LableTree entity.
-// If the LableTree object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LableTreeMutation) OldInherit(ctx context.Context) (v bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldInherit is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldInherit requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldInherit: %w", err)
-	}
-	return oldValue.Inherit, nil
-}
-
-// ResetInherit resets all changes to the "inherit" field.
-func (m *LableTreeMutation) ResetInherit() {
-	m.inherit = nil
-}
-
-// SetRelatedLables sets the "related_lables" field.
-func (m *LableTreeMutation) SetRelatedLables(s string) {
-	m.related_lables = &s
-}
-
-// RelatedLables returns the value of the "related_lables" field in the mutation.
-func (m *LableTreeMutation) RelatedLables() (r string, exists bool) {
-	v := m.related_lables
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRelatedLables returns the old "related_lables" field's value of the LableTree entity.
-// If the LableTree object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LableTreeMutation) OldRelatedLables(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRelatedLables is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRelatedLables requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRelatedLables: %w", err)
-	}
-	return oldValue.RelatedLables, nil
-}
-
-// ResetRelatedLables resets all changes to the "related_lables" field.
-func (m *LableTreeMutation) ResetRelatedLables() {
-	m.related_lables = nil
+// ResetParentID resets all changes to the "parent_id" field.
+func (m *LableTreeMutation) ResetParentID() {
+	m.parent_id = nil
+	m.addparent_id = nil
 }
 
 // SetDescription sets the "description" field.
@@ -3206,76 +3097,132 @@ func (m *LableTreeMutation) ResetDescription() {
 	m.description = nil
 }
 
-// SetExt1 sets the "ext1" field.
-func (m *LableTreeMutation) SetExt1(s string) {
-	m.ext1 = &s
+// SetTargetType sets the "target_type" field.
+func (m *LableTreeMutation) SetTargetType(u uint16) {
+	m.target_type = &u
+	m.addtarget_type = nil
 }
 
-// Ext1 returns the value of the "ext1" field in the mutation.
-func (m *LableTreeMutation) Ext1() (r string, exists bool) {
-	v := m.ext1
+// TargetType returns the value of the "target_type" field in the mutation.
+func (m *LableTreeMutation) TargetType() (r uint16, exists bool) {
+	v := m.target_type
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldExt1 returns the old "ext1" field's value of the LableTree entity.
+// OldTargetType returns the old "target_type" field's value of the LableTree entity.
 // If the LableTree object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LableTreeMutation) OldExt1(ctx context.Context) (v string, err error) {
+func (m *LableTreeMutation) OldTargetType(ctx context.Context) (v uint16, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldExt1 is only allowed on UpdateOne operations")
+		return v, errors.New("OldTargetType is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldExt1 requires an ID field in the mutation")
+		return v, errors.New("OldTargetType requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldExt1: %w", err)
+		return v, fmt.Errorf("querying old value for OldTargetType: %w", err)
 	}
-	return oldValue.Ext1, nil
+	return oldValue.TargetType, nil
 }
 
-// ResetExt1 resets all changes to the "ext1" field.
-func (m *LableTreeMutation) ResetExt1() {
-	m.ext1 = nil
+// AddTargetType adds u to the "target_type" field.
+func (m *LableTreeMutation) AddTargetType(u int16) {
+	if m.addtarget_type != nil {
+		*m.addtarget_type += u
+	} else {
+		m.addtarget_type = &u
+	}
 }
 
-// SetExt2 sets the "ext2" field.
-func (m *LableTreeMutation) SetExt2(s string) {
-	m.ext2 = &s
-}
-
-// Ext2 returns the value of the "ext2" field in the mutation.
-func (m *LableTreeMutation) Ext2() (r string, exists bool) {
-	v := m.ext2
+// AddedTargetType returns the value that was added to the "target_type" field in this mutation.
+func (m *LableTreeMutation) AddedTargetType() (r int16, exists bool) {
+	v := m.addtarget_type
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldExt2 returns the old "ext2" field's value of the LableTree entity.
+// ResetTargetType resets all changes to the "target_type" field.
+func (m *LableTreeMutation) ResetTargetType() {
+	m.target_type = nil
+	m.addtarget_type = nil
+}
+
+// SetParents sets the "parents" field.
+func (m *LableTreeMutation) SetParents(s string) {
+	m.parents = &s
+}
+
+// Parents returns the value of the "parents" field in the mutation.
+func (m *LableTreeMutation) Parents() (r string, exists bool) {
+	v := m.parents
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldParents returns the old "parents" field's value of the LableTree entity.
 // If the LableTree object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LableTreeMutation) OldExt2(ctx context.Context) (v string, err error) {
+func (m *LableTreeMutation) OldParents(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldExt2 is only allowed on UpdateOne operations")
+		return v, errors.New("OldParents is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldExt2 requires an ID field in the mutation")
+		return v, errors.New("OldParents requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldExt2: %w", err)
+		return v, fmt.Errorf("querying old value for OldParents: %w", err)
 	}
-	return oldValue.Ext2, nil
+	return oldValue.Parents, nil
 }
 
-// ResetExt2 resets all changes to the "ext2" field.
-func (m *LableTreeMutation) ResetExt2() {
-	m.ext2 = nil
+// ResetParents resets all changes to the "parents" field.
+func (m *LableTreeMutation) ResetParents() {
+	m.parents = nil
+}
+
+// SetInherit sets the "inherit" field.
+func (m *LableTreeMutation) SetInherit(b bool) {
+	m.inherit = &b
+}
+
+// Inherit returns the value of the "inherit" field in the mutation.
+func (m *LableTreeMutation) Inherit() (r bool, exists bool) {
+	v := m.inherit
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldInherit returns the old "inherit" field's value of the LableTree entity.
+// If the LableTree object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LableTreeMutation) OldInherit(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldInherit is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldInherit requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldInherit: %w", err)
+	}
+	return oldValue.Inherit, nil
+}
+
+// ResetInherit resets all changes to the "inherit" field.
+func (m *LableTreeMutation) ResetInherit() {
+	m.inherit = nil
 }
 
 // Where appends a list predicates to the LableTreeMutation builder.
@@ -3312,7 +3259,7 @@ func (m *LableTreeMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *LableTreeMutation) Fields() []string {
-	fields := make([]string, 0, 15)
+	fields := make([]string, 0, 13)
 	if m.created_at != nil {
 		fields = append(fields, labletree.FieldCreatedAt)
 	}
@@ -3331,32 +3278,26 @@ func (m *LableTreeMutation) Fields() []string {
 	if m.content != nil {
 		fields = append(fields, labletree.FieldContent)
 	}
-	if m.parent_lable != nil {
-		fields = append(fields, labletree.FieldParentLable)
+	if m.ownership != nil {
+		fields = append(fields, labletree.FieldOwnership)
 	}
-	if m.lable_target_type != nil {
-		fields = append(fields, labletree.FieldLableTargetType)
+	if m.owner_id != nil {
+		fields = append(fields, labletree.FieldOwnerID)
 	}
-	if m.parent_lables != nil {
-		fields = append(fields, labletree.FieldParentLables)
-	}
-	if m.lable_owner != nil {
-		fields = append(fields, labletree.FieldLableOwner)
-	}
-	if m.inherit != nil {
-		fields = append(fields, labletree.FieldInherit)
-	}
-	if m.related_lables != nil {
-		fields = append(fields, labletree.FieldRelatedLables)
+	if m.parent_id != nil {
+		fields = append(fields, labletree.FieldParentID)
 	}
 	if m.description != nil {
 		fields = append(fields, labletree.FieldDescription)
 	}
-	if m.ext1 != nil {
-		fields = append(fields, labletree.FieldExt1)
+	if m.target_type != nil {
+		fields = append(fields, labletree.FieldTargetType)
 	}
-	if m.ext2 != nil {
-		fields = append(fields, labletree.FieldExt2)
+	if m.parents != nil {
+		fields = append(fields, labletree.FieldParents)
+	}
+	if m.inherit != nil {
+		fields = append(fields, labletree.FieldInherit)
 	}
 	return fields
 }
@@ -3378,24 +3319,20 @@ func (m *LableTreeMutation) Field(name string) (ent.Value, bool) {
 		return m.Icon()
 	case labletree.FieldContent:
 		return m.Content()
-	case labletree.FieldParentLable:
-		return m.ParentLable()
-	case labletree.FieldLableTargetType:
-		return m.LableTargetType()
-	case labletree.FieldParentLables:
-		return m.ParentLables()
-	case labletree.FieldLableOwner:
-		return m.LableOwner()
-	case labletree.FieldInherit:
-		return m.Inherit()
-	case labletree.FieldRelatedLables:
-		return m.RelatedLables()
+	case labletree.FieldOwnership:
+		return m.Ownership()
+	case labletree.FieldOwnerID:
+		return m.OwnerID()
+	case labletree.FieldParentID:
+		return m.ParentID()
 	case labletree.FieldDescription:
 		return m.Description()
-	case labletree.FieldExt1:
-		return m.Ext1()
-	case labletree.FieldExt2:
-		return m.Ext2()
+	case labletree.FieldTargetType:
+		return m.TargetType()
+	case labletree.FieldParents:
+		return m.Parents()
+	case labletree.FieldInherit:
+		return m.Inherit()
 	}
 	return nil, false
 }
@@ -3417,24 +3354,20 @@ func (m *LableTreeMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldIcon(ctx)
 	case labletree.FieldContent:
 		return m.OldContent(ctx)
-	case labletree.FieldParentLable:
-		return m.OldParentLable(ctx)
-	case labletree.FieldLableTargetType:
-		return m.OldLableTargetType(ctx)
-	case labletree.FieldParentLables:
-		return m.OldParentLables(ctx)
-	case labletree.FieldLableOwner:
-		return m.OldLableOwner(ctx)
-	case labletree.FieldInherit:
-		return m.OldInherit(ctx)
-	case labletree.FieldRelatedLables:
-		return m.OldRelatedLables(ctx)
+	case labletree.FieldOwnership:
+		return m.OldOwnership(ctx)
+	case labletree.FieldOwnerID:
+		return m.OldOwnerID(ctx)
+	case labletree.FieldParentID:
+		return m.OldParentID(ctx)
 	case labletree.FieldDescription:
 		return m.OldDescription(ctx)
-	case labletree.FieldExt1:
-		return m.OldExt1(ctx)
-	case labletree.FieldExt2:
-		return m.OldExt2(ctx)
+	case labletree.FieldTargetType:
+		return m.OldTargetType(ctx)
+	case labletree.FieldParents:
+		return m.OldParents(ctx)
+	case labletree.FieldInherit:
+		return m.OldInherit(ctx)
 	}
 	return nil, fmt.Errorf("unknown LableTree field %s", name)
 }
@@ -3486,47 +3419,26 @@ func (m *LableTreeMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetContent(v)
 		return nil
-	case labletree.FieldParentLable:
+	case labletree.FieldOwnership:
+		v, ok := value.(uint8)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOwnership(v)
+		return nil
+	case labletree.FieldOwnerID:
 		v, ok := value.(uint64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetParentLable(v)
+		m.SetOwnerID(v)
 		return nil
-	case labletree.FieldLableTargetType:
-		v, ok := value.(uint16)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetLableTargetType(v)
-		return nil
-	case labletree.FieldParentLables:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetParentLables(v)
-		return nil
-	case labletree.FieldLableOwner:
+	case labletree.FieldParentID:
 		v, ok := value.(uint64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLableOwner(v)
-		return nil
-	case labletree.FieldInherit:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetInherit(v)
-		return nil
-	case labletree.FieldRelatedLables:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRelatedLables(v)
+		m.SetParentID(v)
 		return nil
 	case labletree.FieldDescription:
 		v, ok := value.(string)
@@ -3535,19 +3447,26 @@ func (m *LableTreeMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDescription(v)
 		return nil
-	case labletree.FieldExt1:
-		v, ok := value.(string)
+	case labletree.FieldTargetType:
+		v, ok := value.(uint16)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetExt1(v)
+		m.SetTargetType(v)
 		return nil
-	case labletree.FieldExt2:
+	case labletree.FieldParents:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetExt2(v)
+		m.SetParents(v)
+		return nil
+	case labletree.FieldInherit:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetInherit(v)
 		return nil
 	}
 	return fmt.Errorf("unknown LableTree field %s", name)
@@ -3560,14 +3479,17 @@ func (m *LableTreeMutation) AddedFields() []string {
 	if m.add_type != nil {
 		fields = append(fields, labletree.FieldType)
 	}
-	if m.addparent_lable != nil {
-		fields = append(fields, labletree.FieldParentLable)
+	if m.addownership != nil {
+		fields = append(fields, labletree.FieldOwnership)
 	}
-	if m.addlable_target_type != nil {
-		fields = append(fields, labletree.FieldLableTargetType)
+	if m.addowner_id != nil {
+		fields = append(fields, labletree.FieldOwnerID)
 	}
-	if m.addlable_owner != nil {
-		fields = append(fields, labletree.FieldLableOwner)
+	if m.addparent_id != nil {
+		fields = append(fields, labletree.FieldParentID)
+	}
+	if m.addtarget_type != nil {
+		fields = append(fields, labletree.FieldTargetType)
 	}
 	return fields
 }
@@ -3579,12 +3501,14 @@ func (m *LableTreeMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case labletree.FieldType:
 		return m.AddedType()
-	case labletree.FieldParentLable:
-		return m.AddedParentLable()
-	case labletree.FieldLableTargetType:
-		return m.AddedLableTargetType()
-	case labletree.FieldLableOwner:
-		return m.AddedLableOwner()
+	case labletree.FieldOwnership:
+		return m.AddedOwnership()
+	case labletree.FieldOwnerID:
+		return m.AddedOwnerID()
+	case labletree.FieldParentID:
+		return m.AddedParentID()
+	case labletree.FieldTargetType:
+		return m.AddedTargetType()
 	}
 	return nil, false
 }
@@ -3601,26 +3525,33 @@ func (m *LableTreeMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddType(v)
 		return nil
-	case labletree.FieldParentLable:
+	case labletree.FieldOwnership:
+		v, ok := value.(int8)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddOwnership(v)
+		return nil
+	case labletree.FieldOwnerID:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddParentLable(v)
+		m.AddOwnerID(v)
 		return nil
-	case labletree.FieldLableTargetType:
+	case labletree.FieldParentID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddParentID(v)
+		return nil
+	case labletree.FieldTargetType:
 		v, ok := value.(int16)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddLableTargetType(v)
-		return nil
-	case labletree.FieldLableOwner:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddLableOwner(v)
+		m.AddTargetType(v)
 		return nil
 	}
 	return fmt.Errorf("unknown LableTree numeric field %s", name)
@@ -3667,32 +3598,26 @@ func (m *LableTreeMutation) ResetField(name string) error {
 	case labletree.FieldContent:
 		m.ResetContent()
 		return nil
-	case labletree.FieldParentLable:
-		m.ResetParentLable()
+	case labletree.FieldOwnership:
+		m.ResetOwnership()
 		return nil
-	case labletree.FieldLableTargetType:
-		m.ResetLableTargetType()
+	case labletree.FieldOwnerID:
+		m.ResetOwnerID()
 		return nil
-	case labletree.FieldParentLables:
-		m.ResetParentLables()
-		return nil
-	case labletree.FieldLableOwner:
-		m.ResetLableOwner()
-		return nil
-	case labletree.FieldInherit:
-		m.ResetInherit()
-		return nil
-	case labletree.FieldRelatedLables:
-		m.ResetRelatedLables()
+	case labletree.FieldParentID:
+		m.ResetParentID()
 		return nil
 	case labletree.FieldDescription:
 		m.ResetDescription()
 		return nil
-	case labletree.FieldExt1:
-		m.ResetExt1()
+	case labletree.FieldTargetType:
+		m.ResetTargetType()
 		return nil
-	case labletree.FieldExt2:
-		m.ResetExt2()
+	case labletree.FieldParents:
+		m.ResetParents()
+		return nil
+	case labletree.FieldInherit:
+		m.ResetInherit()
 		return nil
 	}
 	return fmt.Errorf("unknown LableTree field %s", name)

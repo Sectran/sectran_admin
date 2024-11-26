@@ -581,145 +581,73 @@ func (lt *LableTreeCreate) SetNotNilContent(value *string) *LableTreeCreate {
 }
 
 // set field if value's pointer is not nil.
-func (lt *LableTreeUpdate) SetNotNilParentLable(value *uint64) *LableTreeUpdate {
+func (lt *LableTreeUpdate) SetNotNilOwnership(value *uint8) *LableTreeUpdate {
 	if value != nil {
-		return lt.SetParentLable(*value)
+		return lt.SetOwnership(*value)
 	}
 	return lt
 }
 
 // set field if value's pointer is not nil.
-func (lt *LableTreeUpdateOne) SetNotNilParentLable(value *uint64) *LableTreeUpdateOne {
+func (lt *LableTreeUpdateOne) SetNotNilOwnership(value *uint8) *LableTreeUpdateOne {
 	if value != nil {
-		return lt.SetParentLable(*value)
+		return lt.SetOwnership(*value)
 	}
 	return lt
 }
 
 // set field if value's pointer is not nil.
-func (lt *LableTreeCreate) SetNotNilParentLable(value *uint64) *LableTreeCreate {
+func (lt *LableTreeCreate) SetNotNilOwnership(value *uint8) *LableTreeCreate {
 	if value != nil {
-		return lt.SetParentLable(*value)
+		return lt.SetOwnership(*value)
 	}
 	return lt
 }
 
 // set field if value's pointer is not nil.
-func (lt *LableTreeUpdate) SetNotNilLableTargetType(value *uint16) *LableTreeUpdate {
+func (lt *LableTreeUpdate) SetNotNilOwnerID(value *uint64) *LableTreeUpdate {
 	if value != nil {
-		return lt.SetLableTargetType(*value)
+		return lt.SetOwnerID(*value)
 	}
 	return lt
 }
 
 // set field if value's pointer is not nil.
-func (lt *LableTreeUpdateOne) SetNotNilLableTargetType(value *uint16) *LableTreeUpdateOne {
+func (lt *LableTreeUpdateOne) SetNotNilOwnerID(value *uint64) *LableTreeUpdateOne {
 	if value != nil {
-		return lt.SetLableTargetType(*value)
+		return lt.SetOwnerID(*value)
 	}
 	return lt
 }
 
 // set field if value's pointer is not nil.
-func (lt *LableTreeCreate) SetNotNilLableTargetType(value *uint16) *LableTreeCreate {
+func (lt *LableTreeCreate) SetNotNilOwnerID(value *uint64) *LableTreeCreate {
 	if value != nil {
-		return lt.SetLableTargetType(*value)
+		return lt.SetOwnerID(*value)
 	}
 	return lt
 }
 
 // set field if value's pointer is not nil.
-func (lt *LableTreeUpdate) SetNotNilParentLables(value *string) *LableTreeUpdate {
+func (lt *LableTreeUpdate) SetNotNilParentID(value *uint64) *LableTreeUpdate {
 	if value != nil {
-		return lt.SetParentLables(*value)
+		return lt.SetParentID(*value)
 	}
 	return lt
 }
 
 // set field if value's pointer is not nil.
-func (lt *LableTreeUpdateOne) SetNotNilParentLables(value *string) *LableTreeUpdateOne {
+func (lt *LableTreeUpdateOne) SetNotNilParentID(value *uint64) *LableTreeUpdateOne {
 	if value != nil {
-		return lt.SetParentLables(*value)
+		return lt.SetParentID(*value)
 	}
 	return lt
 }
 
 // set field if value's pointer is not nil.
-func (lt *LableTreeCreate) SetNotNilParentLables(value *string) *LableTreeCreate {
+func (lt *LableTreeCreate) SetNotNilParentID(value *uint64) *LableTreeCreate {
 	if value != nil {
-		return lt.SetParentLables(*value)
-	}
-	return lt
-}
-
-// set field if value's pointer is not nil.
-func (lt *LableTreeUpdate) SetNotNilLableOwner(value *uint64) *LableTreeUpdate {
-	if value != nil {
-		return lt.SetLableOwner(*value)
-	}
-	return lt
-}
-
-// set field if value's pointer is not nil.
-func (lt *LableTreeUpdateOne) SetNotNilLableOwner(value *uint64) *LableTreeUpdateOne {
-	if value != nil {
-		return lt.SetLableOwner(*value)
-	}
-	return lt
-}
-
-// set field if value's pointer is not nil.
-func (lt *LableTreeCreate) SetNotNilLableOwner(value *uint64) *LableTreeCreate {
-	if value != nil {
-		return lt.SetLableOwner(*value)
-	}
-	return lt
-}
-
-// set field if value's pointer is not nil.
-func (lt *LableTreeUpdate) SetNotNilInherit(value *bool) *LableTreeUpdate {
-	if value != nil {
-		return lt.SetInherit(*value)
-	}
-	return lt
-}
-
-// set field if value's pointer is not nil.
-func (lt *LableTreeUpdateOne) SetNotNilInherit(value *bool) *LableTreeUpdateOne {
-	if value != nil {
-		return lt.SetInherit(*value)
-	}
-	return lt
-}
-
-// set field if value's pointer is not nil.
-func (lt *LableTreeCreate) SetNotNilInherit(value *bool) *LableTreeCreate {
-	if value != nil {
-		return lt.SetInherit(*value)
-	}
-	return lt
-}
-
-// set field if value's pointer is not nil.
-func (lt *LableTreeUpdate) SetNotNilRelatedLables(value *string) *LableTreeUpdate {
-	if value != nil {
-		return lt.SetRelatedLables(*value)
-	}
-	return lt
-}
-
-// set field if value's pointer is not nil.
-func (lt *LableTreeUpdateOne) SetNotNilRelatedLables(value *string) *LableTreeUpdateOne {
-	if value != nil {
-		return lt.SetRelatedLables(*value)
-	}
-	return lt
-}
-
-// set field if value's pointer is not nil.
-func (lt *LableTreeCreate) SetNotNilRelatedLables(value *string) *LableTreeCreate {
-	if value != nil {
-		return lt.SetRelatedLables(*value)
+		return lt.SetParentID(*value)
 	}
 	return lt
 }
@@ -749,49 +677,73 @@ func (lt *LableTreeCreate) SetNotNilDescription(value *string) *LableTreeCreate 
 }
 
 // set field if value's pointer is not nil.
-func (lt *LableTreeUpdate) SetNotNilExt1(value *string) *LableTreeUpdate {
+func (lt *LableTreeUpdate) SetNotNilTargetType(value *uint16) *LableTreeUpdate {
 	if value != nil {
-		return lt.SetExt1(*value)
+		return lt.SetTargetType(*value)
 	}
 	return lt
 }
 
 // set field if value's pointer is not nil.
-func (lt *LableTreeUpdateOne) SetNotNilExt1(value *string) *LableTreeUpdateOne {
+func (lt *LableTreeUpdateOne) SetNotNilTargetType(value *uint16) *LableTreeUpdateOne {
 	if value != nil {
-		return lt.SetExt1(*value)
+		return lt.SetTargetType(*value)
 	}
 	return lt
 }
 
 // set field if value's pointer is not nil.
-func (lt *LableTreeCreate) SetNotNilExt1(value *string) *LableTreeCreate {
+func (lt *LableTreeCreate) SetNotNilTargetType(value *uint16) *LableTreeCreate {
 	if value != nil {
-		return lt.SetExt1(*value)
+		return lt.SetTargetType(*value)
 	}
 	return lt
 }
 
 // set field if value's pointer is not nil.
-func (lt *LableTreeUpdate) SetNotNilExt2(value *string) *LableTreeUpdate {
+func (lt *LableTreeUpdate) SetNotNilParents(value *string) *LableTreeUpdate {
 	if value != nil {
-		return lt.SetExt2(*value)
+		return lt.SetParents(*value)
 	}
 	return lt
 }
 
 // set field if value's pointer is not nil.
-func (lt *LableTreeUpdateOne) SetNotNilExt2(value *string) *LableTreeUpdateOne {
+func (lt *LableTreeUpdateOne) SetNotNilParents(value *string) *LableTreeUpdateOne {
 	if value != nil {
-		return lt.SetExt2(*value)
+		return lt.SetParents(*value)
 	}
 	return lt
 }
 
 // set field if value's pointer is not nil.
-func (lt *LableTreeCreate) SetNotNilExt2(value *string) *LableTreeCreate {
+func (lt *LableTreeCreate) SetNotNilParents(value *string) *LableTreeCreate {
 	if value != nil {
-		return lt.SetExt2(*value)
+		return lt.SetParents(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdate) SetNotNilInherit(value *bool) *LableTreeUpdate {
+	if value != nil {
+		return lt.SetInherit(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeUpdateOne) SetNotNilInherit(value *bool) *LableTreeUpdateOne {
+	if value != nil {
+		return lt.SetInherit(*value)
+	}
+	return lt
+}
+
+// set field if value's pointer is not nil.
+func (lt *LableTreeCreate) SetNotNilInherit(value *bool) *LableTreeCreate {
+	if value != nil {
+		return lt.SetInherit(*value)
 	}
 	return lt
 }

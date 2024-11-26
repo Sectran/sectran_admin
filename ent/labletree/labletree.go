@@ -25,24 +25,20 @@ const (
 	FieldIcon = "icon"
 	// FieldContent holds the string denoting the content field in the database.
 	FieldContent = "content"
-	// FieldParentLable holds the string denoting the parent_lable field in the database.
-	FieldParentLable = "parent_lable"
-	// FieldLableTargetType holds the string denoting the lable_target_type field in the database.
-	FieldLableTargetType = "lable_target_type"
-	// FieldParentLables holds the string denoting the parent_lables field in the database.
-	FieldParentLables = "parent_lables"
-	// FieldLableOwner holds the string denoting the lable_owner field in the database.
-	FieldLableOwner = "lable_owner"
-	// FieldInherit holds the string denoting the inherit field in the database.
-	FieldInherit = "inherit"
-	// FieldRelatedLables holds the string denoting the related_lables field in the database.
-	FieldRelatedLables = "related_lables"
+	// FieldOwnership holds the string denoting the ownership field in the database.
+	FieldOwnership = "ownership"
+	// FieldOwnerID holds the string denoting the owner_id field in the database.
+	FieldOwnerID = "owner_id"
+	// FieldParentID holds the string denoting the parent_id field in the database.
+	FieldParentID = "parent_id"
 	// FieldDescription holds the string denoting the description field in the database.
 	FieldDescription = "description"
-	// FieldExt1 holds the string denoting the ext1 field in the database.
-	FieldExt1 = "ext1"
-	// FieldExt2 holds the string denoting the ext2 field in the database.
-	FieldExt2 = "ext2"
+	// FieldTargetType holds the string denoting the target_type field in the database.
+	FieldTargetType = "target_type"
+	// FieldParents holds the string denoting the parents field in the database.
+	FieldParents = "parents"
+	// FieldInherit holds the string denoting the inherit field in the database.
+	FieldInherit = "inherit"
 	// Table holds the table name of the labletree in the database.
 	Table = "lable_trees"
 )
@@ -56,15 +52,13 @@ var Columns = []string{
 	FieldType,
 	FieldIcon,
 	FieldContent,
-	FieldParentLable,
-	FieldLableTargetType,
-	FieldParentLables,
-	FieldLableOwner,
-	FieldInherit,
-	FieldRelatedLables,
+	FieldOwnership,
+	FieldOwnerID,
+	FieldParentID,
 	FieldDescription,
-	FieldExt1,
-	FieldExt2,
+	FieldTargetType,
+	FieldParents,
+	FieldInherit,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -132,34 +126,19 @@ func ByContent(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldContent, opts...).ToFunc()
 }
 
-// ByParentLable orders the results by the parent_lable field.
-func ByParentLable(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldParentLable, opts...).ToFunc()
+// ByOwnership orders the results by the ownership field.
+func ByOwnership(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOwnership, opts...).ToFunc()
 }
 
-// ByLableTargetType orders the results by the lable_target_type field.
-func ByLableTargetType(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLableTargetType, opts...).ToFunc()
+// ByOwnerID orders the results by the owner_id field.
+func ByOwnerID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOwnerID, opts...).ToFunc()
 }
 
-// ByParentLables orders the results by the parent_lables field.
-func ByParentLables(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldParentLables, opts...).ToFunc()
-}
-
-// ByLableOwner orders the results by the lable_owner field.
-func ByLableOwner(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLableOwner, opts...).ToFunc()
-}
-
-// ByInherit orders the results by the inherit field.
-func ByInherit(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldInherit, opts...).ToFunc()
-}
-
-// ByRelatedLables orders the results by the related_lables field.
-func ByRelatedLables(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldRelatedLables, opts...).ToFunc()
+// ByParentID orders the results by the parent_id field.
+func ByParentID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldParentID, opts...).ToFunc()
 }
 
 // ByDescription orders the results by the description field.
@@ -167,12 +146,17 @@ func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDescription, opts...).ToFunc()
 }
 
-// ByExt1 orders the results by the ext1 field.
-func ByExt1(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldExt1, opts...).ToFunc()
+// ByTargetType orders the results by the target_type field.
+func ByTargetType(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTargetType, opts...).ToFunc()
 }
 
-// ByExt2 orders the results by the ext2 field.
-func ByExt2(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldExt2, opts...).ToFunc()
+// ByParents orders the results by the parents field.
+func ByParents(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldParents, opts...).ToFunc()
+}
+
+// ByInherit orders the results by the inherit field.
+func ByInherit(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldInherit, opts...).ToFunc()
 }
