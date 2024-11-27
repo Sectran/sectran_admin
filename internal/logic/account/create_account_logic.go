@@ -28,12 +28,19 @@ func NewCreateAccountLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Cre
 }
 
 func (l *CreateAccountLogic) CreateAccount(req *types.AccountInfo) (*types.BaseMsgResp, error) {
-	domain := l.ctx.Value("request_domain").((*ent.User))
 	if err := ModifyCheckout(l.svcCtx, l.ctx, req); err != nil {
 		return nil, err
 	}
 
-	_, err := l.svcCtx.DB.Account.Create().
+	device, err := l.svcCtx.DB.Device.Get(l.ctx, *req.DeviceId)
+	if err != nil {
+		if _, ok := err.(*ent.NotFoundError); ok {
+			return nil, types.CustomError("设备不存在")
+		}
+		return nil, types.ErrInternalError
+	}
+
+	_, err = l.svcCtx.DB.Account.Create().
 		SetNotNilUsername(req.Username).
 		SetNotNilPort(req.Port).
 		SetNotNilProtocol(req.Protocol).
@@ -41,7 +48,7 @@ func (l *CreateAccountLogic) CreateAccount(req *types.AccountInfo) (*types.BaseM
 		SetNotNilPrivateKey(req.PrivateKey).
 		SetNotNilPrivateKeyPassword(req.PrivateKeyPassword).
 		SetNotNilDeviceID(req.DeviceId).
-		SetDepartmentID(domain.DepartmentID).
+		SetDepartmentID(device.DepartmentID).
 		Save(l.ctx)
 	if err != nil {
 		return nil, dberrorhandler.DefaultEntError(l.Logger, err, req)
