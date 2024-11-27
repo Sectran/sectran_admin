@@ -13,7 +13,7 @@ CROSConf:
 Log:
   ServiceName: SectranAdminApiLogger
   Mode: file
-  Path: ./logs/SectranAdmin/api
+  Path: logs
   Level: info
   Compress: false
   Encoding: plain 
