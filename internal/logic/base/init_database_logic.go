@@ -86,7 +86,7 @@ func initUser(ctx *svc.ServiceContext) {
 			SetName("开发者管理员").
 			SetDepartmentID(1).
 			SetRoleID(1).
-			SetPassword("0okm)OKM").
+			SetPassword("Passwordryan@0").
 			SetStatus(true).
 			Save(srvCtx)
 		if err != nil {
