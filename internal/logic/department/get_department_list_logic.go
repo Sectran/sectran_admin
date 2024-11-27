@@ -49,6 +49,7 @@ func (l *GetDepartmentListLogic) GetDepartmentList(req *types.DepartmentListReqR
 			return nil, types.ErrInternalError
 		}
 
+		//不存在访问权限、但是属于这个部门
 		_, err = DomainDeptAccessed(int(domain.DepartmentID),
 			fmt.Sprintf("%s,%d", target.ParentDepartments, *req.ParentDeptId))
 		if err != nil {

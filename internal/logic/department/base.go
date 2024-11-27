@@ -36,12 +36,6 @@ func GetCurrentDominDeptPrefix(svcCtx *svc.ServiceContext, domain *ent.User) (*s
 }
 
 func ModifyCheckout(svcCtx *svc.ServiceContext, ctx context.Context, req *types.DepartmentInfo) error {
-	if req.Area == nil {
-		return types.CustomError("部门归属地不能为空")
-	}
-	if req.Name == nil {
-		return types.CustomError("部门名称不能为空")
-	}
 	if req.ParentDepartmentId == nil {
 		return types.CustomError("部门父级部门ID不能为空")
 	}
@@ -58,7 +52,7 @@ func ModifyCheckout(svcCtx *svc.ServiceContext, ctx context.Context, req *types.
 		return types.ErrInternalError
 	}
 
-	//判断当前账号是否对待操作 部门存在访问权限
+	//当前账号不存在访问权限、但是属于这个部门
 	if _, err = DomainDeptAccessed(int(domain.DepartmentID),
 		fmt.Sprintf("%s,%d", pDept.ParentDepartments, *req.ParentDepartmentId)); err != nil {
 		return err
@@ -79,13 +73,8 @@ func ModifyCheckout(svcCtx *svc.ServiceContext, ctx context.Context, req *types.
 	}
 
 	//同层级部门名称不能重复
-	var prefix string
+	prefix := fmt.Sprintf("%s,%d", pDept.ParentDepartments, pDept.ID)
 	req.ParentDepartments = &prefix
-	if pDept.ParentDepartments == string(pDept.ID) {
-		prefix = pDept.ParentDepartments
-	} else {
-		prefix = fmt.Sprintf("%s,%d", pDept.ParentDepartments, pDept.ID)
-	}
 
 	// 判断是否存在同层级相同名称的部门
 	var predicates []predicate.Department

@@ -14,7 +14,6 @@ import (
 
 func ModifyCheckout(svcCtx *svc.ServiceContext, ctx context.Context, req *types.UserInfo) error {
 	domain := ctx.Value("request_domain").((*ent.User))
-
 	targetDept, err := svcCtx.DB.Department.Query().Where(department.ID(*req.DepartmentId)).First(ctx)
 	if err != nil {
 		logx.Errorw("操作账号时查询部门失败", logx.Field("DepartmentId", *req.DepartmentId))

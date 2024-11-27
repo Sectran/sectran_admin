@@ -50,22 +50,6 @@ func DeviceIdsCheckout(svcCtx *svc.ServiceContext, ctx context.Context, deviceId
 }
 
 func ModifyCheckout(svcCtx *svc.ServiceContext, ctx context.Context, req *types.DeviceInfo) error {
-	if req.DepartmentId == nil {
-		return types.CustomError("设备所属部门ID不能为空")
-	}
-
-	if req.Host == nil {
-		return types.CustomError("设备地址不能为空")
-	}
-
-	if req.Name == nil {
-		return types.CustomError("设备名称不能为空")
-	}
-
-	if req.Type == nil {
-		return types.CustomError("设备类型不能为空")
-	}
-
 	domain := ctx.Value("request_domain").((*ent.User))
 
 	//编辑设备 验证设备关联部门是否有操作权限 && 验证设备是否有操作权限

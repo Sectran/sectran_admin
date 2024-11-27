@@ -53,36 +53,10 @@ func AccountIdsCheckout(svcCtx *svc.ServiceContext, ctx context.Context, account
 }
 
 func ModifyCheckout(svcCtx *svc.ServiceContext, ctx context.Context, req *types.AccountInfo) error {
-	if req.DeviceId == nil {
-		return types.CustomError("设备ID不能为空")
-	}
-	if req.Username == nil {
-		return types.CustomError("账号用户名不能为空")
-	}
-	if req.Protocol == nil {
-		return types.CustomError("账号协议不能为空")
-	}
-	if *req.Protocol < ProtocolSsh || *req.Protocol > ProtocolMax {
-		return types.CustomError("不支持的账号协议")
-	}
-	if *req.Protocol == ProtocolSsh {
-		if req.Password == nil && req.PrivateKey == nil {
-			return types.CustomError("账号凭据不能为空（使用密码或者私钥）")
-		}
-	} else {
-		if req.Password == nil {
-			return types.CustomError("账号密码不能为空")
-		}
-	}
-	if req.Port == nil {
-		return types.CustomError("账号端口不能为空")
-	}
-
 	//(三元组：协议、账号、端口)不可重复
 	var predicates []predicate.Account
 
 	if req.Id != nil {
-		//校验是否有权限操作该账号
 		if err := AccountIdCheckout(svcCtx, ctx, *req.Id); err != nil {
 			return err
 		}
@@ -98,7 +72,6 @@ func ModifyCheckout(svcCtx *svc.ServiceContext, ctx context.Context, req *types.
 
 	acctExt, err := svcCtx.DB.Account.Query().Where(predicates...).Exist(ctx)
 	if err != nil {
-		logx.Errorw("查询设备账号三元组协议、账号、端口是否重复时失败")
 		return types.ErrInternalError
 	}
 
