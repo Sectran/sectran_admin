@@ -6,6 +6,7 @@ import (
 	"sectran_admin/ent"
 	"sectran_admin/ent/account"
 	"sectran_admin/ent/department"
+	"sectran_admin/ent/device"
 	"sectran_admin/ent/predicate"
 	deptLogic "sectran_admin/internal/logic/department"
 	"sectran_admin/internal/svc"
@@ -57,6 +58,10 @@ func (l *GetAccountListLogic) GetAccountList(req *types.AccountListReqRefer) (*t
 
 	if req.Protocol != nil {
 		predicates = append(predicates, account.Protocol(*req.Protocol))
+	}
+
+	if req.Ip != nil {
+		predicates = append(predicates, account.HasDevicesWith(device.HostEQ(*req.Ip)))
 	}
 
 	data, err := l.svcCtx.DB.Account.Query().Where(predicates...).Page(l.ctx, req.Page, req.PageSize)

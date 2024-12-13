@@ -48,6 +48,8 @@ type AccountListReqRefer struct {
 	Protocol *uint8 `json:"protocol,optional"`
 	//账号端口
 	Port *uint32 `json:"port,optional"`
+	//设备IP
+	Ip *string `json:"ip,optional"`
 }
 
 // ----------------------------用户----------------------------
