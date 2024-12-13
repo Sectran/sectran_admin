@@ -50,6 +50,8 @@ type AccountListReqRefer struct {
 	Port *uint32 `json:"port,optional"`
 	//设备IP
 	Ip *string `json:"ip,optional"`
+	//设备类型
+	DeviceType *string `json:"deviceType,optional"`
 }
 
 // ----------------------------用户----------------------------

@@ -64,6 +64,10 @@ func (l *GetAccountListLogic) GetAccountList(req *types.AccountListReqRefer) (*t
 		predicates = append(predicates, account.HasDevicesWith(device.HostEQ(*req.Ip)))
 	}
 
+	if req.DeviceType != nil {
+		predicates = append(predicates, account.HasDevicesWith(device.TypeEQ(*req.DeviceType)))
+	}
+
 	data, err := l.svcCtx.DB.Account.Query().Where(predicates...).Page(l.ctx, req.Page, req.PageSize)
 
 	if err != nil {
