@@ -11,7 +11,7 @@ SERVICE_SNAKE=sectran_admin
 SERVICE_DASH=sectran-admin
 
 # The project version, if you don't use git, you should set it manually | 项目版本，如果不使用git请手动设置
-VERSION=$(shell git describe --tags --always)
+VERSION=2.1.3
 
 # The project file name style | 项目文件命名风格
 PROJECT_STYLE=go_zero
@@ -96,28 +96,17 @@ gen-api-ent-logic: # Generate CRUD logic from Ent, need to set model and group |
 	goctls api ent --schema=./ent/schema --style=$(PROJECT_STYLE) --api_service_name=$(SERVICE) --output=./ --model=$(model) --group=$(group) --i18n=$(PROJECT_I18N) --overwrite=true --api_data=$(AUTO_API_INIT_DATA)
 	@echo "Generate CRUD codes from Ent successfully"
 
-.PHONY: build-win
-build-win: # Build project for Windows | 构建Windows下的可执行文件
-	env CGO_ENABLED=0 GOOS=windows GOARCH=$(GOARCH) go build -ldflags "$(LDFLAGS)" -trimpath -o $(SERVICE_STYLE)_$(PROJECT_BUILD_SUFFIX).exe $(SERVICE_STYLE).go
-	@echo "Build project for Windows successfully"
-
-.PHONY: build-mac
-build-mac: # Build project for MacOS | 构建MacOS下的可执行文件
-	env CGO_ENABLED=0 GOOS=darwin GOARCH=$(GOARCH) go build -ldflags "$(LDFLAGS)" -trimpath -o $(SERVICE_STYLE)_$(PROJECT_BUILD_SUFFIX) $(SERVICE_STYLE).go
-	@echo "Build project for MacOS successfully"
-
-.PHONY: build-linux
-build-linux: # Build project for Linux | 构建Linux下的可执行文件
-	env CGO_ENABLED=0 GOOS=linux GOARCH=$(GOARCH) go build -ldflags "$(LDFLAGS)" -trimpath -o $(SERVICE_STYLE)_$(PROJECT_BUILD_SUFFIX) $(SERVICE_STYLE).go
-	@echo "Build project for Linux successfully"
-
 .PHONY: help
 help: # Show help | 显示帮助
 	@grep -E '^[a-zA-Z0-9 -]+:.*#'  Makefile | sort | while read -r l; do printf "\033[1;32m$$(echo $$l | cut -f 1 -d':')\033[00m:$$(echo $$l | cut -f 2- -d'#')\n"; done
 
-.PHONY: init
-init: 
-
+.PHONY: build
+build: 
+	@GOOS=linux GOARCH=amd64 go build -ldflags "$(LDFLAGS)" -trimpath -o $(SERVICE_DASH)-$(VERSION)/$(SERVICE_DASH) 
+	@\cp -r etc $(SERVICE_DASH)-$(VERSION)
+	@\cp sectran.sql $(SERVICE_DASH)-$(VERSION)
+	@tar -zcvf $(SERVICE_DASH)-$(VERSION).tar.gz $(SERVICE_DASH)-$(VERSION)
+	@rm -rf $(SERVICE_DASH)-$(VERSION)
 gen: schema=labeltree
 gen:
 	make gen-ent
